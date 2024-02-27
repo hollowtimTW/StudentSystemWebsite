@@ -40,6 +40,7 @@
             </div>
         </a>
         <ul class="side-menu">
+            <li><a asp-area="" asp-controller="SystemBackground" asp-action="Index"><i class='bx bx-home-alt-2'></i>首頁</a></li>
             <li><a asp-area="course_management" asp-controller="courseHome" asp-action="Index"><i class='bx bxs-dashboard'></i>排課系統管理</a></li>
             <li><a asp-area="ordering_system" asp-controller="ordering_system" asp-action="ordering_system_index"><i class='bx bx-store-alt'></i>訂餐管理</a></li>
             <li><a asp-area="job_vacancy" asp-controller="jobHome" asp-action="Index"><i class='bx bxs-book-content'></i>工作媒合管理</a></li>
@@ -47,7 +48,6 @@
             <li><a asp-area="class_discuss" asp-controller="class_discuss" asp-action="Index"><i class='bx bxs-message-rounded-dots'></i>討論區管理</a></li>
             <li><a asp-area="video_management" asp-controller="T影片Video" asp-action="Index"><i class='bx bxs-video'></i>教學影片</a></li>
             <li><a asp-area="question_bank" asp-controller="question_bank" asp-action="Index"><i class='bx bxs-copy-alt'></i>考試題庫管理</a></li>
-            <li><a asp-area="" asp-controller="Home" asp-action="Privacy"><i class='bx bx-cog'></i>設定</a></li>
         </ul>
         <ul class="side-menu">
             <li>
@@ -71,8 +71,8 @@
                     <button type="submit" class="search-btn" id="seach_btn"><i class='bx bx-search'></i></button>
                 </div>
             </form>
-            <h5>Hello</h5>
-            <h5>@User.Identity?.Name!</h5>
+            <h5 class="text-secondary">Hello</h5>
+            <h5 class="text-secondary">@User.Identity?.Name!</h5>
             <input type="checkbox" id="theme-toggle" hidden>
             <label for="theme-toggle" class="theme-toggle"></label>
             <!-- 通知訊息 -->

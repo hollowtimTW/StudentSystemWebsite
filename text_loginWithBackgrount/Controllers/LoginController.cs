@@ -40,6 +40,24 @@ namespace text_loginWithBackgrount.Controllers
             return View();
         }
         /// <summary>
+        /// 學生登入頁面
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult StudentIndex()
+        {
+            return View();
+        }
+        /// <summary>
+        /// 執行授權學生登入
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult StudentIndex(LoginPost value)
+        {
+            return View();
+        }
+        /// <summary>
         /// 執行授權店家登入
         /// </summary>
         /// <param name="value"></param>
