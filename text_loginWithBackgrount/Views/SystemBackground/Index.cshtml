@@ -1,0 +1,106 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@section Styles
+{
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+    @* <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script> *@
+    <style >
+        .orders {
+            margin-top: 30px;
+            margin-bottom: 100px;
+        }
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 55px;
+            background-color: #cccc;
+            color: black;
+            padding: 5px;
+            text-align: center;
+        }
+    </style>
+}
+<div class="header">
+    <div class="left">
+        <h1>歡迎回來</h1>
+    </div>
+</div>
+<div class="bottom-data">
+    <div class="orders">
+        <div class="header">
+            <i class='bx bx-receipt'></i> <!-- 表格的小icon -->
+            <h3>公告資訊</h3> <!-- 表格的名稱 -->
+        </div>
+        @* 表格標題輸入地方 *@
+        <table>
+            <thead>
+                <tr>
+                    <th>日期</th>
+                    <th>公告事項</th>
+                    <th>發布單位</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="124">
+                    <td>
+                        <p>2024/01/28</p>
+                    </td>
+                    <td>學生職業生涯發展中心徵募維護</td>
+                    <td><span class="status completed">學生事務處</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <p>2024/01/26</p>
+                    </td>
+                    <td>外語教學暨資源中心處理維護期限到期修改</td>
+                    <td><span class="status pending">財務管理處</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <p>2024/01/26</p>
+                    </td>
+                    <td>誠徵邱老師「新生專題」課程工讀生</td>
+                    <td><span class="status completed">生涯發展服務中心</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <p>2024/01/24</p>
+                    </td>
+                    <td>2024 台灣萊雅 SeedZ儲備幹部計畫</td>
+                    <td><span class="status pending">財務管理處</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <p>2023/12/31</p>
+                    </td>
+                    <td>科研採購電源供應器1台 決標公告</td>
+                    <td><span class="status pending">財務管理處</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <p>2023/12/20</p>
+                    </td>
+                    <td>學員失物招領-黑色錢包、現金</td>
+                    <td><span class="status completed">學生事務處</span></td>
+                </tr>
+            </tbody>
+        </table>
+        @* 表格輸入結束 *@
+    </div>
+</div>
+@section Scripts 
+{
+    <script src="~/lib/datatables/js/jquery.datatables.min.js"></script>
+    <script src="//cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"> </script>
+    <script>
+        // const but1 = document.querySelectorAll('#124') //->id選取器
+
+        $(document).ready(function () {
+            //限制網頁不要出現卷軸
+            document.documentElement.style.overflow = 'hidden';
+        });
+    </script>
+}

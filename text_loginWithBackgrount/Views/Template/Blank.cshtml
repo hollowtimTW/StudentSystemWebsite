@@ -1,0 +1,73 @@
+﻿@{
+    ViewData["Title"] = "基礎空白分頁";
+}
+@section BreadcrumbsSection {
+    <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
+    <div class="breadcrumbs">
+        <div class="page-header d-flex align-items-center" style="background-image: url('');">
+            <div class="container position-relative">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-lg-6 text-center">
+                        <h2>@ViewData["Title"]</h2>
+                        <p>複製 Blank.cshtml 檔至各自的資料夾進行編輯。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav>
+            <div class="container">
+                <!-- 導覽列項目設置，請根據目前網頁的深度增減 -->
+                <ol>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index">首頁</a></li>
+                    <li>@ViewData["Title"]</li>
+                </ol>
+            </div>
+        </nav>
+    </div>
+}
+
+@* ========================================= 以下內容請整個砍掉 ============================================= *@
+<section class="sample-page">
+    <div class="container" data-aos="fade-up">
+        <h2>說明事項</h2>
+        <ol>
+            <li>模板中所有的元件，以 section 為單位，一一分開整理至[元件整理]，便於取用。</li>
+            <li>使用元件請以 section 為單位，整塊複製貼上，以保持樣式。</li>
+            <li>樣式內容編寫於 main.css，請勿直接修改檔案，請自行在各分頁寫 style 覆蓋。</li>
+            <li>
+                section 的 class 共有：
+                <ul>
+                    <li>hero，這個目前只有用在首頁</li>
+                    <li>about</li>
+                    <li>clients</li>
+                    <li>stats-counter</li>
+                    <li>call-to-action</li>
+                    <li>services</li>
+                    <li>testimonials</li>
+                    <li>portfolio</li>
+                    <li>team</li>
+                    <li>pricing</li>
+                    <li>faq</li>
+                    <li>recent-posts</li>
+                    <li>contact</li>
+                    <li>portfolio-details</li>
+                    <li>blog</li>
+                    <li>
+                        另有 sections-bg 這個 class，效果是背景變成淺灰色。
+                        <ul>
+                            <li>這個 class 的目的是以顏色區分區塊，因為模板的首頁非常長</li>
+                            <li>在元件整理的各個分頁中，已統一將 sections-bg 拿掉。</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                section 的下一層固定為 div 容器
+                <ul>
+                    <li>data-aos 屬性 表示此容器出現時會有動畫，如果不希望有動畫，刪掉即可。</li>
+                    <li>本模板只使用 fade-up 和 zoom-out 兩種屬性值，更多 data-aos 屬性值請見 https://michalsnik.github.io/aos/。</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+</section>

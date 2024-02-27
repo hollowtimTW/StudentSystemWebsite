@@ -1,0 +1,58 @@
+﻿.imthead {
+    background-color: #C4E1E1;
+    font-weight: 700;
+}
+/*小標題字體大小調整*/
+.content main .insights li .info p {
+    font-size: 250%;
+    text-align: center;
+    font-weight: 500;
+}
+/* 表格字體黑暗模式跑錯修正 */
+.content main .bottom-data .orders table {
+    color: var(--dark);
+}
+
+.content main .bottom-data .reminders .task-list {
+    font-size: 140%
+}
+/*黑暗模式表格滑動修正*/
+.content main .bottom-data .orders table tbody tr:hover {
+    background: var(--grey);
+}
+
+.content main .bottom-data .orders .me-2 {
+    margin-left: 40%;
+    margin-top: 1em;
+}
+/*修正圖表長柄圖大小*/
+canvas {
+    display: block;
+    max-width: 800px;
+    margin: 10px auto;
+}
+
+label {
+    font-size: 120%;
+    font-weight: 800;
+}
+/*設置菜單大小固定出現捲軸*/
+.content main .bottom-data .reminders .form-body {
+    max-height: 100%;
+    height: 400px;
+}
+.first {
+    animation: firstKey;
+    animation-duration: 3s;
+}
+@keyframes firstKey {
+    from {
+        width: 0;
+        opacity: 1;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+

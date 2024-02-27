@@ -1,0 +1,29 @@
+﻿@{
+    var controllerName = ViewContext.RouteData.Values["controller"] as string;
+    var actionName = ViewContext.RouteData.Values["action"] as string;
+    var areaName = ViewContext.RouteData.Values["area"] as string;
+
+    string layout = "_Layout";
+
+    if (controllerName == "Login" && actionName == "resetPassword")
+    {
+        layout = "_Layout";
+    }
+    else if (controllerName == "Login")
+    {
+        layout = null;
+    }
+    else if (controllerName == "SystemBackground")
+    {
+        layout = "_SystemBackgroundLayout ";
+    }
+    else if (controllerName == "StoreBackground")
+    {
+        layout = "_SystemStoreBackgroundLayout";
+    }
+    else
+    {
+        layout = "_Layout";
+    }
+    Layout = layout;
+}

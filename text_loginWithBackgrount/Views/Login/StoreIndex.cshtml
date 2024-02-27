@@ -1,0 +1,25 @@
+﻿<link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+<link href="~/login/storeindexstyle.css" rel="stylesheet" />
+
+<div class="outbody">
+    <div class="login">
+        <h1 class="active"> 廠商登入頁 </h1>
+        <form asp-action="StoreIndex">
+            <input type="text" class="text" name="Account">
+            <span>username</span>
+            <br>
+            <br>
+            <input type="password" class="text" name="Password">
+            <span>password</span>
+            <br>
+            <button type="submit" class="signin">
+                登入
+            </button>
+            <hr>
+            <a href="#">忘記密碼?</a>
+        </form>
+    </div>
+</div>
+<script>
+    @Html.Raw(TempData["key"]);
+</script>

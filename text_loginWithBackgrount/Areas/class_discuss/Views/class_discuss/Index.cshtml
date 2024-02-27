@@ -1,0 +1,298 @@
+﻿@{
+    ViewData["Title"] = "討論區";
+}
+@section Styles
+{
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+    @* <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script> *@
+    @* <link href="~/css/datatablesinline.css" rel="stylesheet" /> *@
+    <link href="~/css/datatablesinline.min.css" rel="stylesheet" />
+    <style>
+        .imthead {
+            background-color: #C4E1E1;
+            font-weight: 700;
+        }
+    </style>
+}
+<div class="header">
+    <!-- 主頁上方操作流程序能引入操作流程返回，記得有新增頁面時要記得編輯，有class="active的是現在位置-->
+    <div class="left">
+        <h1> @ViewData["Title"]</h1>
+        <ul class="breadcrumb">
+            <li>
+                <a asp-area="" asp-controller="Home" asp-action="Index"> 首頁 </a>
+            </li>
+            /
+            <li><a href="#" class="active">@ViewData["Title"]</a></li>
+        </ul>
+    </div>
+    <!-- 主頁上方操作流程序結束-->
+</div>
+
+<!-- Insights -->
+<ul class="insights">
+    <li id="subjectTitle">
+        <i class='bx bx-cool'></i>
+            <span class="info">
+                <h3>
+                    看板管理
+                </h3>
+                <p>看板+子版管理</p>
+            </span>
+    </li>
+
+    <li id ="articleTitle">
+        <i class='bx bx-show-alt'></i>
+        <span class="info">
+            <h3>
+                文章管理
+            </h3>
+            <p>文章+留言管理</p>
+        </span>
+    </li>
+</ul>
+<!-- End of Insights -->
+
+
+<div class="bottom-data">
+    <!--看板 -->
+    <div class="orders" style="display:block;" id="Tsubject">
+        <div class="header">
+            <i class='bx bx-receipt'></i>  <!-- 表格的小icon -->
+            <h3>看板管理</h3> <!-- 表格的名稱 -->
+            
+            <i class='bx bx-trash' id="deleteL"></i>
+            <i class='bx bx-pen' id="updateL"></i>
+            <i class='bx bx-plus' id="createL"></i>
+            <div class="col-3">
+                <input type="search" class="form-control" placeholder="看板搜尋" id="inputKeywordL" />
+            </div> 
+        </div>
+        @* 表格標題輸入地方 *@
+        <table id="tableL">
+            <thead>
+                <tr>
+                    <th>看板名稱</th>
+                    <th>看板封面圖</th>
+                </tr>
+            </thead>
+            @* 表格內容輸入地方 *@
+            <tbody id="subject">
+                <tr>
+                    <td>
+                        <p>資料讀取中</p>
+                    </td>
+                    <td>
+                        <img src="">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        @* 表格輸入結束 *@
+        <nav aria-label="Page navigation example">  <!-- 頁數的icon -->
+                <ul class="pagination" id="pageL"></ul>
+        </nav>
+    </div>
+
+    <!-- 子版 -->
+    <div class="reminders" style="display:block;" id="Ttype">
+        <div class="header">
+            <i class='bx bx-note'></i>
+            <h3>子版管理</h3>
+            <i class='bx bx-trash' id="deleteR"></i>
+            <i class='bx bx-pen' id="updateR"></i>
+            <i class='bx bx-plus' id="createR"></i>
+            <div class="col-3">
+                <input type="search" class="form-control" placeholder="子版搜尋" id="inputKeywordR" />
+            </div>
+        </div>
+        <ul class="task-list" id="type">
+            <li class="completed">
+                <div class="task-title">
+                    <p>點選左側看板</p>
+                </div>
+            </li>
+        </ul>
+        <nav aria-label="Page navigation example">
+            <!-- 頁數的icon -->
+            <ul class="pagination" id="pageR"></ul>
+        </nav>
+    </div>
+    <!--文章 -->
+    <div class="orders" style="display: none;" id="Tarticle">
+        <div class="header">
+            <i class='bx bx-receipt'></i>  <!-- 表格的小icon -->
+            <h3>文章管理</h3> <!-- 表格的名稱 -->
+
+            <i class='bx bx-trash' id="deleteL"></i>
+            <i class='bx bx-pen' id="updateL"></i>
+            <i class='bx bx-plus' id="createL"></i>
+            <div class="col-3">
+                <input type="search" class="form-control" placeholder="文章搜尋" id="inputKeywordL" />
+            </div> <!-- 加號的icon -->
+        </div>
+        @* 表格標題輸入地方 *@
+        <table id="tableL">
+            <thead>
+                <tr>
+                    <th>文章作者</th>
+                    <th>文章標題</th>
+                    <th>文章內容</th>
+                    <th>發布時間</th>
+                    <th>觀看總數</th>
+                </tr>
+            </thead>
+            @* 表格內容輸入地方 *@
+            <tbody id="article">
+                <tr>
+                    <td>
+                        <p>資料讀取中</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        @* 表格輸入結束 *@
+        <nav aria-label="Page navigation example">
+            <!-- 頁數的icon -->
+            <ul class="pagination" id="pageL"></ul>
+        </nav>
+    </div>
+
+    <!-- 留言 -->
+    <div class="reminders" style="display: none;" id="Tmessage">
+        <div class="header">
+            <i class='bx bx-note'></i>
+            <h3>留言管理</h3>
+            <i class='bx bx-trash' id="deleteR"></i>
+            <i class='bx bx-pen' id="updateR"></i>
+            <i class='bx bx-plus' id="createR"></i>
+            <div class="col-3">
+                <input type="search" class="form-control" placeholder="子版搜尋" id="inputKeywordR" />
+            </div>
+        </div>
+        <table id="tableR">
+            <thead>
+                <tr>
+                    <th>留言作者</th>
+                    <th>留言內容</th>
+                    <th>發布時間</th>
+                </tr>
+            </thead>
+            @* 表格內容輸入地方 *@
+            <tbody id="message">
+                <tr>
+                    <td>
+                        <p>資料讀取中</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation example">
+            <!-- 頁數的icon -->
+            <ul class="pagination" id="pageR"></ul>
+        </nav>
+    </div>
+    <!-- End of Reminders-->
+</div>
+
+
+@section Scripts{
+    <script>
+        (async () => {
+            const url = '@Url.Content("~/Api/subject")'
+            const request = await fetch(url);
+            const data = await request.json();
+            const datalist = data.map(a => `
+                    <tr data-id="${a.看板id}">
+                          <td>
+                                  <p>${a.名稱}</p>
+                          </td>
+                          <td>
+                                   <img src="${a.封面圖}">
+                            </td>
+                    </tr>`);
+            $('#subject').html(datalist);
+        })();
+
+        (async () => {
+            const url = '@Url.Content("~/Api/article")'
+            const request = await fetch(url);
+            const data = await request.json();
+            const datalist = data.map(a => `
+                            <tr data-id="${a.文章id}">
+                                  <td>
+                                          <p>${a.學生id}</p>
+                                  </td>
+                                  <td>
+                                          <p>${a.標題}</p>
+                                  </td>
+                                  <td>
+                                          <p>${a.內容}</p>
+                                  </td>
+                                  <td>
+                                          <p>${a.時間}</p>
+                                  </td>
+                                  <td>
+                                           <p>${a.觀看數}</p>
+                                   </td>
+                            </tr>`);
+            $('#article').html(datalist);
+        })();
+
+        $('#subject').on('click', 'tr', async function () {
+            var subjectId = $(this).data('id');
+            const url = `@Url.Content("~/Api/type")?id=${subjectId}`;
+            const request = await fetch(url);
+            const data = await request.json();
+            const datalist = data.map(a => `
+                                    <li class="completed">
+                                        <div class="task-title">
+                                            <p>${a.名稱}</p>
+                                        </div>
+                                    </li>`);
+            $('#type').html(datalist);
+        })
+
+        $('#article').on('click', 'tr', async function () {
+            var articleId = $(this).data('id');
+            const url = `@Url.Content("~/Api/message")?id=${articleId}`;
+            const request = await fetch(url);
+            const data = await request.json();
+            const datalist = data.map(a => `
+                                                    <tr>
+                                  <td>
+                                          <p>${a.學生id}</p>
+                                  </td>
+                                  <td>
+                                        <p>${a.內容}</p>
+                                   </td>
+                                           <td>
+                                                <p>${a.時間}</p>
+                                           </td>
+                            </tr>`);
+            $('#message').html(datalist);
+        })
+
+        const subjectTitleIcon = document.querySelector('#subjectTitle .bx-cool');
+        const articleTitleIcon = document.querySelector('#articleTitle .bx-show-alt');
+
+        const subject = document.getElementById('Tsubject');
+        const type = document.getElementById('Ttype');
+        const article = document.getElementById('Tarticle');
+        const message = document.getElementById('Tmessage');
+
+        subjectTitleIcon.addEventListener('click', function () {
+            subject.style.display = 'block';
+            type.style.display = 'block';
+            article.style.display = 'none';
+            message.style.display = 'none';
+        });
+
+        articleTitleIcon.addEventListener('click', function () {
+            subject.style.display = 'none';
+            type.style.display = 'none';
+            article.style.display = 'block';
+            message.style.display = 'block';
+        });
+    </script>
+}

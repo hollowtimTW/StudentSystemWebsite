@@ -1,0 +1,67 @@
+﻿@{
+    ViewData["Title"] = "Clients Section";
+}
+@section BreadcrumbsSection {
+    <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
+    <div class="breadcrumbs">
+        <div class="page-header d-flex align-items-center" style="background-image: url('');">
+            <div class="container position-relative">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-lg-6 text-center">
+                        <h2>@ViewData["Title"]</h2>
+                        <p>Odio et unde deleniti. Deserunt numquam exercitationem. Officiis quo odio sint voluptas consequatur ut a odio voluptatem. Sit dolorum debitis veritatis natus dolores. Quasi ratione sint. Sit quaerat ipsum dolorem.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav>
+            <div class="container">
+                <!-- 導覽列項目設置，請根據目前網頁的深度增減 -->
+                <ol>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index">首頁</a></li>
+                    <li>@ViewData["Title"]</li>
+                </ol>
+            </div>
+        </nav>
+    </div>
+}
+
+<!-- ========================================================
+       Clients Section
+========================================================= -->
+<!-- 左右滑動輪播的小圖片區 -->
+<section id="clients" class="clients">
+    <div class="container" data-aos="zoom-out">
+
+        <div class="clients-slider swiper">
+            <div class="swiper-wrapper align-items-center">
+                <!-- 要輪播的圖片 -->
+                <div class="swiper-slide">
+                    <img src="~/assets/img/clients/client-1.png" class="img-fluid" alt="">
+                </div>
+                <div class="swiper-slide">
+                    <img src="~/assets/img/clients/client-2.png" class="img-fluid" alt="">
+                </div>
+                <div class="swiper-slide">
+                    <img src="~/assets/img/clients/client-3.png" class="img-fluid" alt="">
+                </div>
+                <div class="swiper-slide">
+                    <img src="~/assets/img/clients/client-4.png" class="img-fluid" alt="">
+                </div>
+                <div class="swiper-slide">
+                    <img src="~/assets/img/clients/client-5.png" class="img-fluid" alt="">
+                </div>
+                <div class="swiper-slide">
+                    <img src="~/assets/img/clients/client-6.png" class="img-fluid" alt="">
+                </div>
+                <div class="swiper-slide">
+                    <img src="~/assets/img/clients/client-7.png" class="img-fluid" alt="">
+                </div>
+                <div class="swiper-slide">
+                    <img src="~/assets/img/clients/client-8.png" class="img-fluid" alt="">
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section><!-- End Clients Section -->

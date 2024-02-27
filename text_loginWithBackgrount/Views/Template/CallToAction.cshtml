@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "Call To Action Section";
+}
+@section BreadcrumbsSection {
+    <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
+    <div class="breadcrumbs">
+        <div class="page-header d-flex align-items-center" style="background-image: url('');">
+            <div class="container position-relative">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-lg-6 text-center">
+                        <h2>@ViewData["Title"]</h2>
+                        <p>Odio et unde deleniti. Deserunt numquam exercitationem. Officiis quo odio sint voluptas consequatur ut a odio voluptatem. Sit dolorum debitis veritatis natus dolores. Quasi ratione sint. Sit quaerat ipsum dolorem.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav>
+            <div class="container">
+                <!-- 導覽列項目設置，請根據目前網頁的深度增減 -->
+                <ol>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index">首頁</a></li>
+                    <li>@ViewData["Title"]</li>
+                </ol>
+            </div>
+        </nav>
+    </div>
+}
+
+<!-- ========================================================
+       Call To Action Section
+========================================================= -->
+<!-- 圖片 + 酷炫播放按鈕 + 按鈕 的結合 -->
+<section id="call-to-action" class="call-to-action">
+    <div class="container text-center" data-aos="zoom-out">
+        <a href="https://www.youtube.com/watch?v=LXb3EKWsInQ" class="glightbox play-btn"></a>
+        <h3>小標題</h3>
+        <p> Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <a class="cta-btn" href="#">按鈕文字</a>
+    </div>
+</section><!-- End Call To Action Section -->

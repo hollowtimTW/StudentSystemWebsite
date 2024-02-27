@@ -1,0 +1,921 @@
+﻿@model PasswordviewModel
+@{
+    ViewData["Title"] = "訂餐廠商管理";
+}
+
+@*連線 https://localhost:44354/ordering_system/ordering_system/ordering_system_index *@
+
+@section Styles
+{
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+    <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <link href="~/css/ordering_system/store_index.css" rel="stylesheet" />
+    @* 以上引入圓餅圖資源 *@
+    <link href="~/css/ordering_system/pie_chart.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+    <link href="~/css/datatablesinline.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
+    <style>
+    </style>
+}
+<div class="header">
+    <!-- 主頁上方操作流程序能引入操作流程返回，記得有新增頁面時要記得編輯，有class="active的是現在位置-->
+    <div class="left">
+        <h1> @ViewData["Title"]</h1>
+        <ul class="breadcrumb">
+            <li>
+                <a asp-area="" asp-controller="SystemBackground" asp-action="Index"> 首頁 </a>
+            </li>
+            /
+            <li>
+                <a href="#" class="active">@ViewData["Title"]</a>
+            </li>
+
+        </ul>
+    </div>
+    <!-- 主頁上方操作流程序結束-->
+</div>
+
+@*上方卡片顯示區塊 *@
+<ul class="insights">
+    <li>
+        <i class='bx bxs-store-alt'></i>
+            <span class="info">
+                <h3>
+                    目前店家
+                </h3>
+                <p id="store_count">0</p>
+            </span>
+        </a>
+    </li>
+    <li>
+        <i class='bx bxs-copy-alt'></i>
+        <span class="info">
+            <h3>
+                歷史訂單數量
+            </h3>
+            <p id="order_count">0</p>
+        </span>
+    </li>
+    <li>
+        <i class='bx bx-bar-chart-alt'></i>
+        <span class="info">
+            <h3>
+                總營業額
+            </h3>
+            <p id="turnover">418,666</p>
+        </span>
+    </li>
+    <li>
+        <i class='bx bx-user'></i>
+        <span class="info">
+            <h3>
+                平台平均評價
+            </h3>
+            <p id="totalevaluate"> 0/5</p>
+        </span>
+    </li>
+</ul>
+
+@*店家資料載入顯示 *@
+<div class="bottom-data">
+    <div class="orders" id="orderstable">
+        <div class="header">
+            <i class='bx bx-receipt'></i>  <!-- 表格的小icon -->
+            <h3>店家資料</h3> <!-- 表格的名稱 -->
+        </div>
+        @* 表格標題輸入地方 *@
+        <table>
+            <thead>
+                <tr>
+                    <th>店家名稱</th>
+                    <th>聯絡電話</th>
+                    <th>聯絡信箱</th>
+                    <th></th>
+                </tr>
+            </thead>
+            @* 表格內容輸入地方 *@
+            <tbody id="storetbody">
+                <tr>
+                    <td><img src="~/images/t訂餐/loading02.gif" id="loadingSpinner" /></td>
+                    <td><img src="~/images/t訂餐/loading02.gif" id="loadingSpinner" /></td>
+                    <td><img src="~/images/t訂餐/loading02.gif" id="loadingSpinner" /></td>
+                </tr>
+            </tbody>
+        </table>
+        @* 表格輸入結束 *@
+    </div>
+
+    <!-- 側邊條列區塊 -->
+    <div class="reminders">
+        <div class="header">
+            <i class='bx bxs-detail'></i>
+            <h3>菜單資訊</h3>
+        </div>
+        <div class="form-body">
+            <ul class="task-list" id="task-list">
+                <li class="completed">
+                </li>
+            </ul>
+        </div>
+    </div>
+    @* 圖表放置完整區塊 *@
+</div>
+@* 圖表、店家、菜單放置區*@
+<div class="bottom-data">
+    <div class="orders">
+        <div class="header">
+            <i class='bx bx-bar-chart-alt' onclick="clearbar()"></i>
+            <h3>月營收表現</h3>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    2024年
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li><a class="dropdown-item year" href="#" data-id="2021">2021年</a></li>
+                    <li><a class="dropdown-item year" href="#" data-id="2023">2023年</a></li>
+                    <li><a class="dropdown-item year" href="#" data-id="2024">2024年</a></li>
+                </ul>
+            </div>
+        </div>
+        @* 圖表1放置 *@
+        <canvas id="bar-chart" width="500" height="250"></canvas>
+
+    </div>
+    <div class="reminders">
+        <div class="header">
+            <i class='bx bx-adjust' onclick="clearpie()"></i>
+            <h3>店家評價分析</h3>
+        </div>
+        @* 圖表2放置 *@
+        <div id="pie-chart"></div>
+    </div>
+</div>
+@* 顯示所有子訂單資料 *@
+<div class="modal fade" id="orderdeataillist" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLabel">此訂單的關聯子訂單</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="bottom-data">
+                    <div class="orders">
+                        @* 表格標題輸入地方 *@
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>訂單編號</th>
+                                    <th>店家名稱</th>
+                                    <th>餐點名稱</th>
+                                    <th>數量</th>
+                                    <th>金額</th>
+                                    <th>支付方式</th>
+                                </tr>
+                            </thead>
+                            @* 表格內容輸入地方 *@
+                            <tbody id="all_order_deatail_tbody">
+                            </tbody>
+                        </table>
+                        @* 表格輸入結束 *@
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <h5 class="m-3 fw-bold" id="totalmoney">訂單總額:560</h5>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+            </div>
+        </div>
+    </div>
+</div>
+@* 歷史訂單、訂單評價區*@
+<div id="historyorderArea"></div>
+@* 店家詳細資料的彈出視窗 *@
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered .modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">店家詳細資料</h5>
+                @* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> *@
+            </div>
+            <div class="modal-body" id="store_">
+                @* 引入店家詳細資料 *@
+                <form class="row g-3" id="store_deatail_form" method="post"></form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_but" onclick="close_input()">關閉</button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalToggle2" id="modifyOpen">
+                    開啟修改
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+@* 彈出修改警告事項 *@
+<div class="modal fade" id="exampleModalToggle2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="background-color:rgba(173, 173, 173, 0.5)">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">警告</h5>
+                @*  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> *@
+            </div>
+            <div class="modal-body">
+                注意修改後會影響店家相關權益，請確認已完成與廠商聯繫通知，取得授權同意
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="close_input()">取消</button>
+                <button type="button" class="btn btn-primary" id="agree_Revise">同意</button>
+            </div>
+        </div>
+    </div>
+</div>
+@* 輸入驗證碼視窗 *@
+<div class="modal fade" id="exampleModalToggle3" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="background-color:rgba(173, 173, 173, 0.5)">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">驗證碼</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h5><span class="badge bg-secondary bg-danger m-1" id="false_alarm" style="display:none">驗證碼輸入錯誤</span></h5>
+                <input type="text" class="form-control" placeholder="請輸入五位數驗證碼" id="verification" maxlength="5">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="close_input()">取消</button>
+                <button type="button" class="btn btn-primary" id="subVerification">確認</button>
+            </div>
+        </div>
+    </div>
+</div>
+@* 輸入新密碼視窗 *@
+<div class="modal fade" id="exampleModalToggle4" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="background-color:rgba(173, 173, 173, 0.5)">
+    <form id="yourForm" method="post">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">修改密碼</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <label asp-for="newPassword" class="form-label m-1">@Html.DisplayNameFor(model => model.newPassword)</label>
+                        <input type="password" class="form-control m-1" placeholder="請輸入新的密碼" asp-for="newPassword">
+                        <span id="newPasswordError" class="text-danger"></span>
+                    </div>
+                    <div>
+                        <label asp-for="newPassword_again" class="form-label m-1">@Html.DisplayNameFor(model => model.newPassword_again)</label>
+                        <input type="password" class="form-control m-1" placeholder="再次輸入密碼" asp-for="newPassword_again">
+                        <span id="newPasswordAgainError" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="close_input()">取消</button>
+                    <button type="button" class="btn btn-primary" id="submitBtn">確認</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+@* 顯示頁尾 *@
+<div class="text-center bottom-data">
+    <div class="card-body header">
+        <h6 class="card-title">&copy; 2024 - Class_system_Backstage &nbsp;<a asp-area="" asp-controller="Home" asp-action="Index">首頁</a></h6>
+    </div>
+</div>
+@section Scripts
+{
+    <script src="~/js/ordering_system/pie_chart.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+    <script>
+        //設置店家與年份變數
+        var mydate = new Date();
+        let storeID=0;
+        let year = 2024;
+        let mounth = String(mydate.getMonth() + 1).padStart(2, '0');
+        let keysearch = "";
+        let sortBy = "";
+        let sortType = "asc"
+        //設置顯示需要頁面
+        let searchData = {
+            "storeID": storeID,
+            "keyword": keysearch,
+            "page": 1,
+            "pageSize": 5,
+            "year": year,
+            "mounth": mounth,
+            "sortType": sortType,
+            "sortBy": sortBy
+        };
+        //載入店家資料
+        const loadSpots = () => {
+            $('#loadingSpinner').show();
+            $.ajax({
+                url: '@Url.Content("~/tOrder_StoreAPI/jsonsort")',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(searchData),
+                success: (datas) => {
+                    const datalist = datas.spotImagesSpots.map(a => `<tr data-id="${a.店家id}">
+                                         <td>
+                                          <img src="/images/user.jpg">
+                                          <p>${a.店家名稱}</p>
+                                         </td>
+                                          <td>${a.電話}</td>
+                                          <td><span class="status pending">${a.電子信箱}</span></td>
+                                            <td><a href="mailto:${a.電子信箱}"><i class='bx bx-mail-send'></i></a>
+                                            </td>
+                                     </tr>`);
+                    $('#storetbody').html(datalist);
+                    let liPaging = "";
+                    for (let i = 1, max = datas.totalPages; i <= max; i++) {
+                        liPaging += `<button type="button" class="btn btn-secondary" onclick="pagechange(${i})">${i}</button>`;
+                    }
+                    $('#page').html(liPaging);
+                    $('#loadingSpinner').hide();
+                }
+            });
+        }
+
+        //調整顯示頁數
+        const pagechange = page => 
+        {
+            searchData.storeID = 0;
+            searchData.page = page;
+            searchData.keyword = keysearch;
+            loadSpots();
+            searchData.page = 1;
+            searchData.keyword = "";
+        }
+        //點選清除查看全部資料
+        function clearbar ()
+        {
+            storeID = "";
+            barchart_monthly_revenue(2024);
+            $('#dropdownMenuButton').text("2024年");
+            year=2024
+        }
+        //點選清除圓餅圖資料
+        function clearpie() {
+            pieupdate();
+        }
+        //網頁資料載入
+        (async () => {
+            loadSpots();
+            //載入目前店家數量
+            const request = await fetch(`@Url.Content("~/tOrder_StoreAPI/storeInformation")`);
+            const data = await request.json();
+            const Firststore = data[0].店家id;
+            $('#store_count').text(data.length);
+            //載入歷史訂單數量
+            const requestcount = await fetch(`@Url.Content("~/tOrder_StoreAPI/orderCount")`);
+            const datacount = await requestcount.json();
+            $('#order_count').text(datacount.historyorder);
+            //載入總營業額
+            $('#turnover').text(datacount.turnover);
+            //顯示平均平台評價分數
+            $('#totalevaluate').text(datacount.evaluate+ "/5");
+            //載入最上方第一家店家菜單
+            fetchStoreMenu(Firststore);
+            //顯示圓餅圖評價分布
+            pieupdate();
+            //顯示長條圖資料
+            barchart_monthly_revenue(2024);
+        })();
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //todo 完成雙點擊出現店家完整資料
+        $('#storetbody').on('dblclick', 'tr', async function () {
+            var storeID = $(this).data('id');
+            //console.log(storeID);
+            const url = `@Url.Content("~/tOrder_StoreAPI/store_Detail_Information")?id=${storeID}`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                //console.log(data)
+                const datalist = `
+                             <img src="${data.餐廳照片}" />
+                            <div class="col-md-6">
+                                <label asp-for="storeName" class="form-label">店家名稱</label>
+                                <input type="text" class="form-control" value="${data.店家名稱}" name="storeName">
+                                <span id="storeNameError" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="storePhone" class="form-label">聯絡電話</label>
+                                <input type="text" class="form-control" name="storePhone" value="${data.電話}" maxlength="10">
+                                <span id="storePhoneError" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="storeEmail" class="form-label">電子郵件</label>
+                                <input type="email" class="form-control" name="storeEmail" id="storeEmail" value="${data.電子信箱}">
+                                <span id="storeEmailError" class="text-danger"></span>
+                            </div>
+                            <div class="col-12">
+                                 <label asp-for="storeAdress" class="form-label">地址</label>
+                                 <input type="text" class="form-control" name="storeAdress" value="${data.地址}">
+                                <span id="storeAdressError" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="storeinformation" class="form-label">店家介紹</label>
+                                <textarea class="form-control" name="storeinformation" rows="3">${data.餐廳介紹}</textarea>
+                                <span id="storeinformationError" class="text-danger"></span>
+                            </div>
+                            <div class="md-3">
+                                <a href="#" class="link-secondary" data-bs-toggle="modal" data-bs-target="#exampleModalToggle3" id="password">協助重設密碼</a>
+                            </div>
+                            <div class="col-12">
+                            <button type="button" class="btn btn-primary" style="display:none" id="submit_btn">確認送出</button>
+                            </div>
+                                `
+                $('#store_deatail_form').html(datalist);
+                $('#staticBackdrop').modal('show');
+                //設定控制項初始下無法輸入只能唯獨
+                $('.form-control').removeClass('form-control').addClass('form-control-plaintext').prop('readonly', true);
+                $('textarea').prop('readonly', true);
+                //依照電子信箱寄出驗證信
+                $('#password').click(async function () {
+                    $('#verification').removeClass('form-control-plaintext').addClass('form-control').removeAttr('readonly');
+                    let email = $('#storeEmail').val();
+                    const url = `@Url.Content("~/tOrder_StoreAPI/YourAction")?email=${email}`;
+                    const request = await fetch(url, { "method": "POST" })
+                })
+                //針對submit_btn來送出修改資料
+                $('#submit_btn').click(function () {
+                    var formData = $('#store_deatail_form').serialize();
+                    $.ajax({
+                        url: '@Url.Action("store_deatail_form", "tOrder_StoreAPI", new { area = "" })',
+                        type: 'POST',
+                        data: formData,
+                        success: function (result) {
+                            // 如果 ModelState.IsValid 為 false，則顯示錯誤訊息
+                            if (!result.isValid) {
+                                $('#storeNameError').text(result.errors.storeName);
+                                $('#storePhoneError').text(result.errors.storePhone);
+                                $('#storeEmailError').text(result.errors.storeEmail);
+                                $('#storeAdressError').text(result.errors.storeAdress);
+                                $('#storeinformationError').text(result.errors.storeinformation);
+                            } else {
+                                //修改完成，關閉全部視窗刷新店家資料
+                                // alert("資料修改完成")
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '店家資料修改',
+                                    text: '資修改完成',
+                                })
+                                $('#staticBackdrop').modal('hide');
+                                close_input();
+                                $('#seach_btn').click();
+                                //loadSpots();
+                            }
+                        }
+                    });
+                });
+            }
+            catch (error) 
+            {
+                console.error("Error:", error);
+            }
+        })
+        //點選關閉後將視窗進行初始化
+        function close_input() {
+            $('.form-control').removeClass('form-control').addClass('form-control-plaintext').prop('readonly', true);
+            $('#submit_btn').hide();
+            $('#modifyOpen').removeAttr('disabled')
+        }
+        //生成每月選單
+        $(document).ready(function (){
+            let mounthbox = '';
+            for (let i = 1; i < 13; i++) 
+            {
+              mounthbox += `<li><a class="dropdown-item mounth" href="#" data-id="${i}">${i} 月</a></li>`
+            }
+            $('#dropdown-item_mounth').html(mounthbox);
+        })
+        //點選警告同意後，開啟控制項同意修改
+        $(document).ready(function () {
+            $('#agree_Revise').click(function () {
+                // 關閉模態視窗，開啟控制項修改
+                $('textarea').removeAttr('readonly');
+                $('.form-control-plaintext').removeClass('form-control-plaintext').addClass('form-control').removeAttr('readonly'); // 刪除 form-control-plaintext 類，移除 readonly 屬性
+                $('#exampleModalToggle2').modal('hide');
+                $('#modifyOpen').prop('disabled', true);
+                $('#submit_btn').show();
+            });
+        });
+
+        //檢查驗證碼輸入正確與否
+        $('#subVerification').click(async function () {
+            let verification = $('#verification').val();
+            const url = `@Url.Content("~/tOrder_StoreAPI/check_verification")?id=${verification}`;
+            try {
+                const response = await fetch(url);
+                if (response.ok) {
+                    //如果輸入驗證資料正確，關閉驗證視窗，開啟修改密碼輸入視窗頁
+                    $('#false_alarm').hide();
+                    close_input();
+                    $("#exampleModalToggle3").modal("hide");
+                    $("#exampleModalToggle4").modal("show");
+                    $('#newPassword').removeClass('form-control-plaintext').addClass('form-control').removeAttr('readonly');
+                    $('#newPassword_again').removeClass('form-control-plaintext').addClass('form-control').removeAttr('readonly');
+                }
+                else if (response.status == 404) {
+                    //如果輸入資料驗證錯誤
+                    console.log("輸入驗證碼錯誤");
+                    $('#false_alarm').show();
+                }
+                else {
+                    //其他錯誤
+                    console.error("Error:", response.status);
+                    $('#false_alarm').show();
+                }
+            }
+            catch (error) {
+                //出現其他錯誤
+                console.error("Error:", error);
+                $('#false_alarm').show();
+            }
+        })
+
+
+        //跳出密碼錯誤認證
+        $(document).ready(function () {
+            $('#submitBtn').click(function () {
+                var formData = $('#yourForm').serialize();
+                $.ajax({
+                    url: '@Url.Action("Contact", "tOrder_StoreAPI", new { area = "" })',
+                    type: 'POST',
+                    data: formData,
+                    success: function (result) {
+                        // 如果 ModelState.IsValid 為 false，則顯示錯誤訊息
+                        if (!result.isValid) {
+                            $('#newPasswordError').text(result.errors.newPassword);
+                            $('#newPasswordAgainError').text(result.errors.newPassword_again);
+                        } else {
+                            //修改完成，關閉全部視窗刷新店家資料
+                            //alert("密碼修改完成")
+                            Swal.fire({
+                                icon: 'success',
+                                title: '登入密碼修改',
+                                text: '完成',
+                            })
+                            $('#staticBackdrop').modal('hide');
+                            $('#exampleModalToggle4').modal('hide');
+                            $('#seach_btn').click();
+                            //loadSpots(); 
+                        }
+                    }
+                });
+            });
+        });
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //完成單點擊出現店家菜單資訊，連動柱狀與圓餅資料，店家歷史訂單與評價
+        $('#storetbody').on('click', 'tr', async function () {
+            var productId = $(this).data('id');
+            fetchStoreMenu(productId);
+            storeID = productId;
+            barchart_monthly_revenue(year, storeID);
+            pieComment_withstore(storeID);
+            //生成店家當月歷史訂單與首筆評價資料區塊
+           let orderlist = `
+        @* 歷史訂單與評價區塊 *@
+           <div class="bottom-data " style="grid-gap:0" id="historyOrder-data">
+            <div class="orders">
+                <div class="header">
+                    <i class='bx bx-receipt'></i>  <!-- 表格的小icon -->
+                    <h3>歷史訂單</h3> <!-- 表格的名稱 -->
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="mounth-list" data-bs-toggle="dropdown" aria-expanded="false">
+                            3月
+                        </button>
+                        <ul class="dropdown-menu" id="dropdown-item_mounth">
+                            <li><a class="dropdown-item mounth" href="#" data-id="1">1 月</a></li>
+                        </ul>
+                    </div>
+                </div>
+        @* 表格標題輸入地方 *@
+                <table>
+                    <thead>
+                        <tr data-id="訂單編號">
+                             <th><a class="link-warning" href="#" onclick="sortby('訂單編號')">訂單編號</a></th>
+                            <th>餐點名稱</th>
+                            <th>數量</th>
+                            <th>金額</th>
+                            <th>支付方式</th>
+                            <th><a class="link-warning" href="#" onclick="sortby('訂單狀態')">訂單狀態</a></th>
+                            <th><a class="link-warning" href="#" onclick="sortby('訂單日期')">訂單日期</a></th>
+                        </tr>
+                    </thead>
+        @* 表格內容輸入地方 *@
+                    <tbody id="historyOrder">
+                        <tr>
+                            <td><h5>342</h5> </td>
+                            <td>測試2</td>
+                            <td>2</td>
+                            <td>200</td>
+                            <td>現金交易</td>
+                            <td><span class="status completed">完成</span></td>
+                            <td>20231228 16:00</td>
+                        </tr>
+                    </tbody>
+                </table>
+                 <div class="btn-group me-2" role="group" aria-label="Second group" id="page2">
+                </div>
+        @* 表格輸入結束 *@
+            </div>
+
+            <div class="reminders">
+                <div class="header">
+                    <i class='bx bx-note'></i>
+                    <h3>訂單評價</h3>
+                   <i class='bx bxs-x-circle' style='color:#d83b3b'></i>
+                </div>
+        <div class="card text-center" id="evaluate">
+        @* 評價動態生成開始 *@
+
+        @* 評價動態生成結束 *@
+            </div>
+        </div>
+        `;
+            $('#historyorderArea').html(orderlist);
+            //執行店家歷史訂單資料載入
+            historyorderShow();
+            //執行月份資料載入
+            await mounth_list();
+            $('#mounth-list').text(mounth + '月')
+            function mounth_list() {
+                let mounthbox = '';
+                for (let i = 01; i < 13; i++) {
+                    mounthbox += `<li><a class="dropdown-item mounth" href="#" data-id="${String(i).padStart(2, '0')}">${i} 月</a></li>`
+                }
+                $('#dropdown-item_mounth').html(mounthbox);
+            }
+            //關閉歷史訂單與評價
+            $('.reminders').on('click', 'i.bxs-x-circle', function () {
+                $('#historyOrder-data').hide();
+                searchData.sortType = "asc";
+                searchData.sortBy = "";
+            })
+            //變更月份下拉式選單
+            $('.dropdown-menu').on('click', '.mounth', function (event) {
+                var selectedtitle = $(this).text();
+                var selectedItem = $(this).data('id');
+                mounth = selectedItem
+                $('#mounth-list').text(selectedtitle)
+                searchData.storeID = storeID;
+                searchData.mounth = mounth;
+                historyorderShow();
+            });
+            //執行點擊歷史訂單顯示回饋意見
+            $('#historyOrder').on('click', 'tr', async function () {
+                var orderId = $(this).data('id');
+                CommentInformation(orderId);
+            })
+        })
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //變更年分下拉式選單
+        $(document).ready(function () {
+                $('.dropdown-menu').on('click', '.year', function (event) {
+                var selectedItem = $(this).data('id');
+                year = selectedItem
+                var selectedtitle = $(this).text();
+                $('#dropdownMenuButton').text(selectedtitle)
+                barchart_monthly_revenue(year, storeID);
+                    searchData.storeID = storeID;
+                    searchData.year = year; 
+                historyorderShow();
+            });
+        });
+        ////////////////////////////////////////
+        // 載入圖表內資料資料顯示function
+        var bar_chart; // 宣告 bar_chart 變數
+        async function barchart_monthly_revenue(year,id) {
+            const request = await fetch(`@Url.Content("~/tOrder_StoreAPI/barchart_monthly_revenue")?yaer=${year}&id=${id}`);
+            const data1 = await request.json(); // 載入api資料
+
+            if (bar_chart && bar_chart.data.datasets.length > 0) {
+                bar_chart.data.datasets = []; // 清除先前的資料集合
+            }
+
+            var bar_ctx = document.getElementById('bar-chart').getContext('2d');
+            var purple_orange_gradient = bar_ctx.createLinearGradient(0, 0, 0, 600);
+            purple_orange_gradient.addColorStop(0, 'orange');
+            purple_orange_gradient.addColorStop(1, 'purple');
+
+            if (!bar_chart) {
+                // 如果 bar_chart 尚未初始化，則創建一個新的 Chart 物件
+                bar_chart = new Chart(bar_ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+                        datasets: [{
+                            label: '月營收金額',
+                            data: data1,
+                            backgroundColor: purple_orange_gradient,
+                            hoverBackgroundColor: purple_orange_gradient,
+                            hoverBorderWidth: 2,
+                            hoverBorderColor: 'purple'
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
+                    }
+                });
+            } else {
+                // 否則，只更新資料
+                bar_chart.data.datasets.push({
+                    label: '月營收金額',
+                    data: data1,
+                    backgroundColor: purple_orange_gradient,
+                    hoverBackgroundColor: purple_orange_gradient,
+                    hoverBorderWidth: 2,
+                    hoverBorderColor: 'purple'
+                });
+
+                bar_chart.update();
+            }
+        };
+        // 載入圖表內資料資料顯示function 結束
+        ///////////////////////////////////////
+        //執行圓餅圖資料顯示function
+        async function pieupdate() 
+        {
+            const url = `@Url.Content("~/tOrder_StoreAPI/pieComment")`
+            const request = await fetch(url);
+            const data = await request.json();
+            update(data)
+        };
+        //執行指定店家評論分析，圓餅圖資料顯示function
+        async function pieComment_withstore(id) {
+            const url = `@Url.Content("~/tOrder_StoreAPI/pieComment_withstore")?id=${id}`
+            const request = await fetch(url);
+            const data = await request.json();
+            update(data)
+        };
+        //打包顯示菜單資訊顯示function
+        async function fetchStoreMenu(productId) {
+            const url = `@Url.Content("~/tOrder_StoreAPI/storeMenu")?id=${productId}`;
+            const request = await fetch(url);
+            const data = await request.json();
+            //console.log(data)
+            const datalist = data.map(a =>
+                `
+                <li class="completed">
+                    <div class="task-title">
+                        <i class='bx bxs-bowl-hot'></i>
+                        <p>${a.餐點名稱}</p>
+                    </div>
+                    <p>$${a.餐點定價}</p>
+                </li>
+                `);
+            $('#task-list').html(datalist);
+        }
+        //打包顯示訂單的評論資料
+        async function CommentInformation(orderId) {
+            try {
+                const request_Comment = await fetch(`@Url.Content("~/tOrder_StoreAPI/order_Evaluate/")?id=${orderId}`);
+                const data_Comment = await request_Comment.json();
+                const Comment = data_Comment.map(a => {
+                    const { 評價內容, 評價分數, 訂單日期, 訂單人名稱, 百分比, 關聯訂單 } = a
+                    const processedSubItems = 關聯訂單.map(subItem => subItem);
+                    return (`
+                                <div class="card-header text-success">
+                                <h5 class="card-title text-muted fw-bold">關聯訂單: <a href="#" onclick="allorderlist(${processedSubItems})" data-bs-toggle="modal" data-bs-target="#orderdeataillist">${processedSubItems}</a>&nbsp;</h5>
+                                </div>
+                                  <div class="card-body">
+                                  <h5 class="card-title text-muted">評價內容</h5>
+                                  <p class="card-text text-muted">${評價內容}</p>
+                                  <h6 class="text-danger">分數:${評價分數}/5</h6>
+                                   <div class="progress">
+                                   <div class="progress-bar progress-bar-striped progress-bar-animated first" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: ${百分比}%;"></div>
+                                </div>
+                                  </div>
+                                  <div class="card-footer text-muted">
+                                  訂單日期:${訂單日期} 訂單人:${訂單人名稱}
+                                  </div>
+                                </div>
+                                `)
+                });
+                $('#evaluate').html(Comment);
+            }
+            catch (error) {
+                const defail = ` <div class="card-header text-success">
+                        <h5 class="card-title text-muted fw-bold">關聯訂單: </h5>
+                  </div>
+                  <div class="card-body">
+                      <h5 class="card-title text-muted">評價內容</h5>
+                      <p class="card-text text-muted">此訂單目前沒有評價</p>
+                      <h6 class="text-danger">分數: /5</h6>
+                  <div class="progress">
+                  <div class="progress-bar progress-bar-striped bg-warning first" role="progressbar" style="width: 100%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                  </div>
+                  <div class="card-footer text-muted">
+                    訂單日期:  訂單人:
+                  </div>
+                </div>`
+                $('#evaluate').html(defail);
+            }
+        }
+        //打包呼叫店家歷史訂單顯示
+        const historyorderShow = async () => 
+        {
+            searchData.storeID = storeID;   
+            const request = await fetch('@Url.Content("~/tOrder_StoreAPI/history_order")', {
+                'method': 'POST',
+                'body': JSON.stringify(searchData),
+                "headers": { "Content-Type": "application/json" }
+            });
+            const datas = await request.json();
+            const firstOrderID = datas.spotOrderdeatial[0]?.訂單編號 ?? null;
+            const historyorderlist = datas.spotOrderdeatial.map(a => {
+                const { 訂單編號, 餐點名稱, 數量, 金額, 支付方式, 訂單狀態, 訂單日期, type } = a
+                return (`         <tr data-id="${訂單編號}">
+                                                                           <td><h5>${訂單編號}</h5> </td>
+                                                                            <td>${餐點名稱}</td>
+                                                                            <td>${數量}</td>
+                                                                            <td>${金額}</td>
+                                                                            <td>${支付方式}</td>
+                                                                            <td><span class="status ${type}">${訂單狀態}</span></td>
+                                                                            <td>${訂單日期}</td>
+                                                                        </tr>`);
+            });
+                $('#historyOrder').html(historyorderlist);
+                let liPaging = "";
+                for (let i = 1, max = datas.totalPages; i <= max; i++) {
+                    liPaging += `<button type="button" class="btn btn-secondary" onclick="pagechange2(${i})">${i}</button>`
+                }
+                $('#page2').html(liPaging)
+                CommentInformation(firstOrderID)
+        }
+        //歷史訂單點選切換頁面
+        const pagechange2 = page => {
+            searchData.sortType = sortType;
+            searchData.sortBy = sortBy;
+            searchData.storeID = storeID;
+            searchData.page = page
+            historyorderShow()
+            searchData.page = 1;
+        }
+        //關聯訂單的點擊事件，呼叫相關所有子訂單資料
+        const allorderlist = (orderid) => {
+            $.ajax({
+                url: `@Url.Content("~/tOrder_StoreAPI/order_showdeatial/")?id=${orderid}`
+            }).done((response) => {
+                const totalmoney = `訂單總額:${response.總金額}`;
+                const htmldeatail = response.訂單詳細.map(a => {
+                const { 訂單編號, 店家名稱, 餐點名稱, 數量, 金額, 支付方式 } = a
+                    return `           <tr>
+                                          <td><h5>${訂單編號}</h5></td>
+                                          <td>${店家名稱}</td>
+                                            <td>${餐點名稱}</td>
+                                            <td>${數量}</td>
+                                            <td>${金額}</td>
+                                            <td>${支付方式}</td>
+                                        </tr>`
+                });
+                $("#all_order_deatail_tbody").html(htmldeatail);
+                $('#totalmoney').text(totalmoney);
+            })
+            // console.log(orderid) 
+        }
+        //外層搜尋
+        $(document).ready(function () {
+            $('#seach_btn').click((event) => {
+                event.preventDefault();
+                keysearch = $('#search_input').val()//抓取輸入列資料
+                searchData.storeID = 0;
+                searchData.keyword = keysearch;
+                loadSpots();
+                //console.log(text);
+                $('#search_input').val("");//初始化輸入列
+            });
+        });
+        //排序輸入
+        const sortby = (type) => 
+        {
+            sortBy = type;
+            if (sortType != "") {
+                sortType = "";
+                searchData.sortType = sortType;
+            }
+            else 
+            {
+                sortType = "asc"
+                searchData.sortType = sortType;
+            }
+            searchData.sortBy = sortBy;
+            historyorderShow();
+        }
+    </script>
+}

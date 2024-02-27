@@ -1,0 +1,35 @@
+﻿@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@{
+    // 驗證用戶身份，但不引發任何挑戰
+    var authenticateResult = await Context.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+}
+@if (authenticateResult.Succeeded)
+{
+    @if (authenticateResult.Principal.IsInRole("teacher"))
+    {
+        <div class="contact-info d-flex align-items-center">
+            <i class="bi bi-envelope d-flex align-items-center"><a href="https://localhost:7150/SystemBackground">@authenticateResult.Principal.Identity.Name</a></i>
+            <i class="bi bi-phone d-flex align-items-center ms-4"><a asp-controller="Login" asp-action="logout">登出</a></i>
+        </div>
+    }
+    else if (authenticateResult.Principal.IsInRole("store"))
+    {
+        <div class="contact-info d-flex align-items-center">
+            <i class="bi bi-envelope d-flex align-items-center"><a href="https://localhost:7150/StoreBackground">@authenticateResult.Principal.Identity.Name</a></i>
+            <i class="bi bi-phone d-flex align-items-center ms-4"><a asp-controller="Login" asp-action="logout">登出</a></i>
+        </div>
+    }
+}
+else
+{
+    <div class="contact-info d-flex align-items-center">
+        <i class="bi bi-envelope d-flex align-items-center"><a asp-controller="Login" asp-action="StoreIndex">廠商登入口</a></i>
+        <i class="bi bi-phone d-flex align-items-center ms-4"><a asp-controller="Login" asp-action="Index">教師登入口</a></i>
+    </div>
+
+}
+
