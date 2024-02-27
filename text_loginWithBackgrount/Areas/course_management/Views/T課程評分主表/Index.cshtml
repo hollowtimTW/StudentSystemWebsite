@@ -1,0 +1,459 @@
+﻿@model IEnumerable<Class_system_Backstage_pj.Models.T課程評分主表>
+
+@{
+    ViewData["Title"] = "班級科目評分";
+}
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+    <link href="~/css/datatablesinline.min.css" rel="stylesheet" />
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="~/css/course_management/stylepopup.css" rel="stylesheet" />
+    <style>
+        .table-hover tbody tr:hover {
+            background-color: azure;
+        }
+
+        #table {
+            border-collapse: collapse;
+            width: 100%;
+            color: gray;
+        }
+
+            #table td {
+                border-top: 1px solid azure;
+                border-bottom: 1px solid azure;
+            }
+
+        .table-head {
+            background-color: azure;
+        }
+
+        .dataTables_filter {
+            margin-bottom: 15px !important;
+        }
+
+        #modal_content {
+            background: url(https://img.freepik.com/premium-photo/empty-space-paper-copy-space_78502-575.jpg?w=1060) center center no-repeat;
+            background-size: cover;
+            background-color: gray;
+            filter: grayscale(30%);
+        }
+
+        .btn {
+            display: inline-block;
+            outline: none;
+            cursor: pointer;
+            font-weight: 600;
+            border-radius: 3px;
+            border: 0;
+            color: white;
+            line-height: 1.15;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background-color: #76daff !important;
+        }
+
+        .btn-success {
+            background-color: #47cf73 !important;
+        }
+
+        .btn-warning {
+            background-color: #fcd000 !important;
+        }
+
+        .btn-secondary {
+            background-color: #cdcdcd !important;
+        }
+
+        .btn:hover {
+            transition: all .1s ease;
+            box-shadow: 0 0 0 0 azure, 0 0 0 3px azure;
+            color: white;
+        }
+
+        .bx-trash {
+            color: white;
+        }
+    </style>
+  <style>
+        .toggle-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .toggle-btn {
+            width: 60px;
+            height: 30px;
+            background-color: #ddd;
+            border-radius: 15px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .inner-circle {
+            width: 26px;
+            height: 26px;
+            background-color: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s ease;
+        }
+
+        #statusSpan {
+            margin-right: 10px;
+        }
+
+        #statusSection .fs-4 {
+            transition: color 0.3s ease;
+        }
+
+        #statusSection.active .toggle-btn {
+            background-color: #6dd961;
+        }
+
+        #statusSection.active .fs-4 {
+            color: yellowgreen;
+        }
+
+        #statusSection.active .inner-circle {
+            transform: translateX(30px);
+        }
+
+  </style>
+}
+
+
+
+<div class="header">
+    <!-- 主頁上方操作流程序，記得有新增頁面時要記得編輯 -->
+    <div class="left">
+        <h1 class="text-center">@ViewData["Title"]</h1>
+
+        <ul class="breadcrumb">
+            <li><a asp-area="" asp-controller="Home" asp-action="Index">首頁</a></li>
+            /
+            <li><a asp-area="course_management" asp-controller="courseHome" asp-action="Index">排課系統管理</a></li>
+            /
+            <li><a href="#" class="active">@ViewData["Title"]</a></li>
+        </ul>
+    </div>
+    <!-- 主頁上方操作流程序-->
+</div>
+
+<div class="card p-2 border-warning-0 text-black-50 mb-2" style="background-color:azure">
+
+  
+    <div class="card-body rounded-2 ">
+
+        <div class="d-flex align-items-center gap-2">
+            <div class="d-flex align-items-center gap-2" id="statusSection">
+                <div class="fs-5">狀態:</div>
+                <div class="toggle-btn fs-6" onclick="toggleStatus()">
+                    <div class="inner-circle"></div>
+                </div>
+            </div>
+
+             <div class="fs-5" id="peopleDone">
+                目前填寫人數:
+            </div>
+        </div>
+        <hr />
+        <div class="row mt-2 bg-white">
+            <div class="col">
+              
+                <div>
+                    <p class="fs-6" style="color:gray" id="totalRatingsByCategoryCorse">課程滿意度:</p>
+                    <p class="fs-6" style="color:gray" id="totalRatingsByCategoryTeacher">教師滿意度:</p>
+                    <p class="fs-6" style="color:gray" id="totalRatingsByStudent">學習成效度:</p>
+                </div>
+            </div>
+        </div>
+    
+    </div>
+</div>
+
+
+<table class="table  table-hover " id="table" style="width:100%">
+    <thead class="table-head">
+        <tr>
+            <th>學生 ID</th>
+            <th>姓名</th>
+            <th>信箱</th>
+            <th>手機</th>
+            <th>詳細</th>
+            <th>編輯</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+
+<!-- Modal -->
+<div class=" modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" id="modal_content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                <button type="button" id="closeBtn" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+
+            <div class="modal-body overflow-y-scroll" id="switch_context">
+                <img class="w-100" src="~/images/t課程科目/loading.gif" />
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="~/lib/datatables/js/jquery.datatables.min.js"></script>
+    <script src="//cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"> </script>
+    <script src="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/boxicons.js"></script>
+
+    <script>
+        $(document).ready(
+            function () {
+
+                var studentsInClass = @Html.Raw(Json.Serialize(ViewBag.StudentsInClass));
+                // 在這裡使用 studentsInClass 
+                $('#table').DataTable({
+                    data: studentsInClass,
+                    columns: [
+                        { data: '學生id', visible: false },
+                        { data: '姓名' },
+                        { data: '信箱' },
+                        { data: '手機' },
+                        {
+                            "data": "學生id",
+                            "render": function (data, type, row) {
+                                return '<p><a class="btn btn-secondary rate_detailBtn" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick = "rate_detail(' + @ViewBag.ClassCourseid + ',' + row.學生id + ')"> <i class="bx bx-menu""></i> </a></p>'
+                            },
+                            "orderable": false
+                            , "width": "10%"
+                        },
+                        {
+                            "data": "學生id",
+                            "render": function (data, type, row) {
+                                return '<p><a class="btn btn-info" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick = "popup_edit(' + @ViewBag.ClassCourseid + ',' + row.學生id + ')"> <i class="bx bx-edit-alt""></i> </a></p>'
+
+                            },
+                            "orderable": false
+                            , "width": "10%"
+                        },
+                    ]
+                });
+                check_status();
+                calculateAverageRatings();
+                
+                
+            });
+
+    </script>
+    <script>
+        //檢查班級科目的狀態
+        function check_status() {
+            var status = false;
+            $.ajax({
+                type: 'GET',
+                url: '/course_management/T課程評分主表/CheckClassSubjectSatus/' + @ViewBag.ClassCourseid,
+                success: function (result) {
+                    var container = document.getElementById("statusSection");
+                    var rate_detailBtn = document.getElementById("rate_detailBtn");
+                  
+                    if (result) {
+                        container.classList.add("active");
+                    }
+
+                },
+                error: function (error) {
+
+                    console.error('Ajax request error', error);
+                }
+            });
+
+         
+        }
+       
+        //檢查班級科目主表的狀態
+        async function CheckRateFormSatus(ClassCourseId, StudentId, url) {
+
+            var Checkurl = `/course_management/T課程評分主表/CheckRateFormSatus/${ClassCourseId}/${StudentId}`;
+            try {
+                const res = await fetch(
+
+                    Checkurl,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            ClassCourseId: ClassCourseId,
+                            StudentId: StudentId,
+                        })
+                    }
+                );
+
+                if (!res.ok) {
+                    throw new Error('Network response was not ok.');
+                }
+
+                // 解析 JSON 回傳的結果
+                const result = await res.json();
+
+                if (result.success) {
+                    //step2 拉這個主表id的相關評分
+                    const evaluationTableID = result.evaluationTableID;
+
+                 
+                    var step2 = `${url}/${evaluationTableID}`
+
+                    const res2 = await fetch(step2);
+
+                    if (!res2.ok) {
+                        throw new Error('Network response was not ok.');
+                    }
+
+                    const detailResult = await res2.text();
+                    console.log('Ajax request success');
+                    $("#switch_context").html("");
+                    $("#switch_context").html(detailResult);
+                    exampleModalLabel.innerText = "評分表";
+                }
+                else {
+                    $("#switch_context").html("學生尚未填寫，無法查看學生的評分表");
+
+                    return;
+
+                }
+            }
+            catch (error) {
+                console.error('Error occurred:', error);
+
+            }
+        }
+    </script>
+    <script>
+        //create 按鈕
+        function toggleStatus() {
+            var container = document.getElementById("statusSection");
+            if (!container.classList.contains("active")) {
+                var createUrl = `/course_management/T課程評分主表/Create/${@ViewBag.ClassCourseId}/${@ViewBag.ClassId}`;
+                $.ajax({
+                    type: 'Post',
+                    url: createUrl,
+                    body: JSON.stringify({
+                        classCourseId: @ViewBag.ClassCourseId,
+                        studentId: @ViewBag.ClassId,
+                    }),
+                    success: function () {
+                        container.classList.add("active");
+                    },
+                    error: function (error) {
+
+                        console.error('Ajax request error', error);
+                    }
+                });
+            }
+        }
+        //detail 按鈕
+        async function rate_detail(ClassCourseId, StudentId) {
+            var container = document.getElementById("statusSection");
+
+
+            if (!container.classList.contains("active")) {
+                alert("老師尚未開啟評點功能，無法查看學生的評分表");
+                return;
+            }
+
+            var url = `/course_management/T課程評分主表/Details`;
+
+            CheckRateFormSatus(ClassCourseId, StudentId, url);
+
+        }
+        //edit 按鈕
+        function popup_edit(ClassCourseId, StudentId) {
+            var container = document.getElementById("statusSection");
+
+            if (!container.classList.contains("active")) {
+                alert("老師尚未開啟評點功能，無法查看學生的評分表");
+                return;
+            }
+
+            var url = `/course_management/T課程評分主表/Edit`;
+            CheckRateFormSatus(ClassCourseId, StudentId, url);
+
+        }
+    </script>
+    <script>
+        let exampleModalLabel = document.getElementById("exampleModalLabel");
+
+        function closeModal() {
+            exampleModalLabel.innerText = "Modal title";
+        }
+
+        $('#exampleModal').on('hidden.bs.modal', function (e) {
+            closeModal();
+        });
+    </script>
+    <script>
+
+        async function calculateAverageRatings() {
+            const response = await fetch(`/course_management/T課程評分主表/CalculateAverageRatings/${@ViewBag.ClassCourseid}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: @ViewBag.ClassCourseid
+            })
+            });
+
+            const responseData = await response.json();
+
+            if (responseData.success) {
+                //代表開啟 ，顯示目前填寫人數，但可能有所有都未填寫的
+                $("#peopleDone").text("目前填寫人數:" + responseData.peopleDone);
+
+                const satisfactionRatingTextCourse = responseData.totalRatingsByCategory && responseData.totalRatingsByCategory.課程滿意度 !== undefined ?
+                    `${responseData.totalRatingsByCategory.課程滿意度}` :
+                    "尚未填寫";
+                $("#totalRatingsByCategoryCorse").text("課程滿意度: ");
+                $("#totalRatingsByCategoryCorse").append(`<span class="text-warning fs-5"> ${satisfactionRatingTextCourse}</span>`);
+
+                const satisfactionRatingTextTeacher = responseData.totalRatingsByCategory && responseData.totalRatingsByCategory.教師滿意度 !== undefined ?
+                    `${responseData.totalRatingsByCategory.教師滿意度}` :
+                    "尚未填寫";
+                $("#totalRatingsByCategoryTeacher").text("教師滿意度: ");
+                $("#totalRatingsByCategoryTeacher").append(`<span class="text-warning fs-5"> ${satisfactionRatingTextTeacher} </span>`);
+
+                const satisfactionRatingTextStudent = responseData.totalRatingsByCategory && responseData.totalRatingsByCategory.學習成效度 !== undefined ?
+                    `${responseData.totalRatingsByCategory.學習成效度}` :
+                    "尚未填寫";
+                $("#totalRatingsByStudent").text("學習成效度: ");
+                $("#totalRatingsByStudent").append(`<span class="text-warning fs-5"> ${satisfactionRatingTextStudent} </span>`);
+
+            } else if (!responseData.success) {
+                $("#peopleDone").text("");
+                $("#totalRatingsByCategoryCorse").text("");
+                $("#totalRatingsByCategoryTeacher").text("");
+                $("#totalRatingsByStudent").text("");
+
+            }
+        }
+       
+    </script>
+}
+
+
+
+
+
+
+
+

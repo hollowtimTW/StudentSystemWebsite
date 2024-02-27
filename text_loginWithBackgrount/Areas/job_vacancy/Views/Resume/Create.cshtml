@@ -1,0 +1,335 @@
+﻿@model ResumeCreateViewModel
+
+@{
+    ViewData["Title"] = "新增履歷";
+}
+
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+    <link href="~/css/job_vacancy/resume.css" rel="stylesheet" />
+    <style>
+
+    </style>
+}
+
+<div class="header">
+    <!-- 主頁上方操作流程序，記得有新增頁面時要記得編輯 -->
+    <div class="left">
+        <h1>@ViewData["Title"]</h1>
+        <div>
+            <ul class="breadcrumb">
+                <li><a asp-area="job_vacancy" asp-controller="jobHome" asp-action="Index">工作媒合管理</a></li>
+                /
+                <li><a asp-area="job_vacancy" asp-controller="Resume" asp-action="Index">履歷管理</a></li>
+                /
+                <li><a href="#" class="active">@ViewData["Title"]</a></li>
+            </ul>
+        </div>
+        
+    </div>
+    <!-- 主頁上方操作流程序-->
+</div>
+
+<div class="container-fluid">
+    <form asp-action="Create" class="formResume" id="formCreate" enctype="multipart/form-data">
+        <!--模型驗證錯誤的摘要-->
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <!--隱藏學生ID值-->
+        <input type="hidden" asp-for="StudentID" />
+
+        <!-- 1-1.學生資料-->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group flex-container">
+                    <label asp-for="ResumeTitle" class="control-label"></label>
+                    <input asp-for="ResumeTitle" class="form-control" />
+                    <span asp-validation-for="ResumeTitle" class="text-danger"></span>
+                </div>
+                <div class="form-group flex-container">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group flex-container">
+                    <label asp-for="Birth" class="control-label"></label>
+                    <input asp-for="Birth" type="date" class="form-control" value="@Model.Birth?.ToString("yyyy-MM-dd")" />
+                    <span asp-validation-for="Birth" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Gender" class="control-label col-md-3"></label>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="Gender" id="gender1" value="男" @(Model.Gender == "男" ? "checked" : "")>
+                        <label class="form-check-label" for="gender1">男</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="Gender" id="gender2" value="女" @(Model.Gender == "女" ? "checked" : "")>
+                        <label class="form-check-label" for="gender2">女</label>
+                    </div>
+                    <span asp-validation-for="Gender" class="text-danger"></span>
+                </div>
+                <div class="form-group flex-container">
+                    <label asp-for="Phone" class="control-label"></label>
+                    <input asp-for="Phone" class="form-control" />
+                    <span asp-validation-for="Phone" class="text-danger"></span>
+                </div>
+                <div class="form-group flex-container">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="d-flex justify-content-center">
+                    @await Html.PartialAsync("_ShowPhotoPartial")
+                </div>
+                <input asp-for="Photo" type="file" id="Photo" class="form-control mt-2" accept="image/*" />
+                <span asp-validation-for="Photo" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!-- 1-2.學歷-->
+        <div class="row">
+            <div class="form-group flex-container">
+                <label asp-for="School" class="control-label"></label>
+                <input asp-for="School" class="form-control" />
+            </div>
+            <div class="form-group flex-container">
+                <label asp-for="Department" class="control-label"></label>
+                <input asp-for="Department" class="form-control" />
+            </div>
+            <div class="form-group flex-container">
+                <label asp-for="Academic" class="control-label"></label>
+                <select asp-for="Academic" class="form-control">
+                    <option value="無">無</option>
+                    <option value="學士" selected="@(Model.Academic == "學士")">學士</option>
+                    <option value="副學士" selected="@(Model.Academic == "副學士")">副學士</option>
+                    <option value="碩士" selected="@(Model.Academic == "碩士")">碩士</option>
+                    <option value="博士" selected="@(Model.Academic == "博士")">博士</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Graduated" class="control-label col-md-2"></label>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="Graduated" id="graduated1" value="畢業" @(Model.Graduated == "畢業" ? "checked" : "")>
+                    <label class="form-check-label" for="graduated1">畢業</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="Graduated" id="graduated2" value="肄業" @(Model.Graduated == "肄業" ? "checked" : "")>
+                    <label class="form-check-label" for="graduated2">肄業</label>
+                </div>
+                <span asp-validation-for="Graduated" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!-- 2.技能能力-->
+        <div class="row">
+            <div class="form-group">
+                <label asp-for="Skill" class="control-label"></label>
+                <textarea asp-for="Skill" class="form-control"></textarea>
+                <span asp-validation-for="Skill" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Language" class="control-label"></label>
+                <textarea asp-for="Language" class="form-control"></textarea>
+                <span asp-validation-for="Language" class="text-danger"></span>
+            </div>
+        </div>
+        <!-- 3.工作經驗-->
+        <div class="row">
+            <div class="form-group col-sm-auto">
+                <label asp-for="WorkExperience" class="control-label"></label>
+            </div>
+            <div class="form-group form-check form-switch col-md-auto ms-auto">
+                <input id="workExpCheck" class="form-check-input" type="checkbox">
+                <label for="workExpCheck" class="form-check-label">沒有工作經驗</label>
+            </div>
+            @* <button id="btnAdd" type="button" class="btn">
+                <a asp-area="job_vacancy" asp-controller="Resume" asp-action="Create">新增</a>
+            </button> *@
+            <span asp-validation-for="WorkExperience" class="text-danger"></span>
+        </div>
+
+        <!-- 4.求職條件-->
+        <div class="row">
+            <div class="form-group flex-container">
+                <label asp-for="HopeJobTitle" class="control-label"></label>
+                <input asp-for="HopeJobTitle" class="form-control" placeholder="盡量寫明確一點，如：前端工程師、網頁設計師" />
+                <span asp-validation-for="HopeJobTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WorkType" class="control-label col-md-2"></label>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="WorkType" id="workType1" value="全職">
+                    <label class="form-check-label" for="workType1">全職</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="WorkType" id="workType2" value="兼職">
+                    <label class="form-check-label" for="workType2">兼職</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="WorkType" id="workType3" value="派遣">
+                    <label class="form-check-label" for="workType3">派遣</label>
+                </div>
+                <span asp-validation-for="WorkType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WorkTime" class="control-label col-md-2"></label>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="WorkTime" id="workTime1" value="日班">
+                    <label class="form-check-label" for="workTime1">日班</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="WorkTime" id="workTime2" value="晚班">
+                    <label class="form-check-label" for="workTime2">晚班</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="WorkTime" id="workTime3" value="假日班">
+                    <label class="form-check-label" for="workTime3">假日班</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="WorkTime" id="workTime4" value="大夜班">
+                    <label class="form-check-label" for="workTime4">大夜班</label>
+                </div>
+                <span asp-validation-for="WorkTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WorkShift" class="control-label col-md-2"></label>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="workShiftCheck">
+                    <label class="form-check-label" for="workShiftCheck">可配合輪班</label>
+                </div>
+                <span asp-validation-for="WorkShift" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HopeSalary" class="control-label col-md-2"></label>
+                <div class="form-check form-check-inline">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="HopeSalary" id="hopeSalary1" value="面議">
+                        <label class="form-check-label" for="hopeSalary1">面議</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="HopeSalary" id="hopeSalary2" value="論件計酬">
+                        <label class="form-check-label" for="hopeSalary2">論件計酬</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="HopeSalary" id="hopeSalary3">
+                        <label class="form-check-label" for="hopeSalary3">自訂薪資</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-control" type="text" name="HopeSalary" id="salaryInput" style="visibility: hidden;">
+                    </div>
+                </div>
+                <input asp-for="HopeSalary" class="form-control" hidden />
+                <span asp-validation-for="HopeSalary" class="text-danger"></span>
+            </div>
+            <div class="form-group flex-container">
+                <label asp-for="HopeLocation" class="control-label"></label>
+                <input asp-for="HopeLocation" class="form-control" />
+                <span asp-validation-for="HopeLocation" class="text-danger"></span>
+            </div>
+        </div>
+        <!-- 5.自傳-->
+        <div class="row">
+            <div class="form-group">
+                <label asp-for="Autobiography" class="control-label"></label>
+                <div id="summernote" name="Autobiography"></div>
+                <span asp-validation-for="Autobiography" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!-- 表單尾部-->
+        <div class="form-group d-flex justify-content-end">
+            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#cancelModal">取消</button>
+            <input type="submit" class="btn btn-submit" id="btnSummit" value="建立新履歷" />
+        </div>
+    </form>
+</div>
+
+<!-- Modal 互動視窗：取消建立履歷 -->
+<div class="modal fade" id="cancelModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cancelModalLabel">取消新增履歷</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>未完成新增程序，方才輸入的內容將不會儲存。</p>
+                <p>確定要取消嗎？</p>
+            </div>
+            <div class="modal-footer">
+                <a asp-action="Index" class="btn btn-secondary">確定取消</a>
+                <button type="button" class="btn btn-submit" data-bs-dismiss="modal">繼續編輯</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+    <script src="~/js/job_vacancy/resume.js"></script>
+    <script src="~/js/job_vacancy/summernote-zh-tw.js"></script>
+    <script>
+        $(document).ready(function () {
+            //限制網頁不要出現卷軸
+            document.documentElement.style.overflow = 'hidden';
+
+            //提交表單事件
+            btnSummit.addEventListener('click', async (event) => {
+
+                event.preventDefault();  //停止預設行為
+
+                const formData = new FormData(document.getElementById('formCreate'));
+
+                //有無工作經驗
+                let checkbox = document.getElementById('workExpCheck');
+                let workExpValue = checkbox.checked ? 'N' : 'Y';
+                formData.set('WorkExperience', workExpValue);
+
+                //輪班
+                checkbox = document.getElementById('workShiftCheck');
+                let workShiftValue = checkbox.checked ? 'Y' : 'N';
+                formData.set('WorkShift', workShiftValue);
+
+                //希望薪資
+                let selectedValue;
+                if (hopeSalary3.checked) {
+                    selectedValue = document.getElementById('salaryInput').value;
+                }
+                else {
+                    selectedValue = document.querySelector('input[name="HopeSalary"]:checked')?.value;
+                }
+                formData.set('HopeSalary', selectedValue);
+
+                //自傳
+                const autobiography = $('#summernote').summernote('code');
+                //let regEx = /<[^>]*>/g;  //去除HTML標籤
+                //const plain = autobiography.replace(regEx, "");
+                formData.set('Autobiography', autobiography);
+
+                // for (const pair of formData.entries()) {
+                //     console.log(pair[0] + ', ' + pair[1]);
+                // }
+                //return;
+
+                const response = await fetch('@Url.Content("/job_vacancy/Resume/CreateResume")', {
+                    body: formData,
+                    method: 'POST'
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    if (data.redirectUrl) {
+                        window.location.href = data.redirectUrl; // 重定向履歷管理首頁
+                    } else {
+                        alert(data.message);
+                    }
+                } else {
+                    alert(data.message);
+                }
+            });
+
+        });
+    </script>
+}

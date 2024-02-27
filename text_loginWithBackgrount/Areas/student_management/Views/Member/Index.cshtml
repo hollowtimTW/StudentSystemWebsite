@@ -1,0 +1,164 @@
+﻿@{
+    ViewData["Title"] = "學員管理系統";
+}
+@section Styles
+{
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+    @* <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script> *@
+    @* <link href="~/css/datatablesinline.css" rel="stylesheet" /> *@
+    <link href="~/css/datatablesinline.min.css" rel="stylesheet" />
+    <style>
+        .imthead {
+            background-color: #C4E1E1;
+            font-weight: 700;
+        }
+    </style>
+}
+<div class="header">
+    <!-- 主頁上方操作流程序能引入操作流程返回，記得有新增頁面時要記得編輯，有class="active的是現在位置-->
+    <div class="left">
+        <h1> @ViewData["Title"]</h1>
+        <ul class="breadcrumb">
+            <li>
+                <a asp-area="" asp-controller="Home" asp-action="Index"> 首頁 </a>
+            </li>
+            /
+            <li><a href="#" class="active">@ViewData["Title"]</a></li>
+        </ul>
+    </div>
+    <!-- 主頁上方操作流程序結束-->
+</div>
+
+<!-- Insights -->
+<ul class="insights">
+    <li>
+        <i class='bx bx-cool'></i>
+        <a asp-area="student_management" asp-controller="Member" asp-action="GetAllStudent">
+            <span class="info">
+                <h3>
+                    學生資料管理
+                </h3>
+                <p></p>
+            </span>
+        </a>
+    </li>
+    <li>
+        <i class='bx bx-show-alt'></i>
+        <span class="info">
+            <h3>
+                老師資料管理
+            </h3>
+            <p></p>
+        </span>
+    </li>
+    <li>
+        <i class='bx bx-line-chart'></i>
+        <span class="info">
+            <h3>
+                備用欄位1
+            </h3>
+            <p></p>
+        </span>
+    </li>
+    <li>
+        <i class='bx bx-dollar-circle'></i>
+        <span class="info">
+            <h3>
+                備用欄位2
+            </h3>
+            <p></p>
+        </span>
+    </li>
+</ul>
+<!-- End of Insights -->
+@* 表格標題輸入地方 *@
+@* <div class="bottom-data">
+    <div class="orders">
+        <div class="header">
+            <i class='bx bx-receipt'></i>  <!-- 表格的小icon -->
+            <h3>Recent Orders</h3> <!-- 表格的名稱 -->
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Order Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <!-- 表格標題輸入地方 -->
+            <tbody>
+                <tr>
+                    <td>
+                        <img src="images/profile-1.jpg">
+                        <p>John Doe</p>
+                    </td>
+                    <td>14-08-2023</td>
+                    <td><span class="status completed">Completed</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <img src="images/profile-1.jpg">
+                        <p>John Doe</p>
+                    </td>
+                    <td>14-08-2023</td>
+                    <td><span class="status pending">Pending</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <img src="images/profile-1.jpg">
+                        <p>John Doe</p>
+                    </td>
+                    <td>14-08-2023</td>
+                    <td><span class="status process">Processing</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div> *@
+@* 表格輸入結束 *@
+
+
+
+<!-- 側邊條列區塊 -->
+@*     <div class="reminders">
+        <div class="header">
+            <i class='bx bx-note'></i>
+            <h3>Remiders</h3>
+            <i class='bx bx-filter'></i>
+            <i class='bx bx-plus'></i>
+        </div>
+        <ul class="task-list">
+            <li class="completed">
+                <div class="task-title">
+                    <i class='bx bx-check-circle'></i>
+                    <p>Start Our Meeting</p>
+                </div>
+                <i class='bx bx-dots-vertical-rounded'></i>
+            </li>
+            <li class="completed">
+                <div class="task-title">
+                    <i class='bx bx-check-circle'></i>
+                    <p>Analyse Our Site</p>
+                </div>
+                <i class='bx bx-dots-vertical-rounded'></i>
+            </li>
+            <li class="not-completed">
+                <div class="task-title">
+                    <i class='bx bx-x-circle'></i>
+                    <p>Play Footbal</p>
+                </div>
+                <i class='bx bx-dots-vertical-rounded'></i>
+            </li>
+        </ul>
+    </div> *@
+
+<!-- End of Reminders-->
+</div>
+
+
+@section Scripts
+{
+
+
+}

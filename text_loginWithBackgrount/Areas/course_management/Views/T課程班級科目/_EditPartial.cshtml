@@ -1,0 +1,55 @@
+﻿@model Class_system_Backstage_pj.Models.T課程班級科目
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>T課程班級科目</h4>
+<hr />
+<div class="row">
+    <div class="">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <input type="hidden" asp-for="班級科目id" readonly/>
+            <input type="hidden" asp-for="班級id" class="form-control" readonly />
+            <input type="hidden" asp-for="狀態" class="form-control" value="1" readonly />
+
+            <div class="row">
+                <div class="fs-4 col-md-12">
+                    <div class="form-group  w-100">
+                        <label asp-for="科目id" class="control-label"></label>
+                        <input asp-for="科目id" class="form-control  w-100" hidden />
+                        <p>@ViewData["科目名稱"]</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row w-100">
+
+                <div class="fs-4 col-md-12">
+                    <div class="form-group w-100">
+                        <label asp-for="老師id" class="control-label"></label>
+                        <select asp-for="老師id" class="form-control w-100" asp-items="ViewBag.老師id"></select>
+                        <span asp-validation-for="老師id" class="text-danger"></span>
+                    </div>
+                 </div>
+            </div>
+
+
+            <div class="form-group  mt-5 text-lg-end">
+                <input type="submit" value="Save" class="btn btn-info" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

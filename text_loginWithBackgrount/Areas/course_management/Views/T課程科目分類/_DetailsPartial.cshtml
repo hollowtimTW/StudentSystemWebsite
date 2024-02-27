@@ -1,0 +1,36 @@
+﻿@model Class_system_Backstage_pj.Models.T課程科目分類
+
+<div class="p-4 partial_details">
+
+    <dl>
+
+        <div class="row">
+            <dt class="col-md-6">
+                @Html.DisplayNameFor(model => model.科目類別名稱):
+            </dt>
+            <dd class="col-md-6">
+                @Html.DisplayFor(model => model.科目類別名稱)
+            </dd>
+        </div>
+
+        <div class="row">
+            <dt class="col-md-6">
+                @Html.DisplayNameFor(model => model.科目類別封面):
+            </dt>
+            <dd class="col-md-6">
+                <img id="details_categoryImage" src="@Url.Content("~/images/t課程科目類別/" + @Model.科目類別封面)" style="width: 200px; height: 150px;" />
+            </dd>
+        </div>
+
+
+    </dl>
+</div>
+
+
+
+@section Scripts {
+    @{
+  
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

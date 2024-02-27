@@ -1,0 +1,372 @@
+﻿@model IEnumerable<Class_system_Backstage_pj.Models.T課程班級科目>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@section Styles {
+
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="~/css/course_management/stylepopup.css" rel="stylesheet" />
+
+    <style>
+
+        .table-hover tbody tr:hover {
+            background-color: azure;
+        }
+
+        #table {
+            border-collapse: collapse;
+            width: 100%;
+            background-color: #f3f3fa;
+        }
+
+        #table td {
+            border-top: 1px solid azure;
+            border-bottom: 1px solid azure;
+         }
+
+        .table-head {
+            background-color: azure;
+        }
+
+       
+
+        #modal_content {
+            background: url(https://img.freepik.com/premium-photo/empty-space-paper-copy-space_78502-575.jpg?w=1060) center center no-repeat;
+            background-size: cover;
+            background-color: gray;
+            filter: grayscale(30%);
+        }
+
+        .btn {
+            display: inline-block;
+            outline: none;
+            cursor: pointer;
+            font-weight: 600;
+            border-radius: 3px;
+            border: 0;
+            color: white;
+            line-height: 1.15;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background-color: #76daff !important;
+        }
+
+        .btn-success {
+            background-color: #47cf73 !important;
+        }
+
+        .btn-warning {
+            background-color: #fcd000 !important;
+        }
+
+        .btn-secondary {
+            background-color: #cdcdcd !important;
+        }
+
+        .btn:hover {
+            transition: all .1s ease;
+            box-shadow: 0 0 0 0 azure, 0 0 0 3px azure;
+            color:white;
+        }
+
+        .bx-trash {
+            color: white;
+        }
+    </style>
+}
+
+<h1 class="text-center">@ViewData["ClassName"] 班級科目列表</h1>
+
+<p>
+    <a class="btn btn-success fs-4 pb-2" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="popup_create()">create</a>
+</p>
+
+<table class="table table-hover" id="table" style="width:100%">
+    <thead class="table-head">
+        <tr>
+         
+            <th>
+                @Html.DisplayNameFor(model => model.科目)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.老師)
+            </th>
+            <th>
+                通知
+            </th>
+            <th>
+                寄信
+            </th>
+            <th>
+                科目評價
+            </th>
+            <th>
+                edit
+            </th>
+            <th>
+                delete
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+               
+               
+                <td>
+                    @Html.DisplayFor(modelItem => item.科目.科目名稱)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.老師.姓名)
+                </td>
+
+                <td>
+                    <a asp-action="Delete" asp-route-id="@item.班級科目id"><i class='bx bx-envelope'></i></a>
+
+                </td>
+                <td>
+                    <a asp-action="Delete" asp-route-id="@item.班級科目id"><i class='bx bx-bell'></i></a>
+
+                </td>
+
+                <td>
+                    <a class="btn btn-secondary" asp-controller="T課程評分主表" asp-action="Index" asp-route-classid="@ViewData["ClassId"]" asp-route-classCourseid="@item.班級科目id"><i class='bx bx-like'></i></a>
+
+                </td>
+                <td>
+                    <a class="btn btn-info" data-bs-toggle="modal" data-bs-target="#exampleModal" asp-action="Edit" asp-route-id="@item.班級科目id" onclick="popup_edit(@item.班級科目id)"><i class="bx bx-edit-alt"></i></a>
+
+                </td>
+                <td>
+                    <a class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal" asp-action="Delete" asp-route-id="@item.班級科目id" onclick="popup_delete(@item.班級科目id)"><i class="bx bx-trash"></i></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" id="modal_content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                <button type="button" id="closeBtn" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+
+            <div class="modal-body" id="switch_context">
+                <img class="w-100" src="~/images/t課程科目/loading.gif" />
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/boxicons.js"></script>  
+
+    <script>
+        let exampleModalLabel = document.getElementById("exampleModalLabel");
+
+        function closeModal() {
+            exampleModalLabel.innerText = "Modal title";
+        }
+
+        $('#exampleModal').on('hidden.bs.modal', function (e) {
+            closeModal();
+        });
+
+        function popup_create() {
+
+            exampleModalLabel.innerText = "Create";
+
+            $.ajax({
+                type: 'GET',
+                url: '/course_management/T課程班級科目/courseIndex',
+                success: function (result) {
+                    console.log('Ajax request success');
+                    $("#switch_context").html("");
+                    $("#switch_context").html(result);
+
+                },
+                error: function (error) {
+
+                    console.error('Ajax request error', error);
+                }
+            });
+        }
+        function popup_delete(id) {
+
+            exampleModalLabel.innerText = "Delete";
+
+            $.ajax({
+                type: 'GET',
+                url: '/course_management/T課程班級科目/Delete/' + id,
+                success: function (result) {
+
+                    console.log('Ajax request success');
+                    $("#switch_context").html("");
+                    $("#switch_context").html(result);
+                    console.log($("#switch_context"));
+
+                },
+                error: function (error) {
+
+                    console.error('Ajax request error', error);
+                }
+            });
+
+        }
+         
+        function popup_edit(id) {
+
+            $.ajax({
+                type: 'GET',
+                url: '/course_management/T課程班級科目/Edit/' + id,
+                success: function (result) {
+
+                    console.log('Ajax request success');
+                    $("#switch_context").html("");
+                    $("#switch_context").html(result);
+
+                },
+                error: function (error) {
+
+                    console.error('Ajax request error', error);
+                }
+            });
+
+        }      
+        function popup_detail(id) {
+
+            $.ajax({
+                type: 'GET',
+                url: '/course_management/T課程科目分類/Details/' + id,
+                success: function (result) {
+
+                    console.log('result');
+                    $("#switch_context").html("");
+                    $("#switch_context").html(result);
+
+                },
+                error: function (error) {
+
+                    console.error('Ajax request error', error);
+                }
+            });
+
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+
+            var selectedSubjects = [];
+            $(document).on('change', '#subjectSelect', function () {
+               
+                var selectedSubjectId = $(this).val();
+                $.ajax({
+                    url: '/course_management/T課程班級科目/GetTeachersBySubjectId/' + selectedSubjectId,
+                    type: 'GET',
+                    success: function (data) {
+                        // 獲取的老師列表
+                        $('#TeacherList').empty();
+                        $.each(data, function (index, teacher) {
+                            var button = $('<button>').text('選擇').addClass('btn btn-primary selectTeacher')
+                                .attr({
+                                    'data-teacher-id': teacher.老師id,
+                                    'data-course-id': selectedSubjectId
+                                });
+                            var row = $('<tr>').append($('<td>').text(teacher.姓名)).append($('<td>').append(button));
+                            $('#TeacherList').append(row);
+                        });
+                    },
+                    error: function () {
+                        alert('Failed to retrieve teachers.');
+                    }
+                });
+            });
+
+            $(document).on('click', '.selectTeacher', function (e) {
+                e.preventDefault();
+                var teacherId = $(this).attr('data-teacher-id');
+                var teacherName = $(this).closest('tr').find('td:first').text();
+                var courseId = $(this).attr('data-course-id');
+                var courseName = $('#subjectSelect option:selected').text();
+               
+                //新增新的科目-老師組合 到陣列
+                selectedSubjects.push({ courseId: courseId, teacherId: teacherId });
+                console.log(selectedSubjects);
+                //渲染畫面
+                var button = $('<button>').text('刪除').addClass('btn btn-warning');
+                var listItem = $('<li>').addClass('list-group-item d-flex justify-content-between align-items-center')
+                    .attr({
+                        'data-teacher-id': teacherId,
+                        'data-course-id': courseId
+                    })
+                    .append($('<span>').addClass('fs-6 fw-bold text-muted w-25').text(courseName))
+                    .append($('<span>').addClass('fs-6 w-25').text(teacherName))
+                    .append(button);
+
+                $('#subjectTeacherList').append(listItem);
+            });
+
+            $(document).on('click', '#subjectTeacherList button', function (e) {
+
+                //刪除陣列
+                e.preventDefault();
+                var teacherId = $(this).closest('li').attr('data-teacher-id');
+                var courseId = $(this).closest('li').attr('data-course-id');
+                selectedSubjects = selectedSubjects.filter(function (item) {
+
+                    //當找到時就return false，不返回這個item到本來陣列中
+                    return !(item.courseId === courseId && item.teacherId === teacherId);
+                });
+
+                //刪除在畫面中的組合
+                $(this).closest('li').remove();
+                selectedSubjects.forEach(function (item) {
+                    console.log(item);
+                });
+            });
+
+            $(document).on('click', '#submit', function (e) {
+                e.preventDefault();
+
+
+                var formData = {
+                    班級id: @ViewData["ClassId"],
+                    班級科目: selectedSubjects,
+                    狀態: 1
+                };
+
+
+                $.ajax({
+                    url: "/course_management/T課程班級科目/Create",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(formData),
+                    success: function (response) {
+                        console.log("Success:", response);
+                        alert("成功");
+                        window.location.href = '/course_management/T課程班級科目/classCourseIndex/' + @ViewData["ClassId"];
+
+                    },
+                    error: function (xhr, status, error) {
+
+                        console.error("Error:", error);
+                        alert("發生錯誤，請稍後再試。");
+                    }
+                });
+            });
+         
+        });
+
+
+    </script>
+
+}

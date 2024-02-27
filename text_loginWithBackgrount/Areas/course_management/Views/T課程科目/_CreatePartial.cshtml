@@ -1,0 +1,46 @@
+﻿@model Class_system_Backstage_pj.Models.T課程科目
+
+<div class="p-4">
+
+<div class="row">
+    
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="科目名稱" class="control-label"></label>
+                        <input asp-for="科目名稱" class="form-control" />
+                        <span asp-validation-for="科目名稱" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="科目類別id" class="control-label"></label>
+                        <select asp-for="科目類別id" class="form-control" asp-items="@ViewBag.Category"></select>
+                    </div>
+                </div> 
+               
+            </div>
+            <div class="row">
+                <div class="form-group visually-hidden">
+                    <label asp-for="狀態" class="control-label"></label>
+                    <input asp-for="狀態" class="form-control" value="1" type="hidden" />
+                    <span asp-validation-for="狀態" class="text-danger"></span>
+                </div>
+            </div>
+           
+            <div class="form-group mt-5 text-lg-end">
+                <input type="submit" value="Create" class="btn btn-success" />
+            </div>
+        </form>
+   
+</div>
+
+
+
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

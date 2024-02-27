@@ -1,0 +1,76 @@
+﻿@model Class_system_Backstage_pj.Models.T課程評分主表
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+
+
+<div class="p-2">
+    <h4 class="text-center">Details</h4>
+    <hr />
+    <div>
+        @foreach (var category in new Dictionary<string, string>
+        {
+        { "課程滿意度", "課程滿意度" },
+        { "教師滿意度", "教師滿意度" },
+        { "學習成效度", "學習成效度" }
+        })
+        {
+            <h5 style="color:yellowgreen">@category.Value</h5>
+            <ul>
+                @foreach (var 課程評分 in Model.T課程評分s.Where(p => p.評分分類 == category.Key))
+                {
+                    <li>
+                        <p>@課程評分.評分題目</p>
+                        <p>
+                            分數:
+                            @{
+                                for (int i = 0; i < 課程評分.評分; i++)
+                                {
+                                    <span class="fa fa-star text-warning"></span>
+                                }
+
+                            }
+                            <span class="mr-2 fst-italic text-black-50">@課程評分.評分</span>
+
+                        </p>
+                    </li>
+                }
+            </ul>
+        }
+
+    </div>
+    <dl class="row">
+        <p style="color:yellowgreen"  class="col-md-6 fs-5">
+            @Html.DisplayNameFor(model => model.改進意見)
+        </p>
+      
+
+        <div class="card">          
+            <div class="card-body fs-5">        
+                <p class="col-md-6">
+                    @Html.DisplayFor(model => model.改進意見)
+                </p>
+            </div>
+        </div>
+
+        <div class="row mt-2">
+
+            <p class="col-md-6 fs-5" style="color:yellowgreen">
+                @Html.DisplayNameFor(model => model.提交時間)
+            </p>
+
+            <p class="col-md-6 text-black-50">
+                @Html.DisplayFor(model => model.提交時間)
+            </p>
+
+        </div>
+   
+    </dl>
+</div>
+
+
+
+
+

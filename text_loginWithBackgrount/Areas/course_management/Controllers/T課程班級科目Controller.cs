@@ -1,0 +1,242 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using Class_system_Backstage_pj.Models;
+using Class_system_Backstage_pj.Areas.course_management.ViewModel.T課程班級;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+
+namespace Class_system_Backstage_pj.Areas.course_management.Controllers
+{
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles = "teacher")]
+    [Area("course_management")]
+    public class T課程班級科目Controller : Controller
+    {
+        private readonly studentContext _context;
+
+        public T課程班級科目Controller(studentContext context)
+        {
+            _context = context;
+        }
+ 
+        public async Task<IActionResult> classCourseIndex(int? id)
+        {
+            var studentContext = _context.T課程班級科目s
+            .Include(t => t.班級)
+            .Include(t => t.科目)
+            .Include(t => t.老師)
+            .Where(t => t.班級id == id);
+
+            var className = _context.T課程班級s.FirstOrDefault(c => c.班級id == id)?.班級名稱;
+            ViewData["ClassName"] = className;
+            ViewData["ClassId"] = id;
+            return View(await studentContext.ToListAsync());
+
+        }
+
+        public async Task<IActionResult> courseIndex()
+        {
+            SelectList coursesSelectList = new SelectList(_context.T課程科目s.Select(c => new
+            {
+                coursesid = c.科目id,
+                coursesName = c.科目名稱
+            }), "coursesid", "coursesName");
+            ViewBag.Course = coursesSelectList;
+
+
+            return PartialView("_createPartial");
+
+        }
+
+        public async Task<IActionResult> GetTeachersBySubjectId(int? id)
+        {
+            if (id == null || _context.T課程科目s == null)
+            {
+                return NotFound();
+            }
+            var t課程科目 = await _context.T課程科目s
+               .FirstOrDefaultAsync(m => m.科目id == id);
+
+            if (t課程科目 == null)
+            {
+                return NotFound();
+            }
+            var Courseteachers = await _context.T課程老師科目s
+            .Where(tc => tc.狀態 == 1 && tc.科目id == id)
+            .Select(tc => tc.老師)
+            .ToListAsync();
+
+
+
+            return Json(Courseteachers);
+        }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            try
+            {
+                var reader = new StreamReader(Request.Body);
+                var jsonData = await reader.ReadToEndAsync();
+
+                // 將 JSON 數據轉換為 ClassCourseViewModel 對象
+                var data = JsonConvert.DeserializeObject<ClassCourseViewModel>(jsonData);
+
+                if (data == null)
+                {
+                    return NotFound();
+                }
+
+                if (data.班級id == null)
+                {
+                    return NotFound();
+                }
+                foreach (var subjectTeacherPair in data.班級科目)
+                {
+                    var 科目id = subjectTeacherPair.CourseId;
+                    var 老師id = subjectTeacherPair.TeacherId;
+
+                    // 將科目名稱和成績存入資料庫
+                    var t班級科目 = new T課程班級科目
+                    {
+                        班級id = data.班級id,
+                        科目id = Convert.ToInt32(科目id),
+                        老師id = 老師id,
+                        狀態 = 1
+                    };
+                    _context.Add(t班級科目);
+
+                }
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(classCourseIndex));
+
+                }
+            
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return StatusCode(500, "Internal server error: " + ex.Message); // 處理全局異常
+            }
+
+        }
+
+
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            if (_context.T課程班級科目s == null)
+            {
+                return Problem("Entity set 'studentContext.T課程班級科目s'  is null.");
+            }
+            var t課程班級科目 = await _context.T課程班級科目s.FindAsync(id);
+            if (t課程班級科目 != null)
+            {
+                _context.T課程班級科目s.Remove(t課程班級科目);
+            }
+
+            await _context.SaveChangesAsync();
+            return Redirect("/course_management/T%E8%AA%B2%E7%A8%8B%E7%8F%AD%E7%B4%9A%E7%A7%91%E7%9B%AE/classCourseIndex/"+ t課程班級科目.班級id);
+        }
+
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null || _context.T課程班級科目s == null)
+            {
+                return NotFound();
+            }
+
+            var t課程班級科目 = await _context.T課程班級科目s
+                .Include(t => t.班級)
+                .Include(t => t.科目)
+                .Include(t => t.老師)
+                .FirstOrDefaultAsync(m => m.班級科目id == id);
+            if (t課程班級科目 == null)
+            {
+                return NotFound();
+            }
+
+            return PartialView("_DeletePartial", t課程班級科目);
+        }
+
+
+        // GET: course_management/T課程班級科目/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null || _context.T課程班級科目s == null)
+            {
+                return NotFound();
+            }
+
+            var t課程班級科目 = await _context.T課程班級科目s.FindAsync(id);
+            if (t課程班級科目 == null)
+            {
+                return NotFound();
+            }
+            var 科目名稱 = 
+                await _context.T課程科目s
+                .Where(s => s.科目id == t課程班級科目.科目id)
+                .Select(s => s.科目名稱)
+                .FirstOrDefaultAsync();
+
+            ViewData["科目名稱"] = 科目名稱;
+            ViewData["老師id"] = new SelectList(_context.T會員老師s, "老師id", "姓名", t課程班級科目.老師id);
+
+            return PartialView("_EditPartial", t課程班級科目);
+        }
+
+        // POST: course_management/T課程班級科目/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("班級科目id,班級id,科目id,老師id,狀態")] T課程班級科目 t課程班級科目)
+        {
+            if (id != t課程班級科目.班級科目id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(t課程班級科目);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!T課程班級科目Exists(t課程班級科目.班級科目id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+      
+            return Redirect("/course_management/T%E8%AA%B2%E7%A8%8B%E7%8F%AD%E7%B4%9A%E7%A7%91%E7%9B%AE/classCourseIndex/" + t課程班級科目.班級id);
+        }
+
+
+
+
+
+
+        private bool T課程班級科目Exists(int id)
+        {
+          return (_context.T課程班級科目s?.Any(e => e.班級科目id == id)).GetValueOrDefault();
+        }
+    }
+}

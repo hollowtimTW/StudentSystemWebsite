@@ -1,0 +1,120 @@
+﻿@model Class_system_Backstage_pj.Models.T工作履歷資料
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>T工作履歷資料</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.F履歷名稱)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.F履歷名稱)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.F履歷狀態)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.F履歷狀態)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.F專長技能)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.F專長技能)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.F語文能力)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.F語文能力)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.F有無工作經驗)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.F有無工作經驗)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.F工作性質)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.F工作性質)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.F工作時段)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.F工作時段)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.F配合輪班)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.F配合輪班)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.F希望職稱)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.F希望職稱)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.F希望薪水待遇)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.F希望薪水待遇)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.F希望工作地點)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.F希望工作地點)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.F自傳)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.F自傳)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.F建立時間)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.F建立時間)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.F最後更新時間)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.F最後更新時間)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.F刪除狀態)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.F刪除狀態)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.F刪除或關閉原因)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.F刪除或關閉原因)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.F學員)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.F學員.信箱)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.FId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

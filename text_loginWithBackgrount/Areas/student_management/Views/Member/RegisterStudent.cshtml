@@ -1,0 +1,216 @@
+﻿@model MemberRegisterViewModel
+
+@{
+    ViewData["Title"] = "新增學員";
+}
+
+<div class="header">
+    <!-- 主頁上方操作流程序，記得有新增頁面時要記得編輯 -->
+    <div class="left">
+        <h1>@ViewData["Title"]</h1>
+        <ul class="breadcrumb">
+            <li><a asp-area="" asp-controller="Home" asp-action="Index">首頁</a></li>
+            /
+            <li><a asp-area="student_management" asp-controller="Member" asp-action="Index">學員管理系統</a></li>
+            /
+            <li><a asp-area="student_management" asp-controller="Member" asp-action="GetAllStudent">學員資料管理</a></li>
+            /
+            <li><a href="#" class="active">@ViewData["Title"]</a></li>
+        </ul>
+    </div>
+    <!-- 主頁上方操作流程序-->
+</div>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <form id="userForm" asp-controller="Member" asp-action="RegisterStudent">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label for="UserName" class="form-label">姓名：</label>
+                <input type="text" asp-for="姓名" class="form-control" id="UserName" />
+                <span asp-validation-for="姓名" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="UserGender" class="form-label">性別：</label>
+                <select asp-for="性別" class="form-control" id="UserGender" style="width: 50px;">
+                    <option value="男">男</option>
+                    <option value="女">女</option>
+                </select>
+                <span asp-validation-for="性別" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="UserIdentity" class="form-label">身分證字號：</label>
+                <input type="text" asp-for="身分證字號" class="form-control" id="UserIdentity" />
+                <span asp-validation-for="身分證字號" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="UserEmail" class="form-label">信箱：</label>
+                <input type="email" asp-for="信箱" class="form-control" id="UserEmail" />
+                <span asp-validation-for="信箱" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="UserPhone" class="form-label">手機：</label>
+                <input type="text" asp-for="手機" class="form-control" id="UserPhone" />
+                <span asp-validation-for="手機" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="UserAddress" class="form-label">地址：</label>
+                <input type="text" asp-for="地址" class="form-control" id="UserAddress" style="width: 300px;" />
+                <span asp-validation-for="地址" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="UserPassword" class="form-label">密碼：</label>
+                <input type="password" asp-for="密碼" class="form-control" id="UserPassword" />
+                <span asp-validation-for="密碼" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="UserPasswordCheck" class="form-label">密碼驗證：</label>
+                <input type="password" asp-for="密碼驗證" class="form-control" id="UserPasswordCheck" />
+                <span asp-validation-for="密碼驗證" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="UserImage" class="form-label">圖片 (只接受PNG 或 JPG)：</label>
+                <input type="file" asp-for="圖片" class="form-control" id="UserImage" accept=".png, .jpg, .jpeg" />
+                <span asp-validation-for="圖片" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="UserBirthday" class="form-label">生日：</label>
+                <input type="date" asp-for="生日" class="form-control" id="UserBirthday" />
+                <span asp-validation-for="生日" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="UserSchool" class="form-label">學校：</label>
+                <input type="text" asp-for="學校" class="form-control" id="UserSchool" />
+                <span asp-validation-for="學校" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="UserDepartment" class="form-label">科系：</label>
+                <input type="text" asp-for="科系" class="form-control" id="UserDepartment" />
+                <span asp-validation-for="科系" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="UserDegree" class="form-label">學位：</label>
+                <select asp-for="學位" class="form-control" id="UserDegree" style="width: 80px;">
+                    <option value="國小">國小</option>
+                    <option value="國中">國中</option>
+                    <option value="高中">高中</option>
+                    <option value="大學">大學</option>
+                    <option value="碩士">碩士</option>
+                    <option value="博士">博士</option>
+                </select>
+                <span asp-validation-for="學位" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="UserGraduation" class="form-label">畢業肄業：</label>
+                <select asp-for="畢肄" class="form-control" id="UserGraduation" style="width: 80px;">
+                    <option value="畢業">畢業</option>
+                    <option value="肄業">肄業</option>
+                </select>
+                <span asp-validation-for="畢肄" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <input id="submitBtn" type="submit" value="送出" class="btn btn-primary" />
+            </div>
+        </form>
+        <br /><br />
+    </div>
+</div>
+
+@* 範例
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered .modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">儲存送出</button>
+            </div>
+        </div>
+    </div>
+</div> *@
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered .modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">預設標題~~~~</h5>
+                @* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> *@
+            </div>
+            <div class="modal-body">
+                <p id="modalMessage">預設訊息~~~~~~~</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+
+        toastr.options = {
+            "positionClass": "toast-bottom-right", // 設置 toast 顯示位置
+            "timeOut": "3000", // 設置 toast 顯示時間（毫秒）
+            "extendedTimeOut": "1000" // 長時間顯示時間（毫秒）
+        };
+
+        // 檢查是否有成功消息，如果有則顯示為成功 toast
+        var successMessage = '@(TempData["SuccessMessage"])';
+        if (successMessage) {
+            toastr.success(successMessage);
+        }
+
+        // 檢查是否有錯誤消息，如果有則顯示為錯誤 toast
+        var errorMessage = '@(TempData["ErrorMessage"])';
+        if (errorMessage) {
+            toastr.error(errorMessage);
+        }
+
+        // const btn = document.querySelector('#submitBtn');
+        // btn.addEventListener('click', async (event) => {
+        //     event.preventDefault(); //防止預設行為的發生，提交、跳轉.冒泡??.等
+        //     const userForm = document.querySelector('#userForm');
+        //     const formData = new FormData(userForm);
+
+        //     const url = '@Url.Content("/student_management/Member/RegisterStudent")';
+        //     try {
+        //         const response = await fetch(url, {
+        //             method: 'POST',
+        //             body: formData
+        //         });
+
+        //         const data = await response.json();
+
+        //         if (response.ok) {
+        //             $('#staticBackdropLabel').text('註冊成功');
+        //             $('#modalMessage').text('學生: ' + data.name + ' 註冊成功');//後端傳回的name
+        //             $('#staticBackdrop').modal('show');
+        //             userForm.reset();//清除
+        //         } else {
+        //             $('#staticBackdropLabel').text('註冊失敗');
+        //             $('#modalMessage').text('註冊失敗，請重新輸入');
+        //             $('#staticBackdrop').modal('show');
+        //         }
+        //     } catch (error) {
+        //         console.error('發生錯誤:', error);
+        //     }
+        // })
+
+    </script>
+}

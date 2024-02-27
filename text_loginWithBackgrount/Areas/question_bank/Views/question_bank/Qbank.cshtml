@@ -1,0 +1,167 @@
+﻿@model vExamInfo
+
+@{
+    ViewData["Title"] = "題庫管理";
+}
+
+@section Styles
+{
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+    <link href="~/css/datatablesinline.min.css" rel="stylesheet" />
+    <style>
+        .imthead {
+            background-color: #C4E1E1;
+            font-weight: 700;
+        }
+    </style>
+}
+
+
+<div class="header">
+    <div class="left">
+        <h1> @ViewData["Title"]</h1>
+        <ul class="breadcrumb">
+            <li>
+                <a asp-area="" asp-controller="Home" asp-action="Index"> 首頁 </a>
+            </li>
+            /
+            <li>
+                <a asp-area="question_bank" asp-controller="question_bank" asp-action="Index"> 考試系統管理 </a>
+            </li>
+            /
+            <li><a href="#" class="active">@ViewData["Title"]</a></li>
+        </ul>
+    </div>
+</div>
+
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="fs-5 mb-3">@Html.DisplayNameFor(model => model.fExamName):</div>
+                <div class="fs-5 mb-3">@Html.DisplayNameFor(model => model.fCourse): </div>
+                <div class="fs-5 mb-3">@Html.DisplayNameFor(model => model.fCLass): </div>
+                <div class="fs-5 mb-3">@Html.DisplayNameFor(model => model.fSTime): </div>
+                <div class="fs-5 mb-3">@Html.DisplayNameFor(model => model.fETime): </div>
+                <div class="fs-5 mb-3">@Html.DisplayNameFor(model => model.fPublish): </div>
+                <div class="fs-5 mb-3">@Html.DisplayNameFor(model => model.fDescribe):</div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script src="~/lib/datatables/js/jquery.datatables.min.js"></script>
+
+
+    <script>
+
+
+
+
+
+        // 更新表格資料
+        function updateDataTable() {
+            const dt = $('#exam_table').DataTable();
+            $('#exam_table').DataTable().destroy()
+            $('#exam_table').DataTable({
+                autoWidth: false,
+                ajax: {
+                    type: 'GET',
+                    url: "/quesion_bank/Api/GetExamList",
+                    dataSrc: function (json) { return json; }
+                },
+                columns: [
+                    { data: "fExamName", "width": "15%", "orderable": false },
+                    { data: "fCourse", "width": "12%", "orderable": false },
+                    { data: "fCLass", "width": "10%", "orderable": false },
+                    { data: "fSTime", "width": "15%" },
+                    { data: "fETime", "width": "15%" },
+                    { data: "fPublish", "width": "10%", "orderable": false },
+                    { data: "fDescribe", "width": "18%", "orderable": false },
+                    {
+                        data: null,
+                        "width": "5%",
+                        "orderable": false,
+                        render: function (data, type, row) {
+                            return `<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop"> 預覽 </ button > `
+                        }
+                    }
+                ],
+                order: [],
+                dom: 'lrtip',
+                fixedHeader: {
+                    header: true
+                },
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.13.7/i18n/zh-HANT.json"
+                }
+            });
+        }
+
+
+
+
+
+
+        $(document).ready(function () {
+
+            $('#ssubject, #sclass').on('change', function () {
+
+                const subjectValue = $('#ssubject').val();
+                const classValue = $('#sclass').val();
+
+                $('#exam_table').DataTable().column(1).search(subjectValue).draw();
+                $('#exam_table').DataTable().column(2).search(classValue).draw();
+            });
+
+            $('#ssearchKey').on('input', function () {
+
+                const ssearchKey = $('#ssearchKey').val();
+                console.log(ssearchKey)
+                $('#exam_table').DataTable().search(ssearchKey).draw();
+            });
+
+
+            $('#clearFilters').on('click', function () {
+                $('#ssubject, #sclass, #ssearchKey, #sstartTime, #sendTime').val('');
+            });
+        });
+
+
+
+        $(document).ready(function () {
+            updateDataTable();
+        });
+
+
+
+    </script>
+
+
+
+}
+
+
+
+
+
+

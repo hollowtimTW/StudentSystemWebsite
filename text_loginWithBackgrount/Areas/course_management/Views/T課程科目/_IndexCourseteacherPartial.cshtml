@@ -1,0 +1,90 @@
+﻿@model Class_system_Backstage_pj.Models.T課程老師科目
+
+
+<div class="card mt-2 p-2" style="background-color:#f3f3fa">
+    <h3 class="w-100 text-center card-header">目前授課老師列表</h3>
+    <div class="card-body">
+        <table class="table  table-hover" id="table_courseteacher" style="width:100%">
+            <thead class="table-head">
+                <tr>
+
+                    <th>
+                        老師姓名
+                    </th>
+                    <th>
+                        手機
+                    </th>
+                    <th>
+                        信箱
+                    </th>
+                    <th>
+                        delete
+                    </th>
+                </tr>
+            </thead>
+
+        </table>
+    </div>
+</div>
+
+<hr/>
+<div class="card text-white bg-info mb-3 w-100">
+    <div class="w-100 text-center card-header">
+        <h3 class="card-title">目前選擇的是:</h3>
+
+    </div>
+    <form asp-area="course_management" method="post" asp-controller="T課程科目" asp-action="CourseTeacher">
+        <div class="card-body">
+
+            <div class="row">
+                <div>
+                    <span class="card-text fs-4">科目:</span>
+                    <span class="card-text fs-4" id="chose_coursename">選擇之科目</span>
+                    <input class="card-text fs-4" asp-for="科目id" id="chose_courseid" type="hidden" />
+                </div>
+                <div>
+                    <span class="card-text fs-4">老師:</span>
+                    <span class="card-text fs-4" id="chose_techername">-尚未選擇-</span>
+                    <input class="card-text fs-4" id="chose_techer" asp-for="老師id" type="hidden" />
+                </div>
+            </div>
+
+            <div class="row">
+                <input type="hidden" asp-for="狀態" value="1" />
+            </div>
+
+        </div>
+
+        <div class="w-100 text-end card-footer">
+            <input type="submit" value="Create" class="btn btn-success" />
+        </div>
+    </form>
+</div>
+<hr />
+<div class="card mt-2 p-2" style="background-color:#f3f3fa">
+    <h3 class="w-100 text-center card-header">老師列表</h3>
+    <div class="card-body">
+    <table class="table  table-hover" id="table_teacher" style="width:100%">
+        <thead class="table-head">
+            <tr>
+               
+                <th>
+                    老師姓名
+                </th>
+                <th>
+                    手機
+                </th>
+                <th>
+                    信箱
+                </th>               
+                <th>
+                    add teacher
+                </th>
+            </tr>
+        </thead>
+
+    </table>
+    </div>
+</div>
+
+

@@ -1,0 +1,88 @@
+﻿@model Class_system_Backstage_pj.Areas.course_management.ViewModel.T課程科目分類.CategoryPictureViewModel
+
+<div class="p-4">
+
+    <div class="row">
+
+        <form asp-area="course_management" asp-controller="T課程科目分類" asp-action="Edit" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div>
+                <input type="hidden" asp-for="科目類別id" />
+                <input type="hidden" asp-for="科目類別封面名稱" />
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="科目類別名稱" class="control-label"></label>
+                        <input asp-for="科目類別名稱" class="form-control" />
+                        <span asp-validation-for="科目類別名稱" class="text-danger"></span>
+                    </div>
+                </div>  
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="科目類別封面" class="control-label"></label>
+                        <div class="d-flex gap-2 align-items-center">
+                            <div>
+                                <input asp-for="科目類別封面" type="file" id="fileInput" accept=".jpg, .jpeg, .png" class="form-control" onchange="previewImageEdit(event)">
+                            </div>
+                            <div>
+                                <span class="btn btn-info h-5" onclick="toggleUnsplash()"><i class='bx bxl-unsplash'></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-2 card" id="unsplashDiv" style="display:none;">
+
+                <div class="card-header">
+                    <div class="card-title text-center">Unsplash API</div>
+                    <div class="d-flex gap-2 w-100">
+                        <input class="" id="queryInput" style="width:90%" />
+                        <span class="btn text-success" id="search_btn" onclick="fetchUnsplash()"><i class='bx bx-search'></i></span>
+                    </div>
+                </div>
+
+
+
+                <div class="unplash_context p-2" id="unplash_context">
+                </div>
+
+            </div>
+            <div class="row" id="original_picture">
+                <div class="col-md-6">
+                    <img src="@Url.Content("/images/t課程科目類別/" + @Model.科目類別封面名稱)" style="width: 200px; height: 150px;" />
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <img id="preview" src="#" alt="Image Preview" style="display:none;width:100%; max-height: 300px;">
+            </div>
+
+            <div class="row">
+                <div class="form-group visually-hidden">
+                    <label asp-for="狀態" class="control-label"></label>
+                    <input asp-for="狀態" class="form-control" value="1" type="hidden" />
+                    <span asp-validation-for="狀態" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group mt-5 text-lg-end">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+     
+    </div>
+
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

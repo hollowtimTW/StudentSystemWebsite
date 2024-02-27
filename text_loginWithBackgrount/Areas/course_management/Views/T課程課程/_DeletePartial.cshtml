@@ -1,0 +1,31 @@
+﻿@model Class_system_Backstage_pj.Models.T課程課程
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<div class="p-4">
+    
+    <dl class="row">
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.開始時間)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.開始時間)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.結束時間)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.結束時間)
+        </dd>
+      
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="課程id" />
+        <input type="submit" value="Delete" class="btn btn-danger" />
+    </form>
+</div>

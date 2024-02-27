@@ -1,0 +1,42 @@
+﻿@model Class_system_Backstage_pj.Models.T課程班級科目
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>T課程班級科目</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.狀態)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.狀態)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.班級)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.班級.班級名稱)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.科目)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.科目.科目名稱)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.老師)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.老師.信箱)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.班級科目id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

@@ -1,0 +1,147 @@
+﻿@{
+    ViewData["Title"] = "排課系統管理";
+}
+@section Styles
+{
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+    @* <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script> *@
+    @* <link href="~/css/datatablesinline.css" rel="stylesheet" /> *@
+    <link href="~/css/datatablesinline.min.css" rel="stylesheet" />
+    <style>
+        .imthead {
+            background-color: #C4E1E1;
+            font-weight: 700;
+        }
+
+        .insights{
+            padding-left:0;     
+        }
+      
+    </style>
+}
+<div class="header">
+    <!-- 主頁上方操作流程序能引入操作流程返回，記得有新增頁面時要記得編輯，有class="active的是現在位置-->
+    <div class="left">
+        <h1> @ViewData["Title"]</h1>
+        <ul class="breadcrumb">
+            <li>
+                <a asp-area="" asp-controller="Home" asp-action="Index"> 首頁 </a>
+            </li>
+            /
+            <li><a href="#" class="active">@ViewData["Title"]</a></li>
+        </ul>
+    </div>
+    <!-- 主頁上方操作流程序結束-->
+</div>
+
+<!-- Insights -->
+<ul class="insights">
+    <li id="li_1">
+        <i class='bx bxs-book'></i>        
+        <span class="info">
+                <h3>
+                    課程科目管理
+                </h3>            
+            </span>
+    </li>
+
+    <li id="li_2">
+        <i class='bx bxs-category'></i>
+        <span class="info">
+            <h3>
+                科目分類管理
+            </h3>    
+        </span>     
+    </li>
+
+    <li id="li_3">
+        <i class='bx bxs-user-plus'></i>
+        <span class="info">
+            <h3>
+                新增班級
+            </h3>
+        </span>
+    </li>
+
+    <li id="li_4">
+        <i class='bx bxs-graduation'></i>
+        <span class="info">
+            <h3>
+                班級管理
+            </h3>
+        </span>
+    </li>
+   
+</ul>
+<!-- End of Insights -->
+
+<div class="bottom-data">
+    <div class="orders">
+        <div class="header">
+            <i class='bx bx-receipt'></i> 
+            <h3>Embedded Power BI Report</h3>
+        </div>
+        <p>
+            <iframe title="科目" width="600" height="373.5" src="https://app.powerbi.com/view?r=eyJrIjoiYzlkZWU0YjUtYTcxNC00YmFhLThjYTUtY2RhMzIyYWY0NzMwIiwidCI6IjcwODk3ZDZmLTBhNDgtNDlkZS04ODBmLTI3ZDhhZDQ1ZDc2ZSIsImMiOjEwfQ%3D%3D" frameborder="0" allowFullScreen="true"></iframe>
+        </p>
+    </div>
+
+    <!-- 側邊條列區塊 -->
+    <div class="reminders">
+        <div class="header">
+            <i class='bx bx-note'></i>
+            <h3>Remiders</h3>
+            <i class='bx bx-filter'></i>
+            <i class='bx bx-plus'></i>
+        </div>
+        <ul class="task-list">
+            <li class="completed">
+                <div class="task-title">
+                    <i class='bx bx-check-circle'></i>
+                    <p>完成2024開班</p>
+                </div>
+                <i class='bx bx-dots-vertical-rounded'></i>
+            </li>
+            <li class="completed">
+                <div class="task-title">
+                    <i class='bx bx-check-circle'></i>
+                    <p>遞交結案報告</p>
+                </div>
+                <i class='bx bx-dots-vertical-rounded'></i>
+            </li>
+            <li class="not-completed">
+                <div class="task-title">
+                    <i class='bx bx-x-circle'></i>
+                    <p>課程評價登入</p>
+                </div>
+                <i class='bx bx-dots-vertical-rounded'></i>
+            </li>
+        </ul>
+    </div>
+
+    <!-- End of Reminders-->
+
+</div>
+
+@section Scripts {
+
+    <script>
+        document.querySelector('.insights').addEventListener('click', function (event) {
+            
+            // 檢查是否點擊的是 #li_1 或其子元素，點到就由window導航到指定路由
+            if (event.target.closest('#li_1')) {
+                window.location.href = '/course_management/T課程科目/Index'; 
+            } else if (event.target.closest('#li_2')){
+                window.location.href = '/course_management/T課程科目分類/Index';
+
+            } else if (event.target.closest('#li_3')) {
+                window.location.href = '/course_management/T班級創建/Index';
+
+            } else if (event.target.closest('#li_4')) {
+                window.location.href = '/course_management/T課程班級/Index';
+
+            }
+        });
+     
+    </script>
+ }

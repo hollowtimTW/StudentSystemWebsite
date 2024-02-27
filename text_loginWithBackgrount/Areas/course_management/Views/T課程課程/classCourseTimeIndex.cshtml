@@ -1,0 +1,332 @@
+﻿@using Class_system_Backstage_pj.Models;
+@using System.Net;
+
+@model IEnumerable<Class_system_Backstage_pj.Models.T課程課程>;
+@{
+    var classData = ViewBag.Class as T課程班級;
+    var courseData = ViewBag.ClassCourse as List<T課程班級科目>;
+}
+
+@section Styles{
+   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.css" rel="stylesheet" />
+
+    <style>
+        .table th {
+            font-family: Lato-Bold;
+            font-size: 15px;
+            line-height: 1;
+             color: lightgray;
+            background-color: white;
+        }
+
+        .table td {
+            font-family: Lato-Regular;
+            font-size: 1.15vw;
+            font-weight: bold;
+            color: gray;
+            line-height: 1.4
+        }
+
+
+        .table tr {
+            background-color: white;
+        }
+       
+
+        .table {
+            overflow: hidden;
+            box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+            -moz-box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+            -webkit-box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+            -o-box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+            -ms-box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+            
+        }
+
+       
+       button{
+           background-color:lightgray  !important;
+           border: none !important;
+       }
+
+        .selected-row {
+        background-color: lightgray !important;
+        }
+        .fc-scrollgrid-sync-table{
+        width: 100% !important;
+        }
+
+        #modal_content {
+            background: url(https://img.freepik.com/premium-photo/empty-space-paper-copy-space_78502-575.jpg?w=1060) center center no-repeat;
+            background-size: cover;
+            background-color: gray;
+            filter: grayscale(30%);
+        }
+    
+          .btn {
+            display: inline-block;
+            outline: none;
+            cursor: pointer;
+            font-weight: 600;
+            border-radius: 3px;
+            border: 0;
+            color: white;
+            line-height: 1.15;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background-color: #76daff !important;
+        }
+
+        .btn-success {
+            background-color: #47cf73 !important;
+        }
+
+        .btn-warning {
+            background-color: #fcd000 !important;
+        }
+
+        .btn-secondary {
+            background-color: #cdcdcd !important;
+        }
+
+        .btn:hover {
+            transition: all .1s ease;
+            box-shadow: 0 0 0 0 azure, 0 0 0 3px azure;
+        }
+    </style>
+}
+
+<div class="text-center text-black-50">
+    <div>
+        <h2>課程規劃:</h2>
+    </div>
+</div>
+
+<div class="mt-4">
+    <card class="text-center">
+        <div class="card-header " style="background-color:#ffa7a7">
+            <h4 class="text-white"><span class="fw-bolder">@classData.班級名稱</span> 班級課程列表</h4>
+        </div>
+        <table class="table card-body">
+        <thead>
+            <tr>
+                <th>老師</th>
+                <th>科目</th>
+                <th>action</th>
+            </tr
+        </thead>
+        @foreach (var course in courseData)
+        {
+            <tr>
+                <td class="coursename">@course.老師.姓名</td>
+                <td class="teachername">@course.科目.科目名稱</td>
+                <td>
+                    <input type="radio" name="selectedCourse" value="@course.科目.科目名稱">
+                    <span class="visually-hidden courseid">@course.班級科目id</span>
+                </td>
+            </tr>
+        }
+       
+    </table>
+        
+        <div>
+             <div id='calendar' class="calendar"></div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-md">
+            <div class="modal-content" id="modal_content">
+                    <div class="modal-header d-flex justify-content-center align-items-center">
+                            <p class="fs-6 h-100 mb-0"  id="exampleModalLabel"></p>
+                            <p class="fs-6 h-100 mb-0"  id="exampleModalsubTitle"></p>
+                        <button type="button" id="closeBtn" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        </button>
+                    </div>
+
+                    <div class="modal-body overflow-hidden" id="switch_context">
+                    <img class="w-100" src="~/images/t課程科目/loading.gif" />
+                    </div>
+            </div>
+        </div>
+    </div>
+    </card>
+</div>
+
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.5/main.js" integrity="sha512-p8Y3dmH8kSZIUvVonZz2ttZxzOvX2dcIEN15JzIDPlrSSoT7UpZ8w+MWyBJjqhnF+g+L5hL5i2kRZkwcurjXJw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.5/locales/zh-tw.js" integrity="sha512-kSMJ35bCCcHBMhZePO7UjEq1zNt0zkVX39a9Vt6IRKrrpjdK43/f57tKd0hSH/OO8XZfpi8LN8wtU70RVIw/Iw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                validRange: 
+                       @{
+                        var start = classData.入學日期.ToString("yyyy-MM-ddTHH:mm:ss");
+                        var end = classData.結訓日期.ToString("yyyy-MM-ddTHH:mm:ss");
+
+                                <text>
+                                {
+                                    start: '@start',
+                                    end: '@end'
+                                },
+                                </text>
+                        }
+                
+                handleWindowResize:true,
+                 windowResize: true ,
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    locale: 'zh-tw',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                 eventTimeFormat: {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    meridiem: 'short' 
+                },
+                events: [
+                    @foreach (var course in Model)
+                    {
+                        var title = WebUtility.HtmlDecode(@course.班級科目.科目.科目名稱);
+                        var datetime = @course.開始時間.ToString("yyyy-MM-ddTHH:mm:ss");
+                        var endtime = @course.結束時間.ToString("yyyy-MM-ddTHH:mm:ss");
+                        var timeid = @course.課程id;
+                        <text>
+                            {
+                                title: '@Html.Raw(title)',
+                                start:'@datetime',
+                                end:'@endtime',
+                                data: {
+                                     timeid: '@timeid',
+                               }
+                            },
+                        </text>
+
+                        
+                    }
+                ]
+            });
+            calendar.setOption('dateClick', function (info) {
+
+                var btn=document.querySelectorAll('.selected-row');
+
+                if (btn.length === 0) {
+                    alert("請先從上方班級科目表選擇要新增的科目");
+                   
+                } else {
+                        var selectRow=document.querySelector('.selected-row');
+                        var courseIDCell = selectRow.querySelector('span.courseid').textContent.trim();
+                        var courseName = selectRow.querySelector('td.coursename').textContent.trim();
+                        var teacherName = selectRow.querySelector('td.teachername').textContent.trim();
+                        $('#exampleModal').modal('show');
+
+                        let exampleModalLabel = document.getElementById("exampleModalLabel");
+                        let exampleModalsubTitle= document.getElementById("exampleModalsubTitle");
+                        exampleModalLabel.textContent = "新增上課時間:";
+                        exampleModalsubTitle.textContent= teacherName+ " - " + courseName;
+                          if (courseIDCell) {
+                              sohwForm(courseIDCell);                               
+                          } else {
+                                
+                          }                          
+                }
+            });
+
+
+             calendar.on('eventClick', function(info) {
+                      
+                        $('#exampleModal').modal('show');
+
+                        let exampleModalLabel = document.getElementById("exampleModalLabel");
+                        exampleModalLabel.textContent = "確認刪除該課程時間?";
+                        let exampleModalsubTitle= document.getElementById("exampleModalsubTitle");
+                        exampleModalsubTitle.textContent = info.event._def.title;
+                         if (info.event._def.extendedProps.data.timeid) {
+                              deleteData(info.event._def.extendedProps.data.timeid);                               
+                          } else {
+                                
+                          } 
+                       
+              });
+
+            calendar.render();
+       
+        });
+    </script>
+    <script>
+       var radioButtons = document.querySelectorAll('input[type="radio"][name="selectedCourse"]');
+
+        radioButtons.forEach((radioButton) => {
+
+            radioButton.addEventListener('change', function () {
+                rowColor(radioButton);
+
+            })
+        });
+
+        function rowColor(radioButton){
+
+            document.querySelectorAll('.selected-row').forEach(function (row) {
+                    //把所有被選擇到的row先去除   
+                    row.classList.remove('selected-row');                    
+                });
+                    //這個btn被選到就變色
+                 if (radioButton.checked) {
+                    
+                    var row =radioButton.closest('tr');
+                     row.classList.add('selected-row');                    
+
+                };
+        }
+    </script>
+    <script>
+
+        function closeModal() {
+            exampleModalLabel.innerText = "";
+        }
+
+        $('#exampleModal').on('hidden.bs.modal', function (e) {
+            closeModal();
+        });
+
+               
+    </script>
+    <script>
+        function sohwForm(courseIDCell) {
+
+            var courseID = courseIDCell.textContent;
+            var url = "/course_management/T課程課程/Create/"+courseIDCell;
+            var data = { "id": courseIDCell};
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: data,
+                success: function (response) {
+                    $('#switch_context').html(response);
+                }
+            });
+        }
+        
+        function deleteData(timeid) {
+
+            var url = "/course_management/T課程課程/Delete/"+timeid;
+            var data = { "id": timeid};
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: data,
+                success: function (response) {
+                    $('#switch_context').html(response);
+                }
+            });
+        }
+
+    </script>
+   
+}
+
+

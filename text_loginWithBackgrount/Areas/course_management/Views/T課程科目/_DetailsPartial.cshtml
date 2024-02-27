@@ -1,0 +1,33 @@
+﻿@model Class_system_Backstage_pj.Models.T課程科目
+
+
+<div class="p-4 partial_details">
+
+
+    <dl>
+
+        
+        <div class="row">
+            <dt class="col-md-6">
+                @Html.DisplayNameFor(model => model.科目名稱):
+            </dt>
+            <dd class="col-md-6">
+                @Html.DisplayFor(model => model.科目名稱)
+            </dd>
+
+
+
+            <dt class="col-md-6">
+            @Html.DisplayNameFor(model => model.科目類別):
+            </dt>
+            <dd class="col-md-6">
+            @Html.DisplayFor(model => model.科目類別.科目類別名稱)
+            </dd>
+
+        </div>
+
+    </dl>
+
+</div>
+
+

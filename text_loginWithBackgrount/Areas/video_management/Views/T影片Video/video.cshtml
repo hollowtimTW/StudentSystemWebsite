@@ -1,0 +1,274 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "video";
+}
+@model IEnumerable<T影片Video>
+@section Styles
+    {
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+    @* <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script> *@
+        <link href="~/css/datatablesinline.css" rel="stylesheet" />
+        <style>
+            /*  頭部表格欄位樣式 */
+            .imthead {
+                background-color: #C4E1E1;
+                font-weight: 700;
+            }
+            /*  新刪修按鈕排列方式 */
+            .crudlist {
+                display: flex;
+                align-items: center;
+                grid-gap: 10px;
+            }
+                /*  新刪修按鈕大小微調 */
+                .crudlist li {
+                    padding: 15px;
+                    margin-bottom: 0;
+                }
+        </style>
+}
+
+<div class="header">
+    <!-- 主頁上方操作流程序，記得有新增頁面時要記得編輯 -->
+    <div class="left">
+        <h1>@ViewData["Title"]</h1>
+        <ul class="breadcrumb">
+            <li><a asp-area="" asp-controller="Home" asp-action="Index">首頁</a></li>
+            /
+            <li><a asp-area="video_management" asp-controller="T影片Video" asp-action="Index">Index</a></li>
+            /
+            <li><a href="#" class="active">@ViewData["Title"]</a></li>
+        </ul>
+    </div>
+    <!-- 主頁上方操作流程序-->
+</div>
+<div>
+    <ul class="crudlist">
+    
+        <li>
+           @*  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                新增
+            </button> *@
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" id="buttoncreate">
+                新增
+            </button>
+        </li>
+    @*     <li><button class="btn btn-primary">刪除</button></li>
+      
+        <li><button class="btn btn-secondary">修改</button></li> *@
+    </ul>
+</div>
+<div class="bottom-data">
+    <div class="orders">
+        <div class="header">
+            @* 表格標題輸入地方 *@
+            <i class='bx bx-receipt'></i> <!-- 表格的小icon -->
+            <h3>影片管理</h3> <!-- 表格的名稱 -->
+            @*             <i class='bx bx-filter'></i>
+            <i class='bx bx-search'></i>  *@
+
+        </div>
+        @* 表格內容輸入地方 *@
+        <table id="test_table">
+            <thead class="imthead">
+                <tr>
+                    <td>@Html.DisplayNameFor(model => model.FVideoTitle)</td>
+                    <td>@Html.DisplayNameFor(model =>model.FUrl)</td>
+                    <td>@Html.DisplayNameFor(model => model.FPrice)</td>
+                    <td>@Html.DisplayNameFor(model => model.科目id)</td>
+                    <td>@Html.DisplayNameFor(model => model.FImagePath)</td>
+
+                </tr>
+            </thead>
+
+            @* 表格內容輸入地方 *@
+        </table>
+
+        @* 表格輸入結束 *@
+    </div>
+</div>
+@* 動態視窗 *@
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="videoForm" enctype="multipart/form-data">
+                    <input type="hidden" id="videoId" />
+                    <div class="mb-3">
+                        <label for="videoTitle" class="form-label">影片標題</label>
+                        <input type="text" class="form-control" id="videoTitle" name="videoTitle" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="videoUrl" class="form-label">影片</label>
+                        <input type="file" class="form-control" id="videoUrl" name="videoUrl" required accept="image/*">
+                    </div>
+                    <div class="mb-3">
+                        <label for="videoPrice" class="form-label">價格</label>
+                        <input type="text" class="form-control" id="videoPrice" name="videoPrice" required>
+                    </div>
+                    <div class="mb-3">
+                        <div class="dropdown">
+                            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="subjectid" name="subjectid">
+                            </select>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                <button type="button" class="btn btn-primary" id="subbtn">送出</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+    {
+        <script src="~/lib/datatables/js/jquery.datatables.min.js"></script>
+        <script src="//cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"> </script>
+        <script>
+          
+
+            $(document).ready(function () {
+                // alert("ready")
+                $("table").dataTable({
+                    autoWidth: false,
+                    ajax: {
+                        type: 'GET',
+                        url: "/video_management/T影片Video/Indexjson",
+                        dataSrc: function (json) {
+                            return json;
+
+        }
+                    },
+                    columns: [
+                        { "data": "fVideoTitle", "width": "10 %" },
+                        { "data": "fUrl", "width": "10 %" },
+                        // { "data": "fImagePath", "width": "10 %" },
+                        { "data": "fPrice", "width": "10 %" },
+                        { "data": "科目id", "width": "10 %" },
+                        { "data": "fVideoId", "visible": false }, //放入表格pk但不要顯示，為了在row中引用
+                        {
+                            data: null,
+                            title: "function",
+                            render: function (data, type, row) {
+                                return '<i class="bx bxs-trash-alt"data-id="' + row.fVideoId + '" ></i>' + "&nbsp;&nbsp;&nbsp;" + '<i class="bx bxs-message-square-edit" data-id="' + row.fVideoId + '"></i>' //引入icon與表格pk識別
+                                //return '<button class="btn btn-danger btn-sm delete-btn" data-id="' + row.影片id + '">刪除</button>';
+                            }
+                        }
+                    ],
+                    fixedHeader: { header: true },
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/zh-HANT.json'
+                    },
+                });
+            $('#test_table tbody').on('click', 'i.bxs-trash-alt', async function () {
+                var videoId = $(this).data('id');
+
+                if (confirm("確定要刪除嗎？")) {
+                    // 發送 AJAX 刪除請求
+                    $.ajax({
+                        type: 'POST',
+                        url: '/video_management/T影片Video/DeleteVideo',  // 請根據實際路徑修改
+                        data: { id: videoId },
+                        success: function (data) {
+                            // 如果刪除成功，可以進行一些操作，例如重新載入表格
+                            if (data.success) {
+                                alert('刪除成功！');
+                                // 重新載入表格或進行其他操作
+                                // 例如：window.location.reload();
+                            } else {
+                                alert('刪除失敗！');
+                            }
+                        },
+                        error: function () {
+                            alert('發生錯誤！');
+                        }
+                    });
+                }
+            });
+
+                $('#test_table tbody').on('click', 'i.bxs-message-square-edit', async function () {
+                    var productId = $(this).data('id');
+                    // console.log(productId)
+                    // const url = `@Url.Content("~/Products/DeleteStore/")?id=${productId}`;
+                    // const response = await fetch(url);
+                    // const data = await response.text();
+                    console.log(productId);
+                });
+            })
+                 $(document).ready(function () {
+                $("#btnOpenCreateModal").click(function () {
+                    // 在按下按鈕時將瀏覽器重定向到 Create View 的 URL
+                    window.location.href = "/video_management/T影片Video/Create";
+                });
+
+                // 其他 JavaScript 代碼...
+            });
+            $('#buttoncreate').click(async function () {
+                const url = `@Url.Content("~/api/subjectInformation/")`;
+                const response = await fetch(url)
+                const data = await response.json()
+                const datalist = data.map(a =>
+                    `
+                                <option value="${a.id}">${a.title}</option>
+                                `);
+                $('#subjectid').html(datalist);
+            });
+
+            $("#subbtn").click(async function () 
+            {
+            const videoForm = $('#videoForm')[0]; // 使用 jQuery 选择器获取表单元素
+
+                let formData = new FormData(videoForm);
+
+                try {
+                    const res = await $.ajax({
+                        url: '@Url.Content("~/api/createvideo")',
+                        method: 'POST',
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                    });
+
+                    if (!res.ok) {
+                        throw new Error(`${res.status}`);
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+            })
+        // const subbtn = document.getElementById('subbtn');
+        //     subbtn.addEventListener('click', () => {
+        //         uploadFile();
+        // })
+        // async function uploadFile() {
+        //     const videoForm = $('#videoForm')[0]; // 使用 jQuery 选择器获取表单元素
+
+        //     let formData = new FormData(videoForm);
+
+        //     try {
+        //         const res = await $.ajax({
+        //             url: '@Url.Content("~/api/createvideo")',
+        //             method: 'POST',
+        //             data: formData,
+        //             contentType: false,
+        //             processData: false
+        //         });
+
+        //         if (!res.ok) {
+        //             throw new Error(`${res.status}`);
+        //         }
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // }
+        </script>
+}

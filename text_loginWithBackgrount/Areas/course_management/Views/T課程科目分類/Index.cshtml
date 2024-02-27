@@ -1,0 +1,421 @@
+﻿@model IEnumerable<Class_system_Backstage_pj.Models.T課程科目分類>
+@{
+    ViewData["Title"] = "課目分類管理";
+}
+@section Styles {
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+    <link href="~/css/datatablesinline.min.css" rel="stylesheet" />
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="~/css/course_management/stylepopup.css" rel="stylesheet" />
+
+    <style>
+        .table-hover tbody tr:hover {
+            background-color: azure;
+        }
+
+        #table {
+            border-collapse: collapse;
+            width: 100%;
+            color: gray;
+        }
+
+            #table td {
+                border-top: 1px solid azure;
+                border-bottom: 1px solid azure;
+            }
+
+        .table-head {
+            background-color: azure;
+        }
+
+        .dataTables_filter {
+            margin-bottom: 15px !important;
+        }
+
+        #modal_content {
+            background: url(https://img.freepik.com/premium-photo/empty-space-paper-copy-space_78502-575.jpg?w=1060) center center no-repeat;
+            background-size: cover;
+            background-color: gray;
+            filter: grayscale(30%);
+        }
+
+        .btn {
+            display: inline-block;
+            outline: none;
+            cursor: pointer;
+            font-weight: 600;
+            border-radius: 3px;
+            border: 0;
+            color: white;
+            line-height: 1.15;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background-color: #76daff !important;
+        }
+
+        .btn-success {
+            background-color: #47cf73 !important;
+        }
+
+        .btn-warning {
+            background-color: #fcd000 !important;
+        }
+
+        .btn-secondary {
+            background-color: #cdcdcd !important;
+        }
+
+        .btn:hover {
+            transition: all .1s ease;
+            box-shadow: 0 0 0 0 azure, 0 0 0 3px azure;
+        }
+
+        .bx-trash {
+            color: white;
+        }
+    </style>
+}
+
+<div class="header">
+    <!-- 主頁上方操作流程序，記得有新增頁面時要記得編輯 -->
+    <div class="left">
+        <h1 class="text-center">@ViewData["Title"]</h1>
+
+        <ul class="breadcrumb">
+            <li><a asp-area="" asp-controller="Home" asp-action="Index">首頁</a></li>
+            /
+            <li><a asp-area="course_management" asp-controller="courseHome" asp-action="Index">排課系統管理</a></li>
+            /
+            <li><a href="#" class="active">@ViewData["Title"]</a></li>
+        </ul>
+    </div>
+    <!-- 主頁上方操作流程序-->
+</div>
+
+<p>
+    <a class="btn btn-success fs-4 pb-2" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="popup_create()">create</a>
+</p>
+
+<table class="table  table-hover" id="table" style="width:100%">
+    <thead class="table-head">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.科目類別名稱)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.科目類別封面)
+            </th>
+
+            <th>
+                edit
+            </th>
+            <th>
+                delete
+            </th>
+            <th>
+                details
+            </th>
+
+        </tr>
+    </thead>
+
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" id="modal_content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                <button type="button" id="closeBtn" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+
+            <div class="modal-body" id="switch_context">
+                <img class="w-100" src="~/images/t課程科目/loading.gif" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/datatables/js/jquery.datatables.min.js"></script>
+    <script src="//cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"> </script>
+    <script src="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/boxicons.js"></script>
+
+    <script>
+        $(document).ready(
+            function () {
+
+                // Datatable
+                $("table").dataTable({
+                    ajax: {
+                        type: "GET",
+                        url: "/course_management/T課程科目分類/IndexJson",
+                        dataSrc: function (json) { return json; }
+                    },
+                    columns: [
+                        { "data": "科目類別名稱", "width": "30%" },
+                        {
+                            "data": "科目類別封面", "width": "40%",
+                            "render": function (data, type, row) {
+                                if (data) {
+                                    return '<img src="/images/t課程科目類別/' + data + '" style="max-width:120px; max-height:90px;">';
+                                } else {
+                                    return '<img src="https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg" style="max-width:120px; max-height:90px;">';
+
+                                }
+                            }
+                        },
+
+                        {
+                            "data": "科目類別id",
+                            "render": function (data, type, row) {
+                                return '<p><a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick = "popup_edit(' + row.科目類別id + ')"><i class="bx bx-edit-alt"></i></a></p>'
+                            },
+                            "orderable": false
+                            , "width": "10%"
+
+                        },
+                        {
+                            "data": "科目類別id",
+                            "render": function (data, type, row) {
+                                return '<p><a class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick = "popup_delete(' + row.科目類別id + ')"> <i class="bx bx-trash""></i> </a></p>'
+                            },
+                            "orderable": false
+                            , "width": "10%"
+                        },
+                        {
+                            "data": "科目類別id",
+                            "render": function (data, type, row) {
+                                return '<p><a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick = "popup_detail(' + row.科目類別id + ')"><i class="bx bx-menu" ></i></a></p>'
+                            },
+                            "orderable": false
+                            , "width": "10%"
+                        },
+
+
+
+                    ],
+
+
+                });
+                //img_click
+                $(document).on("click", ".img_click", function (event) {
+                    downloadImage(event);
+                });
+
+
+            });
+
+
+
+    </script>
+    <script>
+        let exampleModalLabel = document.getElementById("exampleModalLabel");
+
+        function closeModal() {
+            exampleModalLabel.innerText = "Modal title";
+        }
+
+        $('#exampleModal').on('hidden.bs.modal', function (e) {
+            closeModal();
+        });
+
+        function popup_create() {
+
+            exampleModalLabel.innerText = "Create";
+
+            $.ajax({
+                type: 'GET',
+                url: '/course_management/T課程科目分類/create',
+                success: function (result) {
+                    console.log('Ajax request success');
+                    $("#switch_context").html("");
+                    $("#switch_context").html(result);
+
+                },
+                error: function (error) {
+
+                    console.error('Ajax request error', error);
+                }
+            });
+        }
+        function popup_edit(id) {
+
+            $.ajax({
+                type: 'GET',
+                url: '/course_management/T課程科目分類/Edit/' + id,
+                success: function (result) {
+
+                    console.log('Ajax request success');
+                    $("#switch_context").html("");
+                    $("#switch_context").html(result);
+
+                },
+                error: function (error) {
+
+                    console.error('Ajax request error', error);
+                }
+            });
+
+        }
+        function popup_delete(id) {
+            $.ajax({
+                type: 'GET',
+                url: '/course_management/T課程科目分類/Delete/' + id,
+                success: function (result) {
+
+                    console.log('Ajax request success');
+                    $("#switch_context").html("");
+                    $("#switch_context").html(result);
+
+                },
+                error: function (error) {
+
+                    console.error('Ajax request error', error);
+                }
+            });
+
+        }
+        function popup_detail(id) {
+
+            $.ajax({
+                type: 'GET',
+                url: '/course_management/T課程科目分類/Details/' + id,
+                success: function (result) {
+
+                    console.log('Ajax request success');
+                    $("#switch_context").html("");
+                    $("#switch_context").html(result);
+
+                },
+                error: function (error) {
+
+                    console.error('Ajax request error', error);
+                }
+            });
+
+        }
+    </script>
+    <script>
+     
+        function previewImage(event) {
+
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function () {
+                const preview = document.getElementById('preview');
+                preview.src = reader.result;
+                preview.style.display = 'block';
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+        function previewImageEdit(event) {
+
+
+            var original_picture = document.getElementById("original_picture");
+            original_picture.style.display = "none";
+
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function () {
+                const preview = document.getElementById('preview');
+                preview.src = reader.result;
+                preview.style.display = 'block';
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+    <script>
+
+        //unplash相關
+        function downloadImage(event) {
+            var imageUrl = event.target.getAttribute("data-url");
+
+            // 發送 AJAX 請求下載圖片
+            fetch(imageUrl).then(response => {
+
+                return response.blob()
+                    .then(blob => {
+                        const contentType = response.headers.get("content-type");
+                        const extension = contentType.split("/")[1];
+                        return { blob: blob, extension: extension };
+                    })
+                    .then(data => {
+                        const extension = data.extension;
+
+                        if (data.blob.size === 0) {
+                            throw new Error("下載的圖片大小為0");
+                        }
+
+                        const fileName = `downloaded_image.${extension}`;
+                        var fileInput = document.getElementById('fileInput');
+                        var file = new File([data.blob], fileName);
+
+                        // 覆蓋 fileInput.files[0]
+                        var fileList = new DataTransfer();
+                        fileList.items.add(file);
+                        fileInput.files = fileList.files;
+                        fileInput.dispatchEvent(new Event('change'));
+
+
+                    })
+                    .catch(error => console.error('下載圖片時發生錯誤:', error));
+            })
+
+        }
+        function toggleUnsplash() {
+            var unsplashDiv = document.getElementById("unsplashDiv");
+            if (unsplashDiv.style.display === "none") {
+                unsplashDiv.style.display = "block";
+            } else {
+                unsplashDiv.style.display = "none";
+            }
+        }
+        function fetchUnsplash() {
+            var query = document.getElementById('queryInput').value;
+            fetch(`https://api.unsplash.com/search/photos/?query=${query}&client_id=mMuwY1LC33QCOEAdhv8u-ieuDRTHs6qja0iMfyZNeUY`)
+                .then((res) => {
+                    return res.json();
+                })
+                .then((data) => {
+                    let container = document.querySelector("#unplash_context");
+                    let row;
+                    container.innerHTML = '';
+                    for (let i = 0; i < 4; i++) {
+                        if (i % 2 === 0) {
+                            row = document.createElement("div");
+                            row.classList.add("row", "mt-2");
+                            container.appendChild(row);
+                        }
+                        let col = document.createElement("div");
+                        col.classList.add("col-md-6");
+                        col.classList.add("text-center");
+
+                        let img = document.createElement("img");
+                        img.setAttribute("src", data.results[i].urls.small);
+                        img.setAttribute("data-url", data.results[i].urls.small);
+                        img.setAttribute("width", "180");
+                        img.setAttribute("height", "120");
+                        img.classList.add("img_click");
+                        col.appendChild(img);
+                        row.appendChild(col);
+                    }
+                });
+        }
+    
+     </script>
+
+}

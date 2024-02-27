@@ -1,0 +1,380 @@
+﻿@model ResumeListViewModel
+
+@{
+    ViewData["Title"] = "履歷管理";
+}
+
+@section Styles
+{
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+    <link href="~/css/datatablesinline.css" rel="stylesheet" />
+    <style>
+        /*  新增按鈕 */
+        .btnCreate {
+            background-color: darkcyan;
+            color: white;
+            margin-left: 20px;
+        }
+
+        /* 整個履歷清單區域*/
+        .content main .bottom-data .orders {
+            padding: 50px;
+        }
+
+        /* 每頁幾筆資料 */
+        .dataTables_wrapper .dataTables_length {
+            margin-bottom: 15px;
+        }
+
+        /* 搜尋欄 */
+        .dataTables_wrapper .dataTables_filter {
+            margin-bottom: 15px;
+        }
+
+        /* 整個dataTable*/
+        .dataTables_wrapper table {
+            border-radius: 10px;
+            overflow: hidden; /* 隱藏溢出的內容 */
+        }
+
+        /*  頭部表格欄位 */
+        .imthead {
+            background-color: #C4E1E1;
+            font-weight: 700;
+        }
+
+        /* 新增互動視窗 */
+        #createModal input {
+            margin: 20px auto;
+            width: 50%;
+        }
+
+        /* 互動視窗 */
+        .modal {
+            position: fixed;
+            top: 60%;
+            left: 55%;
+            transform: translate(-50%, -50%); /* 使用 translate 函式將 modal 水平和垂直置中 */
+        }
+
+            .modal a {
+                color: white;
+                display: none;
+            }
+
+            .modal .modal-content {
+                font-size: larger;
+                text-align: center;
+                padding: 20px;
+            }
+
+                .modal .modal-content .form-select {
+                    margin: 20px auto;
+                    width: 50%;
+                }
+
+        /* 從右側滑入效果 */
+        .come-from-modal.right .modal-dialog {
+            position: fixed; /* 將模態框的位置固定 */
+            margin: auto; /* 自動調整外邊距 */
+            width: 40vw; /* 設置模態框的寬度 */
+            height: 80%; /* 設置模態框的高度 */
+            right: -100%; /* 初始位置在屏幕右側外 */
+            transition: right 0.5s ease-out; /* 添加過渡效果 */
+        }
+        .come-from-modal.fade.show .modal-dialog {
+            right: 100px;
+        }
+
+    </style>
+}
+
+<div class="header">
+    <!-- 主頁上方操作流程序，記得有新增頁面時要記得編輯 -->
+    <div class="left">
+        <h1>@ViewData["Title"]</h1>
+        <ul class="breadcrumb">
+            <li><a asp-area="job_vacancy" asp-controller="jobHome" asp-action="Index">工作媒合管理</a></li>
+            /
+            <li><a href="#" class="active">@ViewData["Title"]</a></li>
+        </ul>
+    </div>
+    <!-- 主頁上方操作流程序-->
+</div>
+<div>
+    <button type="button" class="btn btnCreate" data-bs-toggle="modal" data-bs-target="#createModal">
+        新增履歷
+    </button>
+</div>
+<div class="bottom-data">
+    <div class="orders">
+        @* 表格標題 *@
+        <div class="header">
+            <i class='bx bx-receipt'></i> <!-- 表格的小icon -->
+            <h3>履歷一覽</h3>
+        </div>
+        @* 表格 *@
+        <table>
+            <thead class="imthead">
+                <tr>
+                    <td>@Html.DisplayNameFor(model => model.Name)</td>
+                    <td>@Html.DisplayNameFor(model => model.ClassName)</td>
+                    <td>@Html.DisplayNameFor(model => model.ResumeTitle)</td>
+                    <td>@Html.DisplayNameFor(model => model.HopeJobTitle)</td>
+                    <td>@Html.DisplayNameFor(model => model.HopeLocation)</td>
+                    <td>@Html.DisplayNameFor(model => model.ResumeStatus)</td>
+                    <td>@Html.DisplayNameFor(model => model.LastUpdate)</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </thead>
+            @* 表格內容輸入 *@
+        </table>
+    </div>
+</div>
+
+<!-- Modal 互動視窗：新增履歷-畫面1 -->
+<div class="modal fade" id="createModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createModalLabel">新增履歷</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                請輸入學生身份證字號：
+            </div>
+            <input class="form-control " id="studentIDInput" required />
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btnConfirmCreate">確定</button>
+                @* <button type="button" class="btn btn-primary" id="btnConfirmCreate">
+                    <a asp-area="job_vacancy" asp-controller="Resume" asp-action="CreateVerify">確定</a>
+                </button> *@
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 互動視窗：刪除履歷 -->
+<div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">確認刪除</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                確定要刪除嗎？
+            </div>
+            <select class="form-select" aria-label="Default select example" id="deleteReasonSelect" required>
+                <option value="" disabled selected hidden>請選擇刪除原因</option>
+                <option value="已找到工作">已找到工作</option>
+                <option value="求職需求變更">求職需求變更</option>
+                <option value="暫時無求職需求">暫時無求職需求</option>
+                <option value="不適合在本平台刊登">不適合在本平台刊登</option>
+                <option value="其他">其他</option>
+            </select>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btnConfirmDelete">確定刪除</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 互動視窗：履歷詳細頁 -->
+<div class="modal come-from-modal right fade show" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailModalLabel">履歷詳細頁</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="switch_context">
+                <!-- 互動視窗內容 -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script src="~/lib/datatables/js/jquery.datatables.min.js"></script>
+    <script src="//cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"> </script>
+    <script>
+        function popup_detail(resumeId) {
+            //const modalTitle = "履歷詳細資料";
+            const switchContext = $("#switch_context");
+            // 設置標題
+            //$("#exampleModalLabel").text(modalTitle);
+            const detailUrl = "/job_vacancy/Resume/Detail/" + resumeId;
+            //return console.log("呼叫成功" + resumeId);
+            $.ajax({
+                type: 'GET',
+                url: detailUrl,
+                success: function (result) {
+                    console.log('Ajax request success');
+                    // 清空並設置內容
+                    switchContext.html(result);
+                },
+                error: function (error) {
+                    console.error('Ajax request error', error);
+                    // 顯示錯誤提示給用戶
+                    switchContext.html(`<div class="alert alert-danger" role="alert">請求失敗：${error.statusText}</div>`);
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            //限制網頁不要出現卷軸
+            document.documentElement.style.overflow = 'hidden';
+
+            // 表格相關的設定
+            let dataTable = $("table").dataTable({
+                //載入資料
+                ajax: {
+                    type: 'GET',
+                    url: "/job_vacancy/api/resume",
+                    dataSrc: function (json) {
+                        return json;
+                    }
+                },
+                columns: [
+                    { "data": "studentName" },
+                    { "data": "classes" },
+                    { "data": "resumeName" },
+                    { "data": "hopeJobTitle"},
+                    { "data": "hopeLocation" },
+                    { "data": "resumeStatus", "width": "8%" },
+                    { "data": "lastUpdate", "width": "15%" },
+                    {
+                        "data": null,
+                        "render": function (data, type, row) {
+                            return `<i class="bx bxs-trash" style="color:rgba(183,5,5,0.66)" data-id="${row.resumeId}"></i>`
+                        },
+                        "orderable": false
+                    },
+                    {
+                        "data": null,
+                        "render": function (data, type, row) {
+                            //return `<a data-bs-toggle="modal" data-bs-target="#detailModal" ><i class="bx bx-message-square-detail" style="color:#008b8b"></i></a>`
+                            return `<i class="bx bx-message-square-detail" style="color:#008b8b" data-bs-toggle="modal" data-bs-target="#detailModal" onclick="popup_detail(${row.resumeId})"></i>`
+                        },
+                        "orderable": false
+                    },
+                    {
+                        "data": null,
+                        "render": function (data, type, row) {
+                            return `<i class="bx bxs-message-square-edit" style="color:#008b8b" data-id="${row.resumeId}"></i>`
+                        },
+                        "orderable": false
+                    }
+                ],
+                fixedHeader: { header: true },
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/zh-HANT.json'
+                },
+            });
+
+            //新增履歷
+            btnConfirmCreate.addEventListener('click', function () {
+                var inputIDnumber = document.getElementById('studentIDInput').value;
+                if (inputIDnumber === "") {
+                    alert("請輸入學生身分證字號！");
+                    return;
+                }
+                var createUrl = '@Url.Action("CreateVerify", "Resume")';
+                
+                $.ajax({
+                    url: createUrl,
+                    type: 'POST',
+                    data: {
+                        IDnumber: inputIDnumber,
+                    },
+                    success: function (result) {
+                        if (result.success) {
+                            // 跳轉到新增履歷頁面
+                            window.location.href = result.redirectUrl;
+                        } else {
+                            alert(result.message + "失敗");
+                        }
+                    }
+                });
+
+                $('#createModal').modal('hide');
+            });
+
+            //獲取 ResumeId 的函式
+            function getResumeId(element) {
+                if (element && element.dataset.id) {
+                    return element.dataset.id;
+                }
+                return null;
+            }
+            // 點擊事件監聽函式
+            document.addEventListener('click', function (event) {
+                if (event.target) {
+                    if (event.target.matches('.bx.bxs-message-square-edit')) {
+                        var resumeId = getResumeId(event.target);
+                        if (resumeId) {
+                            window.location.href = '/job_vacancy/Resume/Edit/' + resumeId;
+                        } else {
+                            console.error('無法獲取履歷編號。');
+                        }
+                    }
+                    else if (event.target.matches('.bxs-trash')) {
+                        var resumeId = getResumeId(event.target);
+                        if (resumeId) {
+                            // 觸發模態彈窗
+                            $('#deleteModal').modal('show');
+                            // 設置確定刪除的點擊事件
+                            $('#btnConfirmDelete').addEventListener('click', function () {
+                                handleDeleteResume(resumeId);
+                            });
+                        } else {
+                            console.error('無法獲取履歷編號。');
+                        }
+                    }
+                }
+            });
+
+            // 確認刪除
+            function handleDeleteResume(resumeId) {
+                const deleteReason = document.getElementById('deleteReasonSelect').value;
+                if (deleteReason === "") {
+                    alert("請選擇刪除原因！");
+                    return;
+                }
+                console.log(deleteReason);
+                const deleteUrl = "/job_vacancy/Resume/Delete/" + resumeId;
+                $.ajax({
+                    url: deleteUrl,
+                    type: 'POST',
+                    data: {
+                        //注意！鍵名必須和後端的參數名相同！
+                        resumeID: resumeId,
+                        deleteReason: deleteReason
+                    },
+                    success: function (result) {
+                        alert(result.message);
+                        dataTable.api().ajax.reload(); //重新載入履歷資料
+                    },
+                    error: function () {
+                        alert("刪除失敗");
+                    }
+                });
+
+                $('#deleteModal').modal('hide');
+            }
+        })
+
+        
+    </script>
+}

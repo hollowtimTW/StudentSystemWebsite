@@ -1,0 +1,309 @@
+﻿@model Class_system_Backstage_pj.Areas.course_management.ViewModel.T課程班級.classCreateViewModel
+
+@{
+    ViewData["Title"] = "班級創建";
+}
+
+
+
+
+<div class="header">
+    <!-- 主頁上方操作流程序，記得有新增頁面時要記得編輯 -->
+    <div class="left">
+        <h1 class="text-center">@ViewData["Title"]</h1>
+
+        <ul class="breadcrumb">
+            <li><a asp-area="" asp-controller="Home" asp-action="Index">首頁</a></li>
+            /
+            <li><a asp-area="course_management" asp-controller="courseHome" asp-action="Index">排課系統管理</a></li>
+            /
+            <li><a href="#" class="active">@ViewData["Title"]</a></li>
+        </ul>
+    </div>
+    <!-- 主頁上方操作流程序-->
+</div>
+
+
+<h3 id="title">step1:填寫班級基本資料</h3>
+
+<!-- process bar -->
+<div class="progress">
+    <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%;height:1px" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+
+<form asp-area="course_management" asp-controller="T班級創建" asp-action="Create" method="post">
+
+    <!-- 第一步 fill basic data -->
+
+    <div id="step1" class="card bg-light text-black-50 mb-3 w-100">
+
+        <div class="w-100 text-center card-header">
+            <h3 class="card-title fw-bolder">class info:</h3>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+
+                <div class="form-group">
+                    <label asp-for="班級名稱" class="control-label fs-6 fw-bold"></label>
+                    <input asp-for="班級名稱" data-id="班級名稱" class="form-control text-black-50" />
+                    <span asp-validation-for="班級名稱" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="form-group">
+                    <label asp-for="班級導師id" class="control-label fs-6 fw-bold">班級導師</label>
+                    <select asp-for="班級導師id" data-id="班級導師id" class="form-control text-black-50" asp-items="ViewBag.班級導師id"></select>
+                </div>
+
+            </div>
+            <div class="row">
+
+                <div class="form-group">
+                    <label asp-for="入學日期" class="control-label fs-6 fw-bold"></label>
+                    <input asp-for="入學日期" data-id="入學日期" class="form-control text-black-50" />
+                    <span asp-validation-for="入學日期" class="text-danger "></span>
+                </div>
+
+            </div>
+            <div class="row">
+
+                <div class="form-group">
+                    <label asp-for="結訓日期" class="control-label fs-6 fw-bold"></label>
+                    <input asp-for="結訓日期" data-id="結訓日期" class="form-control text-black-50" />
+                    <span asp-validation-for="結訓日期" class="text-danger"></span>
+                </div>
+
+            </div>
+            <div class="row">
+               
+                <div class="form-group visually-hidden">
+                    <label asp-for="狀態" class="control-label"></label>
+                    <input asp-for="狀態" class="form-control" value="1" />
+                    <span asp-validation-for="狀態" class="text-danger"></span>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="w-100 text-end card-footer">
+            <div class="btn  btn-success" id="next">next ></div>
+        </div>
+
+
+    </div>
+
+    <!-- 第二步 -->
+
+    <div id="step2" class="card bg-light text-black-50 mb-3 w-100" style="display: none;">
+        <!-- 內容 -->
+
+        <div class="card">
+            <div class="w-100 text-center card-header">
+                <h3 class="card-title fw-bolder">add  subject:</h3>
+            </div>
+
+            <div class="mt-3 d-flex card-body justify-content-between">
+                <div class="" style="width:35%">
+
+                    <div class="card text-white bg-info mb-3 w-100">
+                        <div class="text-center card-header">
+                            <h3 class="fs-5">目前班級科目:</h3>
+                        </div>
+
+                        <ul class="list-group mt-4 p-3" id="subjectTeacherList">
+                        </ul>
+                    </div>
+
+                </div>
+
+                <div style="width:60%">
+                    <div class="card text-black-50 bg-light mb-3 w-100">
+
+                        <div class="text-center card-header">
+
+                            <p class="fs-5 mb-2 fw-bolder">--科目選擇--</p>
+                            <hr />                        
+                            <!-- select選單[一開始就載入] -->
+                            <select id="subjectSelect" class="form-control" asp-items="@ViewBag.course"></select>
+                            <!-- ajax動態產生老師列表 -->
+                            <table class="table mt-2">
+
+                                <thead>
+                                    <tr>
+                                        <th>姓名</th>
+                                        <th>add</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="TeacherList"></tbody>
+                            </table>
+
+                        </div>
+
+                    </div>
+                   
+                </div>
+            </div>
+  
+        </div>
+
+        <div class="w-100 text-end card-footer">
+            <div class="btn  btn-success" id="submit">create</div>
+        </div>
+    </div>
+
+    
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            var selectedSubjects = [];
+
+            $("#submit").on('click', function (e) {
+                e.preventDefault();
+
+                
+                var formData = {
+                    班級名稱: $("[data-id='班級名稱']").val(),
+                    班級導師id: $("[data-id='班級導師id']").val(),
+                    入學日期: $("[data-id='入學日期']").val(),
+                    結訓日期: $("[data-id='結訓日期']").val(),
+                    班級科目: selectedSubjects,
+                    狀態: 1
+                };
+
+               
+                $.ajax({
+                    url: "/course_management/T班級創建/Create",
+                    type: "POST",
+                    contentType: "application/json", 
+                    data: JSON.stringify(formData), 
+                    success: function (response) {
+                        console.log("Success:", response);
+                        alert("成功");
+                        window.location.href = '/course_management/T課程班級/Index';
+
+                    },
+                    error: function (xhr, status, error) {
+                       
+                        console.error("Error:", error);
+                        alert("發生錯誤，請稍後再試。");
+                    }
+                });
+            });
+
+
+            $(document).on('click', '#subjectTeacherList button', function (e) {
+                //刪除陣列
+                e.preventDefault();
+                var teacherId = $(this).closest('li').attr('data-teacher-id');
+                var courseId = $(this).closest('li').attr('data-course-id');
+                selectedSubjects = selectedSubjects.filter(function (item) {
+
+                    //當找到時就return false，不返回這個item到本來陣列中
+                    return !(item.courseId === courseId && item.teacherId === teacherId);
+                });
+
+                //刪除在畫面中的組合
+                $(this).closest('li').remove();
+                selectedSubjects.forEach(function (item) {
+                    console.log(item);
+                });
+            });
+
+            $(document).on('click', '.selectTeacher', function (e) {
+                e.preventDefault();
+                var teacherId = $(this).attr('data-teacher-id');
+                var teacherName = $(this).closest('tr').find('td:first').text();
+                var courseId = $(this).attr('data-course-id');
+                var courseName = $('#subjectSelect option:selected').text();
+
+                //新增新的科目-老師組合 到陣列
+                selectedSubjects.push({ courseId: courseId, teacherId: teacherId });
+
+                //渲染畫面
+                var button = $('<button>').text('刪除').addClass('btn btn-warning');
+                var listItem = $('<li>').addClass('list-group-item d-flex justify-content-between align-items-center')
+                    .attr({
+                        'data-teacher-id': teacherId,
+                        'data-course-id': courseId
+                    })
+                    .append($('<span>').addClass('fs-6 fw-bold text-muted w-25').text(courseName))
+                    .append($('<span>').addClass('fs-5 w-25').text(teacherName))
+                    .append(button);
+
+                $('#subjectTeacherList').append(listItem);
+            });
+            $(document).on('click', '#next', function (e) {
+                e.preventDefault();
+
+                //檢查第一階段的表格
+                var className = $("[data-id='班級名稱']").val();
+                var teacherId = $("[data-id='班級導師id']").val();
+                var admissionDate = $("[data-id='入學日期']").val();
+                var graduationDate = $("[data-id='結訓日期']").val();
+
+
+                if (className == "" || teacherId == "" || admissionDate == "" || graduationDate == "") {
+
+                    alert("請填寫所有字段。");
+                    return false;
+                } else if (admissionDate >= graduationDate) {
+                    alert("請正確填寫時間。");
+                    return false;
+
+                } else {
+                    // 如果所有字段都填寫，則更新進度條
+                    $("#progressBar").css("width", "50%");
+                    $("#title").text("step2:選擇班級科目");
+                    $("#step1").hide();
+                    $("#step2").show();
+
+                }
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#subjectSelect').change(function () {
+
+                var selectedSubjectId = $(this).val();
+                $.ajax({
+                    url: '/course_management/T班級創建/GetTeachersBySubjectId/' + selectedSubjectId,
+                    type: 'GET',
+                    success: function (data) {
+
+                        // 獲取的老師列表
+                        $('#TeacherList').empty();
+                        $.each(data, function (index, teacher) {
+
+                            var button = $('<button>').text('選擇').addClass('btn btn-primary selectTeacher')
+                                .attr({
+                                    'data-teacher-id': teacher.老師id,
+                                    'data-course-id': selectedSubjectId
+                                });
+
+
+                            var row = $('<tr>').append($('<td>').text(teacher.姓名)).append($('<td>').append(button));
+                            $('#TeacherList').append(row);
+                        });
+
+                    },
+                    error: function () {
+                        alert('Failed to retrieve teachers.');
+                    }
+                });
+            });
+        });
+
+    </script>
+
+}

@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "考試題庫管理";
+}
+@section Styles
+{
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+    @* <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script> *@
+    @* <link href="~/css/datatablesinline.css" rel="stylesheet" /> *@
+    <link href="~/css/datatablesinline.min.css" rel="stylesheet" />
+    <style>
+        .imthead {
+            background-color: #C4E1E1;
+            font-weight: 700;
+        }
+    </style>
+}
+<div class="header">
+    <!-- 主頁上方操作流程序能引入操作流程返回，記得有新增頁面時要記得編輯，有class="active的是現在位置-->
+    <div class="left">
+        <h1> @ViewData["Title"]</h1>
+        <ul class="breadcrumb">
+            <li>
+                <a asp-area="" asp-controller="Home" asp-action="Index"> 首頁 </a>
+            </li>
+            /
+            <li><a href="#" class="active">@ViewData["Title"]</a></li>
+        </ul>
+    </div>
+    <!-- 主頁上方操作流程序結束-->
+</div>
+
+<!-- Insights -->
+<ul class="insights">
+    <li>
+        <i class=' bx bx-columns'></i>
+        <a asp-area="question_bank" asp-controller="question_bank" asp-action="ExamSh">
+            <span class="info">
+                <h3>
+                    考試管理
+                </h3>
+                <p>小標題</p>
+            </span>
+        </a>
+    </li>
+    <li>
+        <i class='bx bx-line-chart'></i>
+        <a asp-area="question_bank" asp-controller="question_bank" asp-action="Score">
+        <span class="info">
+            <h3>
+                成績管理
+            </h3>
+            <p>小標題</p>
+        </span>
+        </a>
+    </li>
+    <li>
+        <i class='bx bxs-data'></i>
+        <a asp-area="question_bank" asp-controller="question_bank" asp-action="Qbank">
+        <span class="info">
+            <h3>
+                題庫管理
+            </h3>
+            <p>小標題</p>
+        </span>
+        </a>
+    </li>
+</ul>
+<!-- End of Insights -->

@@ -1,0 +1,42 @@
+﻿@model vExamInfo
+
+@{
+    ViewData["Title"] = "成績管理";
+}
+
+@section Styles
+{
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+    <link href="~/css/datatablesinline.min.css" rel="stylesheet" />
+    <style>
+        .imthead {
+            background-color: #C4E1E1;
+            font-weight: 700;
+        }
+    </style>
+}
+
+
+<div class="header">
+    <div class="left">
+        <h1> @ViewData["Title"]</h1>
+        <ul class="breadcrumb">
+            <li>
+                <a asp-area="" asp-controller="Home" asp-action="Index"> 首頁 </a>
+            </li>
+            /
+            <li>
+                <a asp-area="question_bank" asp-controller="question_bank" asp-action="Index"> 考試系統管理 </a>
+            </li>
+            /
+            <li><a href="#" class="active">@ViewData["Title"]</a></li>
+        </ul>
+    </div>
+</div>
+
+
+
+
+
+
+

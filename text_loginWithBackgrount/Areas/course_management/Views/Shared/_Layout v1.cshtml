@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 使用的icon頁，有類別效果不要選其他的 https://boxicons.com/ -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <title>Responsive Dashboard Design #2</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Class_system_Backstage_pj.styles.css" asp-append-version="true" />
+    @* <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" /> *@
+    <link href="~/css/style.min.css" rel="stylesheet" asp-append-version="true" />
+    <script src="https://kit.fontawesome.com/8acd533af5.js" crossorigin="anonymous"></script>
+    @await RenderSectionAsync("Styles", required: false)
+    <style>
+        footer{
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height:1%;
+            background-color: #cccc;
+            color: black;
+            padding: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 版面頁左側開始 -->
+    <div class="sidebar">
+        <a class="logo" asp-area="" asp-controller="Home" asp-action="Index">
+            <i class=" fa-solid fa-signature"></i>
+            <div class="logo-name"><span>後台管理</span>系統
+                </div></a>
+        <ul class="side-menu">
+            <li class="active"><a asp-area="course_management" asp-controller="courseHome" asp-action="Index"><i class='bx bxs-dashboard'></i>排課系統管理</a></li>
+            <li><a asp-area="ordering_system" asp-controller="ordering_system" asp-action="ordering_system_index"><i class='bx bx-store-alt'></i>訂餐管理</a></li>
+            <li><a asp-area="job_vacancy" asp-controller="jobHome" asp-action="Index"><i class='bx bxs-book-content'></i>工作媒合管理</a></li>
+            <li><a asp-area="student_management" asp-controller="Member" asp-action="Index"><i class='bx bx-group'></i>學員管理</a></li>
+            <li><a asp-area="class_discuss" asp-controller="class_discuss" asp-action="Index"><i class='bx bxs-message-rounded-dots'></i>討論區管理</a></li>
+            <li><a asp-area="video_management" asp-controller="T影片Video" asp-action="Index"><i class='bx bxs-video'></i>教學影片</a></li>
+            <li><a asp-area="question_bank" asp-controller="question_bank" asp-action="Index"><i class='bx bxs-copy-alt'></i>考試題庫管理</a></li>
+            <li><a asp-area="" asp-controller="Home" asp-action="Privacy"><i class='bx bx-cog'></i>設定</a></li>
+        </ul>
+        <ul class="side-menu">
+            <li>
+                <a href="#" class="logout">
+                    <i class='bx bx-log-out-circle'></i>
+                    登出
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- 版面頁左側結束 -->
+    <!-- Main Content -->
+    <div class="content">
+        <!-- Navbar -->
+        <nav>
+            <!-- 版面頁上方開始 -->
+            <i class='bx bx-menu'></i>
+            <form action="#">
+                <div class="form-input">
+                    <input type="search" placeholder="搜尋關鍵字...">
+                    <button class="search-btn" type="submit"><i class='bx bx-search'></i></button>
+                </div>
+            </form>
+            <input type="checkbox" id="theme-toggle" hidden>
+            <label for="theme-toggle" class="theme-toggle"></label>
+            <!-- 通知訊息 -->
+            <a href="#" class="notif">
+                <i class='bx bx-bell'></i>
+                <span class="count">1</span>
+            </a>
+            <!-- 通知訊息 -->
+            <!-- 使用者頭像 -->
+            <a href="#" class="profile">
+                <img src="~/images/user.jpg" />
+            </a>
+            <!-- 使用者頭像 -->
+            <!-- 版面頁上方結束 -->
+        </nav>
+
+        <!-- End of Navbar -->
+        <!-- 引入主頁 -->
+        <main>
+            @RenderBody()
+        </main>
+    </div>
+   @*  <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - Class_system_Backstage - <a asp-area="" asp-controller="Home" asp-action="Index">首頁</a>
+        </div>
+    </footer> *@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @* <script src="~/js/index.js" asp-append-version="true"></script> *@
+    <script src="~/js/index.min.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>
