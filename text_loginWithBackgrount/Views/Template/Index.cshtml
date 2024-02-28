@@ -40,7 +40,7 @@
                             @if (authenticateResult.Principal.IsInRole("student"))
                             {
                                 <a asp-area="" asp-controller="Student" asp-action="Index" class="btn-get-started m-2">學員專區</a>
-                                <a a asp-controller="Login" asp-action="logout" class="btn-get-started m-2">登出</a>
+                                <a asp-controller="Login" asp-action="logout" class="btn-get-started m-2">登出</a>
                             }
                         }
                         else
@@ -397,9 +397,7 @@
                     <h3>學習討論區</h3>
                     <p>讓學生能在富有活力的社群中分享心得、討論問題。更有專業導師參與，提供專業指導和建議。透過多元化的討論主題，激發學生學習興趣，促進知識交流。</p>
                     <!-- 連結到當頁書籤 -->
-                    <a href="#" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
-                    <!-- 連結到其他頁面 -->
-                    <!--<a class="readmore stretched-link" asp-area="" asp-controller="Home" asp-action="Index">Read more <i class="bi bi-arrow-right"></i></a>-->
+                    <a asp-area="class_discuss" asp-controller="discuss" asp-action="Index" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
                 </div>
             </div><!-- End Service Item -->
 
@@ -410,7 +408,7 @@
                     </div>
                     <h3>影片教材</h3>
                     <p>從個性化的學習路徑到即時的進度追蹤，我們提供多元化的複習工具，讓您按照自己的步伐學習，輕鬆掌握知識。</p>
-                    <a href="#" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+                    <a asp-area="video_management" asp-controller="video" asp-action="Index" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
                 </div>
             </div><!-- End Service Item -->
 
@@ -421,7 +419,7 @@
                     </div>
                     <h3>媒合廠商</h3>
                     <p>我們提供精準的配對功能，確保廠商與學生之間的需求和能力完美契合。實現雙方共贏的局面。</p>
-                    <a href="#" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+                    <a asp-area="job_vacancy" asp-controller="job" asp-action="Index" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
                 </div>
             </div><!-- End Service Item -->
 
@@ -432,7 +430,7 @@
                     </div>
                     <h3>餐點外送</h3>
                     <p>外送服務提供多樣化的健康餐點選擇，不僅價格親民，更強調食材新鮮、營養均衡，為學生們打造美味又健康的用餐選擇！</p>
-                    <a href="#" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+                    <a asp-area="ordering_system" asp-controller="order" asp-action="Index" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
                 </div>
             </div><!-- End Service Item -->
         </div>

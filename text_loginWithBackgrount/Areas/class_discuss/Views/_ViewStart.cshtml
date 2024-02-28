@@ -1,3 +1,17 @@
 ﻿@{
-    Layout = "_SystemBackgroundLayout ";
+    var controllerName = ViewContext.RouteData.Values["controller"] as string;
+    var actionName = ViewContext.RouteData.Values["action"] as string;
+    var areaName = ViewContext.RouteData.Values["area"] as string;
+
+    string layout = "_Layout";
+
+    if (controllerName == "class_discuss")
+    {
+        layout = "_SystemBackgroundLayout ";
+    }
+    else
+    {
+        layout = "_Layout";
+    }
+    Layout = layout;
 }

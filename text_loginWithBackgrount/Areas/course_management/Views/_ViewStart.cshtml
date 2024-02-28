@@ -1,3 +1,18 @@
 ﻿@{
-    Layout = "_SystemBackgroundLayout ";
+    var controllerName = ViewContext.RouteData.Values["controller"] as string;
+    var actionName = ViewContext.RouteData.Values["action"] as string;
+    var areaName = ViewContext.RouteData.Values["area"] as string;
+
+    string layout = "_Layout"; 
+
+    if (controllerName == "courseforStudent" || controllerName == "course")
+    {
+        layout = "_Layout";
+    }
+    else
+    {
+        layout = "_SystemBackgroundLayout ";
+    }
+    Layout = layout;
 }
+

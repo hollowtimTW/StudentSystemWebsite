@@ -72,7 +72,7 @@ namespace text_loginWithBackgrount.Controllers
                 {
                    new Claim(ClaimTypes.Name, user.姓名),
                    new Claim("FullName", user.姓名),
-                   new Claim("teacherID", user.學生id.ToString()),
+                   new Claim("StudentId", user.學生id.ToString()),
                    new Claim(ClaimTypes.Role,"student")
                 };
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

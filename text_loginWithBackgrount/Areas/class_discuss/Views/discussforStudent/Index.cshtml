@@ -54,8 +54,8 @@
                     <div class="sidebar-item categories">
                         <h3 class="sidebar-title m-1">學員服務</h3>
                         <div class="list-group">
-                            <a asp-area="" asp-controller="Student" asp-action="Index" class="list-group-item list-group-item-action m-2 border border-3 text-center active" aria-current="true">個人資料 </a>
-                            <a asp-area="class_discuss" asp-controller="discussforStudent" asp-action="Index" class="list-group-item list-group-item-action m-2 border border-3 text-center">學習討論區</a>
+                            <a asp-area="" asp-controller="Student" asp-action="Index" class="list-group-item list-group-item-action m-2 border border-3 text-center">個人資料 </a>
+                            <a asp-area="class_discuss" asp-controller="discussforStudent" asp-action="Index" class="list-group-item list-group-item-action m-2 border border-3 text-center active">學習討論區</a>
                             <a asp-area="course_management" asp-controller="courseforStudent" asp-action="Index" class="list-group-item list-group-item-action m-2 border border-3 text-center">我的課程</a>
                             <a asp-area="video_management" asp-controller="videoforStudent" asp-action="Index" class="list-group-item list-group-item-action m-2 border border-3 text-center">影片教材</a>
                             <a asp-area="ordering_system" asp-controller="orderforStudent" asp-action="Index" class="list-group-item list-group-item-action m-2 border border-3 text-center">餐點訂單管理</a>
@@ -70,44 +70,44 @@
             <div class="col-lg-8">
                 <!-- 內容 -->
                 <article class="blog-details">
-                    <h2 class="title">個人資料</h2>
-                    <div class="meta-top">
-                        <p>
-                            您可以在 Rasengan + 帳戶中查看及管理個人資訊
-                        </p>
+                    <h2 class="title">學習討論區</h2>
+                    @*                     <div class="meta-top">
+                    <p>
+                    您可以在 Rasengan + 帳戶中查看及管理個人資訊
+                    </p>
                     </div><!-- End meta top -->
                     <hr />
                     <form>
-                        <div class="mb-3">
-                            <label for="exampleInputEmail1" class="form-label">姓名</label>
-                            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" value="@User.Identity?.Name">
-                        </div>
-                        <div class="mb-3">
-                            <label for="exampleInputPassword1" class="form-label">電子郵件</label>
-                            <input type="password" class="form-control" id="exampleInputPassword1">
-                        </div>
-                        <div class="mb-3">
-                            <label for="exampleInputPassword1" class="form-label">
-                                出生日期
-                            </label>
-                            <input type="password" class="form-control" id="exampleInputPassword1">
-                        </div>
-                        <div class="mb-3">
-                            <label for="exampleInputPassword1" class="form-label">性別</label>
-                            <input type="password" class="form-control" id="exampleInputPassword1">
-                        </div>
-                        <button type="submit" class="btn btn-primary">修改資訊</button>
+                    <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">姓名</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" value="@User.Identity?.Name">
+                    </div>
+                    <div class="mb-3">
+                    <label for="exampleInputPassword1" class="form-label">電子郵件</label>
+                    <input type="password" class="form-control" id="exampleInputPassword1">
+                    </div>
+                    <div class="mb-3">
+                    <label for="exampleInputPassword1" class="form-label">
+                    出生日期
+                    </label>
+                    <input type="password" class="form-control" id="exampleInputPassword1">
+                    </div>
+                    <div class="mb-3">
+                    <label for="exampleInputPassword1" class="form-label">性別</label>
+                    <input type="password" class="form-control" id="exampleInputPassword1">
+                    </div>
+                    <button type="submit" class="btn btn-primary">修改資訊</button>
                     </form>
                     <div class="meta-bottom">
-                        <i class="bi bi-calendar-check-fill"></i>
-                        <ul class="cats">
-                            <li>
-                                <p>
-                                    您上次於 2023/11/01 8:48:14 pm變更個人資訊
-                                </p>
-                            </li>
-                        </ul>
-                    </div><!-- End meta bottom -->
+                    <i class="bi bi-calendar-check-fill"></i>
+                    <ul class="cats">
+                    <li>
+                    <p>
+                    您上次於 2023/11/01 8:48:14 pm變更個人資訊
+                    </p>
+                    </li>
+                    </ul>
+                    </div><!-- End meta bottom --> *@
                 </article><!-- End blog post -->
             </div>
         </div>

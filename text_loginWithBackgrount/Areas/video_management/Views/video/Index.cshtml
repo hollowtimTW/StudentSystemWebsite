@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "教材影片";
+}
+@section BreadcrumbsSection {
+    <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
+    <div class="breadcrumbs">
+        <div class="page-header d-flex align-items-center" style="background-image: url('');">
+            <div class="container position-relative">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-lg-6 text-center">
+                        <h2>@ViewData["Title"]</h2>
+                        <p>Odio et unde deleniti. Deserunt numquam exercitationem. Officiis quo odio sint voluptas consequatur ut a odio voluptatem. Sit dolorum debitis veritatis natus dolores. Quasi ratione sint. Sit quaerat ipsum dolorem.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav>
+            <div class="container">
+                <!-- 導覽列項目設置，請根據目前網頁的深度增減 -->
+                <ol>
+                    <li><a asp-area="" asp-controller="Template" asp-action="Index">首頁</a></li>
+                    <li>@ViewData["Title"]</li>
+                </ol>
+            </div>
+        </nav>
+    </div>
+}
+<section id="contact" class="contact">
+    <div class="container" data-aos="fade-up">
+        <div class="section-header">
+            <h2>標題</h2>
+            <p>Nulla dolorum nulla nesciunt rerum facere sed ut inventore quam porro nihil id ratione ea sunt quis dolorem dolore earum</p>
+        </div>
+    </div>
+</section><!-- End Contact Section -->
