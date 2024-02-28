@@ -1,4 +1,6 @@
-﻿@section Styles{
+﻿@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@section Styles{
     <style>
 
         .call-to-action .container {
@@ -9,6 +11,7 @@
 
 @{
     ViewData["Title"] = "首頁";
+    var authenticateResult = await Context.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 }
 <!-- ========================================================
        Hero Section 注目區
@@ -31,9 +34,21 @@
                     </p>
                     <div class="d-flex justify-content-center justify-content-lg-start">
                         <!-- 圓矩形按鈕連結 -->
-                        <a href="#" class="btn-get-started">學員登入</a>
-                        <!-- 影片播放按鈕 -->
-                        <a href="https://www.youtube.com/watch?v=_y0ejTz64CM" class="glightbox btn-watch-video d-flex align-items-center"><i class="bi bi-play-circle"></i><span>觀看影片</span></a>
+                        <!-- 如果學生已經登入 -->
+                        @if (authenticateResult.Succeeded)
+                        {
+                            @if (authenticateResult.Principal.IsInRole("student"))
+                            {
+                                <a asp-area="" asp-controller="Student" asp-action="Index" class="btn-get-started m-2">學員專區</a>
+                                <a a asp-controller="Login" asp-action="logout" class="btn-get-started m-2">登出</a>
+                            }
+                        }
+                        else
+                        {
+                            <a asp-area="" asp-controller="Login" asp-action="StudentIndex" class="btn-get-started">學員登入</a>
+                            <!-- 影片播放按鈕 -->
+                            <a href="https://www.youtube.com/watch?v=_y0ejTz64CM" class="glightbox btn-watch-video d-flex align-items-center"><i class="bi bi-play-circle"></i><span>觀看影片</span></a>
+                        }
                     </div>
                 </div>
                 <!-- 注目區圖片 -->

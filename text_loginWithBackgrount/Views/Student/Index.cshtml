@@ -1,0 +1,113 @@
+﻿@{
+    ViewData["Title"] = "學員專區";
+}
+@section BreadcrumbsSection {
+    <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
+    <div class="breadcrumbs">
+        <div class="page-header d-flex align-items-center" style="background-image: url('');">
+            <div class="container position-relative">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-lg-6 text-center">
+                        <h2>@ViewData["Title"]</h2>
+                        <p>
+                            學員專區是專為學員提供的服務平台。在這裡，您可以：讓您可以一站式完成所有學務相關事宜。
+                        </p>
+                        <p>學員專區是您學習生活的最佳伴侶。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav>
+            <div class="container">
+                <!-- 導覽列項目設置，請根據目前網頁的深度增減 -->
+                <ol>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index">首頁</a></li>
+                    <li>@ViewData["Title"]</li>
+                </ol>
+            </div>
+        </nav>
+    </div>
+}
+<!-- ========================================================
+       Blog Details Section
+========================================================= -->
+<section id="blog" class="blog">
+    <div class="container" data-aos="fade-up">
+        <div class="row g-5">
+            <!-- 左方側邊欄：佔據寬度 4/12 -->
+            <!-- 左方側邊欄：標籤分類 -->
+            <div class="col-lg-4">
+                <div class="sidebar">
+                    <!-- 搜尋框 -->
+                    <div class="sidebar-item search-form">
+                        <h3 class="sidebar-title">Search</h3>
+                        <form action="" class="mt-3">
+                            <input type="text">
+                            <button type="submit"><i class="bi bi-search"></i></button>
+                        </form>
+                    </div><!-- End sidebar search formn-->
+                    <!-- 文字列表 -->
+                    <div class="sidebar-item categories">
+                        <h3 class="sidebar-title m-1">學員服務</h3>
+                        <div class="list-group">
+                            <a href="#" class="list-group-item list-group-item-action active m-2" aria-current="true">
+                                個人資料
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action m-2">學習討論區</a>
+                            <a href="#" class="list-group-item list-group-item-action m-2">我的課程</a>
+                            <a href="#" class="list-group-item list-group-item-action m-2">影片教材</a>
+                            <a href="#" class="list-group-item list-group-item-action m-2">個人履歷</a>
+                            <a href="#" class="list-group-item list-group-item-action m-2">餐點訂單管理</a>
+                            <a href="#" class="list-group-item list-group-item-action m-2">線上考試</a>
+                        </div>
+                    </div><!-- End sidebar categories-->
+                </div><!-- End Blog Sidebar -->
+            </div>
+            <!-- 主要區域：佔據寬度 8/12 -->
+            <div class="col-lg-8">
+                <!-- 內容 -->
+                <article class="blog-details">
+                    <h2 class="title">個人資料</h2>
+                    <div class="meta-top">
+                        <p>
+                            您可以在 Rasengan + 帳戶中查看及管理個人資訊
+                        </p>
+                    </div><!-- End meta top -->
+                    <hr />
+                    <form>
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">姓名</label>
+                            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">電子郵件</label>
+                            <input type="password" class="form-control" id="exampleInputPassword1">
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">
+                                出生日期
+                            </label>
+                            <input type="password" class="form-control" id="exampleInputPassword1">
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">電子郵件</label>
+                            <input type="password" class="form-control" id="exampleInputPassword1">
+                        </div>
+                        <button type="submit" class="btn btn-primary">修改資訊</button>
+                    </form>
+                    <div class="meta-bottom">
+                        <i class="bi bi-calendar-check-fill"></i>
+                        <ul class="cats">
+                            <li>
+                                <p>
+                                    您上次於 2023/11/01 8:48:14 pm變更個人資訊
+                                </p>
+                            </li>
+                        </ul>
+                    </div><!-- End meta bottom -->
+                </article><!-- End blog post -->
+            </div>
+        </div>
+    </div>
+</section><!-- End Blog Details Section -->

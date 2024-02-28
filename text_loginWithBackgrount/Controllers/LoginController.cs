@@ -52,7 +52,7 @@ namespace text_loginWithBackgrount.Controllers
             return View();
         }
         /// <summary>
-        /// 執行授權學生登入
+        /// 執行授權學生登入，回傳頁寫在StudentIndex view的js中
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -77,7 +77,7 @@ namespace text_loginWithBackgrount.Controllers
                 };
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-                return RedirectToAction("Index", "Template");
+                return Ok();
             }
         }
 
