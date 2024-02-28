@@ -17,7 +17,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap" rel="stylesheet">
     <!-- Vendor CSS Files -->
     <!-- 使用的icon https://icons.getbootstrap.com/ -->
     <link href="~/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -28,6 +30,14 @@
 
     <!-- Template Main CSS File -->
     <link href="~/assets/css/main.css" rel="stylesheet">
+    <style>
+        body
+        {
+            font-family: "Noto Sans TC", sans-serif;
+            font-optical-sizing: auto;
+            font-style: normal;
+        }
+    </style>
     @await RenderSectionAsync("Styles", required: false)
 
     <!-- =======================================================
@@ -64,8 +74,8 @@
                 <!-- Uncomment the line below if you also wish to use an image logo -->
                 <!-- <img src="~/assets/img/logo.png" alt=""> -->
                 <h1>
-                    Impact
-                    <span>.</span>
+                    Rasengan
+                    <span>+</span>
                 </h1>
             </a>
             <!-- 導覽列 --><!-- 有的是書籤 -->
@@ -75,56 +85,25 @@
                     <li>
                         <a asp-area="" asp-controller="Template" asp-action="Index">Home</a>
                     </li>
-                    <li>
-                        <a href="#about">About</a>
-                    </li>
-                    <li>
-                        <a href="#services">Services</a>
-                    </li>
-                    <li>
-                        <a href="#portfolio">Portfolio</a>
-                    </li>
-                    <li>
-                        <a href="#team">Team</a>
-                    </li>
-                    <li>
-                        <a href="#contact">Contact</a>
-                    </li>
-                    <!-- 跳至分頁連結 -->
-                    <li>
-                        <a asp-area="" asp-controller="Template" asp-action="Blank">基礎空白分頁</a>
-                    </li>
-                    <!-- 下拉式選單（最多兩層） -->
                     <li class="dropdown">
-                        <a href="#"><span>元件整理</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
+                        <a asp-area="" asp-controller="Student" asp-action="Index"><span>學員服務</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
                         <ul>
-                            <li><a asp-area="" asp-controller="Template" asp-action="About">About</a></li>
-                            <li><a asp-area="" asp-controller="Template" asp-action="Clients">Clients</a></li>
-                            <li><a asp-area="" asp-controller="Template" asp-action="StatsCounter">Stats Counter</a></li>
-                            <li><a asp-area="" asp-controller="Template" asp-action="CallToAction">Call To Action</a></li>
-                            <li><a asp-area="" asp-controller="Template" asp-action="Services">Services</a></li>
-                            <li><a asp-area="" asp-controller="Template" asp-action="Testimonials">Testimonials</a></li>
-                            <li class="dropdown">
-                                <a href="#"><span>Portfolio</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
-                                <ul>
-                                    <li><a asp-area="" asp-controller="Template" asp-action="Portfolio">Portfolio</a></li>
-                                    <li><a asp-area="" asp-controller="Template" asp-action="PortfolioDetails">Portfolio Details</a></li>
-                                </ul>
-                            </li>
-                            <li><a asp-area="" asp-controller="Template" asp-action="Team">Team</a></li>
-                            <li><a asp-area="" asp-controller="Template" asp-action="Pricing">Pricing</a></li>
-                            <li><a asp-area="" asp-controller="Template" asp-action="Faq">Faq</a></li>
-                            <li class="dropdown">
-                                <a href="#"><span>Recent Posts</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
-                                <ul>
-                                    <li><a asp-area="" asp-controller="Template" asp-action="RecentPosts">Recent Posts</a></li>
-                                    <li><a asp-area="" asp-controller="Template" asp-action="Blog">Blog</a></li>
-                                    <li><a asp-area="" asp-controller="Template" asp-action="BlogDetails">Blog Details</a></li>
-                                </ul>
-                            </li>
-                            <li><a asp-area="" asp-controller="Template" asp-action="Contact">Contact</a></li>
+                            <li><a asp-area="" asp-controller="Template" asp-action="About">學習討論區</a></li>
+                            <li><a asp-area="" asp-controller="Template" asp-action="Clients">線上課程影片</a></li>
+                            <li><a asp-area="" asp-controller="Template" asp-action="StatsCounter">媒合廠商介紹</a></li>
+                            <li><a asp-area="" asp-controller="Template" asp-action="CallToAction">餐點外送</a></li>
                         </ul>
                     </li>
+                    <li>
+                        <a href="#">關於我們</a>
+                    </li>
+                    <li>
+                        <a href="#">課程總攬</a>
+                    </li>
+                    <li>
+                        <a href="#">最新活動</a>
+                    </li>
+                     <!-- 下拉式選單（最多兩層） -->
                 </ul>
             </nav>
 
@@ -148,7 +127,7 @@
     <footer id="footer" class="footer">
 
         <div class="container">
-            <div class="row gy-4">
+@*             <div class="row gy-4">
 
                 <!-- 左方文字區 -->
                 <div class="col-lg-5 col-md-12 footer-info">
@@ -224,15 +203,14 @@
                     </p>
 
                 </div>
-
             </div>
-        </div>
+        </div> *@
 
         <!-- 版權資訊 -->
         <div class="container mt-4">
             <div class="copyright">
-                &copy; Copyright
-                <strong><span>Impact</span></strong>. All Rights Reserved
+                    &copy; iSpan MSIT155
+                    <strong><span>Group D</span></strong>. All Rights Reserved
             </div>
             <!-- 免費版需保留以下連結資訊 -->
             <div class="credits">

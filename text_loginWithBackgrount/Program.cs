@@ -45,9 +45,9 @@ builder.Services.AddAuthentication(options =>
 .AddCookie(options =>
 {
     // Cookie ³]¸m
-    options.LoginPath = new PathString("/Template/Index");
+    options.LoginPath = new PathString("/Login/StudentIndex");
     options.AccessDeniedPath = new PathString("/Template/Index");
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(1);
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
 });
 
 builder.Services.AddSession(options =>

@@ -10,6 +10,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using text_loginWithBackgrount.Data.LoginPost;
 using Class_system_Backstage_pj.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace text_loginWithBackgrount.Controllers
 {
@@ -23,6 +24,7 @@ namespace text_loginWithBackgrount.Controllers
             _dbStudentSystemContext = dbStudentSystemContext;
             _configuration = configuration;
         }
+
         /// <summary>
         /// 老師登入頁
         /// </summary>
@@ -31,6 +33,7 @@ namespace text_loginWithBackgrount.Controllers
         {
             return View();
         }
+
         /// <summary>
         /// 店家登入頁
         /// </summary>
@@ -39,6 +42,46 @@ namespace text_loginWithBackgrount.Controllers
         {
             return View();
         }
+
+        /// <summary>
+        /// 學生登入頁
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult StudentIndex()
+        {
+            return View();
+        }
+        /// <summary>
+        /// 執行授權學生登入，回傳頁寫在StudentIndex view的js中
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult StudentIndex(LoginPost value)
+        {
+            var user = (from a in _dbStudentSystemContext.T會員學生s
+                        where a.信箱 == value.Account && a.密碼 == value.Password
+                        select a).FirstOrDefault();
+            if (user == null)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                var claims = new List<Claim>
+                {
+                   new Claim(ClaimTypes.Name, user.姓名),
+                   new Claim("FullName", user.姓名),
+                   new Claim("teacherID", user.學生id.ToString()),
+                   new Claim(ClaimTypes.Role,"student")
+                };
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+                return Ok();
+            }
+        }
+
+
         /// <summary>
         /// 執行授權店家登入
         /// </summary>
@@ -66,7 +109,8 @@ namespace text_loginWithBackgrount.Controllers
                 };
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-                return RedirectToAction("Index", "StoreBackground");
+                //return RedirectToAction("Index", "StoreBackground");
+                return Ok();
             }
         }
         /// <summary>

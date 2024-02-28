@@ -9,8 +9,7 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <title>Responsive Dashboard Design #2</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/Class_system_Backstage_pj.styles.css" asp-append-version="true" />
-    @* <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" /> *@
+    @* <link rel="stylesheet" href="~/Class_system_Backstage_pj.styles.css" asp-append-version="true" /> *@
     <link href="~/Backstage/style.min.css" rel="stylesheet" asp-append-version="true" />
     <script src="https://kit.fontawesome.com/8acd533af5.js" crossorigin="anonymous"></script>
     @await RenderSectionAsync("Styles", required: false)
@@ -40,10 +39,10 @@
             </div>
         </a>
         <ul class="side-menu">
-            <li><a asp-area="course_management" asp-controller="courseHome" asp-action="Index"><i class='bx bxs-dashboard'></i>店家資料</a></li>
-            <li><a asp-area="ordering_system" asp-controller="ordering_system" asp-action="ordering_system_index"><i class='bx bx-store-alt'></i>訂單管理</a></li>
-            <li><a asp-area="job_vacancy" asp-controller="jobHome" asp-action="Index"><i class='bx bxs-book-content'></i>評價財務分析</a></li>
-            <li><a asp-area="" asp-controller="Home" asp-action="Privacy"><i class='bx bx-cog'></i>設定</a></li>
+            <li class="active"><a asp-area="" asp-controller="StoreBackground" asp-action="Index"><i class='bx bx-cog'></i>首頁</a></li>
+            <li><a href="#"><i class='bx bxs-dashboard'></i>店家資料</a></li>
+            <li><a href="#"><i class='bx bx-store-alt'></i>訂單管理</a></li>
+            <li><a href="#"><i class='bx bxs-book-content'></i>評價財務分析</a></li>
         </ul>
         <ul class="side-menu">
             <li>
