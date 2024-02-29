@@ -1,0 +1,275 @@
+﻿
+/* 將 Impac 模板部分樣式引入，需跟隨變化 */
+
+:root {
+    --color-default: #222222; /* 預設文本顏色 黑 */
+    --color-primary: #008374; /* 主要顏色 深綠 */
+    --color-secondary: #f85a40; /* 次要顏色 橘紅 */
+}
+
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+    a:hover {
+        color: #00b6a1;
+        text-decoration: none;
+    }
+
+
+
+
+.btn-normal {
+    font-family: var(--font-primary);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 1px;
+    color: #fff;
+    background-color: var(--color-primary);
+    border-radius: 10px;
+    transition: 0.3s;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-circle {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: normal;
+    border-radius: 50%;
+    color: var(--color-primary);
+}
+
+/* =================== 職涯全區 ================= */
+/* ==============================================*/
+
+.career {
+    padding: 20px 100px;
+}
+
+
+.tabs {
+    display: flex;
+    border-radius: 10px 10px 0 0;
+    background-color: var(--color-primary);
+}
+
+.tab {
+    text-align: center;
+    vertical-align:central;
+    padding: 10px;
+    /*background-color: #fff;*/
+    cursor: pointer;
+    border-radius: 10px 10px 0 0;
+    margin-right: 5px;
+    color: #fff;
+}
+
+    .tab.active {
+        background-color: #fff;
+        color: var(--color-default);
+    }
+
+.tab-pages {
+    flex: 1;
+}
+
+.tab-content {
+    display: none;
+    height: 100%;
+    border-radius: 0 0 10px 10px;
+    background-color: #fff;
+    padding: 40px;
+}
+
+    .tab-content.active {
+        display: block;
+    }
+
+/* =================== 我的履歷 ================= */
+/* ==============================================*/
+.resume-item {
+    padding: 40px;
+    background-color: #fff;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    box-shadow: 0px 5px 25px 0px rgba(0, 0, 0, 0.06);
+    height: 100%;
+}
+    .resume-item:hover {
+        border-color: rgba(0, 0, 0, .08);
+        box-shadow: none;
+    }
+
+    .resume-item .icon {
+        width: 48px;
+        height: 48px;
+        position: relative;
+        margin-bottom: 50px;
+    }
+
+        .resume-item .icon i {
+            color: var(--color-default); 
+            font-size: 56px;
+            transition: ease-in-out 0.3s;
+            z-index: 2;
+            position: relative;
+        }
+
+        .resume-item .icon:before {
+            position: absolute;
+            content: "";
+            height: 100%;
+            width: 100%;
+            background: #eeeeee;
+            border-radius: 50px;
+            z-index: 1;
+            top: 10px;
+            right: -20px;
+            transition: 0.3s;
+        }
+
+    .resume-item h3 {
+        color: var(--color-default); 
+        font-weight: 700;
+        margin: 0 0 20px 0;
+        padding-bottom: 8px;
+        font-size: 22px;
+        position: relative;
+        display: inline-block;
+        border-bottom: 4px solid #eeeeee;
+        transition: 0.3s;
+    }
+
+    .resume-item p {
+        line-height: 24px;
+        font-size: 14px;
+        margin-bottom: 0;
+    }
+
+    .resume-item .readmore {
+        margin-top: 15px;
+        display: inline-block;
+        color: var(--color-primary); 
+    }
+
+    .resume-item:hover .icon:before {
+        background: #00b6a1;
+    }
+
+    .resume-item:hover h3 {
+         border-color: var(--color-primary); 
+    }
+
+.create-resume {
+    border: 2px dotted #fff;
+    background-color: aliceblue;
+}
+
+
+
+/* =================== 職缺紀錄 ================= */
+/* ==============================================*/
+
+.btn-detail {
+    height: 38px;
+    display: inline-block;
+    padding: 6px 20px 10px 20px;
+    border-radius: 50px;
+    color: var(--color-primary);
+    border: 1px solid rgba(0, 131, 116, 0.2);
+    transition: none;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: var(--font-primary);
+    transition: 0.3s;
+}
+
+    .btn-detail:hover {
+        background: var(--color-primary);
+        color: #fff;
+    }
+
+.like-btn.active {
+    background-color: var(--color-primary);
+    color: #fff;
+}
+
+.job-item {
+    border: 2px solid transparent;
+    border-radius: 4px;
+    box-shadow: 0 0 45px rgba(0, 0, 0, .08);
+    transition: .5s;
+    background-color: #fff;
+    width: 80%;
+}
+
+    .job-item:hover {
+        border-color: rgba(0, 0, 0, .08);
+        box-shadow: none;
+    }
+
+    .job-item img {
+        width: 80px;
+        height: 80px;
+    }
+
+
+
+@media (max-width: 1200px) {
+    .career {
+        padding: 20px 50px;
+    }
+
+    .job-item .col-lg-8,
+    .job-item .col-lg-4 {
+        width: 100%;
+    }
+}
+
+@media (max-width: 750px) {
+    .job-item {
+        display: flex;
+        align-items: center;
+        text-align: center;
+    }
+
+    .job-item img {
+        width: 120px;
+        height: 120px;
+    }
+
+    .job-item .text-start,
+    .job-item small {
+        display: none; /* 隱藏 */
+    }
+}
+
+@media (max-width: 600px) {
+
+    .job-item img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .like-btn {
+        display: none;
+    }
+
+    .btn-detail {
+        padding: 5px;
+        font-size: 14px;
+    }
+
+}
+
+/* =================== 履歷編輯頁================ */
+/* ==============================================*/
+
+
+

@@ -1,0 +1,420 @@
+.btn-normal {
+    font-family: var(--font-primary);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 1px;
+    color: #fff;
+    background-color: var(--color-primary);
+    border-radius: 10px;
+    transition: 0.3s;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-hollow {
+    font-family: var(--font-primary);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 1px;
+    color: var(--color-primary);
+    background-color: #fff;
+    border-radius: 10px;
+    transition: 0.3s;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+    border: 2px solid var(--color-primary);
+}
+
+.btn-circle {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: normal;
+    border-radius: 50%;
+    color: var(--color-primary);
+}
+
+
+/* ========== Job Vacancies ========== */
+.btn-entrance {
+    font-family: var(--font-primary);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 1px;
+    display: inline-block;
+    padding: 7px 40px;
+    margin-top: -10px; /*為了使<nav>的高度不受到影響變高*/
+    margin-bottom: -10px;
+    border-radius: 10px;
+    transition: 0.3s;
+    color: #fff;
+    background-color: var(--color-secondary);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    height: 45px;
+}
+
+    .btn-entrance:hover {
+        background-color: #419489;
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .btn-entrance a {
+        color: #fff;
+    }
+
+.nav-item {
+    width: 120px;
+    cursor: pointer;
+    display: inline-block;
+    padding: 0;
+    font-size: 18px;
+    font-weight: 800;
+    margin: 0 10px;
+    /*line-height: 1;*/
+    transition: all 0.3s ease-in-out;
+}
+
+    .nav-item .active {
+        border-bottom: 2px solid var(--color-primary);
+    }
+
+.btn-detail {
+    height: 38px;
+    display: inline-block;
+    padding: 8px 40px 10px 40px;
+    border-radius: 50px;
+    color: var(--color-primary);
+    border: 1px solid rgba(0, 131, 116, 0.2);
+    transition: none;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: var(--font-primary);
+    transition: 0.3s;
+}
+
+    .btn-detail:hover {
+        background: var(--color-primary);
+        color: #fff;
+    }
+
+.btn-more {
+    font-family: var(--font-primary);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 1px;
+    display: inline-block;
+    padding: 14px 40px;
+    border-radius: 50px;
+    transition: 0.3s;
+    color: #fff;
+    background-color: var(--color-primary);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+    .btn-more:hover {
+        background-color: #419489;
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.5);
+    }
+
+/*.portfolio-flters li:hover,
+.portfolio-flters li.filter-active {
+    color: var(--color-primary);
+    border-bottom: 2px solid var(--primary);
+}*/
+
+.job-item {
+    border: 1px solid transparent;
+    border-radius: 2px;
+    box-shadow: 0 0 45px rgba(0, 0, 0, .08);
+    transition: .5s;
+}
+
+    .job-item:hover {
+        border-color: rgba(0, 0, 0, .08);
+        box-shadow: none;
+    }
+
+.like-btn.active {
+    background-color: var(--color-primary);
+    color: #fff;
+}
+
+
+/* ========== Job Details ========== */
+.Job-Details .job-header,
+.Job-Details .dialog {
+    border-radius: 10px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #fff;
+    padding: 40px;
+    border: 1px solid transparent;
+    box-shadow: 0 0 45px rgba(0, 0, 0, .08);
+    transition: .5s;
+}
+
+#applyModal {
+    position: fixed;
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+    #applyModal .modal-content {
+        padding: 20px;
+    }
+
+    #applyModal textarea {
+        border-radius: 8px;
+        height: 100px;
+        padding: 10px;
+    }
+
+
+
+
+/* ==============================================*/
+/*                學員專區 ─ 就業媒合              */
+/* ==============================================*/
+
+
+.student_career {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    padding: 0px;
+    height: contain;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+    .student_career .tab-header {
+        display: flex;
+        border-radius: 10px 10px 0 0;
+        background-color: var(--color-primary);
+        height: 50px;
+    }
+
+    .student_career .tab {
+        text-align: center;
+        padding-top: 10px;
+        cursor: pointer;
+        border-radius: 10px 10px 0 0;
+        margin-right: 10px;
+        color: #fff;
+        width: 140px;
+    }
+
+        .student_career .tab.active {
+            background-color: #fff;
+            color: var(--color-default);
+        }
+
+    .student_career .tab-content {
+        flex: 1;
+    }
+
+    .student_career .tab-page {
+        display: none;
+        height: contain;
+        border-radius: 0 0 10px 10px;
+        background-color: #fff;
+        padding: 40px;
+    }
+
+        .student_career .tab-page.active {
+            display: block;
+        }
+
+/* =================== 我的履歷 ================= */
+/* ==============================================*/
+.resume-item {
+    padding: 40px;
+    background-color: #fff;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    box-shadow: 0px 5px 25px 0px rgba(0, 0, 0, 0.06);
+    /* height: 100%; */
+}
+
+    .resume-item:hover {
+        border-color: rgba(0, 0, 0, .08);
+        box-shadow: none;
+    }
+
+    .resume-item .btn-close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        cursor: pointer;
+        padding: 10px;
+        z-index: 999;
+        border: 1px solid grey;
+        border-radius: 50%;
+        display: none; /* 初始隱藏 */
+    }
+
+    .resume-item:hover .btn-close {
+        display: block; /* 游標移過時顯示 */
+    }
+
+    .resume-item .btn-close:hover {
+        background-color: var(--color-primary);
+        color: #fff;
+    }
+
+    .resume-item .icon {
+        width: 40px;
+        height: 40px;
+        position: relative;
+        margin-bottom: 40px;
+    }
+
+        .resume-item .icon i {
+            color: var(--color-default);
+            font-size: 48px;
+            transition: ease-in-out 0.3s;
+            z-index: 2;
+            position: relative;
+        }
+
+        .resume-item .icon:before {
+            position: absolute;
+            content: "";
+            height: 100%;
+            width: 100%;
+            background: #eeeeee;
+            border-radius: 50px;
+            z-index: 1;
+            top: 10px;
+            right: -20px;
+            transition: 0.3s;
+        }
+
+    .resume-item h3 {
+        color: var(--color-default);
+        font-weight: 700;
+        margin: 0 0 20px 0;
+        padding-bottom: 8px;
+        font-size: 22px;
+        position: relative;
+        display: inline-block;
+        border-bottom: 4px solid #eeeeee;
+        transition: 0.3s;
+    }
+
+    .resume-item p {
+        font-size: 14px;
+        margin-bottom: 0;
+    }
+
+
+    .resume-item:hover .icon:before {
+        background: #00b6a1;
+    }
+
+    .resume-item:hover h3 {
+        border-color: var(--color-primary);
+    }
+
+.create-resume {
+    border: 4px dotted Grey;
+}
+
+/* =================== 職缺紀錄 ================= */
+/* ==============================================*/
+
+.btn-detail {
+    height: 38px;
+    display: inline-block;
+    padding: 6px 20px 10px 20px;
+    border-radius: 50px;
+    color: var(--color-primary);
+    border: 1px solid rgba(0, 131, 116, 0.2);
+    transition: none;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: var(--font-primary);
+    transition: 0.3s;
+}
+
+    .btn-detail:hover {
+        background: var(--color-primary);
+        color: #fff;
+    }
+
+.like-btn.active {
+    background-color: var(--color-primary);
+    color: #fff;
+}
+
+.job-item {
+    border: 2px solid transparent;
+    border-radius: 4px;
+    box-shadow: 0 0 45px rgba(0, 0, 0, .08);
+    transition: .5s;
+    background-color: #fff;
+    width: 80%;
+}
+
+    .job-item:hover {
+        border-color: rgba(0, 0, 0, .08);
+        box-shadow: none;
+    }
+
+    .job-item img {
+        width: 80px;
+        height: 80px;
+    }
+
+
+
+@media (max-width: 1200px) {
+    .career {
+        padding: 20px 50px;
+    }
+
+    .job-item .col-lg-8,
+    .job-item .col-lg-4 {
+        width: 100%;
+    }
+}
+
+@media (max-width: 750px) {
+    .job-item {
+        display: flex;
+        align-items: center;
+        text-align: center;
+    }
+
+        .job-item img {
+            width: 120px;
+            height: 120px;
+        }
+
+        .job-item .text-start,
+        .job-item small {
+            display: none; /* 隱藏 */
+        }
+}
+
+@media (max-width: 600px) {
+
+    .job-item img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .like-btn {
+        display: none;
+    }
+
+    .btn-detail {
+        padding: 5px;
+        font-size: 14px;
+    }
+}

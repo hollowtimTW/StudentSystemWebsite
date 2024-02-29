@@ -12,5 +12,20 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         {
             return View();
         }
+
+        public IActionResult CompanyDetails()
+        {
+            return View();
+        }
+
+        public IActionResult JobDetails()
+        {
+            return View();
+        }
+
+        public IActionResult ResumePreview()
+        {
+            return View();
+        }
     }
 }

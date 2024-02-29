@@ -32,6 +32,13 @@
         </nav>
     </div>
 }
+@section Styles {
+    <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet" />
+    <link href="~/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet" />
+    <style>
+
+    </style>
+}
 <!-- ========================================================
        Blog Details Section
 ========================================================= -->
@@ -67,12 +74,339 @@
                 </div><!-- End Blog Sidebar -->
             </div>
             <!-- 主要區域：佔據寬度 8/12 -->
-            <div class="col-lg-8">
-                <!-- 內容 -->
-                <article class="blog-details">
-                    <h2 class="title">我的履歷</h2>
-                </article><!-- End blog post -->
+            <div class="col-lg-8 student_career">
+                <div class="tab-header">
+                    <div class="tab active" onclick="openTab(event, 'tab1')">我的履歷</div>
+                    <div class="tab" onclick="openTab(event, 'tab2')">應徵紀錄</div>
+                    <div class="tab" onclick="openTab(event, 'tab3')">收藏職缺</div>
+                    <div class="tab" onclick="openTab(event, 'tab4')">職缺推薦</div>
+                </div>
+                <div class="tab-content">
+                    <div id="tab1" class="tab-page active">
+                        <div class="container">
+                            <div class="row gy-4">
+
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="resume-item position-relative">
+                                        <div>
+                                            <button type="button" class="btn btn-close" data-bs-toggle="modal" data-bs-target="#deleteModal"></button>
+                                        </div>
+                                        <div>
+                                            <div class="icon">
+                                                <i class="bi bi-file-earmark-person"></i>
+                                            </div>
+                                            <h3>王瑞嘉的履歷</h3>
+                                            <h6 class="card-subtitle mb-2 text-muted">2024/02/26 19:23</h6>
+                                            <p>資深軟體工程師 全職</p>
+                                            <a asp-area="job_vacancy" asp-controller="jobforStudent" asp-action="EditResume" asp-route-resumeID="18" class="readmore stretched-link"></a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="resume-item position-relative d-flex flex-column align-items-center create-resume">
+                                        <div class="icon">
+                                            <i class="bi bi-file-earmark-plus-fill"></i>
+                                        </div>
+                                        <h3>新增履歷</h3>
+                                        <a asp-area="job_vacancy" asp-controller="jobforStudent" asp-action=""></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tab2" class="tab-page">
+                        <div class="d-flex flex-column align-items-center">
+                            <div class="job-item p-4 mb-4">
+                                <div class="row g-4">
+                                    <div class="col-lg-8 d-flex align-items-center">
+                                        <img src="~/images/job_vacancy/fulltime.png" class="img-fluid border rounded flex-shrink-0" alt="">
+                                        <div class="text-start ps-4">
+                                            <h5>APP程式設計師</h5>
+                                            <h6 class="mb-3"><a asp-area="job_vacancy" asp-controller="Job" asp-action="CompanyDetails">知訊股份有限公司</a></h6>
+                                            <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> 台北市 大安區</span>
+                                            <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> 全職</span>
+                                            <span class="text-truncate me-0"><i class="bi bi-cash flex-shrink-0"></i> $35000 - 40000</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                        <div class="d-flex mb-3">
+                                            <button type="button" class="btn btn-light btn-circle me-3 like-btn"><i class="bi bi-heart"></i></button>
+                                            <a asp-area="job_vacancy" asp-controller="Job" asp-action="JobDetails" class="btn-detail">詳細資訊</a>
+                                        </div>
+                                        <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：2024/02/28 14:27:36</small>
+                                        <small class="text-truncate"><i class="bi bi-envelope-fill"></i> 應徵時間：2024/02/28 14:27:36</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="job-item p-4 mb-4">
+                                <div class="row g-4">
+                                    <div class="col-lg-8 d-flex align-items-center">
+                                        <img src="~/images/job_vacancy/parttime.png" class="img-fluid border rounded flex-shrink-0" alt="">
+                                        <div class="text-start ps-4">
+                                            <h5>JAVA工程師</h5>
+                                            <h6 class="mb-3"><a asp-area="job_vacancy" asp-controller="Job" asp-action="CompanyDetails">知訊股份有限公司</a></h6>
+                                            <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> 台北市 大安區</span>
+                                            <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> 兼職</span>
+                                            <span class="text-truncate me-0"><i class="bi bi-cash flex-shrink-0"></i> $35000 - 40000</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                        <div class="d-flex mb-3">
+                                            <button type="button" class="btn btn-light btn-circle me-3 like-btn"><i class="bi bi-heart"></i></button>
+                                            <a asp-area="job_vacancy" asp-controller="Job" asp-action="JobDetails" class="btn-detail">詳細資訊</a>
+                                        </div>
+                                        <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：2024/02/28 14:27:36</small>
+                                        <small class="text-truncate"><i class="bi bi-envelope-fill"></i> 應徵時間：2024/02/28 14:27:36</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="job-item p-4 mb-4">
+                                <div class="row g-4">
+                                    <div class="col-lg-8 d-flex align-items-center">
+                                        <img src="~/images/job_vacancy/dispatche.png" class="img-fluid border rounded flex-shrink-0" alt="">
+                                        <div class="text-start ps-4">
+                                            <h5>後端工程師</h5>
+                                            <h6 class="mb-3"><a asp-area="job_vacancy" asp-controller="Job" asp-action="CompanyDetails">知訊股份有限公司</a></h6>
+                                            <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> 台北市 大安區</span>
+                                            <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> 派遣</span>
+                                            <span class="text-truncate me-0"><i class="bi bi-cash flex-shrink-0"></i> $35000 - 40000</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                        <div class="d-flex mb-3">
+                                            <button type="button" class="btn btn-light btn-circle me-3 like-btn"><i class="bi bi-heart"></i></button>
+                                            <a asp-area="job_vacancy" asp-controller="Job" asp-action="JobDetails" class="btn-detail">詳細資訊</a>
+                                        </div>
+                                        <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：2024/02/28 14:27:36</small>
+                                        <small class="text-truncate"><i class="bi bi-envelope-fill"></i> 應徵時間：2024/02/28 14:27:36</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tab3" class="tab-page">
+                        <div class="d-flex flex-column align-items-center">
+                            <div class="job-item p-4 mb-4">
+                                <div class="row g-4">
+                                    <div class="col-lg-8 d-flex align-items-center">
+                                        <img src="~/images/job_vacancy/fulltime.png" class="img-fluid border rounded flex-shrink-0" alt="">
+                                        <div class="text-start ps-4">
+                                            <h5>APP程式設計師</h5>
+                                            <h6 class="mb-3"><a asp-area="job_vacancy" asp-controller="Job" asp-action="CompanyDetails">知訊股份有限公司</a></h6>
+                                            <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> 台北市 大安區</span>
+                                            <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> 全職</span>
+                                            <span class="text-truncate me-0"><i class="bi bi-cash flex-shrink-0"></i> $35000 - 40000</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                        <div class="d-flex mb-3">
+                                            <button type="button" class="btn btn-light btn-circle me-3 like-btn"><i class="bi bi-heart"></i></button>
+                                            <a asp-area="job_vacancy" asp-controller="Job" asp-action="JobDetails" class="btn-detail">詳細資訊</a>
+                                        </div>
+                                        <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：2024/02/28 14:27:36</small>
+                                        <small class="text-truncate"><i class="bi bi-bag-heart-fill"></i> 收藏時間：2024/02/28 14:27:36</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="job-item p-4 mb-4">
+                                <div class="row g-4">
+                                    <div class="col-lg-8 d-flex align-items-center">
+                                        <img src="~/images/job_vacancy/parttime.png" class="img-fluid border rounded flex-shrink-0" alt="">
+                                        <div class="text-start ps-4">
+                                            <h5>JAVA工程師</h5>
+                                            <h6 class="mb-3"><a asp-area="job_vacancy" asp-controller="Job" asp-action="CompanyDetails">知訊股份有限公司</a></h6>
+                                            <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> 台北市 大安區</span>
+                                            <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> 兼職</span>
+                                            <span class="text-truncate me-0"><i class="bi bi-cash flex-shrink-0"></i> $35000 - 40000</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                        <div class="d-flex mb-3">
+                                            <button type="button" class="btn btn-light btn-circle me-3 like-btn"><i class="bi bi-heart"></i></button>
+                                            <a asp-area="job_vacancy" asp-controller="Job" asp-action="JobDetails" class="btn-detail">詳細資訊</a>
+                                        </div>
+                                        <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：2024/02/28 14:27:36</small>
+                                        <small class="text-truncate"><i class="bi bi-bag-heart-fill"></i> 收藏時間：2024/02/28 14:27:36</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="job-item p-4 mb-4">
+                                <div class="row g-4">
+                                    <div class="col-lg-8 d-flex align-items-center">
+                                        <img src="~/images/job_vacancy/dispatche.png" class="img-fluid border rounded flex-shrink-0" alt="">
+                                        <div class="text-start ps-4">
+                                            <h5>後端工程師</h5>
+                                            <h6 class="mb-3"><a asp-area="job_vacancy" asp-controller="Job" asp-action="CompanyDetails">知訊股份有限公司</a></h6>
+                                            <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> 台北市 大安區</span>
+                                            <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> 派遣</span>
+                                            <span class="text-truncate me-0"><i class="bi bi-cash flex-shrink-0"></i> $35000 - 40000</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                        <div class="d-flex mb-3">
+                                            <button type="button" class="btn btn-light btn-circle me-3 like-btn"><i class="bi bi-heart"></i></button>
+                                            <a asp-area="job_vacancy" asp-controller="Job" asp-action="JobDetails" class="btn-detail">詳細資訊</a>
+                                        </div>
+                                        <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：2024/02/28 14:27:36</small>
+                                        <small class="text-truncate"><i class="bi bi-bag-heart-fill"></i> 收藏時間：2024/02/28 14:27:36</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tab4" class="tab-page">
+                        <div class="d-flex flex-column align-items-center">
+                            <div class="job-item p-4 mb-4">
+                                <div class="row g-4">
+                                    <div class="col-lg-8 d-flex align-items-center">
+                                        <img src="~/images/job_vacancy/fulltime.png" class="img-fluid border rounded flex-shrink-0" alt="">
+                                        <div class="text-start ps-4">
+                                            <h5>APP程式設計師</h5>
+                                            <h6 class="mb-3"><a asp-area="job_vacancy" asp-controller="Job" asp-action="CompanyDetails">知訊股份有限公司</a></h6>
+                                            <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> 台北市 大安區</span>
+                                            <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> 全職</span>
+                                            <span class="text-truncate me-0"><i class="bi bi-cash flex-shrink-0"></i> $35000 - 40000</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                        <div class="d-flex mb-3">
+                                            <button type="button" class="btn btn-light btn-circle me-3 like-btn"><i class="bi bi-heart"></i></button>
+                                            <a asp-area="job_vacancy" asp-controller="Job" asp-action="JobDetails" class="btn-detail">詳細資訊</a>
+                                        </div>
+                                        <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：2024/02/28 14:27:36</small>
+                                        <div>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="job-item p-4 mb-4">
+                                <div class="row g-4">
+                                    <div class="col-lg-8 d-flex align-items-center">
+                                        <img src="~/images/job_vacancy/parttime.png" class="img-fluid border rounded flex-shrink-0" alt="">
+                                        <div class="text-start ps-4">
+                                            <h5>JAVA工程師</h5>
+                                            <h6 class="mb-3"><a asp-area="job_vacancy" asp-controller="Job" asp-action="CompanyDetails">知訊股份有限公司</a></h6>
+                                            <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> 台北市 大安區</span>
+                                            <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> 兼職</span>
+                                            <span class="text-truncate me-0"><i class="bi bi-cash flex-shrink-0"></i> $35000 - 40000</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                        <div class="d-flex mb-3">
+                                            <button type="button" class="btn btn-light btn-circle me-3 like-btn"><i class="bi bi-heart"></i></button>
+                                            <a asp-area="job_vacancy" asp-controller="Job" asp-action="JobDetails" class="btn-detail">詳細資訊</a>
+                                        </div>
+                                        <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：2024/02/28 14:27:36</small>
+                                        <div>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="job-item p-4 mb-4">
+                                <div class="row g-4">
+                                    <div class="col-lg-8 d-flex align-items-center">
+                                        <img src="~/images/job_vacancy/dispatche.png" class="img-fluid border rounded flex-shrink-0" alt="">
+                                        <div class="text-start ps-4">
+                                            <h5>後端工程師</h5>
+                                            <h6 class="mb-3"><a asp-area="job_vacancy" asp-controller="Job" asp-action="CompanyDetails">知訊股份有限公司</a></h6>
+                                            <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> 台北市 大安區</span>
+                                            <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> 派遣</span>
+                                            <span class="text-truncate me-0"><i class="bi bi-cash flex-shrink-0"></i> $35000 - 40000</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                        <div class="d-flex mb-3">
+                                            <button type="button" class="btn btn-light btn-circle me-3 like-btn"><i class="bi bi-heart"></i></button>
+                                            <a asp-area="job_vacancy" asp-controller="Job" asp-action="JobDetails" class="btn-detail">詳細資訊</a>
+                                        </div>
+                                        <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：2024/02/28 14:27:36</small>
+                                        <div>
+                                            <i class="bi bi-star-fill"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section><!-- End Blog Details Section -->
+
+
+<!-- Modal 互動視窗：刪除履歷 -->
+<div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">確認刪除</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                確定要刪除嗎？
+            </div>
+            <select class="form-select" aria-label="Default select example" id="deleteReasonSelect" required>
+                <option value="" disabled selected hidden>請選擇刪除原因</option>
+                <option value="已找到工作">已找到工作</option>
+                <option value="求職需求變更">求職需求變更</option>
+                <option value="暫時無求職需求">暫時無求職需求</option>
+                <option value="不適合在本平台刊登">不適合在本平台刊登</option>
+                <option value="其他">其他</option>
+            </select>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btnConfirmDelete">確定刪除</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section Scripts {
+    <script src="~/js/job_vacancy/jobcommon.js"></script>
+
+    <script>
+
+        function openTab(event, tabName) {
+            const tabLinks = document.getElementsByClassName("tab");
+            const tabContent = document.getElementsByClassName("tab-page");
+
+            for (let i = 0; i < tabLinks.length; i++) {
+                tabLinks[i].classList.remove("active");
+                tabContent[i].classList.remove("active");
+            }
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add("active");
+
+            // if (tabName == 'tab2') { loadDataTableData(); }
+        }
+
+        function closeButtonClick(event) {
+            // 阻止事件向上傳播
+            event.stopPropagation();
+
+            alert("!!!");
+        }
+
+
+
+        $(document).ready(function () {
+
+            
+
+        })
+    </script>
+}

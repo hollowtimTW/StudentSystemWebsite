@@ -1,0 +1,229 @@
+﻿@{
+    ViewData["companyName"] = "資展國際";
+}
+@section BreadcrumbsSection {
+    <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
+    <div class="breadcrumbs">
+        <nav>
+            <div class="container">
+                <ol>
+                    <li><a asp-area="" asp-controller="Template" asp-action="Index">首頁</a></li>
+                    <li><a asp-area="job_vacancy" asp-controller="Job" asp-action="Index">就業媒合</a></li>
+                    <li>@ViewData["companyName"]</li>
+                </ol>
+            </div>
+        </nav>
+    </div>
+}
+@section Styles {
+    <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet" />
+    <style>
+    </style>
+}
+
+
+<section class="Job-Details">
+    <div class="container">
+        <div class="job-header">
+            <div class="d-flex">
+                <div class="flex-grow-1">
+                    <h1 class="text-break">@ViewData["companyName"]</h1>
+                    <h6 class="ml-auto">統編 90491745</h6>
+                </div>
+            </div>
+        </div>
+
+        <div class="position-relative">
+            <div class="row">
+                <div class="col">
+                    <div class="dialog container-fluid">
+                        <div class="row mb-3">
+                            <h2>公司介紹</h2>
+                        </div>
+                        <div class="job-description-table row">
+                            <div class="job-description col-12 mb-2">
+                                <p>
+                                    資展國際以傳承資策會的優良傳統，開創嶄新的人才創新加值服務，以專業為基本素養，以學員為本位，傳播多元知識與技能，為客戶奠定未來成功的基石，為企業提供數位轉型所需的數位化、智慧化與轉型化人才，為資訊化社會的推動盡一份心力，我們深切的體會，如同卡內基的名言：『帶走我的員工，把工廠留下，不久工廠的地板就會長滿雜草;拿走我的工廠，把我的員工留下，不久後我們會有個更好的工廠』，企業投資人才，永遠是最划算的選擇，而您要的人才，我們來培育和提供，提供您一個以人為本、科技為用、服務創新和教育永續的全方位培訓服務，一個以體驗和轉型來滿足和創造客戶價值的教育訓練。
+                                </p>
+                            </div>
+                            <div class="list-row row mb-2">
+                                <div class="col-lg-2 list-head">
+                                    <h4>負責人</h4>
+                                </div>
+                                <div class="col-lg-6 list-data">
+                                    <div class="t3 mb-0">
+                                        <div class="t3 mb-0">呂理華</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-row row mb-2">
+                                <div class="col-lg-2 list-head">
+                                    <h4>公司電話</h4>
+                                </div>
+                                <div class="col-lg-6 list-data">
+                                    <div class="t3 mb-0">(02)6631-6588</div>
+                                </div>
+                            </div>
+                            <!---->
+                            <div class="list-row row mb-2">
+                                <div class="col-lg-2 list-head">
+                                    <h4>公司地址</h4>
+                                </div>
+                                <div class="col-lg-6 list-data">
+                                    <div class="t3 mb-0">
+                                        <span data-v-e81f764d="">臺北市大安區復興南路1段390號15樓</span>
+                                        <!---->
+                                        <!---->
+                                        <a href="https://www.google.com/maps?q=資展國際" target="_blank" rel="noopener">
+                                            <i class="bi bi-geo-alt-fill flex-shrink-0"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-row row mb-2">
+                                <div class="col-lg-2 list-head">
+                                    <h4>聯絡人</h4>
+                                </div>
+                                <div class="col-lg-6 list-data">
+                                    <div class="t3 mb-0">陳小姐</div>
+                                </div>
+                            </div>
+                            <div class="list-row row mb-2">
+                                <div class="col-lg-2 list-head">
+                                    <h4>聯絡人電話</h4>
+                                </div>
+                                <div class="col-lg-6 list-data">
+                                    <div class="t3 mb-0">(02)6631-6588</div>
+                                </div>
+                            </div>
+                            <div class="list-row row mb-2">
+                                <div class="col-lg-2 list-head">
+                                    <h4>聯絡人Email</h4>
+                                </div>
+                                <div class="col-lg-6 list-data">
+                                    <div class="t3 mb-0">example@ispan.com.tw</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!---->
+                    </div>
+
+                    <div class="dialog container-fluid joblist" id="joblist">
+                        <!-- 篩選排序列 -->
+                        <div class="joblist-header">
+                            <h2 class="mb-4">工作機會列表</h2>
+                            <div class="row justify-content-between">
+                                <div class="col col-auto col--type pr-0">
+                                    <div class="row">
+
+                                        <div class="col col-auto">
+                                            <div class="position-relative">
+
+                                                <div class="input-group mb-3">
+                                                    <input type="text" class="form-control" placeholder="搜尋職務名稱" aria-label="搜尋職務名稱" maxlength="50">
+                                                    <button class="btn btn-outline-secondary" type="button" id="button-addon2"><i class="bi bi-search"></i></button>
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+
+                                        <div class="col col-auto">
+                                            <select class="form-select" aria-label="Default select example">
+                                                <option value="0" selected>地區(不拘)</option>
+                                                <option value="1">桃園市中壢區</option>
+                                                <option value="2">新北市五股區</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col col-auto col--paging pl-0">
+                                    <div class="row">
+                                        <div class="col col-auto">
+                                            <select class="form-select" aria-label="Default select example">
+                                                <option value="0" selected>新舊排序</option>
+                                                <option value="1">日期新→舊</option>
+                                                <option value="2">日期舊→新</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 職缺列表 -->
+                        <div>
+                            <div class="job-item p-4 mb-4">
+                                <div class="row g-4">
+                                    <div class="col-sm-12 col-md-8 d-flex align-items-center">
+                                        <img src="~/images/job_vacancy/fulltime.png" class="img-fluid border rounded flex-shrink-0" alt="" style="width: 80px; height: 80px;">
+                                        <div class="text-start ps-4">
+                                            <h5 class="mb-3">APP程式設計師</h5>
+                                            <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> 台北市 大安區</span>
+                                            <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> 全職</span>
+                                            <span class="text-truncate me-0"><i class="bi bi-cash flex-shrink-0"></i> $35000 - 40000</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                        <div class="d-flex mb-3">
+                                            <button type="button" class="btn btn-light btn-circle me-3 like-btn"><i class="bi bi-heart"></i></button>
+                                            <a asp-area="job_vacancy" asp-controller="Job" asp-action="JobDetails" class="btn-detail">詳細資訊</a>
+                                        </div>
+                                        <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：2024/02/28 14:27:36</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="job-item p-4 mb-4">
+                                <div class="row g-4">
+                                    <div class="col-sm-12 col-md-8 d-flex align-items-center">
+                                        <img src="~/images/job_vacancy/parttime.png" class="img-fluid border rounded flex-shrink-0" alt="" style="width: 80px; height: 80px;">
+                                        <div class="text-start ps-4">
+                                            <h5 class="mb-3">APP程式設計師</h5>
+                                            <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> 台北市 大安區</span>
+                                            <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> 兼職</span>
+                                            <span class="text-truncate me-0"><i class="bi bi-cash flex-shrink-0"></i> $35000 - 40000</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                        <div class="d-flex mb-3">
+                                            <button type="button" class="btn btn-light btn-circle me-3 like-btn"><i class="bi bi-heart"></i></button>
+                                            <a asp-area="job_vacancy" asp-controller="Job" asp-action="JobDetails" class="btn-detail">詳細資訊</a>
+                                        </div>
+                                        <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：2024/02/28 14:27:36</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="job-item p-4 mb-4">
+                                <div class="row g-4">
+                                    <div class="col-sm-12 col-md-8 d-flex align-items-center">
+                                        <img src="~/images/job_vacancy/dispatche.png" class="img-fluid border rounded flex-shrink-0" alt="" style="width: 80px; height: 80px;">
+                                        <div class="text-start ps-4">
+                                            <h5 class="mb-3">後端工程師</h5>
+                                            <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> 台北市 大安區</span>
+                                            <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> 派遣</span>
+                                            <span class="text-truncate me-0"><i class="bi bi-cash flex-shrink-0"></i> $35000 - 40000</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                        <div class="d-flex mb-3">
+                                            <button type="button" class="btn btn-light btn-circle me-3 like-btn"><i class="bi bi-heart"></i></button>
+                                            <a asp-area="job_vacancy" asp-controller="Job" asp-action="JobDetails" class="btn-detail">詳細資訊</a>
+                                        </div>
+                                        <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：2024/02/28 14:27:36</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@section Scripts {
+    <script src="~/js/job_vacancy/jobcommon.js"></script>
+    <script>
+
+    </script>
+}
