@@ -52,8 +52,8 @@
         </ul>
         <ul class="side-menu">
 
-            <!--老師的 我的課程dashboard-->  
-            <li><a asp-area="course_management" asp-controller="courseHome" asp-action="TeacherCourseIndex" asp-route-id="@User?.Claims.FirstOrDefault(c => c.Type == "teacherID").Value"><i class='bx bxs-dashboard'></i>我的課程</a></li>
+            <!--老師 我的課程dashboard-->  
+            <li><a asp-area="course_management" asp-controller="courseHome" asp-action="TeacherCourseIndex" asp-route-id="@User?.Claims.FirstOrDefault(c => c.Type == "teacherID").Value"><i class='bx bxs-chalkboard'></i>我的課程</a></li>
        
             <li>
                 <a asp-area="" asp-controller="Login" asp-action="logout">
