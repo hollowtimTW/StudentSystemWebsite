@@ -48,14 +48,20 @@
             <li><a asp-area="class_discuss" asp-controller="class_discuss" asp-action="Index"><i class='bx bxs-message-rounded-dots'></i>討論區管理</a></li>
             <li><a asp-area="video_management" asp-controller="T影片Video" asp-action="Index"><i class='bx bxs-video'></i>教學影片</a></li>
             <li><a asp-area="question_bank" asp-controller="question_bank" asp-action="Index"><i class='bx bxs-copy-alt'></i>考試題庫管理</a></li>
+
         </ul>
         <ul class="side-menu">
+
+            <!--老師的 我的課程dashboard-->  
+            <li><a asp-area="course_management" asp-controller="courseHome" asp-action="TeacherCourseIndex" asp-route-id="@User?.Claims.FirstOrDefault(c => c.Type == "teacherID").Value"><i class='bx bxs-dashboard'></i>我的課程</a></li>
+       
             <li>
                 <a asp-area="" asp-controller="Login" asp-action="logout">
                     <i class='bx bx-log-out-circle'></i>
                     登出
                 </a>
             </li>
+
         </ul>
     </div>
     <!-- 版面頁左側結束 -->

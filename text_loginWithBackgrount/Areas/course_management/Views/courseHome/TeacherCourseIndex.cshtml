@@ -1,0 +1,294 @@
+﻿@using Class_system_Backstage_pj.Models;
+@using text_loginWithBackgrount.Areas.course_management.ViewModel.courseHome;
+@using System.Net;
+@model IEnumerable<TeacherCourseTimeViewModel>;
+@{
+    var teacherData = ViewBag.Teacher as T會員老師;
+}
+@section Styles{
+   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.css" rel="stylesheet" />
+
+    <style>
+        .table th {
+            font-family: Lato-Bold;
+            font-size: 15px;
+            line-height: 1;
+             color: lightgray;
+            background-color: white;
+        }
+
+        .table td {
+            font-family: Lato-Regular;
+            font-size: 1.15vw;
+            font-weight: bold;
+            color: gray;
+            line-height: 1.4
+        }
+
+
+        .table tr {
+            background-color: white;
+        }
+       
+
+        .table {
+            overflow: hidden;
+            box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+            -moz-box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+            -webkit-box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+            -o-box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+            -ms-box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+            
+        }
+
+       
+       button{
+           background-color:lightgray  !important;
+           border: none !important;
+       }
+
+        .selected-row {
+        background-color: lightgray !important;
+        }
+        .fc-scrollgrid-sync-table{
+        width: 100% !important;
+        }
+
+        #modal_content {
+            background: url(https://img.freepik.com/premium-photo/empty-space-paper-copy-space_78502-575.jpg?w=1060) center center no-repeat;
+            background-size: cover;
+            background-color: gray;
+            filter: grayscale(30%);
+        }
+    
+          .btn {
+            display: inline-block;
+            outline: none;
+            cursor: pointer;
+            font-weight: 600;
+            border-radius: 3px;
+            border: 0;
+            color: white;
+            line-height: 1.15;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background-color: #76daff !important;
+        }
+
+        .btn-success {
+            background-color: #47cf73 !important;
+        }
+
+        .btn-warning {
+            background-color: #fcd000 !important;
+        }
+
+        .btn-secondary {
+            background-color: #cdcdcd !important;
+        }
+
+        .btn:hover {
+            transition: all .1s ease;
+            box-shadow: 0 0 0 0 azure, 0 0 0 3px azure;
+        }
+        
+    </style>
+    <style>
+        .toggle-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .toggle-btn {
+            width: 60px;
+            height: 30px;
+            background-color: #ddd;
+            border-radius: 15px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .inner-circle {
+            width: 26px;
+            height: 26px;
+            background-color: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s ease;
+        }
+
+        #statusSpan {
+            margin-right: 10px;
+        }
+
+        #statusSection .fs-4 {
+            transition: color 0.3s ease;
+        }
+
+        #statusSection.active .toggle-btn {
+            background-color: #6dd961;
+        }
+
+        #statusSection.active .fs-4 {
+            color: yellowgreen;
+        }
+
+        #statusSection.active .inner-circle {
+            transform: translateX(30px);
+        }
+
+  </style>
+}
+
+<div class="text-center text-black-50">
+    <div>
+        <h2>我的課程:</h2>
+    </div>
+</div>
+
+<div class="mt-4">
+    <card class="text-center">
+        <div class="card-header " style="background-color:#ffa7a7">
+            <h4 class="text-white"><span class="fw-bolder">@teacherData.姓名</span> 老師授課列表</h4>        </div>
+        <table class="table card-body">
+        <thead>
+            <tr>
+                <th>班級</th>
+                <th>科目</th>
+                <th>開啟回饋</th>
+                <th>上課</th>
+            </tr
+        </thead>
+        @foreach (var item in ViewBag.Class)
+        {
+            <tr>
+                <td class="coursename">@item.班級.班級名稱</td>
+                <td class="teachername">@item.科目.科目名稱</td>
+                 <td> 
+                     <button class="btn btn-info">
+                        <i class='bx bx-lock-open-alt' onclick="toggleStatus(@item.班級科目.班級科目id)"></i>
+                     </button>
+                  
+                </td>
+                <td>    
+                     <a class="btn btn-info" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="popup(@item.班級.班級id)"> 
+                        <i class='bx bxs-school'></i>
+                    </a>
+                </td>
+            </tr>
+        }
+       
+    </table>
+        
+        @*老師上課的所有班級科目的課程*@        
+        <div>
+             <div id='calendar' class="calendar"></div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-md">
+            <div class="modal-content" id="modal_content">
+                    <div class="modal-header d-flex justify-content-center align-items-center">
+                            <p class="fs-6 h-100 mb-0"  id="exampleModalLabel"></p>
+                            <p class="fs-6 h-100 mb-0"  id="exampleModalsubTitle"></p>
+                        <button type="button" id="closeBtn" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        </button>
+                    </div>
+
+                    <div class="modal-body overflow-hidden" id="switch_context">
+                    <img class="w-100" src="~/images/t課程科目/loading.gif" />
+                    </div>
+            </div>
+        </div>
+    </div>
+    </card>
+</div>
+
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.5/main.js" integrity="sha512-p8Y3dmH8kSZIUvVonZz2ttZxzOvX2dcIEN15JzIDPlrSSoT7UpZ8w+MWyBJjqhnF+g+L5hL5i2kRZkwcurjXJw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.5/locales/zh-tw.js" integrity="sha512-kSMJ35bCCcHBMhZePO7UjEq1zNt0zkVX39a9Vt6IRKrrpjdK43/f57tKd0hSH/OO8XZfpi8LN8wtU70RVIw/Iw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        function popup(id){
+            alert(id);
+        }
+    </script>
+    <script>      
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',             
+                handleWindowResize:true,
+                 windowResize: true ,
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    locale: 'zh-tw',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                 eventTimeFormat: {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    meridiem: 'short' 
+                },
+                events: [
+                    @foreach (var item in Model)
+                    {
+                        var title = WebUtility.HtmlDecode(@item.班級名稱);
+                        var datetime = @item.課程.開始時間.ToString("yyyy-MM-ddTHH:mm:ss");
+                        var endtime = @item.課程.結束時間.ToString("yyyy-MM-ddTHH:mm:ss");
+                        var timeid = @item.課程.課程id;
+                        <text>
+                            {
+                                title: '@Html.Raw(title)',
+                                start:'@datetime',
+                                end:'@endtime',
+                                data: {
+                                     timeid: '@timeid',
+                               }
+                            },
+                        </text>
+
+                        
+                    }
+                ]
+            });
+          
+            calendar.render();
+       
+        });
+    </script>
+    <script>
+      //檢查班級科目的狀態
+
+        
+          function toggleStatus(id) {
+            var createUrl = `/course_management/courseHome/toggleStatus/${id}`;
+                $.ajax({
+                    type: 'GET',
+                    url: createUrl,
+                    success: function (result) {
+                        if (result.data) {
+                           alert("評分功能已經開啟!");
+
+                        } else {
+                          alert("開啟評分功能!");
+
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Ajax request error', error);
+                    }
+                });
+            }
+        
+    </script>
+
+}
+
+
