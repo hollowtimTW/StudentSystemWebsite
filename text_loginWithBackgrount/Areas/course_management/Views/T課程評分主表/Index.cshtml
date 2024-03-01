@@ -417,7 +417,7 @@
             const responseData = await response.json();
 
             if (responseData.success) {
-                //代表開啟 ，顯示目前填寫人數，但可能有所有都未填寫的
+                //代表開啟 ，顯示目前填寫人數，0人=> 可能有學生都未填寫的+目前班級還未有學生
                 $("#peopleDone").text("目前填寫人數:" + responseData.peopleDone);
 
                 const satisfactionRatingTextCourse = responseData.totalRatingsByCategory && responseData.totalRatingsByCategory.課程滿意度 !== undefined ?

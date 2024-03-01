@@ -78,7 +78,7 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
 
 
 
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> Create()
         {
             try

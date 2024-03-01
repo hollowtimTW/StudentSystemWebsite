@@ -26,8 +26,8 @@
     else if (authenticateResult.Principal.IsInRole("student"))
     {
         <div class="contact-info d-flex align-items-center">
-            <i class="bi bi-shop d-flex align-items-center"><a asp-controller="Login" asp-action="StoreIndex">廠商登入口</a></i>
-            <i class="bi bi-person-fill d-flex align-items-center ms-4"><a asp-controller="Login" asp-action="Index">教師登入口</a></i>
+            <i class="bi bi-shop d-flex align-items-center"><a asp-area="" asp-controller="Login" asp-action="StoreIndex">廠商登入口</a></i>
+            <i class="bi bi-person-fill d-flex align-items-center ms-4"><a asp-area="" asp-action="" asp-controller="Login">教師登入口</a></i>
         </div>
     }
 }

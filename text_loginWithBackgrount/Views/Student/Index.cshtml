@@ -56,7 +56,7 @@
                         <div class="list-group">
                             <a asp-area="" asp-controller="Student" asp-action="Index" class="list-group-item list-group-item-action m-2 border border-3 text-center active" aria-current="true">個人資料 </a>
                             <a asp-area="class_discuss" asp-controller="discussforStudent" asp-action="Index" class="list-group-item list-group-item-action m-2 border border-3 text-center">學習討論區</a>
-                            <a asp-area="course_management" asp-controller="courseforStudent" asp-action="Index" class="list-group-item list-group-item-action m-2 border border-3 text-center">我的課程</a>
+                            <a asp-area="course_management" asp-controller="courseforStudent" asp-action="Index" asp-route-id="@User?.Claims.FirstOrDefault(c => c.Type == "StudentId").Value" class="list-group-item list-group-item-action m-2 border border-3 text-center">我的課程</a>
                             <a asp-area="video_management" asp-controller="videoforStudent" asp-action="Index" class="list-group-item list-group-item-action m-2 border border-3 text-center">影片教材</a>
                             <a asp-area="ordering_system" asp-controller="orderforStudent" asp-action="Index" class="list-group-item list-group-item-action m-2 border border-3 text-center">餐點訂單管理</a>
                             <a asp-area="job_vacancy" asp-controller="jobforStudent" asp-action="Index" class="list-group-item list-group-item-action m-2 border border-3 text-center">我的履歷</a>

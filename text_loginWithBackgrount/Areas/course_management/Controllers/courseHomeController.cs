@@ -2,8 +2,12 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using text_loginWithBackgrount.Areas.course_management.Model;
 using text_loginWithBackgrount.Areas.course_management.ViewModel.courseHome;
+using text_loginWithBackgrount.Models;
+using static text_loginWithBackgrount.Areas.course_management.Model.RateModel;
 
 namespace Class_system_Backstage_pj.Areas.course_management.Controllers
 {
@@ -79,9 +83,12 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
                 //已經開啟過
                 return Ok(new { data = true });
             }
+            
             else
             {
+          
                 //尚未開啟: 1.班級科目狀態改成7 2.撈班級科目的班級中所有學生 3.把所有學生對評分主表新增
+
                 t課程班級科目.狀態 = 7;
 
                 var studentIds =
@@ -102,10 +109,35 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
                         改進意見 = "",
                     };
                     _context.Add(t課程評分主表);
+                    await _context.SaveChangesAsync();
+
+                   var FormId= t課程評分主表.評分主表id;
+
+                    var Model=new RateModel();
+                    foreach (var 分類 in Model.評分類別列表)
+                    {
+                        foreach (var 題目 in 分類.題目)
+                        {
+                            var t課程評分詳細表 = new T課程評分
+                            {
+                                評分主表id = FormId,
+                                評分分類 = 分類.分類名稱,
+                                評分題目 = 題目.題目內容,
+                                評分 = 0,
+                                狀態 = 1
+                            };
+                            _context.Add(t課程評分詳細表);
+                        }
+                    }
+
+                    await _context.SaveChangesAsync();
 
                 }
 
-                await _context.SaveChangesAsync();
+
+
+
+
                 return Ok(new { data = false });
             }
         }

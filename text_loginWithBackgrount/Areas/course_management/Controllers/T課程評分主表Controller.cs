@@ -242,21 +242,27 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
 
             if (t課程班級科目.狀態 == 7)
             {
+                //開啟科目狀態下且已經寫好表單的評分資料
                 var ratingsForClass = _context.T課程評分主表s
-                .Where(item => item.班級科目id == id)
+                .Where(item => item.班級科目id == id && item.狀態==2)
                 .SelectMany(item => item.T課程評分s)
                 .ToList();
 
+                //寫好表單的評分資料的人數
                 var peopleDone = _context.T課程評分主表s
                .Where(item => item.班級科目id == id && item.狀態==2)
                .Count();
 
 
-                var totalRatingsByCategory = ratingsForClass.GroupBy(item=> item.評分分類)
-                    .ToDictionary(group => group.Key, group => group.Average(item => item.評分));
+                var totalRatingsByCategory = ratingsForClass.GroupBy(item=> item.評分分類)                  
+                 .ToDictionary(group => group.Key, group => group.Average(item => item.評分));
 
-                return Ok(new { success = true , totalRatingsByCategory, peopleDone });
 
+                   
+
+                    return Ok(new { success = true, totalRatingsByCategory, peopleDone });
+                
+              
             }
             else
             {
