@@ -76,7 +76,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
         /// <param name="_search">接收前端需要顯示的資料筆數</param>
         /// <returns>依照規定回傳需要顯示的筆數</returns>
         [HttpPost]
-        public IActionResult jsonsort([FromBody] StoreShow _search)
+        public IActionResult jsonsort(StoreShow _search)
         {
             var spots = _search.storeID == 0 ? _myDBContext.T訂餐店家資料表s : _myDBContext.T訂餐店家資料表s.Where(s => s.店家id == _search.storeID);
             if (!string.IsNullOrEmpty(_search.keyword))
