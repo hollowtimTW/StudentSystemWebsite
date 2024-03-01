@@ -1,6 +1,6 @@
 ﻿@{
     ViewData["jobTitle"] = "後端工程師";
-    ViewData["companyName"] = "資展國際";
+    ViewData["companyName"] = "資展國際股份有限公司";
 }
 @section BreadcrumbsSection {
     <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
@@ -14,7 +14,7 @@
                     <li>@ViewData["jobTitle"]</li>
                 </ol>
                 <div style="margin-top: -10px; margin-bottom: -10px">
-                    <button type="button" class="btn btn-hollow like-btn"><i class="bi bi-heart"></i> 收藏</button>
+                    <button type="button" class="btn btn-hollow btn-like"><i class="bi bi-heart"></i> 收藏</button>
                     <button type="button" class="btn btn-normal" data-bs-toggle="modal" data-bs-target="#applyModal">
                         <i class="bi bi-envelope"></i> 應徵
                     </button>
@@ -26,6 +26,7 @@
 @section Styles{
     <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet" />
     <style>
+        
     </style>
 }
 
@@ -40,12 +41,10 @@
             <div class="modal-body">
                 <form>
                     <div class="row">
-                        <div class="list-row row mb-3">
-                            <div class="col-lg-3 list-head">應徵工作：</div>
-                            <div class="col-lg-8 list-data">
-                                <div class="t3">@ViewData["jobTitle"]</div>
-                            </div>
+                        <div class="form-group mb-1">
+                            <div class="control-label mb-2">應徵工作：<span>@ViewData["jobTitle"]</span></div>
                         </div>
+
                         <div class="form-group mb-4">
                             <div class="control-label col-lg-4 mb-2">選擇履歷：</div>
                             <div class="form-check form-check-inline">
@@ -60,18 +59,21 @@
                         <div class="form-group">
                             <div class="control-label mb-2">應徵信件內容：</div>
                             <textarea class="container-fluid">您好，希望能有參加面試的機會。</textarea>
-                            <div>字數：<span id="word-count">0</span> / <span style="color:#f85a40">2000</span></div>
+                            <div class="d-flex justify-content-end">
+                                <div>字數：<span id="word-count">0</span> / <span style="color:#f85a40">2000</span></div>
+                            </div>
                         </div>
+
                     </div>
                 </form>
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">
-                    <a asp-area="job_vacancy" asp-controller="Job" asp-action="Index" style="color:white">確認送出</a>
+                <button type="button" class="btn btn-normal">
+                    <a asp-area="job_vacancy" asp-controller="Job" asp-action="Index">確認送出</a>
                 </button>
-                <button type="button" class="btn btn-warning">
-                    <a asp-area="job_vacancy" asp-controller="Job" asp-action="ResumePreview" target="_blank" style="color:white">送出前預覽</a>
+                <button type="button" class="btn btn-preview">
+                    <a asp-area="job_vacancy" asp-controller="Job" asp-action="ResumePreview" target="_blank">送出前預覽</a>
                 </button>
             </div>
         </div>
@@ -86,9 +88,9 @@
                 <div class="flex-grow-1">
                     <h1 class="text-break">@ViewData["jobTitle"]</h1>
                     <div class="d-flex align-items-center">
-                        <h4 class="mr-3"><a asp-area="job_vacancy" asp-controller="Job" asp-action="CompanyDetails">@ViewData["companyName"]</a></h4>
+                        <h5><a asp-area="job_vacancy" asp-controller="Job" asp-action="CompanyDetails">@ViewData["companyName"]</a></h5>
+                        <p>2024/02/26 15:25:45 更新</p>
                     </div>
-                    <h6 class="ml-auto">02/26更新</h6>
                 </div>
             </div>
         </div>
@@ -101,7 +103,7 @@
                             <h2>工作內容</h2>
                         </div>
                         <div class="job-description-table row">
-                            <div class="job-description col-12 mb-2">
+                            <div class="job-content col-12 mb-2">
                                 <p>
                                     日系傳統工藝培育台灣在地人才，
                                     性質為金屬表面紋理製作技術產業，
@@ -120,65 +122,63 @@
                                     歡迎你來挑戰自我！
                                 </p>
                             </div>
-                            <div class="list-row row mb-2">
-                                <div class="col-lg-2 col-sm-4 list-head">
-                                    <h4>薪水待遇</h4>
-                                </div>
-                                <div class="col-lg-6 col-sm-8 list-data">
-                                    <div class="t3 mb-0">
-                                        <div class="t3 mb-0">月薪30,000~72,000元</div>
+                            <div class="row job-content-table">
+                                <div class="list-row row mb-2">
+                                    <div class="col-lg-2 col-12 list-head">
+                                        <h4 class="mb-0">薪水待遇</h4>
+                                    </div>
+                                    <div class="col-lg-10 col-12 list-data">
+                                        <p class="mb-0">月薪30,000~72,000元</p>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="list-row row mb-2">
-                                <div class="col-lg-2 list-head">
-                                    <h4>工作性質</h4>
+                                <div class="list-row row mb-2">
+                                    <div class="col-lg-2 col-12 list-head">
+                                        <h4 class="mb-0">工作性質</h4>
+                                    </div>
+                                    <div class="col-lg-10 col-12 list-data">
+                                        <p class="mb-0">全職 </p>
+                                    </div>
                                 </div>
-                                <div class="col-lg-6 list-data">
-                                    <div class="t3 mb-0">全職 </div>
-                                </div>
-                            </div>
-                            <!---->
-                            <!---->
-                            <div class="list-row row mb-2">
-                                <div class="col-lg-2 list-head">
-                                    <h4>工作地點</h4>
-                                </div>
-                                <div class="col-lg-6 list-data">
-                                    <div class="t3 mb-0">
-                                        <span data-v-e81f764d="">臺北市大安區復興南路1段390號15樓</span>
-                                        <!---->
-                                        <!---->
-                                        <a href="https://www.google.com/maps?q=資展國際" target="_blank" rel="noopener">
+                                <!---->
+                                <!---->
+                                <div class="list-row row mb-2">
+                                    <div class="col-lg-2 col-12 list-head">
+                                        <h4 class="mb-0">工作地點</h4>
+                                    </div>
+                                    <div class="col-lg-10 col-12 list-data d-flex align-items-center">
+                                        <p class="mb-0">臺北市大安區復興南路1段390號15樓</p>
+                                        <a href="https://www.google.com/maps?q=資展國際" target="_blank" rel="noopener" class="ml-auto">
                                             <i class="bi bi-geo-alt-fill flex-shrink-0"></i>
                                         </a>
                                     </div>
+
+                                </div>
+                                <div class="list-row row mb-2">
+                                    <div class="col-lg-2 col-12 list-head">
+                                        <h4 class="mb-0">工作時段</h4>
+                                    </div>
+                                    <div class="col-lg-10 col-12 list-data">
+                                        <p class="mb-0">日班</p>
+                                    </div>
+                                </div>
+                                <div class="list-row row mb-2">
+                                    <div class="col-lg-2 col-12 list-head">
+                                        <h4 class="mb-0">輪班需求</h4>
+                                    </div>
+                                    <div class="col-lg-10 col-12 list-data">
+                                        <p class="mb-0">需要</p>
+                                    </div>
+                                </div>
+                                <div class="list-row row mb-2">
+                                    <div class="col-lg-2 col-12 list-head">
+                                        <h4 class="mb-0">需求人數</h4>
+                                    </div>
+                                    <div class="col-lg-10 col-12 list-data">
+                                        <p class="mb-0">6~12人 </p>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="list-row row mb-2">
-                                <div class="col-lg-2 list-head">
-                                    <h4>工作時段</h4>
-                                </div>
-                                <div class="col-lg-6 list-data">
-                                    <div class="t3 mb-0">日班</div>
-                                </div>
-                            </div>
-                            <div class="list-row row mb-2">
-                                <div class="col-lg-2 list-head">
-                                    <h4>輪班需求</h4>
-                                </div>
-                                <div class="col-lg-6 list-data">
-                                    <div class="t3 mb-0">需要</div>
-                                </div>
-                            </div>
-                            <div class="list-row row mb-2">
-                                <div class="col-lg-2 list-head">
-                                    <h4>需求人數</h4>
-                                </div>
-                                <div class="col-lg-6 list-data">
-                                    <div class="t3 mb-0">6~12人 </div>
-                                </div>
-                            </div>
+                            
                         </div>
                         <!---->
                     </div>
@@ -186,50 +186,37 @@
                         <div class="row mb-3">
                             <h2>條件要求</h2>
                         </div>
-                        <div class="job-requirement-table row">
+                        <div class="row job-content-table">
                             <div class="list-row row mb-2">
-                                <div class="col-lg-2 list-head">
-                                    <h4>學歷要求</h4>
+                                <div class="col-lg-2 col-12 list-head">
+                                    <h4 class="mb-0">學歷要求</h4>
                                 </div>
-                                <div class="col-lg-6 list-data">
-                                    <div class="t3 mb-0">高中以下、高中、專科、大學、碩士 </div>
+                                <div class="col-lg-10 col-12 list-data">
+                                    <p class="mb-0">高中以下、高中、專科、大學、碩士 </p>
                                 </div>
                             </div>
                             <div class="list-row row mb-2">
-                                <div class="col-lg-2 list-head">
-                                    <h4>語文條件</h4>
+                                <div class="col-lg-2 col-12 list-head">
+                                    <h4 class="mb-0">語文條件</h4>
                                 </div>
-                                <div class="col-lg-6 list-data">
-                                    <div class="t3 mb-0">
-                                        <p class="t3 m-0">不拘</p>
-                                    </div>
+                                <div class="col-lg-10 col-12 list-data">
+                                    <p class="mb-0">不拘</p>
                                 </div>
                             </div>
                             <div class="list-row row mb-2">
-                                <div class="col-lg-2 list-head">
-                                    <h4>工作技能</h4>
+                                <div class="col-lg-2 col-12 list-head">
+                                    <h4 class="mb-0">工作技能</h4>
                                 </div>
-                                <div class="col-lg-6 list-data">
-                                    <div class="t3 mb-0">
-                                        <span class="d-inline-block">
-                                            達成產能及出貨目標
-                                            <span data-v-7850ec4d="">、</span>
-                                        </span>
-                                        <span class="d-inline-block">
-                                            維持產線正常運轉並跟催生產進度
-                                            <!---->
-                                        </span>
-                                    </div>
+                                <div class="col-lg-10 col-12 list-data">
+                                    <p class="mb-0">達成產能及出貨目標、維持產線正常運轉並跟催生產進度</p>
                                 </div>
                             </div>
                             <div class="list-row row mb-2">
-                                <div class="col-lg-2 list-head">
-                                    <h4>其他條件</h4>
+                                <div class="col-lg-2 col-12 list-head">
+                                    <h4 class="mb-0">其他條件</h4>
                                 </div>
-                                <div class="col-lg-6 list-data">
-                                    <div class="t3 mb-0">
-                                        <p class="t3 m-0">未填寫</p>
-                                    </div>
+                                <div class="col-lg-10 col-12 list-data">
+                                    <p class="mb-0">未填寫</p>
                                 </div>
                             </div>
                             <!---->
@@ -240,29 +227,29 @@
                         <div class="row mb-3">
                             <h2>聯絡方式</h2>
                         </div>
-                        <div class="job-requirement-table row">
+                        <div class="row job-content-table">
                             <div class="list-row row mb-2">
-                                <div class="col-lg-2 list-head">
-                                    <h4>聯絡人</h4>
+                                <div class="col-lg-2 col-12 list-head">
+                                    <h4 class="mb-0">聯絡人</h4>
                                 </div>
-                                <div class="col-lg-6 list-data">
-                                    <div class="t3 mb-0">鄭明傑</div>
+                                <div class="col-lg-10 col-12 list-data">
+                                    <p class="mb-0">鄭明傑</p>
                                 </div>
                             </div>
                             <div class="list-row row mb-2">
-                                <div class="col-lg-2 list-head">
-                                    <h4>電洽</h4>
+                                <div class="col-lg-2 col-12 list-head">
+                                    <h4 class="mb-0">電洽</h4>
                                 </div>
-                                <div class="col-lg-6 list-data">
-                                    <div class="t3 mb-0">03-4636622</div>
+                                <div class="col-lg-10 col-12 list-data">
+                                    <p class="mb-0">03-4636622</p>
                                 </div>
                             </div>
                             <div class="list-row row mb-2">
-                                <div class="col-lg-2 list-head">
-                                    <h4>Email</h4>
+                                <div class="col-lg-2 col-12 list-head">
+                                    <h4 class="mb-0">Email</h4>
                                 </div>
-                                <div class="col-lg-6 list-data">
-                                    <div class="t3 mb-0">aaaa@webmail.com</div>
+                                <div class="col-lg-10 col-12 list-data">
+                                    <p class="mb-0">aaaa@webmail.com</p>
                                 </div>
                             </div>
                             <!---->

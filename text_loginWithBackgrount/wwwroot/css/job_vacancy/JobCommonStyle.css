@@ -1,7 +1,13 @@
+input[type="radio"]:checked,
+input[type="checkbox"]:checked {
+    background-color: var(--color-primary);
+}
+
+
 .btn-normal {
     font-family: var(--font-primary);
     font-weight: 600;
-    font-size: 15px;
+    font-size: 16px;
     letter-spacing: 1px;
     color: #fff;
     background-color: var(--color-primary);
@@ -11,10 +17,14 @@
     border: 2px solid rgba(255, 255, 255, 0.1);
 }
 
+    .btn-normal:hover {
+        background-color: rgba(0, 131, 116, 0.5);
+    }
+
 .btn-hollow {
     font-family: var(--font-primary);
     font-weight: 600;
-    font-size: 15px;
+    font-size: 16px;
     letter-spacing: 1px;
     color: var(--color-primary);
     background-color: #fff;
@@ -23,6 +33,38 @@
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
     border: 2px solid var(--color-primary);
 }
+
+    .btn-hollow:hover {
+        background-color: var(--color-primary);
+        color: #fff;
+    }
+
+.btn-preview {
+    font-family: var(--font-primary);
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: 1px;
+    color: #fff;
+    background-color: rgb(232, 211, 74);
+    border-radius: 10px;
+    transition: 0.3s;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+    .btn-preview:hover {
+        background-color: rgba(232, 211, 74, 0.5);
+    }
+
+.modal-footer a {
+    color: #fff;
+}
+
+    .modal-footer a:hover {
+        color: var(--color-defalt);
+    }
+
+
 
 .btn-circle {
     width: 38px;
@@ -36,12 +78,17 @@
     color: var(--color-primary);
 }
 
+.btn-like.active {
+    background-color: var(--color-primary);
+    color: #fff;
+}
+
 
 /* ========== Job Vacancies ========== */
 .btn-entrance {
     font-family: var(--font-primary);
     font-weight: 600;
-    font-size: 15px;
+    font-size: 16px;
     letter-spacing: 1px;
     display: inline-block;
     padding: 7px 40px;
@@ -66,7 +113,7 @@
         color: #fff;
     }
 
-.nav-item {
+.Job-Vacancies .nav-item {
     width: 120px;
     cursor: pointer;
     display: inline-block;
@@ -74,15 +121,14 @@
     font-size: 18px;
     font-weight: 800;
     margin: 0 10px;
-    /*line-height: 1;*/
     transition: all 0.3s ease-in-out;
 }
 
-    .nav-item .active {
+    .Job-Vacancies .nav-item .active {
         border-bottom: 2px solid var(--color-primary);
     }
 
-.btn-detail {
+.Job-Vacancies .btn-detail {
     height: 38px;
     display: inline-block;
     padding: 8px 40px 10px 40px;
@@ -96,18 +142,18 @@
     transition: 0.3s;
 }
 
-    .btn-detail:hover {
+    .Job-Vacancies .btn-detail:hover {
         background: var(--color-primary);
         color: #fff;
     }
 
-.btn-more {
+.Job-Vacancies .btn-more {
     font-family: var(--font-primary);
     font-weight: 600;
-    font-size: 15px;
+    font-size: 18px;
     letter-spacing: 1px;
     display: inline-block;
-    padding: 14px 40px;
+    padding: 12px 30px;
     border-radius: 50px;
     transition: 0.3s;
     color: #fff;
@@ -116,63 +162,106 @@
     border: 2px solid rgba(255, 255, 255, 0.1);
 }
 
-    .btn-more:hover {
+    .Job-Vacancies .btn-more:hover {
         background-color: #419489;
         color: #fff;
         border-color: rgba(255, 255, 255, 0.5);
     }
 
-/*.portfolio-flters li:hover,
-.portfolio-flters li.filter-active {
-    color: var(--color-primary);
-    border-bottom: 2px solid var(--primary);
-}*/
-
-.job-item {
+.Job-Vacancies .job-item {
     border: 1px solid transparent;
     border-radius: 2px;
     box-shadow: 0 0 45px rgba(0, 0, 0, .08);
     transition: .5s;
+    width: contain;
 }
 
-    .job-item:hover {
+    .Job-Vacancies .job-item:hover {
         border-color: rgba(0, 0, 0, .08);
         box-shadow: none;
     }
 
-.like-btn.active {
-    background-color: var(--color-primary);
-    color: #fff;
-}
+    .Job-Vacancies .job-item img {
+        width: 80px;
+        height: 80px;
+    }
+
+
 
 
 /* ========== Job Details ========== */
-.Job-Details .job-header,
-.Job-Details .dialog {
+
+.Job-Details .job-header {
     border-radius: 10px;
-    margin-bottom: 20px;
-    padding: 15px;
+    margin-bottom: 25px;
+    padding: 35px;
     background-color: #fff;
-    padding: 40px;
     border: 1px solid transparent;
     box-shadow: 0 0 45px rgba(0, 0, 0, .08);
     transition: .5s;
 }
 
+    .Job-Details .job-header h1 {
+        font-weight: bold;
+    }
+
+    .Job-Details .job-header p {
+        margin-left: auto;
+        color: grey;
+    }
+
+.Job-Details .dialog {
+    border-radius: 10px;
+    margin-bottom: 20px;
+    padding: 60px;
+    background-color: #fff;
+    border: 1px solid transparent;
+    box-shadow: 0 0 45px rgba(0, 0, 0, .08);
+    transition: .5s;
+}
+
+    .Job-Details .dialog h2 {
+        font-weight: bold;
+        border-bottom: 3px solid var(--color-primary)
+    }
+
+.Job-Details .job-content p {
+    font-size: 18px;
+}
+
+.Job-Details .list-head h4 {
+    font-weight: 600;
+    padding: 5px 0;
+}
+
+.Job-Details .list-data {
+    font-size: 20px;
+    padding: 5px 0;
+}
+
 #applyModal {
     position: fixed;
-    top: 70%;
+    top: 60%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
+    #applyModal .modal-header h4 {
+        font-weight: bold;
+    }
 
     #applyModal .modal-content {
         padding: 20px;
     }
 
+    #applyModal .control-label {
+        font-size: 18px;
+    }
+
     #applyModal textarea {
-        border-radius: 8px;
-        height: 100px;
+        border: 0.5px solid var(--color-primary);
+        border-radius: 10px;
+        height: 250px;
         padding: 10px;
     }
 
@@ -325,10 +414,242 @@
     border: 4px dotted Grey;
 }
 
+#editModal {
+    position: fixed;
+    top: 50%;
+    left: 40%;
+    transform: translate(-50%, -50%);
+}
+
+    #editModal .modal-content {
+        width: 860px;
+    }
+
+
+
+/* ================== 履歷編輯 ================= */
+
+.Resume-Edit {
+    margin:0;
+}
+
+    .Resume-Edit .dialog {
+        margin: 20px;
+        padding: 40px;
+        background-color: #fff;
+        border: 2px solid transparent;
+        border-radius: 8px;
+        box-shadow: 0 0 45px rgba(0, 0, 0, .08);
+        transition: .5s;
+        width:auto;
+    }
+
+        .Resume-Edit .dialog div {
+            margin-bottom: 20px;
+        }
+
+            .Resume-Edit .dialog div label {
+                margin-bottom: 10px;
+            }
+
+        .Resume-Edit .dialog .flex-container {
+            display: flex;
+            align-items: center;
+        }
+
+            .Resume-Edit .dialog .flex-container label {
+                margin-right: 10px;
+                width: 120px;
+            }
+
+            .Resume-Edit .dialog .flex-container input {
+                margin-right: 10px;
+            }
+
+        .Resume-Edit .dialog textarea {
+            height: 100px;
+        }
+
+
+    /* 提交與取消提交按鈕 */
+    .Resume-Edit .btn-submit {
+        background-color: darkcyan;
+        color: white;
+        margin: 20px;
+    }
+
+    .Resume-Edit .btn-secondary {
+        margin: 20px 10px;
+    }
+
+    /* 動態視窗 */
+    .Resume-Edit .modal {
+        position: fixed;
+        top: 60%;
+        left: 55%;
+        transform: translate(-50%, -50%);
+    }
+
+    .Resume-Edit .modal-content {
+        text-align: center;
+        padding: 20px;
+    }
+
+.workExpList {
+    /*background-color:antiquewhite;*/
+    padding: 0;
+    border: 1px solid rgba(0, 131, 116, 0.2);
+    border-radius: 6px;
+    box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.06);
+}
+    .workExpList .exp-item {
+        margin: 0;
+        padding: 25px 20px 5px 30px;
+        /*background-color: aquamarine;*/
+        border-top: 1px solid rgba(0, 131, 116, 0.2);
+    }
+
+
+
+/* todo--  CKEditor的相關樣式，待研究*/
+
+.document-editor {
+    border: 1px solid var(--ck-color-base-border);
+    border-radius: var(--ck-border-radius);
+    /* Set vertical boundaries for the document editor. */
+    max-height: 700px;
+    /* This element is a flex container for easier rendering. */
+    display: flex;
+    flex-flow: column nowrap;
+}
+.document-editor__toolbar {
+    /* Make sure the toolbar container is always above the editable. */
+    z-index: 1;
+    /* Create the illusion of the toolbar floating over the editable. */
+    box-shadow: 0 0 5px hsla( 0,0%,0%,.2 );
+    /* Use the CKEditor CSS variables to keep the UI consistent. */
+    border-bottom: 1px solid var(--ck-color-toolbar-border);
+}
+
+    /* Adjust the look of the toolbar inside the container. */
+    .document-editor__toolbar .ck-toolbar {
+        border: 0;
+        border-radius: 0;
+    }
+/* Make the editable container look like the inside of a native word processor application. */
+.document-editor__editable-container {
+    padding: calc( 2 * var(--ck-spacing-large) );
+    background: var(--ck-color-base-foreground);
+    /* Make it possible to scroll the "page" of the edited content. */
+    overflow-y: scroll;
+}
+
+    .document-editor__editable-container .ck-editor__editable {
+        /* Set the dimensions of the "page". */
+        width: 15.8cm;
+        min-height: 21cm;
+        /* Keep the "page" off the boundaries of the container. */
+        padding: 1cm 2cm 2cm;
+        border: 1px hsl( 0,0%,82.7% ) solid;
+        border-radius: var(--ck-border-radius);
+        background: white;
+        /* The "page" should cast a slight shadow (3D illusion). */
+        box-shadow: 0 0 5px hsla( 0,0%,0%,.1 );
+        /* Center the "page". */
+        margin: 0 auto;
+    }
+/* Set the default font for the "page" of the content. */
+.document-editor .ck-content,
+.document-editor .ck-heading-dropdown .ck-list .ck-button__label {
+    font: 16px/1.6 "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+/* Adjust the headings dropdown to host some larger heading styles. */
+.document-editor .ck-heading-dropdown .ck-list .ck-button__label {
+    line-height: calc( 1.7 * var(--ck-line-height-base) * var(--ck-font-size-base) );
+    min-width: 6em;
+}
+
+/* Scale down all heading previews because they are way too big to be presented in the UI.
+Preserve the relative scale, though. */
+.document-editor .ck-heading-dropdown .ck-list .ck-button:not(.ck-heading_paragraph) .ck-button__label {
+    transform: scale(0.8);
+    transform-origin: left;
+}
+
+/* Set the styles for "Heading 1". */
+.document-editor .ck-content h2,
+.document-editor .ck-heading-dropdown .ck-heading_heading1 .ck-button__label {
+    font-size: 2.18em;
+    font-weight: normal;
+}
+
+.document-editor .ck-content h2 {
+    line-height: 1.37em;
+    padding-top: .342em;
+    margin-bottom: .142em;
+}
+
+/* Set the styles for "Heading 2". */
+.document-editor .ck-content h3,
+.document-editor .ck-heading-dropdown .ck-heading_heading2 .ck-button__label {
+    font-size: 1.75em;
+    font-weight: normal;
+    color: hsl( 203, 100%, 50% );
+}
+
+.document-editor .ck-heading-dropdown .ck-heading_heading2.ck-on .ck-button__label {
+    color: var(--ck-color-list-button-on-text);
+}
+
+/* Set the styles for "Heading 2". */
+.document-editor .ck-content h3 {
+    line-height: 1.86em;
+    padding-top: .171em;
+    margin-bottom: .357em;
+}
+
+/* Set the styles for "Heading 3". */
+.document-editor .ck-content h4,
+.document-editor .ck-heading-dropdown .ck-heading_heading3 .ck-button__label {
+    font-size: 1.31em;
+    font-weight: bold;
+}
+
+.document-editor .ck-content h4 {
+    line-height: 1.24em;
+    padding-top: .286em;
+    margin-bottom: .952em;
+}
+
+/* Set the styles for "Paragraph". */
+.document-editor .ck-content p {
+    font-size: 1em;
+    line-height: 1.63em;
+    padding-top: .5em;
+    margin-bottom: 1.13em;
+}
+/* Make the block quoted text serif with some additional spacing. */
+.document-editor .ck-content blockquote {
+    font-family: Georgia, serif;
+    margin-left: calc( 2 * var(--ck-spacing-large) );
+    margin-right: calc( 2 * var(--ck-spacing-large) );
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* =================== 職缺紀錄 ================= */
 /* ==============================================*/
-
-.btn-detail {
+.student_career .btn-detail {
     height: 38px;
     display: inline-block;
     padding: 6px 20px 10px 20px;
@@ -342,17 +663,12 @@
     transition: 0.3s;
 }
 
-    .btn-detail:hover {
+    .student_career .btn-detail:hover {
         background: var(--color-primary);
         color: #fff;
     }
 
-.like-btn.active {
-    background-color: var(--color-primary);
-    color: #fff;
-}
-
-.job-item {
+.student_career .job-item {
     border: 2px solid transparent;
     border-radius: 4px;
     box-shadow: 0 0 45px rgba(0, 0, 0, .08);
@@ -361,12 +677,12 @@
     width: 80%;
 }
 
-    .job-item:hover {
+    .student_career .job-item:hover {
         border-color: rgba(0, 0, 0, .08);
         box-shadow: none;
     }
 
-    .job-item img {
+    .student_career .job-item img {
         width: 80px;
         height: 80px;
     }
@@ -374,46 +690,46 @@
 
 
 @media (max-width: 1200px) {
-    .career {
+    .student_career {
         padding: 20px 50px;
     }
 
-    .job-item .col-lg-8,
-    .job-item .col-lg-4 {
-        width: 100%;
-    }
+        .student_career .job-item .col-lg-8,
+        .student_career .job-item .col-lg-4 {
+            width: 100%;
+        }
 }
 
 @media (max-width: 750px) {
-    .job-item {
+    .student_career .job-item {
         display: flex;
         align-items: center;
         text-align: center;
     }
 
-        .job-item img {
+        .student_career .job-item img {
             width: 120px;
             height: 120px;
         }
 
-        .job-item .text-start,
-        .job-item small {
+        .student_career .job-item .text-start,
+        .student_career .job-item small {
             display: none; /* 隱藏 */
         }
 }
 
 @media (max-width: 600px) {
 
-    .job-item img {
+    .student_career .job-item img {
         width: 80px;
         height: 80px;
     }
 
-    .like-btn {
+    .student_career .btn-like {
         display: none;
     }
 
-    .btn-detail {
+    .student_career .btn-detail {
         padding: 5px;
         font-size: 14px;
     }

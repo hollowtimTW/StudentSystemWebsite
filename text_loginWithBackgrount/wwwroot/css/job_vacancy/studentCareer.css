@@ -195,7 +195,7 @@ a {
         color: #fff;
     }
 
-.like-btn.active {
+.btn-like.active {
     background-color: var(--color-primary);
     color: #fff;
 }
@@ -257,7 +257,7 @@ a {
         height: 80px;
     }
 
-    .like-btn {
+    .btn-like {
         display: none;
     }
 

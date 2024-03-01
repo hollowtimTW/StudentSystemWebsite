@@ -12,6 +12,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
     /// </summary>
     [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles = "student")]
     [Area("job_vacancy")]
+    [Route("/job_vacancy/jobforStudent/{Action=Index}/{resumeID?}")]
     public class jobforStudentController : Controller
     {
         private readonly studentContext _context;
@@ -79,7 +80,8 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                 HopeLocation = thisResume.F希望工作地點,
                 Autobiography = thisResume.F自傳,
             };
-            return View(viewModel);
+            //return View(viewModel);
+            return PartialView("_EditPartial", viewModel);
         }
 
         /// <summary>

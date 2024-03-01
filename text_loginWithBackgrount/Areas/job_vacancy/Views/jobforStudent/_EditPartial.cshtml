@@ -1,102 +1,7 @@
 ﻿@model ResumeCreateViewModel
-@{
-
-    ViewData["Title"] = "編輯履歷";
-}
-
-@section Styles {
-    <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
-    <style>
-
-        /* 還沒做
-           - 響應式樣式
-           - 新增工作經驗的表單
-        */
-
-        .formResume {
-            margin: 60px;
-            padding-bottom: 50px;
-        }
-
-            .formResume .dialog {
-                margin: 20px;
-                padding: 40px;
-                background-color: #fff;
-                border: 2px solid transparent;
-                border-radius: 8px;
-                box-shadow: 0 0 45px rgba(0, 0, 0, .08);
-                transition: .5s;
-
-            }
-
-                .formResume .dialog div {
-                    margin-bottom: 20px;
-                }
-
-                    .formResume .dialog div label {
-                        margin-bottom: 10px;
-                    }
-
-        .flex-container {
-            display: flex;
-            align-items: center;
-        }
-
-            .flex-container label {
-                margin-right: 10px;
-                width: 120px;
-            }
-
-            .flex-container input {
-                margin-right: 10px;
-            }
-
-        textarea {
-            height: 100px;
-        }
-
-        /* summernote */
-        .note-toolbar {
-            height: 40px;
-            background-color: #f0f0f0;
-        }
-
-        /* 提交與取消提交按鈕 */
-        .btn-submit {
-            background-color: darkcyan;
-            color: white;
-            margin: 20px;
-        }
-
-        .btn-secondary {
-            margin: 20px 10px;
-        }
-
-        /*動態視窗*/
-        .modal {
-            position: fixed;
-            top: 60%;
-            left: 55%;
-            transform: translate(-50%, -50%);
-        }
-
-            .modal .modal-content {
-                text-align: center;
-                padding: 20px;
-            }
-
-
-        .exp-item{
-            margin: 20px;
-            padding: 40px;
-            /* background-color: #fff; */
-            border: 2px solid gray;
-            border-radius: 4px;
-        }
-
-    </style>
-}
+<style>
+    <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet" / >
+</style>
 <section class="Resume-Edit">
     <div class="container-fluid">
         <form asp-action="Edit" class="formResume" id="formEdit" enctype="multipart/form-data">
@@ -218,16 +123,14 @@
 
                 <span asp-validation-for="WorkExperience" class="text-danger"></span>
 
-                <div id="expList" style="display: none;">
+                <div class="workExpList" id="expList" style="display: none;">
 
                     <div class="exp-item">
                         <div class="d-flex w-100 justify-content-between">
                             <h5>出餐人員</h5>
                             <button type="button" class="btn-close"></button>
                         </div>
-                        <p class="mb-1">2018/6 - 2019/12</p>
-                        <small>新北市 永和區</small>
-                        <small>兼職</small>
+                        <p class="mb-1">2018/6 - 2019/12 / 新北市 永和區 / 兼職</p>
                         <p class="mt-2">
                             1. 將餐點送到客桌。<br />
                             2. 清理桌面。
@@ -238,9 +141,7 @@
                             <h5>出餐人員</h5>
                             <button type="button" class="btn-close"></button>
                         </div>
-                        <p class="mb-1">2018/6 - 2019/12</p>
-                        <small>新北市 永和區</small>
-                        <small>兼職</small>
+                        <p class="mb-1">2018/6 - 2019/12 / 新北市 永和區 / 兼職</p>
                         <p class="mt-2">
                             1. 將餐點送到客桌。<br />
                             2. 清理桌面。
@@ -344,164 +245,170 @@
             <div class="row dialog container-fluid">
                 <div class="form-group">
                     <label asp-for="Autobiography" class="control-label"></label>
-                    <div id="summernote" name="Autobiography"></div>
+                    @* <div id="summernote" name="Autobiography"></div> *@
+                    <div id="editor" name="Autobiography" placeholder="請在這裡填寫內容"></div>
                     <span asp-validation-for="Autobiography" class="text-danger"></span>
-                </div>
-            </div>
 
-            <!-- 表單尾部-->
-            <div class="form-group d-flex justify-content-end">
-                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#cancelModal">取消</button>
-                <input type="submit" class="btn btn-submit" id="btnSummit" value="儲存" />
+                    <div class="document-editor">
+                        <div class="document-editor__toolbar"></div>
+                        <div class="document-editor__editable-container">
+                            <div class="document-editor__editable">
+                                <p>The initial editor data.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </form>
     </div>
 </section>
 
-<!-- Modal 互動視窗：取消編輯履歷 -->
-<div class="modal fade" id="cancelModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="cancelModalLabel">取消編輯</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                取消編輯將不會儲存修改，確定要取消嗎？
-            </div>
-            <div class="modal-footer">
-                <a asp-action="Index" class="btn btn-secondary">確定取消</a>
-                <button type="button" class="btn btn-submit" data-bs-dismiss="modal">繼續編輯</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-@section Scripts {
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
-    <script src="~/js/job_vacancy/resume.js"></script>
-    <script src="~/js/job_vacancy/summernote-zh-tw.js"></script>
-    <script>
-        const btnAdd = document.getElementById("btnAdd");
-        const expEdit = document.getElementById("expEdit");
-        const btnConfirm = document.getElementById("btnConfirm");
-        const btnCancel = document.getElementById("btnCancel");
-        const expList = document.getElementById("expList");
-
-        btnAdd.addEventListener("click", function () {
-            expEdit.style.display = "block";
-            expList.style.display = "none";
-            btnAdd.style.display = "none";
-        });
-
-        btnConfirm.addEventListener("click", function () {
-            // 在此處處理勾選後的操作，例如將選項添加到頁面上的某個位置
-
-            // 隱藏新增區域，顯示新增按鈕
-            expEdit.style.display = "none";
-            btnAdd.style.display = "block";
-            expList.style.display = "block";
-        });
-
-        btnCancel.addEventListener("click", function () {
-            // 隱藏新增區域，顯示新增按鈕
-            expEdit.style.display = "none";
-            btnAdd.style.display = "block";
-        });
 
 
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="~/js/job_vacancy/resume.js"></script>
+@* <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script> *@
+@* <script src="~/js/job_vacancy/summernote-zh-tw.js"></script> *@
+<script src="~/js/job_vacancy/ckeditor5/build/ckeditor.js"></script>
 
+<script>
 
-
-        const resumeID = "@Model.ResumeID";
-        const hopeSalary = "@Html.Raw(Model.HopeSalary)".trim();
-        const autobiography = "@Model.Autobiography";
-
-        // 將特殊字符進行轉義，再傳遞給 Summernote 編輯器
-        const decodedAutobiography = autobiography.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
-
-        $(document).ready(function () {
-            
-
-            //處理希望薪資的選項
-            switch (hopeSalary) {
-                case "面議":
-                    document.getElementById('hopeSalary1').checked = true;
-                    break;
-                case "論件計酬":
-                    document.getElementById('hopeSalary2').checked = true;
-                    break;
-                default:
-                    hopeSalary3.checked = true;
-                    salaryInput.value = hopeSalary;
-                    salaryInput.style.visibility = "visible";
-                    break;
+    DecoupledEditor
+        .create(document.querySelector('.document-editor__editable'), {
+            cloudServices: {
+                // A configuration of CKEditor Cloud Services.
+                // ...
             }
+        })
+        .then(editor => {
+            const toolbarContainer = document.querySelector('.document-editor__toolbar');
 
-            // 將自傳內容設置為 Summernote 編輯器的內容
-            $('#summernote').summernote('code', decodedAutobiography);
+            toolbarContainer.appendChild(editor.ui.view.toolbar.element);
+
+            window.editor = editor;
+        })
+        .catch(err => {
+            console.error(err);
         });
 
-        //提交表單事件
-        btnSummit.addEventListener('click', async (event) => {
 
-            event.preventDefault();  //停止預設行為
+    const btnAdd = document.getElementById("btnAdd");
+    const expEdit = document.getElementById("expEdit");
+    const btnConfirm = document.getElementById("btnConfirm");
+    const btnCancel = document.getElementById("btnCancel");
+    const expList = document.getElementById("expList");
 
-            const formData = new FormData(document.getElementById('formEdit'));
+    btnAdd.addEventListener("click", function () {
+        expEdit.style.display = "block";
+        expList.style.display = "none";
+        btnAdd.style.display = "none";
+    });
 
-            //公開狀態
-            let checkbox = document.getElementById('resumeStatus');
-            let resumeStatusValue = checkbox.checked ? '公開' : '關閉';
-            formData.set('resumeStatus', resumeStatusValue);
+    btnConfirm.addEventListener("click", function () {
+        // 在此處處理勾選後的操作，例如將選項添加到頁面上的某個位置
 
-            //有無工作經驗
-            checkbox = document.getElementById('workExpCheck');
-            let workExpValue = checkbox.checked ? 'N' : 'Y';
-            formData.set('WorkExperience', workExpValue);
+        // 隱藏新增區域，顯示新增按鈕
+        expEdit.style.display = "none";
+        btnAdd.style.display = "block";
+        expList.style.display = "block";
+    });
 
-            //輪班
-            checkbox = document.getElementById('workShiftCheck');
-            let workShiftValue = checkbox.checked ? 'Y' : 'N';
-            formData.set('WorkShift', workShiftValue);
-
-            //希望薪資
-            let selectedValue;
-            if (hopeSalary3.checked) {
-                selectedValue = document.getElementById('salaryInput').value;
-            }
-            else {
-                selectedValue = document.querySelector('input[name="HopeSalary"]:checked')?.value;
-            }
-            formData.set('HopeSalary', selectedValue);
-
-            //自傳
-            const autobiography = $('#summernote').summernote('code');
-            //let regEx = /<[^>]*>/g;  //去除HTML標籤
-            //const plain = autobiography.replace(regEx, "");
-            formData.set('Autobiography', autobiography);
+    btnCancel.addEventListener("click", function () {
+        // 隱藏新增區域，顯示新增按鈕
+        expEdit.style.display = "none";
+        btnAdd.style.display = "block";
+    });
 
 
-            // for (const pair of formData.entries()) {
-            //     console.log(pair[0] + ', ' + pair[1]);
-            // }
-            //return;
 
-            const url = '/job_vacancy/Resume/UpdateResume/' + resumeID;
-            const response = await fetch(url, {
-                body: formData,
-                method: 'POST'
-            });
-            const data = await response.json();
-            if (response.ok) {
-                if (data.redirectUrl) {
-                    window.location.href = data.redirectUrl; // 重定向履歷管理首頁
-                } else {
-                    alert(data.message);
-                }
+
+    const resumeID = "@Model.ResumeID";
+    const hopeSalary = "@Html.Raw(Model.HopeSalary)".trim();
+    const autobiography = "@Model.Autobiography";
+
+    // 將特殊字符進行轉義，再傳遞給 Summernote 編輯器
+    const decodedAutobiography = autobiography.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+
+    $(document).ready(function () {
+
+        //處理希望薪資的選項
+        switch (hopeSalary) {
+            case "面議":
+                document.getElementById('hopeSalary1').checked = true;
+                break;
+            case "論件計酬":
+                document.getElementById('hopeSalary2').checked = true;
+                break;
+            default:
+                hopeSalary3.checked = true;
+                salaryInput.value = hopeSalary;
+                salaryInput.style.visibility = "visible";
+                break;
+        }
+
+        // 將自傳內容設置為 Summernote 編輯器的內容
+        // $('#summernote').summernote('code', decodedAutobiography);
+    });
+
+    //提交表單事件
+    btnSummit.addEventListener('click', async (event) => {
+
+        event.preventDefault();  //停止預設行為
+
+        const formData = new FormData(document.getElementById('formEdit'));
+
+        //公開狀態
+        let checkbox = document.getElementById('resumeStatus');
+        let resumeStatusValue = checkbox.checked ? '公開' : '關閉';
+        formData.set('resumeStatus', resumeStatusValue);
+
+        //有無工作經驗
+        checkbox = document.getElementById('workExpCheck');
+        let workExpValue = checkbox.checked ? 'N' : 'Y';
+        formData.set('WorkExperience', workExpValue);
+
+        //輪班
+        checkbox = document.getElementById('workShiftCheck');
+        let workShiftValue = checkbox.checked ? 'Y' : 'N';
+        formData.set('WorkShift', workShiftValue);
+
+        //希望薪資
+        let selectedValue;
+        if (hopeSalary3.checked) {
+            selectedValue = document.getElementById('salaryInput').value;
+        }
+        else {
+            selectedValue = document.querySelector('input[name="HopeSalary"]:checked')?.value;
+        }
+        formData.set('HopeSalary', selectedValue);
+
+        //自傳
+        const autobiography = $('#summernote').summernote('code');
+        //let regEx = /<[^>]*>/g;  //去除HTML標籤
+        //const plain = autobiography.replace(regEx, "");
+        formData.set('Autobiography', autobiography);
+
+
+        // for (const pair of formData.entries()) {
+        //     console.log(pair[0] + ', ' + pair[1]);
+        // }
+        //return;
+
+        const url = '/job_vacancy/Resume/UpdateResume/' + resumeID;
+        const response = await fetch(url, {
+            body: formData,
+            method: 'POST'
+        });
+        const data = await response.json();
+        if (response.ok) {
+            if (data.redirectUrl) {
+                window.location.href = data.redirectUrl; // 重定向履歷管理首頁
             } else {
                 alert(data.message);
             }
-        });
-    </script>
-}
+        } else {
+            alert(data.message);
+        }
+    });
+</script>
