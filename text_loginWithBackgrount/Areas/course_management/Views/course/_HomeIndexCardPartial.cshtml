@@ -1,0 +1,56 @@
+﻿ @model IEnumerable<T課程班級>
+@if (Model != null)
+{
+    var i = 1;
+    @foreach (var course in Model)
+    {
+
+        <div class="col-xl-4 col-md-6">
+            <article>
+
+                <div class="post-img">
+                    <img src="~/assets/img/blog/blog-@(i).jpg" alt="" class="img-fluid">
+                </div>
+
+                <hr />
+                <!-- 含有連結的小標題 -->
+                <h2 class="title">
+                    <p href="#">@course.班級名稱</p>
+                </h2>
+
+                <div class="d-flex align-items-center">
+                    <!-- 圓型圖片 -->
+                    <img src="~/assets/img/blog/blog-author-@(i+1).jpg" alt="" class="img-fluid post-author-img flex-shrink-0">
+                    <!-- 名字與日期 -->
+                    <div class="post-meta">
+                        <p class="post-author">@course.班級導師.姓名</p>
+                        <p class="post-date">
+                            <time datetime="@course.入學日期.ToString("yyyy-MM-dd")">@course.入學日期.ToString("MMM d, yyyy")</time>
+                        </p>
+                        <p class="post-date">
+                            <time datetime="@course.結訓日期.ToString("yyyy-MM-dd")">@course.結訓日期.ToString("MMM d, yyyy")</time>
+                        </p>
+                    </div>
+                </div>
+
+            </article>
+        </div>
+        i++;
+        <!-- End post list item -->
+    }
+
+}
+else
+{
+    <div class="col-xl-4 col-md-6">
+        <article>
+            <div class="post-img">
+                <img src="~/assets/img/blog/blog-3.jpg" alt="" class="img-fluid">
+            </div>
+            <hr />
+            <h2 class="title">
+                <p href="#">目前無資料</p>
+            </h2>
+        </article>
+    </div>
+}

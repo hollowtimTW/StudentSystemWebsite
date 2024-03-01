@@ -1,6 +1,10 @@
 ﻿@{
     ViewData["Title"] = "課程總覽";
 }
+@section Styles{
+   <link href="~/css/course_management/stylepopup.css" rel="stylesheet" / >
+    
+}
 @section BreadcrumbsSection {
     <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
     <div class="breadcrumbs">
@@ -9,7 +13,9 @@
                 <div class="row d-flex justify-content-center">
                     <div class="col-lg-6 text-center">
                         <h2>@ViewData["Title"]</h2>
-                        <p>Odio et unde deleniti. Deserunt numquam exercitationem. Officiis quo odio sint voluptas consequatur ut a odio voluptatem. Sit dolorum debitis veritatis natus dolores. Quasi ratione sint. Sit quaerat ipsum dolorem.</p>
+                        <p>
+                            解鎖專業技能的精選課程，助你掌握前沿科技
+                        </p>
                     </div>
                 </div>
             </div>
@@ -29,7 +35,41 @@
     <div class="container" data-aos="fade-up">
         <div class="section-header">
             <h2>標題</h2>
-            <p>Nulla dolorum nulla nesciunt rerum facere sed ut inventore quam porro nihil id ratione ea sunt quis dolorem dolore earum</p>
+            <p>
+                想要有一門專業更加精進嗎? 我們提供多元課程供予挑選，
+                來挑戰自我，突破瓶頸，歡迎聯繫探索
+
+            </p>
+            <p class="scrolling-text">最新開課！</p>
+
+
+            <article class="blog-details gy-4 h-50" id="partialContainer">
+                
+            </article>
+
+            <p class="mt-2 text-black-50">
+                歡迎聯繫:
+                (02)6631-6587 劉小姐、E-mail：hoan@ispan.com.tw
+            </p>
         </div>
     </div>
 </section><!-- End Contact Section -->
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: '@Url.Action("HomeIndexCard", "course", new { area = "course_management" })',
+                type: 'GET',
+                success: function (data) {
+                    console.log("2");
+                    $('#partialContainer').html(data);
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+    </script>
+
+}

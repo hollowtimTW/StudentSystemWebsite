@@ -96,10 +96,10 @@
                 @Html.DisplayNameFor(model => model.老師)
             </th>
             <th>
-                通知
+                寄信
             </th>
             <th>
-                寄信
+                通知
             </th>
             <th>
                 科目評價
@@ -126,11 +126,11 @@
                 </td>
 
                 <td>
-                    <a asp-action="Delete" asp-route-id="@item.班級科目id"><i class='bx bx-envelope'></i></a>
+                    <a  class="btn btn-success" asp-action="Delete" asp-route-id="@item.班級科目id"><i class='bx bx-envelope'></i></a>
 
                 </td>
                 <td>
-                    <a asp-action="Delete" asp-route-id="@item.班級科目id"><i class='bx bx-bell'></i></a>
+                    <a class="btn btn-success" asp-action="Delete" asp-route-id="@item.班級科目id"><i class='bx bx-bell'></i></a>
 
                 </td>
 
