@@ -1,15 +1,17 @@
 ﻿@{
     ViewData["Title"] = "訂餐系統介紹";
 }
+
 @section BreadcrumbsSection {
     <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
     <div class="breadcrumbs">
-        <div class="page-header d-flex align-items-center" style="background-image: url('');">
+        <div class="page-header d-flex align-items-center" style="background-image: url(https://images.deliveryhero.io/image/foodpanda/cms-hero.jpg);">
             <div class="container position-relative">
                 <div class="row d-flex justify-content-center">
                     <div class="col-lg-6 text-center">
-                        <h2>@ViewData["Title"]</h2>
-                        <p>Odio et unde deleniti. Deserunt numquam exercitationem. Officiis quo odio sint voluptas consequatur ut a odio voluptatem. Sit dolorum debitis veritatis natus dolores. Quasi ratione sint. Sit quaerat ipsum dolorem.</p>
+                        <h2 class="fw-bold">@ViewData["Title"]</h2>
+                        <p>上萬間知名餐飲店家合作美食外送服務，提供學員小吃到高級連鎖餐廳的一站式即時外送選擇</p>
+                        @* <img src="~/images/t訂餐/標題封面.jpg" /> *@
                     </div>
                 </div>
             </div>
@@ -25,11 +27,197 @@
         </nav>
     </div>
 }
-<section id="contact" class="contact">
+
+<section id="services" class="services">
     <div class="container" data-aos="fade-up">
+        <!-- 卡片區（3個一列，含有滑鼠指標偵測變化） -->
+        <div class="row gy-4" data-aos="fade-up" data-aos-delay="100">
+
+            <div class="col-lg-4 col-md-6">
+                <div class="service-item  position-relative">
+                    <div>
+                        <img src="~/images/t訂餐/快樂.gif" class="img-fluid img-thumbnail" style="height:100%" />
+                    </div>
+                    <h3 class="m-3">以美食慰勞學習的疲勞</h3>
+                    <p>愛吃美食與辛苦學習的你，快來加入我們的學員！享受各種美食、優惠、快速外送，學習之餘讓你每天都有好心情！</p>
+                    <!-- 連結到當頁書籤 -->
+                    <a asp-area="" asp-controller="Login" asp-action="StudentIndex" class="readmore stretched-link">註冊學員 <i class="bi bi-arrow-right"></i></a>
+                    <!-- 連結到其他頁面 -->
+                    <!--<a class="readmore stretched-link" asp-area="" asp-controller="Home" asp-action="Index">Read more <i class="bi bi-arrow-right"></i></a>-->
+                </div>
+            </div><!-- End Service Item -->
+
+            <div class="col-lg-4 col-md-6">
+                <div class="service-item position-relative">
+                    <div>
+                        <img src="~/images/t訂餐/炒菜.gif" class="img-fluid img-thumbnail" style="height:100%" />
+                    </div>
+                    <h3 class="m-3">為辛苦的學生提供您的美食</h3>
+                    <p>您的美食，學生的動力！快來加入我們的外送平台，讓您的美食送達學生手中，同時享受我們的優惠、支援和行銷資源！</p>
+                    <a href="#" class="readmore stretched-link">加入我們的合作店家 <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div><!-- End Service Item -->
+
+            <div class="col-lg-4 col-md-6">
+                <div class="service-item position-relative">
+                    <div>
+                        <img src="~/images/t訂餐/吃飯.gif" class="img-fluid img-thumbnail" style="height:100%" />
+                    </div>
+                    <h3 class="m-3">還沒想法推薦附近最好的</h3>
+                    <p>附近最好的美食就在這裡！快來嚐嚐我們的招牌菜，新鮮、美味、健康，讓您一試難忘！還有限時優惠等您來領，別錯過囉</p>
+                    <a href="#" class="readmore stretched-link">開始點餐 <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div><!-- End Service Item -->
+        </div>
+
+    </div>
+</section><!-- End Our Services Section -->
+
+<section id="testimonials" class="testimonials p-0">
+    <div class="container" data-aos="fade-up">
+
         <div class="section-header">
-            <h2>標題</h2>
-            <p>Nulla dolorum nulla nesciunt rerum facere sed ut inventore quam porro nihil id ratione ea sunt quis dolorem dolore earum</p>
+            <h2>熱門餐廳</h2>
+            <p>馬上來看看你附近的熱門餐廳，找到想吃的餐點後登入學員帳號，點選餐點即可新增至訂單，吃點東西休息一下吧</p>
+        </div>
+
+        <div class="slides-3 swiper" data-aos="fade-up" data-aos-delay="100">
+            <div class="swiper-wrapper">
+
+                <!-- 輪播卡片1 -->
+                <div class="swiper-slide">
+                    <div class="testimonial-wrap">
+                        <div class="testimonial-item">
+                            <div class="d-flex align-items-center">
+                                <img src="~/images/t訂餐/店家照片/jai西門.jpg" class="testimonial-img flex-shrink-0 img-fluid" alt="" />
+                                <div>
+                                    <h3>JAI宅 西門店</h3>
+                                    <h4>美式&nbsp;日式&nbsp;</h4>
+                                    <div class="stars">
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p>
+                                <i class="bi bi-quote quote-icon-left"></i>
+                                最適合情侶約會，家庭聚會、朋友聚會的餐廳，就需要居酒屋的氣氛來帶動，今天要來分享台北必吃居酒屋推薦，一系列日本料理與酒精創造出的完美交響曲
+                                <i class="bi bi-quote quote-icon-right"></i>
+                            </p>
+                        </div>
+                    </div>
+                </div><!-- End testimonial item -->
+                <!-- 輪播卡片2 -->
+                <div class="swiper-slide">
+                    <div class="testimonial-wrap">
+                        <div class="testimonial-item">
+                            <div class="d-flex align-items-center">
+                                <img src="~/assets/img/testimonials/testimonials-2.jpg" class="testimonial-img flex-shrink-0" alt="">
+                                <div>
+                                    <h3>Sara Wilsson</h3>
+                                    <h4>Designer</h4>
+                                    <div class="stars">
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p>
+                                <i class="bi bi-quote quote-icon-left"></i>
+                                Export tempor illum tamen malis malis eram quae irure esse labore quem cillum quid cillum eram malis quorum velit fore eram velit sunt aliqua noster fugiat irure amet legam anim culpa.
+                                <i class="bi bi-quote quote-icon-right"></i>
+                            </p>
+                        </div>
+                    </div>
+                </div><!-- End testimonial item -->
+                <!-- 輪播卡片3 -->
+                <div class="swiper-slide">
+                    <div class="testimonial-wrap">
+                        <div class="testimonial-item">
+                            <div class="d-flex align-items-center">
+                                <img src="~/assets/img/testimonials/testimonials-3.jpg" class="testimonial-img flex-shrink-0" alt="">
+                                <div>
+                                    <h3>Jena Karlis</h3>
+                                    <h4>Store Owner</h4>
+                                    <div class="stars">
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p>
+                                <i class="bi bi-quote quote-icon-left"></i>
+                                Enim nisi quem export duis labore cillum quae magna enim sint quorum nulla quem veniam duis minim tempor labore quem eram duis noster aute amet eram fore quis sint minim.
+                                <i class="bi bi-quote quote-icon-right"></i>
+                            </p>
+                        </div>
+                    </div>
+                </div><!-- End testimonial item -->
+                <!-- 輪播卡片4 -->
+                <div class="swiper-slide">
+                    <div class="testimonial-wrap">
+                        <div class="testimonial-item">
+                            <div class="d-flex align-items-center">
+                                <img src="~/assets/img/testimonials/testimonials-4.jpg" class="testimonial-img flex-shrink-0" alt="">
+                                <div>
+                                    <h3>Matt Brandon</h3>
+                                    <h4>Freelancer</h4>
+                                    <div class="stars">
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p>
+                                <i class="bi bi-quote quote-icon-left"></i>
+                                Fugiat enim eram quae cillum dolore dolor amet nulla culpa multos export minim fugiat minim velit minim dolor enim duis veniam ipsum anim magna sunt elit fore quem dolore.
+                                <i class="bi bi-quote quote-icon-right"></i>
+                            </p>
+                        </div>
+                    </div>
+                </div><!-- End testimonial item -->
+                <!-- 輪播卡片5 -->
+                <div class="swiper-slide">
+                    <div class="testimonial-wrap">
+                        <div class="testimonial-item">
+                            <div class="d-flex align-items-center">
+                                <img src="~/assets/img/testimonials/testimonials-5.jpg" class="testimonial-img flex-shrink-0" alt="">
+                                <div>
+                                    <h3>John Larson</h3>
+                                    <h4>Entrepreneur</h4>
+                                    <div class="stars">
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p>
+                                <i class="bi bi-quote quote-icon-left"></i>
+                                Quis quorum aliqua sint quem legam fore sunt eram irure aliqua veniam tempor noster veniam enim culpa labore duis sunt culpa nulla illum cillum fugiat legam esse veniam culpa fore.
+                                <i class="bi bi-quote quote-icon-right"></i>
+                            </p>
+                        </div>
+                    </div>
+                </div><!-- End testimonial item -->
+
+            </div>
+            <!-- 分頁指示器（小圓點） --><!-- 分頁指示器的數量如何生成待研究（swiper-bundle.min.js.map） -->
+            <div class="swiper-pagination"></div>
         </div>
     </div>
-</section><!-- End Contact Section -->
+</section><!-- End Testimonials Section -->
