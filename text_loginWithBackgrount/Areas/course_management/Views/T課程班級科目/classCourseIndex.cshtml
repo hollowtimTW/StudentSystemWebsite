@@ -126,7 +126,7 @@
                 </td>
 
                 <td>
-                    <a  class="btn btn-success" asp-action="Delete" asp-route-id="@item.班級科目id"><i class='bx bx-envelope'></i></a>
+                    <a class="btn btn-success" onclick="sendMail('@item.老師.信箱')"><i class='bx bx-envelope'></i></a>
 
                 </td>
                 <td>
@@ -368,5 +368,28 @@
 
 
     </script>
+
+    
+     <script>
+            function sendMail(email) {
+                $.ajax({
+                    url: "/course_management/T課程班級科目/sendMail" , 
+                    type: "POST",
+                    data: {
+                        email: email
+                    },
+                    success: function (response) {
+                        console.log("Success:", response);
+                        alert("成功");
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error:", error);
+                        alert("發生錯誤，請稍後再試。");
+                    }
+                });
+            }
+    </script>
+
+    
 
 }

@@ -10,6 +10,9 @@ using Class_system_Backstage_pj.Areas.course_management.ViewModel.T課程班級;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Class_system_Backstage_pj.Areas.ordering_system.Models;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using text_loginWithBackgrount.Areas.course_management.Model;
 
 namespace Class_system_Backstage_pj.Areas.course_management.Controllers
 {
@@ -18,10 +21,12 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
     public class T課程班級科目Controller : Controller
     {
         private readonly studentContext _context;
+        private readonly IEmailSender _emailSender;
 
-        public T課程班級科目Controller(studentContext context)
+        public T課程班級科目Controller(studentContext context, IEmailSender emailSender)
         {
             _context = context;
+            _emailSender = emailSender;
         }
  
         public async Task<IActionResult> classCourseIndex(int? id)
@@ -229,9 +234,13 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
             return Redirect("/course_management/T%E8%AA%B2%E7%A8%8B%E7%8F%AD%E7%B4%9A%E7%A7%91%E7%9B%AE/classCourseIndex/" + t課程班級科目.班級id);
         }
 
-
-
-
+        [HttpPost]
+        public IActionResult sendMail(string email)
+        {
+            var htmlMessage = MailClassHtml.htmlMessage();
+            _emailSender.SendEmailAsync(email, "通知開課", htmlMessage);
+            return Ok();
+        }
 
 
         private bool T課程班級科目Exists(int id)
