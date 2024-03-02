@@ -1,9 +1,7 @@
-﻿@{
+﻿@model IEnumerable<T課程班級>;
+
+@{
     ViewData["Title"] = "課程總覽";
-}
-@section Styles{
-   <link href="~/css/course_management/stylepopup.css" rel="stylesheet" / >
-    
 }
 @section BreadcrumbsSection {
     <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
@@ -13,9 +11,6 @@
                 <div class="row d-flex justify-content-center">
                     <div class="col-lg-6 text-center">
                         <h2>@ViewData["Title"]</h2>
-                        <p>
-                            解鎖專業技能的精選課程，助你掌握前沿科技
-                        </p>
                     </div>
                 </div>
             </div>
@@ -24,52 +19,105 @@
             <div class="container">
                 <!-- 導覽列項目設置，請根據目前網頁的深度增減 -->
                 <ol>
-                    <li><a asp-area="" asp-controller="Template" asp-action="Index">首頁</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index">首頁</a></li>
                     <li>@ViewData["Title"]</li>
                 </ol>
             </div>
         </nav>
     </div>
 }
-<section id="contact" class="contact">
-    <div class="container" data-aos="fade-up">
-        <div class="section-header">
-            <h2>標題</h2>
-            <p>
-                想要有一門專業更加精進嗎? 我們提供多元課程供予挑選，
-                來挑戰自我，突破瓶頸，歡迎聯繫探索
 
-            </p>
-            <p class="scrolling-text">最新開課！</p>
+@if (Model != null)
+{
+    var i = 1;
 
+    <section id="recent-posts" class="recent-posts">
+        <div class="container" data-aos="fade-up">
 
-            <article class="blog-details gy-4 h-50" id="partialContainer">
-                
-            </article>
+            <div class="section-header">
+                <h2>近期開課</h2>
+                <p>
+                    想要為一門專業更加精進嗎? 我們提供多元課程供予挑選，
+                    來挑戰自我，突破瓶頸，歡迎聯繫探索最新開課！
+                </p>
 
-            <p class="mt-2 text-black-50">
-                歡迎聯繫:
-                (02)6631-6587 劉小姐、E-mail：hoan@ispan.com.tw
-            </p>
-        </div>
-    </div>
-</section><!-- End Contact Section -->
-@section Scripts {
+            </div>
 
-    <script>
-        $(document).ready(function () {
-            $.ajax({
-                url: '@Url.Action("HomeIndexCard", "course", new { area = "course_management" })',
-                type: 'GET',
-                success: function (data) {
-                    console.log("2");
-                    $('#partialContainer').html(data);
-                },
-                error: function (xhr, status, error) {
-                    console.error(xhr.responseText);
+            <div class="row gy-4">
+                @{
+                    foreach (var course in Model)
+                    {
+                        <div class="col-xl-4 col-md-6">
+                            <article>
+
+                                <div class="post-img">
+                                    <img src="~/assets/img/blog/blog-@(i).jpg" alt="" class="img-fluid">
+
+                                </div>
+
+                                <p class="post-category">實體授課</p>
+
+                                <!-- 含有連結的小標題 -->
+                                <h2 class="title">
+                                    <a href="#">@course.班級名稱</a>
+                                </h2>
+
+                                <div class="d-flex align-items-center">
+                                    <!-- 圓型圖片 -->
+                                    <img src="~/assets/img/blog/blog-author-@(i).jpg" alt="" class="img-fluid post-author-img flex-shrink-0">
+                                    <!-- 名字與日期 -->
+                                    <div class="post-meta">
+                                        <p class="post-author">@course.班級導師.姓名</p>
+                                        <p class="post-date">
+                                            入學日期
+                                            <time datetime="@course.入學日期.ToString("yyyy-MM-dd")">@course.入學日期.ToString("MMM d, yyyy")</time>
+                                        </p>
+                                        <p class="post-date">
+                                            結訓日期
+                                            <time datetime="@course.結訓日期.ToString("yyyy-MM-dd")">@course.結訓日期.ToString("MMM d, yyyy")</time>
+                                        </p>
+                                    </div>
+                                </div>
+
+                            </article>
+                        </div>
+
+                        <!-- End post list item -->
+                        i++; // 每次循環結束後增加 i 的值
+                    }
                 }
-            });
-        });
-    </script>
+            </div>
 
+        </div>
+    </section>
+
+    <!-- End Recent Blog Posts Section -->
+}
+else
+{
+    <section id="recent-posts" class="recent-posts">
+        <div class="container" data-aos="fade-up">
+
+            <div class="section-header">
+                <h2>近期開課</h2>
+                <p>
+                    想要為一門專業更加精進嗎? 我們提供多元課程供予挑選，
+                    來挑戰自我，突破瓶頸，歡迎聯繫探索最新開課！
+                </p>
+
+            </div>
+
+            <div class="">
+                <article>
+                    <div class="">
+                        <img src="~/assets/img/blog/noData.png" alt="" class="w-100">
+                    </div>
+                    <hr />
+                    <h2 class="text-center">
+                        目前無資料
+                    </h2>
+                </article>
+            </div>
+        </div>
+    </section>
 }

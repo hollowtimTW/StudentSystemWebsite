@@ -17,12 +17,9 @@ namespace text_loginWithBackgrount.Areas.course_management.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+       
 
-        public async Task<IActionResult> HomeIndexCard()
+        public async Task<IActionResult> Index()
         {
             var now = DateTime.Now;
             var sixMonthsLater = now.AddMonths(6);
@@ -32,7 +29,7 @@ namespace text_loginWithBackgrount.Areas.course_management.Controllers
                 .Where(t => t.入學日期 > now && t.入學日期 <= sixMonthsLater)
                 .Take(3);
 
-            return PartialView("_HomeIndexCardPartial", await studentContext.ToListAsync());
+            return View(await studentContext.ToListAsync());
         }
     }
 }
