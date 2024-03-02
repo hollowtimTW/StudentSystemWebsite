@@ -59,7 +59,6 @@ builder.Services.AddSession(options =>
 });
 builder.Services.AddTransient<IEmailSender, Emailsender>();
 builder.Services.AddControllersWithViews();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

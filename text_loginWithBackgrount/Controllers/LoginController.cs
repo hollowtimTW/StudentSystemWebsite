@@ -109,8 +109,8 @@ namespace text_loginWithBackgrount.Controllers
                 };
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-                //return RedirectToAction("Index", "StoreBackground");
-                return Ok();
+                return RedirectToAction("Index", "StoreBackground");
+                //return Ok();
             }
         }
         /// <summary>

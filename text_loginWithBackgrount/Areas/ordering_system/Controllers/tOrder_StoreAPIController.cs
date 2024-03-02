@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TEXTpie_chart.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
@@ -67,6 +68,39 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                 turnover = result1,
                 historyorder = result,
                 evaluate = result3.ToString("0.0")
+            };
+            return Json(storeInformationVM);
+        }
+        /// <summary>
+        /// 傳送指定店家訂單數量、店家營業額加總、回傳評論平均
+        /// </summary>https://localhost:7150/tOrder_StoreAPI/orderCount01/5
+        /// <returns>首頁上方的方塊資料數量</returns>
+        public IActionResult orderCount01(int id)
+        {
+            var result = _myDBContext.T訂餐訂單詳細資訊表s.Where(a => a.店家id == id).Count();
+            var result1 = Convert.ToInt32(_myDBContext.T訂餐訂單詳細資訊表s.Where(a => a.店家id == id).Sum(a => a.金額小記));
+            var result3 = (from item in _myDBContext.T訂餐評論表s
+                           join a in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals a.訂單id
+                           join b in _myDBContext.T訂餐訂單詳細資訊表s on a.訂單id equals b.訂單id
+                           join c in _myDBContext.T訂餐店家資料表s on b.店家id equals c.店家id
+                           where c.店家id == id
+                           select item).Distinct();
+            var storedata = result3.GroupBy(a => a.滿意度星數).Select(b =>
+            new
+            {
+                滿意度星數 = Convert.ToInt32(b.Key),
+                評論數量 = b.Count(),
+                加權= Convert.ToInt32(b.Key)* b.Count()
+            });
+            int totalComments = storedata.Sum(item => item.評論數量);
+            int totalWeight = storedata.Sum(item => item.加權);
+            double evaluate = totalWeight / totalComments;
+            VMstoreInformation storeInformationVM = new VMstoreInformation()
+            {
+                turnover = result1,
+                historyorder = result,
+                evaluate= evaluate.ToString("0.0"),
+                commentsNum= totalComments
             };
             return Json(storeInformationVM);
         }
@@ -431,6 +465,10 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             }
             return NotFound();
         }
+        /// <summary>
+        /// 依照2023年訂單金額與評論星數交叉最高前五名排名
+        /// </summary>
+        /// <returns></returns>
         public IActionResult bestStoreTop5()
         {
             var order2023totalByStore = (from item in _myDBContext.T訂餐訂單詳細資訊表s
