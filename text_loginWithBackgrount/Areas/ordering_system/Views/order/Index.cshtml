@@ -92,7 +92,7 @@
                                 <img src="~/images/t訂餐/店家照片/jai西門.jpg" class="testimonial-img flex-shrink-0 img-fluid" alt="" />
                                 <div>
                                     <h3>JAI宅 西門店</h3>
-                                    <h4>美式&nbsp;日式&nbsp;</h4>
+                                    <h4>美式&nbsp;</h4>
                                     <div class="stars">
                                         <i class="bi bi-star-fill"></i>
                                         <i class="bi bi-star-fill"></i>
@@ -119,6 +119,40 @@
 </section><!-- End Testimonials Section -->
 @section Scripts {
     <script>
-
+        (async () => {
+            $.ajax({
+                url: '@Url.Content("~/tOrder_StoreAPI/bestStoreTop5")',
+                success: (data) => {
+                    const htmldata = data.map(a => {
+                        const { 店家名稱, 店家介紹, 店家圖片, 訂單總額, 評價星數, 風味列表 } = a;
+                        var starsHTML = '<i class="bi bi-star-fill"></i>'.repeat(評價星數);
+                        const 風味列表html = 風味列表.map(b => `${b}&nbsp;`).join('');
+                        return (` <div class="swiper-slide">
+                            <div class="testimonial-wrap">
+                                <div class="testimonial-item">
+                                    <div class="d-flex align-items-center">
+                                        <img src="${店家圖片}" class="testimonial-img flex-shrink-0 img-fluid" alt="${店家名稱}" />
+                                        <div>
+                                            <h3>${店家名稱}</h3>
+                                                ${風味列表html}
+                                            <div class="stars">
+                                               ${starsHTML}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="m-0">
+                                        <i class="bi bi-quote quote-icon-left"></i>
+                                        <h4>${店家介紹}</h4>
+                                        <i class="bi bi-quote quote-icon-right"></i>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>`);
+                    })
+                    $('#cardiv').html(htmldata);
+                    /* console.log(data) */ },
+                error: () => {console.log('Api錯誤') }
+            })
+        })();
     </script>
 }

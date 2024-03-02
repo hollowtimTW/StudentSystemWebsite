@@ -102,7 +102,8 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
         {
             List<VMjsonpie> jsonpies = new List<VMjsonpie>();
             var result = _myDBContext.T訂餐評論表s.GroupBy(a => a.滿意度星數).Select(b =>
-            new {
+            new
+            {
                 滿意度星數 = b.Key,
                 評論數量 = b.Count()
             });
@@ -171,7 +172,8 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                           where c.店家id == id
                           select item).Distinct();
             var storedata = result.GroupBy(a => a.滿意度星數).Select(b =>
-            new {
+            new
+            {
                 滿意度星數 = b.Key,
                 評論數量 = b.Count()
             });
@@ -429,6 +431,33 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             }
             return NotFound();
         }
-        // https://localhost:7295/tOrder_StoreAPI/storeInformation
+        public IActionResult bestStoreTop5()
+        {
+            var order2023totalByStore = (from item in _myDBContext.T訂餐訂單詳細資訊表s
+                                         join a in _myDBContext.T訂餐餐點資訊表s on item.餐點id equals a.餐點id
+                                         join b in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals b.訂單id
+                                         join c in _myDBContext.T訂餐店家資料表s on item.店家id equals c.店家id
+                                         join d in _myDBContext.T訂餐評論表s on b.訂單id equals d.訂單id
+                                         join e in _myDBContext.T訂餐店家風味表s on c.店家id equals e.店家id
+                                         join f in _myDBContext.T訂餐口味總表s on e.口味id equals f.口味id
+                                         where (b.訂單狀態).Trim() == "完成" && (b.訂單時間).Substring(0, 4) == "2023"
+                                         group new { item,b ,a, c, d,e,f } by  c into g
+                                         select new
+                                         {
+                                             店家名稱 = g.Key.店家名稱,
+                                             店家介紹=g.Key.餐廳介紹,
+                                             店家圖片=g.Key.餐廳照片 ?? "/images/user.jpg",
+                                             訂單總額 = g.Sum(x => x.item.餐點數量 * x.a.餐點定價),
+                                             評價星數 = Math.Round(g.Average(x => Convert.ToInt32(x.d.滿意度星數))),
+                                             風味列表 = (from tagItem in _myDBContext.T訂餐店家資料表s
+                                                     join tagE in _myDBContext.T訂餐店家風味表s on tagItem.店家id equals tagE.店家id
+                                                     join tagF in _myDBContext.T訂餐口味總表s on tagE.口味id equals tagF.口味id
+                                                     where tagItem.店家名稱 == g.Key.店家名稱
+                                                     select tagF.風味名稱).ToList()
+                                         }).OrderByDescending(c => c.訂單總額).ThenByDescending(a => a.評價星數).Take(5).ToList();
+
+            return Json(order2023totalByStore);
+        }
+        // https://localhost:7150/tOrder_StoreAPI/bestStoreTop5
     }
 }
