@@ -1,5 +1,6 @@
-﻿@{
-    ViewData["companyName"] = "資展國際";
+﻿@model CompanyDetailViewModel
+@{
+    
 }
 @section BreadcrumbsSection {
     <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
@@ -9,7 +10,7 @@
                 <ol>
                     <li><a asp-area="" asp-controller="Template" asp-action="Index">首頁</a></li>
                     <li><a asp-area="job_vacancy" asp-controller="Job" asp-action="Index">就業媒合</a></li>
-                    <li>@ViewData["companyName"]</li>
+                    <li>@Html.DisplayFor(model => model.CompanyName)</li>
                 </ol>
             </div>
         </nav>
@@ -27,8 +28,10 @@
         <div class="job-header">
             <div class="d-flex">
                 <div class="flex-grow-1">
-                    <h1 class="text-break">@ViewData["companyName"]</h1>
-                    <h6 class="ml-auto">統編 90491745</h6>
+                    <h1 class="text-break" style="color:#008374">@Html.DisplayFor(model => model.CompanyName)</h1>
+                    <h5 class="ml-auto">
+                        <span>@Html.DisplayNameFor(model => model.taxID)</span> @Html.DisplayFor(model => model.taxID)
+                    </h5>
                 </div>
             </div>
         </div>
@@ -38,43 +41,43 @@
                 <div class="col">
                     <div class="dialog container-fluid">
                         <div class="row mb-3">
-                            <h2>公司介紹</h2>
+                            <h2>@Html.DisplayNameFor(model => model.CompanyProfile)</h2>
                         </div>
                         <div class="job-description-table row">
                             <div class="job-description col-12 mb-2">
                                 <p>
-                                    資展國際以傳承資策會的優良傳統，開創嶄新的人才創新加值服務，以專業為基本素養，以學員為本位，傳播多元知識與技能，為客戶奠定未來成功的基石，為企業提供數位轉型所需的數位化、智慧化與轉型化人才，為資訊化社會的推動盡一份心力，我們深切的體會，如同卡內基的名言：『帶走我的員工，把工廠留下，不久工廠的地板就會長滿雜草;拿走我的工廠，把我的員工留下，不久後我們會有個更好的工廠』，企業投資人才，永遠是最划算的選擇，而您要的人才，我們來培育和提供，提供您一個以人為本、科技為用、服務創新和教育永續的全方位培訓服務，一個以體驗和轉型來滿足和創造客戶價值的教育訓練。
+                                    @Html.DisplayFor(model => model.CompanyProfile)
                                 </p>
                             </div>
                             <div class="list-row row mb-2">
                                 <div class="col-lg-2 list-head">
-                                    <h4>負責人</h4>
+                                    <h4>@Html.DisplayNameFor(model => model.Principal)</h4>
                                 </div>
                                 <div class="col-lg-6 list-data">
                                     <div class="t3 mb-0">
-                                        <div class="t3 mb-0">呂理華</div>
+                                        <div class="t3 mb-0">@Html.DisplayFor(model => model.Principal)</div>
                                     </div>
                                 </div>
                             </div>
                             <div class="list-row row mb-2">
                                 <div class="col-lg-2 list-head">
-                                    <h4>公司電話</h4>
+                                    <h4>@Html.DisplayNameFor(model => model.CompanyPhone)</h4>
                                 </div>
                                 <div class="col-lg-6 list-data">
-                                    <div class="t3 mb-0">(02)6631-6588</div>
+                                    <div class="t3 mb-0">@Html.DisplayFor(model => model.CompanyPhone)</div>
                                 </div>
                             </div>
                             <!---->
                             <div class="list-row row mb-2">
                                 <div class="col-lg-2 list-head">
-                                    <h4>公司地址</h4>
+                                    <h4>@Html.DisplayNameFor(model => model.CompanyAddress)</h4>
                                 </div>
                                 <div class="col-lg-6 list-data">
                                     <div class="t3 mb-0">
-                                        <span data-v-e81f764d="">臺北市大安區復興南路1段390號15樓</span>
+                                        <span>@Html.DisplayFor(model => model.CompanyAddress)</span>
                                         <!---->
                                         <!---->
-                                        <a href="https://www.google.com/maps?q=資展國際" target="_blank" rel="noopener">
+                                        <a href="https://www.google.com/maps?q=@Html.DisplayFor(model => model.CompanyAddress)" target="_blank" rel="noopener">
                                             <i class="bi bi-geo-alt-fill flex-shrink-0"></i>
                                         </a>
                                     </div>
@@ -82,26 +85,26 @@
                             </div>
                             <div class="list-row row mb-2">
                                 <div class="col-lg-2 list-head">
-                                    <h4>聯絡人</h4>
+                                    <h4>@Html.DisplayNameFor(model => model.ContactPerson)</h4>
                                 </div>
                                 <div class="col-lg-6 list-data">
-                                    <div class="t3 mb-0">陳小姐</div>
+                                    <div class="t3 mb-0">@Html.DisplayFor(model => model.ContactPerson)</div>
                                 </div>
                             </div>
                             <div class="list-row row mb-2">
                                 <div class="col-lg-2 list-head">
-                                    <h4>聯絡人電話</h4>
+                                    <h4>@Html.DisplayNameFor(model => model.ContactPhone)</h4>
                                 </div>
                                 <div class="col-lg-6 list-data">
-                                    <div class="t3 mb-0">(02)6631-6588</div>
+                                    <div class="t3 mb-0">@Html.DisplayFor(model => model.ContactPhone)</div>
                                 </div>
                             </div>
                             <div class="list-row row mb-2">
                                 <div class="col-lg-2 list-head">
-                                    <h4>聯絡人Email</h4>
+                                    <h4>@Html.DisplayNameFor(model => model.ContactEmail)</h4>
                                 </div>
                                 <div class="col-lg-6 list-data">
-                                    <div class="t3 mb-0">example@ispan.com.tw</div>
+                                    <div class="t3 mb-0">@Html.DisplayFor(model => model.ContactEmail)</div>
                                 </div>
                             </div>
                         </div>
