@@ -39,54 +39,63 @@
         <h1>歡迎回來，@User.Identity?.Name 夥伴</h1>
     </div>
 </div>
-<!-- Insights -->
-<ul class="insights">
-    <li>
-        <i class='bx bx-cool'></i>
-        <a href="#">
-            <span class="info ">
-                <h3 class="text-secondary">
-                    歷史訂單數
-                </h3>
-                <p class="fs-3">@Model.historyorder</p>
-            </span>
-        </a>
-    </li>
-    <li>
-        <i class='bx bx-cool'></i>
-        <a href="#">
-            <span class="info ">
-                <h3 class="text-secondary">
-                    總營業額
-                </h3>
-                <p class="fs-3">@Model.turnover</p>
-            </span>
-        </a>
-    </li>
-    <li>
-        <i class='bx bx-cool'></i>
-        <a href="#">
-            <span class="info ">
-                <h3 class="text-secondary">
-                    評論數量
-                </h3>
-                <p class="fs-3">@Model.commentsNum</p>
-            </span>
-        </a>
-    </li>
-    <li>
-        <i class='bx bx-cool'></i>
-        <a href="#">
-            <span class="info ">
-                <h3 class="text-secondary">
-                    平均評價
-                </h3>
-                <p class="fs-3">@Model.evaluate</p>
-            </span>
-        </a>
-    </li>
-</ul>
-@* 圖表、店家、菜單放置區*@
+<div class="ts-grid is-relaxed is-4-columns has-top-spaced-large is-light">
+    <div class="column">
+        <div class="ts-box">
+            <div class="ts-content">
+                <div class="ts-statistic">
+                    <div class="value">@Model.historyorder</div>
+                </div>
+                歷史訂單數
+            </div>
+            <div class="symbol">
+                <span class="ts-icon is-list-check-icon"></span>
+            </div>
+        </div>
+    </div>
+    <div class="column">
+        <div class="ts-box">
+            <div class="ts-content">
+                <div class="ts-statistic">
+                    <div class="value">@Model.turnover</div>
+                    
+                </div>
+                總營業額
+            </div>
+            <div class="symbol">
+                <span class="ts-icon is-circle-dollar-to-slot-icon"></span>
+            </div>
+        </div>
+    </div>
+    <div class="column">
+        <div class="ts-box">
+            <div class="ts-content">
+                <div class="ts-statistic">
+                    <div class="value">@Model.commentsNum</div>
+                    
+                </div>
+                評論數量
+            </div>
+            <div class="symbol">
+                <span class="ts-icon is-eye-icon"></span>
+            </div>
+        </div>
+    </div>
+    <div class="column">
+        <div class="ts-box">
+            <div class="ts-content">
+                <div class="ts-statistic">
+                    <div class="value">@Model.evaluate</div>
+                    
+                </div>
+                平均評價
+            </div>
+            <div class="symbol">
+                <span class="ts-icon is-clock-icon"></span>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="bottom-data">
     <div class="orders m-0">
         <div class="header">
@@ -106,6 +115,54 @@
         @* 圖表1放置 *@
         <canvas id="bar-chart" width="500" height="250"></canvas>
     </div>
+    <div class="reminders">
+        <div class="header m-0">
+            <h3 class="is-heavy">熱門菜單</h3> <!-- 表格的名稱 -->
+        </div>
+        <p>依購買數量排名</p>
+        <hr />
+        <ul class="task-list">
+            <li class="completed">
+                <div class="task-title">
+                    <p>1</p>
+                    <p>紅燒獅子頭</p>
+                </div>
+                <div class="ts-text is-large">654</div>
+            </li>
+            <li class="completed">
+                <div class="task-title">
+                    <p>1</p>
+                    <p>紅燒獅子頭</p>
+                </div>
+                <div class="ts-text is-large">654</div>
+            </li>
+            <li class="completed">
+                <div class="task-title">
+                    <p>1</p>
+                    <p>紅燒獅子頭</p>
+                </div>
+                <div class="ts-text is-large">654</div>
+            </li>
+            <li class="completed">
+                <div class="task-title">
+                    <p>1</p>
+                    <p>紅燒獅子頭</p>
+                </div>
+                <div class="ts-text is-large">654</div>
+            </li>
+            <li class="completed">
+                <div class="task-title">
+                    <p>1</p>
+                    <p>紅燒獅子頭</p>
+                </div>
+                <div class="ts-text is-large">654</div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+@* 圖表、店家、菜單放置區*@
+<div class="bottom-data">
     <div class="orders m-0">
         <div class="header">
             <i class='bx bx-adjust' onclick="clearpie()"></i>
@@ -114,14 +171,56 @@
         @* 圖表2放置 *@
         <div id="pie-chart"></div>
     </div>
+    <div class="reminders">
+        <div class="header m-0">
+            <h3 class="is-heavy">菜單餐點意見回饋</h3> <!-- 表格的名稱 -->
+        </div>
+        <p>@Model.commentsNum 次評論</p>
+        <hr />
+        <div class="column is-6-wide">
+            <div class="ts-box is-top-indicated is-light">
+                <div class="ts-content is-dense">
+                    <div class="ts-header is-heavy">評論完整分析</div>
+                </div>
+                <div class="ts-divider"></div>
+                <div class="ts-content">
+                    <div class="ts-text is-bold">整體評價優良比</div>
+                    <div class="ts-progress is-small has-top-spaced-small">
+                        <div class="bar" style="width: 50%">
+                            <div class="text">64 GB</div>
+                        </div>
+                    </div>
+                    <div class="ts-text is-bold has-top-spaced-small">評分最高菜單:XXX</div>
+                    <div class="ts-progress is-small has-top-spaced-small">
+                        <div class="bar" style="width: 80%">
+                            <div class="text">4 GB</div>
+                        </div>
+                    </div>
+                    <div class="ts-text is-bold has-top-spaced-small">評分最低菜單:XXX</div>
+                    <div class="ts-progress is-small has-top-spaced-small">
+                        <div class="bar" style="width: 30%">
+                            <div class="text">30%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @section Scripts
 {
+    <script src="~/js/ordering_system/pie_chart.js"></script>
+
     <script>
+        let year = 2024;
+        $(".dropdown-menu").on("click", ".year", function () {
+            year = $(this).data("id");
+            barchart_monthly_revenue();
+        })
         const storeID = @User?.FindFirst("teacherID")?.Value
         var bar_chart; // 宣告 bar_chart 變數
         async function barchart_monthly_revenue() {
-            const request = await fetch(`@Url.Content("~/tOrder_StoreAPI/barchart_monthly_revenue")?yaer=2024&id=${storeID}`);
+            const request = await fetch(`@Url.Content("~/tOrder_StoreAPI/barchart_monthly_revenue")?yaer=${year}&id=${storeID}`);
             const data1 = await request.json(); // 載入api資料
 
             if (bar_chart && bar_chart.data.datasets.length > 0) {

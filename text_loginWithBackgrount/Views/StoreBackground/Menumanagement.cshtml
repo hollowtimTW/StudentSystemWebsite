@@ -14,143 +14,84 @@
         }
     </style>
 }
-<div class="header">
-    <!-- 主頁上方操作流程序能引入操作流程返回，記得有新增頁面時要記得編輯，有class="active的是現在位置-->
-    <div class="left">
-        <h1> @ViewData["Title"]</h1>
-        <ul class="breadcrumb">
-            <li>
-                <a asp-area="" asp-controller="Home" asp-action="Index"> 首頁 </a>
-            </li>
-            /
-            <li><a href="#" class="active">@ViewData["Title"]</a></li>
-        </ul>
+<div class="is-light">
+    <div class="ts-content is-tertiary is-vertically-padded is-rounded">
+        <div class="ts-container is-very-narrow has-vertically-spaced">
+            <div class="ts-header is-big is-massive">餐點管理</div>
+            <div class="ts-text is-secondary">點選新增菜單後就能新增菜色，你能針對不同菜單做編輯上架</div>
+        </div>
     </div>
-    <!-- 主頁上方操作流程序結束-->
 </div>
-
-<!-- Insights -->
-<ul class="insights">
-    <li>
-        <i class='bx bx-cool'></i>
-        <a href="#">
-            <span class="info">
-                <h3>
-                    中標題
-                </h3>
-                <h5>小標題</h5>
-            </span>
-        </a>
-    </li>
-    <li>
-        <i class='bx bx-show-alt'></i>
-        <span class="info">
-            <h3>
-                中標題
-            </h3>
-            <p>小標題</p>
-        </span>
-    </li>
-    <li>
-        <i class='bx bx-line-chart'></i>
-        <span class="info">
-            <h3>
-                中標題
-            </h3>
-            <p>小標題</p>
-        </span>
-    </li>
-    <li>
-        <i class='bx bx-dollar-circle'></i>
-        <span class="info">
-            <h3>
-                中標題
-            </h3>
-            <p>小標題</p>
-        </span>
-    </li>
-</ul>
-<!-- End of Insights -->
-
+@* 標題結束*@
 <div class="bottom-data">
     <div class="orders">
         <div class="header">
             <i class='bx bx-receipt'></i>  <!-- 表格的小icon -->
-            <h3>Recent Orders</h3> <!-- 表格的名稱 -->
+            <h3>類別</h3> <!-- 表格的名稱 -->
+            <button class="ts-button is-start-icon is-light">
+                <span class="ts-icon is-plus-icon"></span>
+                新增菜單
+            </button>
+            <button class="ts-button is-start-icon is-light">
+                <span class="ts-icon is-plus-icon"></span>
+                新增餐點
+            </button>
         </div>
         @* 表格標題輸入地方 *@
         <table>
             <thead>
                 <tr>
-                    <th>User</th>
-                    <th>Order Date</th>
-                    <th>Status</th>
+                    <th>菜單</th>
+                    <th>餐點數</th>
+                    <th>備註</th>
                 </tr>
             </thead>
             @* 表格內容輸入地方 *@
             <tbody>
                 <tr>
-                    <td>
-                        <img src="images/profile-1.jpg">
-                        <p>John Doe</p>
-                    </td>
-                    <td>14-08-2023</td>
-                    <td><span class="status completed">Completed</span></td>
-                </tr>
-                <tr>
-                    <td>
-                        <img src="images/profile-1.jpg">
-                        <p>John Doe</p>
-                    </td>
-                    <td>14-08-2023</td>
-                    <td><span class="status pending">Pending</span></td>
-                </tr>
-                <tr>
-                    <td>
-                        <img src="images/profile-1.jpg">
-                        <p>John Doe</p>
-                    </td>
-                    <td>14-08-2023</td>
-                    <td><span class="status process">Processing</span></td>
+                    <td>午間餐點</td>
+                    <td>25項</td>
+                    <td>全天候提供溫暖餐點</td>
                 </tr>
             </tbody>
         </table>
         @* 表格輸入結束 *@
     </div>
-
-    <!-- 側邊條列區塊 -->
-    <div class="reminders">
-        <div class="header">
-            <i class='bx bx-note'></i>
-            <h3>Remiders</h3>
-            <i class='bx bx-filter'></i>
-            <i class='bx bx-plus'></i>
-        </div>
-        <ul class="task-list">
-            <li class="completed">
-                <div class="task-title">
-                    <i class='bx bx-check-circle'></i>
-                    <p>Start Our Meeting</p>
-                </div>
-                <i class='bx bx-dots-vertical-rounded'></i>
-            </li>
-            <li class="completed">
-                <div class="task-title">
-                    <i class='bx bx-check-circle'></i>
-                    <p>Analyse Our Site</p>
-                </div>
-                <i class='bx bx-dots-vertical-rounded'></i>
-            </li>
-            <li class="not-completed">
-                <div class="task-title">
-                    <i class='bx bx-x-circle'></i>
-                    <p>Play Footbal</p>
-                </div>
-                <i class='bx bx-dots-vertical-rounded'></i>
-            </li>
-        </ul>
-    </div>
-
     <!-- End of Reminders-->
-
 </div>
+
+<div class="container m-4">
+    <div class="row">
+        <div class="col m-3">
+            <div class="card col" style="width: 18rem;">
+                <img src="~/images/user.jpg" class="card-img-top" alt="..." />
+                <div class="card-body">
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col m-3">
+            <div class="card col" style="width: 18rem;">
+                <img src="~/images/user.jpg" class="card-img-top" alt="..." />
+                <div class="card-body">
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col m-3">
+            <div class="card col" style="width: 18rem;">
+                <img src="~/images/user.jpg" class="card-img-top" alt="..." />
+                <div class="card-body">
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col m-3">
+            <div class="card col" style="width: 18rem;">
+                <img src="~/images/user.jpg" class="card-img-top" alt="..." />
+                <div class="card-body">
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+            </div>
+        </div>
+    </div>

@@ -56,6 +56,15 @@ namespace text_loginWithBackgrount.Controllers
             ViewBag.type = "moneymanger";
             return View();
         }
+        public IActionResult sroreInformation()
+        {
+            ViewBag.type = "sroreInformation";
+            return View();
+        }
+        public JsonResult indexjson()
+        {
+            return Json(_myDBContext.T訂餐店家資料表s);
+        }
         /// <summary>
         /// 透過店家ID查詢回傳需要的VMstoreInformation
         /// </summary>
