@@ -10,7 +10,7 @@
                 <ol>
                     <li><a asp-area="" asp-controller="Template" asp-action="Index">首頁</a></li>
                     <li><a asp-area="job_vacancy" asp-controller="Job" asp-action="Index">就業媒合</a></li>
-                    <li>@Html.DisplayFor(model => model.CompanyName)</li>
+                    <li>@Model.CompanyName</li>
                 </ol>
             </div>
         </nav>
@@ -19,6 +19,80 @@
 @section Styles {
     <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet" />
     <style>
+        .job-header h1{
+            color:#008374;
+        }
+
+        .pagination li a{
+            color: #008374;
+        }
+
+        .pagination li a:hover {
+            color: #008374;
+        }
+
+            .pagination li.disabled {
+                color:grey;
+            }
+
+
+        .pagination{
+            cursor: pointer;
+        }
+
+        .item-border {
+            position: relative;
+            border-bottom: 3px solid rgba(0, 131, 116, 0.2);
+        }
+
+            /* 在底線左端添加小圓形 */
+            .item-border::before {
+                content: '';
+                position: absolute;
+                bottom: -8px;
+                left: 0;
+                width: 15px;
+                height: 15px;
+                background-color: var(--color-primary);
+                border-radius: 50%;
+            }
+
+            /* 在底線右端添加小圓形 */
+            .item-border::after {
+                content: '';
+                position: absolute;
+                bottom: -8px;
+                right: 0;
+                width: 15px;
+                height: 15px;
+                background-color: var(--color-primary);
+                border-radius: 50%;
+            }
+
+        .job-item img {
+            width: 80px;
+            height: 80px;
+        }
+
+        .btn-detail {
+            height: 38px;
+            display: inline-block;
+            padding: 8px 40px 10px 40px;
+            border-radius: 50px;
+            color: var(--color-primary);
+            border: 1px solid rgba(0, 131, 116, 0.2);
+            transition: none;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: var(--font-primary);
+            transition: 0.3s;
+        }
+
+        .btn-detail:hover {
+            background: var(--color-primary);
+            color: #fff;
+        }
+
     </style>
 }
 
@@ -28,9 +102,9 @@
         <div class="job-header">
             <div class="d-flex">
                 <div class="flex-grow-1">
-                    <h1 class="text-break" style="color:#008374">@Html.DisplayFor(model => model.CompanyName)</h1>
+                    <h1 class="text-break">@Model.CompanyName</h1>
                     <h5 class="ml-auto">
-                        <span>@Html.DisplayNameFor(model => model.taxID)</span> @Html.DisplayFor(model => model.taxID)
+                        <span>@Html.DisplayNameFor(model => model.taxID)</span> @Model.taxID
                     </h5>
                 </div>
             </div>
@@ -46,7 +120,7 @@
                         <div class="job-description-table row">
                             <div class="job-description col-12 mb-2">
                                 <p>
-                                    @Html.DisplayFor(model => model.CompanyProfile)
+                                    @Model.CompanyProfile
                                 </p>
                             </div>
                             <div class="list-row row mb-2">
@@ -55,7 +129,7 @@
                                 </div>
                                 <div class="col-lg-6 list-data">
                                     <div class="t3 mb-0">
-                                        <div class="t3 mb-0">@Html.DisplayFor(model => model.Principal)</div>
+                                        <div class="t3 mb-0">@Model.Principal</div>
                                     </div>
                                 </div>
                             </div>
@@ -64,7 +138,7 @@
                                     <h4>@Html.DisplayNameFor(model => model.CompanyPhone)</h4>
                                 </div>
                                 <div class="col-lg-6 list-data">
-                                    <div class="t3 mb-0">@Html.DisplayFor(model => model.CompanyPhone)</div>
+                                    <div class="t3 mb-0">@Model.CompanyPhone</div>
                                 </div>
                             </div>
                             <!---->
@@ -74,10 +148,10 @@
                                 </div>
                                 <div class="col-lg-6 list-data">
                                     <div class="t3 mb-0">
-                                        <span>@Html.DisplayFor(model => model.CompanyAddress)</span>
+                                        <span>@Model.CompanyAddress</span>
                                         <!---->
                                         <!---->
-                                        <a href="https://www.google.com/maps?q=@Html.DisplayFor(model => model.CompanyAddress)" target="_blank" rel="noopener">
+                                        <a href="https://www.google.com/maps?q=@Model.CompanyAddress" target="_blank" rel="noopener">
                                             <i class="bi bi-geo-alt-fill flex-shrink-0"></i>
                                         </a>
                                     </div>
@@ -88,7 +162,7 @@
                                     <h4>@Html.DisplayNameFor(model => model.ContactPerson)</h4>
                                 </div>
                                 <div class="col-lg-6 list-data">
-                                    <div class="t3 mb-0">@Html.DisplayFor(model => model.ContactPerson)</div>
+                                    <div class="t3 mb-0">@Model.ContactPerson</div>
                                 </div>
                             </div>
                             <div class="list-row row mb-2">
@@ -96,7 +170,7 @@
                                     <h4>@Html.DisplayNameFor(model => model.ContactPhone)</h4>
                                 </div>
                                 <div class="col-lg-6 list-data">
-                                    <div class="t3 mb-0">@Html.DisplayFor(model => model.ContactPhone)</div>
+                                    <div class="t3 mb-0">@Model.ContactPhone</div>
                                 </div>
                             </div>
                             <div class="list-row row mb-2">
@@ -104,7 +178,7 @@
                                     <h4>@Html.DisplayNameFor(model => model.ContactEmail)</h4>
                                 </div>
                                 <div class="col-lg-6 list-data">
-                                    <div class="t3 mb-0">@Html.DisplayFor(model => model.ContactEmail)</div>
+                                    <div class="t3 mb-0">@Model.ContactEmail</div>
                                 </div>
                             </div>
                         </div>
@@ -123,7 +197,7 @@
                                             <div class="position-relative">
 
                                                 <div class="input-group mb-3">
-                                                    <input type="text" class="form-control" placeholder="搜尋職務名稱" aria-label="搜尋職務名稱" maxlength="50">
+                                                    <input type="text" class="form-control" placeholder="搜尋職務名稱" aria-label="搜尋職務名稱" maxlength="50" id="inputKeyword">
                                                     <button class="btn btn-outline-secondary" type="button" id="button-addon2"><i class="bi bi-search"></i></button>
                                                 </div>
                                             </div>
@@ -154,71 +228,21 @@
                         </div>
 
                         <!-- 職缺列表 -->
-                        <div>
-                            <div class="job-item p-4 mb-4">
-                                <div class="row g-4">
-                                    <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                        <img src="~/images/job_vacancy/fulltime.png" class="img-fluid border rounded flex-shrink-0" alt="" style="width: 80px; height: 80px;">
-                                        <div class="text-start ps-4">
-                                            <h5 class="mb-3">APP程式設計師</h5>
-                                            <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> 台北市 大安區</span>
-                                            <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> 全職</span>
-                                            <span class="text-truncate me-0"><i class="bi bi-cash flex-shrink-0"></i> $35000 - 40000</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
-                                        <div class="d-flex mb-3">
-                                            <button type="button" class="btn btn-light btn-circle me-3 btn-like"><i class="bi bi-heart"></i></button>
-                                            <a asp-area="job_vacancy" asp-controller="Job" asp-action="JobDetails" class="btn-detail">詳細資訊</a>
-                                        </div>
-                                        <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：2024/02/28 14:27:36</small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="job-item p-4 mb-4">
-                                <div class="row g-4">
-                                    <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                        <img src="~/images/job_vacancy/parttime.png" class="img-fluid border rounded flex-shrink-0" alt="" style="width: 80px; height: 80px;">
-                                        <div class="text-start ps-4">
-                                            <h5 class="mb-3">APP程式設計師</h5>
-                                            <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> 台北市 大安區</span>
-                                            <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> 兼職</span>
-                                            <span class="text-truncate me-0"><i class="bi bi-cash flex-shrink-0"></i> $35000 - 40000</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
-                                        <div class="d-flex mb-3">
-                                            <button type="button" class="btn btn-light btn-circle me-3 btn-like"><i class="bi bi-heart"></i></button>
-                                            <a asp-area="job_vacancy" asp-controller="Job" asp-action="JobDetails" class="btn-detail">詳細資訊</a>
-                                        </div>
-                                        <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：2024/02/28 14:27:36</small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="job-item p-4 mb-4">
-                                <div class="row g-4">
-                                    <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                        <img src="~/images/job_vacancy/dispatche.png" class="img-fluid border rounded flex-shrink-0" alt="" style="width: 80px; height: 80px;">
-                                        <div class="text-start ps-4">
-                                            <h5 class="mb-3">後端工程師</h5>
-                                            <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> 台北市 大安區</span>
-                                            <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> 派遣</span>
-                                            <span class="text-truncate me-0"><i class="bi bi-cash flex-shrink-0"></i> $35000 - 40000</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
-                                        <div class="d-flex mb-3">
-                                            <button type="button" class="btn btn-light btn-circle me-3 btn-like"><i class="bi bi-heart"></i></button>
-                                            <a asp-area="job_vacancy" asp-controller="Job" asp-action="JobDetails" class="btn-detail">詳細資訊</a>
-                                        </div>
-                                        <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：2024/02/28 14:27:36</small>
-                                    </div>
-                                </div>
-                            </div>
+                        <div id="job-items">
+                            <!-- 動態產生 -->
                         </div>
-                    </div>
 
-                    
+                        <!-- 分頁 -->
+                        <div class="d-flex justify-content-center">
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination" id="ulPaging">
+                                    <!-- 動態產生 -->
+                                </ul>
+                            </nav>
+                        </div>
+
+                        
+                    </div>
                 </div>
             </div>
         </div>
@@ -227,6 +251,143 @@
 @section Scripts {
     <script src="~/js/job_vacancy/jobcommon.js"></script>
     <script>
+        const jobItems = document.getElementById('job-items');
+        const ulPaging = document.getElementById('ulPaging');
+
+        //對應 SearchJobDTO
+        const searchData = {
+            "companyID": @Model.companyID,
+            "keyword": "",
+            "page": 1,
+            "pageSize": 1,
+            "location": "",
+            "sortBy": "",
+            "sortType": "asc"
+        };
+
+        let totalPages;
+
+        const loadData = async () => {
+
+            const resopnse = await fetch('@Url.Content("~/job_vacancy/JobAPI/CompanyJoblist")', {
+                'method': 'POST',
+                'body': JSON.stringify(searchData),
+                'headers': {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const datas = await resopnse.json();
+
+            console.log(datas);
+
+
+            // 創建工作性質與圖片路徑的映射
+            const jobTypeImageMap = {
+                '全職': '@Url.Content("~/images/job_vacancy/fulltime.png")',
+                '兼職': '@Url.Content("~/images/job_vacancy//parttime.png")',
+                '派遣': '@Url.Content("~/images/job_vacancy/dispatche.png")',
+                'default': '@Url.Content("~/images/job_vacancy/jobtype.png")'
+            };
+
+            //顯示資料（對應CompanyJobPagingDTO）
+            const displayData = datas.companyJobsResult.map(jobs => {
+                const { f職務名稱, f工作地點, f工作性質, f薪水待遇, f最後更新時間, fId } = jobs;
+
+                //根據工作性質獲取對應的圖片
+                const jobTypeImagePath = jobTypeImageMap[f工作性質] || jobTypeImageMap['default'];
+
+
+
+                console.log(jobTypeImagePath);
+
+                //設定顯示的工作地點
+                let location = '';
+                if (jobs.f工作地點) {
+                    location = jobs.f工作地點.substring(0, 6);
+                } else {
+                    location = '暫不提供';
+                }
+
+                // 設定顯示的最後更新時間（呼叫共用方法）
+                let updateTime = formatDateTime(jobs.f最後更新時間);
+
+                return (`<div class="job-item item-border p-4 mb-4">
+                            <div class="row g-4">
+                                <div class="col-sm-12 col-md-8 d-flex align-items-center">
+                                    <img src="${jobTypeImagePath}" class="img-fluid border rounded flex-shrink-0" alt="">
+                                    <div class="text-start ps-4">
+                                        <h5 class="mb-3">${f職務名稱}</h5>
+                                        <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> ${location}</span>
+                                        <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> ${f工作性質}</span>
+                                        <span class="text-truncate me-0"><i class="bi bi-cash flex-shrink-0"></i> ${f薪水待遇}</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                    <div class="d-flex mb-3">
+                                        <button type="button" class="btn btn-light btn-circle me-3 btn-like"><i class="bi bi-heart"></i></button>
+                                        <a asp-area="job_vacancy" asp-controller="Job" asp-action="JobDetails" asp-route-JobID="${fId}" class="btn-detail">詳細資訊</a>
+                                    </div>
+                                    <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：${updateTime}</small>
+                                </div>
+                            </div>
+                        </div>`)
+
+            })
+            jobItems.innerHTML = displayData.join("");
+
+            //動態生成分頁元素
+            totalPages = datas.totalPages;
+            let liPaging = `<li class="page-item" id="previousPage"><a class="page-link" onclick="pagingHandler('prev')">上一頁</a></li>`
+            for (let i = 1; i <= totalPages; i++) {
+                liPaging += ` <li class="page-item" onclick="pagingHandler(${i})"><a class="page-link">${i}</a></li>`
+            }
+            liPaging += `<li class="page-item" id="nextPage"><a class="page-link" onclick="pagingHandler('next')">下一頁</a></li>`
+            ulPaging.innerHTML = liPaging;
+        };
+
+        // 根據選取分頁變換內容 todo
+        const pagingHandler = page => {
+            const previousPage = document.getElementById('previousPage');
+            const nextPage = document.getElementById('nextPage');
+
+            // 更新查詢頁碼
+            if (page === 'prev' && searchData.page > 1) {
+                searchData.page -= 1;
+            } else if (page === 'next' && searchData.page < totalPages) {
+                searchData.page += 1;
+            } else {
+                searchData.page = page;
+            }
+            console.log(searchData.page);
+            // 更新上一頁按鈕的狀態
+            if (searchData.page === 1) {
+                previousPage.classList.add('disabled');
+            } else {
+                previousPage.classList.remove('disabled');
+            }
+
+            // 更新下一頁按鈕的狀態
+            if (searchData.page === totalPages) {
+                nextPage.classList.add('disabled');
+            } else {
+                nextPage.classList.remove('disabled');
+            }
+
+            loadData();
+        }
+
+
+
+        //關鍵字搜尋
+        inputKeyword.addEventListener('keydown', event => {
+            if (event.key === "Enter") {
+                searchData.keyword = event.target.value;  //event.target 在此指 inputKeyword 這個元素
+                searchData.page = 1;
+                loadData();
+            }
+        })
+
+        loadData();
 
     </script>
 }

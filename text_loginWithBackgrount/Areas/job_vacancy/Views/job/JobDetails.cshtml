@@ -1,6 +1,6 @@
-﻿@{
-    ViewData["jobTitle"] = "後端工程師";
-    ViewData["companyName"] = "資展國際股份有限公司";
+﻿@model JobDetailViewModel
+@{
+
 }
 @section BreadcrumbsSection {
     <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
@@ -10,8 +10,8 @@
                 <ol>
                     <li><a asp-area="" asp-controller="Template" asp-action="Index">首頁</a></li>
                     <li><a asp-area="job_vacancy" asp-controller="Job" asp-action="Index">就業媒合</a></li>
-                    <li><a asp-area="job_vacancy" asp-controller="Job" asp-action="CompanyDetails">@ViewData["companyName"]</a></li>
-                    <li>@ViewData["jobTitle"]</li>
+                    <li><a asp-area="job_vacancy" asp-controller="Job" asp-action="CompanyDetails">@Model.CompanyName</a></li>
+                    <li>@Model.JobTitle</li>
                 </ol>
                 <div style="margin-top: -10px; margin-bottom: -10px">
                     <button type="button" class="btn btn-hollow btn-like"><i class="bi bi-heart"></i> 收藏</button>
@@ -42,7 +42,7 @@
                 <form>
                     <div class="row">
                         <div class="form-group mb-1">
-                            <div class="control-label mb-2">應徵工作：<span>@ViewData["jobTitle"]</span></div>
+                            <div class="control-label mb-2">應徵工作：<span>@Model.JobTitle</span></div>
                         </div>
 
                         <div class="form-group mb-4">
@@ -86,10 +86,10 @@
         <div class="job-header">
             <div class="d-flex">
                 <div class="flex-grow-1">
-                    <h1 class="text-break">@ViewData["jobTitle"]</h1>
+                    <h1 class="text-break">@Model.JobTitle</h1>
                     <div class="d-flex align-items-center">
-                        <h5><a asp-area="job_vacancy" asp-controller="Job" asp-action="CompanyDetails">@ViewData["companyName"]</a></h5>
-                        <p>2024/02/26 15:25:45 更新</p>
+                        <h5><a asp-area="job_vacancy" asp-controller="Job" asp-action="CompanyDetails" asp-route-CompanyID="@Model.CompanyID">@Model.CompanyName</a></h5>
+                        <p>@Model.UpdateTime</p>
                     </div>
                 </div>
             </div>
@@ -105,49 +105,33 @@
                         <div class="job-description-table row">
                             <div class="job-content col-12 mb-2">
                                 <p>
-                                    日系傳統工藝培育台灣在地人才，
-                                    性質為金屬表面紋理製作技術產業，
-                                    海外研修（日本／中國／泰國／馬來西亞/印尼/越南）
-
-                                    開拓人生視野，專注技術專業；
-                                    三惠金屬隸屬世界佔有率第一Mold-Tech Group，
-                                    由母公司Mold-Tech Japan設立在台灣唯一加工據點，
-                                    努力積極培養在地技術人才，不定期邀請海外技師來台指導；
-
-                                    公司勞健保，團保，員工福利，三節獎金，聚餐；
-                                    不斷導入全球最新技術運用，共同成長，一同進步
-
-                                    隨著學習能力跟應對能力成長，薪資也會跟著調整，
-                                    只要你有心想學習，想學習一技之長，
-                                    歡迎你來挑戰自我！
+                                    @Model.JobContent
                                 </p>
                             </div>
                             <div class="row job-content-table">
                                 <div class="list-row row mb-2">
                                     <div class="col-lg-2 col-12 list-head">
-                                        <h4 class="mb-0">薪水待遇</h4>
+                                        <h4 class="mb-0">@Html.DisplayNameFor(model => model.Salary)</h4>
                                     </div>
                                     <div class="col-lg-10 col-12 list-data">
-                                        <p class="mb-0">月薪30,000~72,000元</p>
+                                        <p class="mb-0">@Model.Salary</p>
                                     </div>
                                 </div>
                                 <div class="list-row row mb-2">
                                     <div class="col-lg-2 col-12 list-head">
-                                        <h4 class="mb-0">工作性質</h4>
+                                        <h4 class="mb-0">@Html.DisplayNameFor(model => model.JobType)</h4>
                                     </div>
                                     <div class="col-lg-10 col-12 list-data">
-                                        <p class="mb-0">全職 </p>
+                                        <p class="mb-0">@Model.JobType</p>
                                     </div>
                                 </div>
-                                <!---->
-                                <!---->
                                 <div class="list-row row mb-2">
                                     <div class="col-lg-2 col-12 list-head">
-                                        <h4 class="mb-0">工作地點</h4>
+                                        <h4 class="mb-0">@Html.DisplayNameFor(model => model.JobLocation)</h4>
                                     </div>
                                     <div class="col-lg-10 col-12 list-data d-flex align-items-center">
-                                        <p class="mb-0">臺北市大安區復興南路1段390號15樓</p>
-                                        <a href="https://www.google.com/maps?q=資展國際" target="_blank" rel="noopener" class="ml-auto">
+                                        <p class="mb-0">@Model.JobLocation</p>
+                                        <a href="https://www.google.com/maps?q=@Model.JobLocation)" target="_blank" rel="noopener" class="ml-auto">
                                             <i class="bi bi-geo-alt-fill flex-shrink-0"></i>
                                         </a>
                                     </div>
@@ -155,26 +139,26 @@
                                 </div>
                                 <div class="list-row row mb-2">
                                     <div class="col-lg-2 col-12 list-head">
-                                        <h4 class="mb-0">工作時段</h4>
+                                        <h4 class="mb-0">@Html.DisplayNameFor(model => model.JobTime)</h4>
                                     </div>
                                     <div class="col-lg-10 col-12 list-data">
-                                        <p class="mb-0">日班</p>
+                                        <p class="mb-0">@Model.JobTime</p>
                                     </div>
                                 </div>
                                 <div class="list-row row mb-2">
                                     <div class="col-lg-2 col-12 list-head">
-                                        <h4 class="mb-0">輪班需求</h4>
+                                        <h4 class="mb-0">@Html.DisplayNameFor(model => model.ShiftRequirement)</h4>
                                     </div>
                                     <div class="col-lg-10 col-12 list-data">
-                                        <p class="mb-0">需要</p>
+                                        <p class="mb-0">@Model.ShiftRequirement</p>
                                     </div>
                                 </div>
                                 <div class="list-row row mb-2">
                                     <div class="col-lg-2 col-12 list-head">
-                                        <h4 class="mb-0">需求人數</h4>
+                                        <h4 class="mb-0">@Html.DisplayNameFor(model => model.RequiredPeople)</h4>
                                     </div>
                                     <div class="col-lg-10 col-12 list-data">
-                                        <p class="mb-0">6~12人 </p>
+                                        <p class="mb-0">@Model.RequiredPeople</p>
                                     </div>
                                 </div>
                             </div>
@@ -189,34 +173,34 @@
                         <div class="row job-content-table">
                             <div class="list-row row mb-2">
                                 <div class="col-lg-2 col-12 list-head">
-                                    <h4 class="mb-0">學歷要求</h4>
+                                    <h4 class="mb-0">@Html.DisplayNameFor(model => model.AcademicRequirement)</h4>
                                 </div>
                                 <div class="col-lg-10 col-12 list-data">
-                                    <p class="mb-0">高中以下、高中、專科、大學、碩士 </p>
+                                    <p class="mb-0">@Model.AcademicRequirement</p>
                                 </div>
                             </div>
                             <div class="list-row row mb-2">
                                 <div class="col-lg-2 col-12 list-head">
-                                    <h4 class="mb-0">語文條件</h4>
+                                    <h4 class="mb-0">@Html.DisplayNameFor(model => model.LanguageCondition)</h4>
                                 </div>
                                 <div class="col-lg-10 col-12 list-data">
-                                    <p class="mb-0">不拘</p>
+                                    <p class="mb-0">@Model.LanguageCondition</p>
                                 </div>
                             </div>
                             <div class="list-row row mb-2">
                                 <div class="col-lg-2 col-12 list-head">
-                                    <h4 class="mb-0">工作技能</h4>
+                                    <h4 class="mb-0">@Html.DisplayNameFor(model => model.WorkAbility)</h4>
                                 </div>
                                 <div class="col-lg-10 col-12 list-data">
-                                    <p class="mb-0">達成產能及出貨目標、維持產線正常運轉並跟催生產進度</p>
+                                    <p class="mb-0">@Model.WorkAbility</p>
                                 </div>
                             </div>
                             <div class="list-row row mb-2">
                                 <div class="col-lg-2 col-12 list-head">
-                                    <h4 class="mb-0">其他條件</h4>
+                                    <h4 class="mb-0">@Html.DisplayNameFor(model => model.OtherCondition)</h4>
                                 </div>
                                 <div class="col-lg-10 col-12 list-data">
-                                    <p class="mb-0">未填寫</p>
+                                    <p class="mb-0">@Model.OtherCondition</p>
                                 </div>
                             </div>
                             <!---->
@@ -230,26 +214,26 @@
                         <div class="row job-content-table">
                             <div class="list-row row mb-2">
                                 <div class="col-lg-2 col-12 list-head">
-                                    <h4 class="mb-0">聯絡人</h4>
+                                    <h4 class="mb-0">@Html.DisplayNameFor(model => model.ContactPerson)</h4>
                                 </div>
                                 <div class="col-lg-10 col-12 list-data">
-                                    <p class="mb-0">鄭明傑</p>
+                                    <p class="mb-0">@Model.ContactPerson</p>
                                 </div>
                             </div>
                             <div class="list-row row mb-2">
                                 <div class="col-lg-2 col-12 list-head">
-                                    <h4 class="mb-0">電洽</h4>
+                                    <h4 class="mb-0">@Html.DisplayNameFor(model => model.ContactPhone)</h4>
                                 </div>
                                 <div class="col-lg-10 col-12 list-data">
-                                    <p class="mb-0">03-4636622</p>
+                                    <p class="mb-0">@Model.ContactPhone</p>
                                 </div>
                             </div>
                             <div class="list-row row mb-2">
                                 <div class="col-lg-2 col-12 list-head">
-                                    <h4 class="mb-0">Email</h4>
+                                    <h4 class="mb-0">@Html.DisplayNameFor(model => model.ContactEmail)</h4>
                                 </div>
                                 <div class="col-lg-10 col-12 list-data">
-                                    <p class="mb-0">aaaa@webmail.com</p>
+                                    <p class="mb-0">@Model.ContactEmail</p>
                                 </div>
                             </div>
                             <!---->

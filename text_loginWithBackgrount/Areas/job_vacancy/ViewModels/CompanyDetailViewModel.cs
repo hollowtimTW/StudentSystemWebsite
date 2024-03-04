@@ -4,6 +4,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.ViewModels
 {
     public class CompanyDetailViewModel
     {
+        public int companyID { get; set; }
 
         [Display(Name = "統編")]
         public string? taxID { get; set; }
