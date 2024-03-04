@@ -1,0 +1,247 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="~/login/style.css" rel="stylesheet" />
+    @* <link href="~/login/style.min.css" rel="stylesheet" /> *@
+    <title>會員登入</title>
+    <script src="https://kit.fontawesome.com/8acd533af5.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    @model text_loginWithBackgrount.ViewModels.MemberViewModel
+</head>
+<body>
+    <div class="container" id="container" style="height: 900px; width: 900px;">
+        <div class="form-container sign-up">
+            <h1>申請帳號</h1>
+            @* <div class="social-icon">
+            <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
+            <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#" class="icon"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
+            </div>
+            <span>或使用您的信箱進行申請</span> *@
+            @*            <form asp-action="Privacy">
+
+            <input type="text" placeholder="姓名" name="name">
+            <input type="email" placeholder="信箱" name="email">
+            <input type="password" placeholder="密碼" name="password">
+            <input type="password" placeholder="密碼確認" name="confirm_password">
+            <select class="form-control" name="gender">
+            <option value="男">男</option>
+            <option value="女">女</option>
+            </select>
+            <input type="text" placeholder="身分證字號" name="id_number">
+            <input type="tel" placeholder="手機" name="phone">
+            <input type="text" placeholder="地址" name="address">
+            <input type="file" name="image" accept="image/*">
+            <input type="date" name="birthday">
+            <input type="text" placeholder="學校" name="school">
+            <input type="text" placeholder="科系" name="department">
+            <select class="form-control" name="degree">
+            <option value="">----請選擇最高學位----</option>
+            <option value="國小">國小</option>
+            <option value="國中">國中</option>
+            <option value="高中">高中</option>
+            <option value="大學">大學</option>
+            <option value="碩士">碩士</option>
+            <option value="博士">博士</option>
+            </select>
+            <select type="text" name="graduation">
+            <option value="">----請選擇畢肄業狀態----</option>
+            <option value="畢業">畢業</option>
+            <option value="肄業">肄業</option>
+            </select>
+            <button>申請</button>
+            </form> *@
+            <form asp-controller="Login" asp-action="TeacherRegister" role="form" id="TeacherRegister">
+                <div class="row">
+                    <div class="col-md-8 form-group mt-3">
+                        <input asp-for="姓名" class="form-control" placeholder="姓名" id="name">
+                        <span asp-validation-for="姓名" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4 form-group mt-3">
+                        <select asp-for="性別" class="form-control" id="gender" required>
+                            <option value="">請選擇性別</option>
+                            <option value="男">男</option>
+                            <option value="女">女</option>
+                        </select>
+                        <span asp-validation-for="性別" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-12 form-group mt-3">
+                        <input asp-for="身分證字號" class="form-control" placeholder="身分證字號" id="id_number">
+                        <span asp-validation-for="身分證字號" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-12 form-group mt-3">
+                        <input asp-for="信箱" class="form-control" placeholder="信箱" id="email">
+                        @* <span asp-validation-for="信箱" class="text-danger"></span> *@
+                        <span style="color: red;" id="emailErrorMessage" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-12 form-group mt-3">
+                        <input asp-for="密碼" type="password" class="form-control" placeholder="密碼" id="password">
+                        <span asp-validation-for="密碼" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-12 form-group mt-3">
+                        <input asp-for="密碼驗證" type="password" class="form-control" placeholder="密碼確認" id="confirm_password">
+                        <span asp-validation-for="密碼驗證" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-12 form-group mt-3">
+                        <input asp-for="手機" class="form-control" placeholder="手機" id="phone">
+                        <span asp-validation-for="手機" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-12 form-group mt-3">
+                        <input asp-for="地址" class="form-control" placeholder="地址" id="address">
+                        <span asp-validation-for="地址" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-12 form-group mt-3">
+                        <input asp-for="生日" class="form-control" placeholder="生日" id="birthday">
+                        <span asp-validation-for="生日" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-12 form-group mt-3">
+                        <input asp-for="學校" class="form-control" placeholder="學校" id="school">
+                        <span asp-validation-for="學校" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-12 form-group mt-3">
+                        <input asp-for="科系" class="form-control" placeholder="科系" id="department">
+                        <span asp-validation-for="科系" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-12 form-group mt-3">
+                        <select asp-for="學位" class="form-control" required id="degree">
+                            <option value="">----請選擇最高學位----</option>
+                            <option value="國小">國小</option>
+                            <option value="國中">國中</option>
+                            <option value="高中">高中</option>
+                            <option value="大學">大學</option>
+                            <option value="碩士">碩士</option>
+                            <option value="博士">博士</option>
+                        </select>
+                        <span asp-validation-for="學位" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-12 form-group mt-3">
+                        <select asp-for="畢肄" class="form-control" required id="graduation">
+                            <option value="">----請選擇畢肄業狀態----</option>
+                            <option value="畢業">畢業</option>
+                            <option value="肄業">肄業</option>
+                        </select>
+                        <span asp-validation-for="畢肄" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-12 text-center mt-3">
+                        <button type="submit" id="btn_register">註冊</button>
+                        <button type="button" id="fillDataBtn" class="btn btn-primary">DEMO</button>
+                    </div>
+                </div>
+            </form>
+
+
+
+        </div>
+        <div class="form-container sign-in">
+            <form asp-action="TeacherIndex">
+                <h1>教師登入</h1>
+                <div class="social-icon">
+                    <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
+                    <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" class="icon"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
+                </div>
+                <span>或使用您的信箱進行登入</span>
+                <input type="email" placeholder="信箱" name="Account" id="Account">
+                <input type="password" placeholder="密碼" name="Password" id="Password">
+                <a asp-action="resetPassword">忘記密碼?</a>
+                <button type="submit">登入</button>
+                <button type="button" id="demoBtn" onclick="demo()">Demo</button>
+            </form>
+
+        </div>
+        <div class="toggle-container">
+            <div class="toggle">
+                <div class="toggle-panel toggle-left">
+                    <h1>歡迎回來</h1>
+                    <p>真正的勝利，並不是戰勝強者。把自己重要的東西保護到最後一刻，才是勝利。</p>
+                    <button class="hidden" id="login">登入</button>
+                </div>
+                <div class="toggle-panel toggle-right">
+                    <h1>你好，朋友</h1>
+                    <p>申請完整資訊後就能開始使用完整功能!!</p>
+                    <button class="hidden" id="register">申請</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/login/index.js"></script>
+    <script>
+        @Html.Raw(TempData["key"]);
+    </script>
+    <script>
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    </script>
+    <script>
+                const account = document.querySelector("#Account")
+        const password = document.querySelector("#Password")
+        const demo = ("click", () => {
+            account.value = "272m5@gmail.com";
+            password.value = "1234567@@"; //單@會有問題 實際上1234567@才是通用密碼 
+        })
+
+
+        // $("#btn_login").click(function (e) {
+        //     e.preventDefault();
+        //     let formData = $('#StudentIndexform').serialize();
+        //     $(".loading").addClass('d-block');
+
+        //     $.ajax({
+        //         url: '@Url.Content("~/Login/StudentIndex")',
+        //         method: 'POST',
+        //         data: formData,
+        //         success: function () {
+        //             $(".loading").removeClass('d-block');
+        //             // 如果請求成功導致學生專用頁
+        //             $(".error-message").removeClass('d-block');
+        //             $(".sent-message").addClass('d-block');
+        //             window.location.href = '@Url.Content("~/Template/Index")';
+        //         },
+        //         error: function (xhr, status, error) {
+        //             $(".loading").removeClass('d-block');
+        //             // 可以自行定義錯誤處理邏輯
+        //             showError();
+        //         }
+        //     });
+        // });
+
+
+        $('#email').blur(function () {
+            checkEmail();
+        });
+        function checkEmail() {
+            var email = $('#email').val();
+            var emailErrorMessage = $('#emailErrorMessage');
+
+            if (email === "") {
+                emailErrorMessage.text("請輸入有效的電子郵件地址");
+                return;
+            }
+
+            $.ajax({
+                url: '/Login/TeacherCheckEmailAvailability',
+                type: 'POST',
+                data: { email: email },
+                success: function (response) {
+                    if (response === true) {
+                        emailErrorMessage.text('該信箱已經被使用');
+                    } else {
+                        emailErrorMessage.text('該信箱可使用');
+                    }
+                }
+            });
+        }
+
+
+    </script>
+
+
+
+</body>
+</html>
