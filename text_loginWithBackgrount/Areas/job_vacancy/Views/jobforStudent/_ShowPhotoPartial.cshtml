@@ -1,0 +1,10 @@
+﻿@model ResumeCreateViewModel
+
+@if (Model.Photo != null)
+{
+    <img id="previewImage" src="@Url.Action("ShowPhoto", "Resume", new {studentID = Model.StudentID})" title="@Model.Name" style="max-width:240px; max-height:240px; width:auto; height:auto;" />
+}
+else
+{
+    <img id="previewImage" src="@Url.Content("~/images/user.jpg")" title="尚無圖片" style="max-width:240px; max-height:240px; width:auto; height:auto;" />
+}

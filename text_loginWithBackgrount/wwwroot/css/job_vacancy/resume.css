@@ -1,0 +1,79 @@
+/*適用於 Create 和 Edit 視圖的樣式*/
+
+
+.formResume {
+    margin: 60px;
+    padding-bottom: 50px;
+}
+
+    .formResume .row {
+        margin: 20px;
+        padding: 40px;
+        background-color: #E9F6F6;
+        border: none;
+        border-radius: 8px;
+    }
+
+        .formResume .row div {
+            margin-bottom: 20px;
+        }
+
+            .formResume .row div label {
+                margin-bottom: 10px;
+            }
+
+.flex-container {
+    display: flex;
+    align-items: center;
+}
+
+    .flex-container label {
+        margin-right: 10px;
+        width: 120px;
+    }
+
+    .flex-container input {
+        margin-right: 10px;
+    }
+
+textarea {
+    height: 100px;
+}
+
+/* summernote */
+.note-toolbar {
+    height: 40px;
+    background-color: #f0f0f0;
+}
+
+/* 生日日期輸入框 */
+input[type="date"] {
+    border: 1px solid #ccc;
+    background-color: #f5f5f5;
+    color: #333;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+/* 提交與取消提交按鈕 */
+.btn-submit {
+    background-color: darkcyan;
+    color: white;
+    margin: 20px;
+}
+.btn-secondary {
+    margin: 20px 10px;
+}
+
+/*動態視窗*/
+.modal {
+    position: fixed;
+    top: 60%;
+    left: 55%;
+    transform: translate(-50%, -50%);
+}
+
+    .modal .modal-content {
+        text-align: center;
+        padding: 20px;
+    }

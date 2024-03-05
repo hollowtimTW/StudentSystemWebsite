@@ -1,0 +1,261 @@
+﻿@model JobDetailViewModel
+@{
+
+}
+@section BreadcrumbsSection {
+    <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
+    <div class="breadcrumbs">
+        <nav>
+            <div class="container d-flex justify-content-between align-items-center">
+                <ol>
+                    <li><a asp-area="" asp-controller="Template" asp-action="Index">首頁</a></li>
+                    <li><a asp-area="job_vacancy" asp-controller="Job" asp-action="Index">就業媒合</a></li>
+                    <li><a asp-area="job_vacancy" asp-controller="Job" asp-action="CompanyDetails">@Model.CompanyName</a></li>
+                    <li>@Model.JobTitle</li>
+                </ol>
+                <div style="margin-top: -10px; margin-bottom: -10px">
+                    <button type="button" class="btn btn-hollow btn-like"><i class="bi bi-heart"></i> 收藏</button>
+                    <button type="button" class="btn btn-normal" data-bs-toggle="modal" data-bs-target="#applyModal">
+                        <i class="bi bi-envelope"></i> 應徵
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </div>
+}
+@section Styles{
+    <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet" />
+    <style>
+        
+    </style>
+}
+
+<!-- Modal -->
+<div class="modal fade" id="applyModal" tabindex="-1" aria-labelledby="applyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="applyModalLabel">發送應徵信</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row">
+                        <div class="form-group mb-1">
+                            <div class="control-label mb-2">應徵工作：<span>@Model.JobTitle</span></div>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <div class="control-label col-lg-4 mb-2">選擇履歷：</div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="resumes" id="resume1" value="" checked>
+                                <label class="form-check-label" for="resume1">我的履歷1</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="resumes" id="resume2" value="">
+                                <label class="form-check-label" for="resume2">我的履歷2</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="control-label mb-2">應徵信件內容：</div>
+                            <textarea class="container-fluid">您好，希望能有參加面試的機會。</textarea>
+                            <div class="d-flex justify-content-end">
+                                <div>字數：<span id="word-count">0</span> / <span style="color:#f85a40">2000</span></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-normal">
+                    <a asp-area="job_vacancy" asp-controller="Job" asp-action="Index">確認送出</a>
+                </button>
+                <button type="button" class="btn btn-preview">
+                    <a asp-area="job_vacancy" asp-controller="Job" asp-action="ResumePreview" target="_blank">送出前預覽</a>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<section class="Job-Details">
+    <div class="container">
+        <div class="job-header">
+            <div class="d-flex">
+                <div class="flex-grow-1">
+                    <h1 class="text-break">@Model.JobTitle</h1>
+                    <div class="d-flex align-items-center">
+                        <h5><a asp-area="job_vacancy" asp-controller="Job" asp-action="CompanyDetails" asp-route-CompanyID="@Model.CompanyID">@Model.CompanyName</a></h5>
+                        <p>@Model.UpdateTime</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="position-relative">
+            <div class="row">
+                <div class="col">
+                    <div class="dialog container-fluid">
+                        <div class="row mb-3">
+                            <h2>工作內容</h2>
+                        </div>
+                        <div class="job-description-table row">
+                            <div class="job-content col-12 mb-2">
+                                <p>
+                                    @Model.JobContent
+                                </p>
+                            </div>
+                            <div class="row job-content-table">
+                                <div class="list-row row mb-2">
+                                    <div class="col-lg-2 col-12 list-head">
+                                        <h4 class="mb-0">@Html.DisplayNameFor(model => model.Salary)</h4>
+                                    </div>
+                                    <div class="col-lg-10 col-12 list-data">
+                                        <p class="mb-0">@Model.Salary</p>
+                                    </div>
+                                </div>
+                                <div class="list-row row mb-2">
+                                    <div class="col-lg-2 col-12 list-head">
+                                        <h4 class="mb-0">@Html.DisplayNameFor(model => model.JobType)</h4>
+                                    </div>
+                                    <div class="col-lg-10 col-12 list-data">
+                                        <p class="mb-0">@Model.JobType</p>
+                                    </div>
+                                </div>
+                                <div class="list-row row mb-2">
+                                    <div class="col-lg-2 col-12 list-head">
+                                        <h4 class="mb-0">@Html.DisplayNameFor(model => model.JobLocation)</h4>
+                                    </div>
+                                    <div class="col-lg-10 col-12 list-data d-flex align-items-center">
+                                        <p class="mb-0">@Model.JobLocation</p>
+                                        <a href="https://www.google.com/maps?q=@Model.JobLocation)" target="_blank" rel="noopener" class="ml-auto">
+                                            <i class="bi bi-geo-alt-fill flex-shrink-0"></i>
+                                        </a>
+                                    </div>
+
+                                </div>
+                                <div class="list-row row mb-2">
+                                    <div class="col-lg-2 col-12 list-head">
+                                        <h4 class="mb-0">@Html.DisplayNameFor(model => model.JobTime)</h4>
+                                    </div>
+                                    <div class="col-lg-10 col-12 list-data">
+                                        <p class="mb-0">@Model.JobTime</p>
+                                    </div>
+                                </div>
+                                <div class="list-row row mb-2">
+                                    <div class="col-lg-2 col-12 list-head">
+                                        <h4 class="mb-0">@Html.DisplayNameFor(model => model.ShiftRequirement)</h4>
+                                    </div>
+                                    <div class="col-lg-10 col-12 list-data">
+                                        <p class="mb-0">@Model.ShiftRequirement</p>
+                                    </div>
+                                </div>
+                                <div class="list-row row mb-2">
+                                    <div class="col-lg-2 col-12 list-head">
+                                        <h4 class="mb-0">@Html.DisplayNameFor(model => model.RequiredPeople)</h4>
+                                    </div>
+                                    <div class="col-lg-10 col-12 list-data">
+                                        <p class="mb-0">@Model.RequiredPeople</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <!---->
+                    </div>
+                    <div class="dialog container-fluid">
+                        <div class="row mb-3">
+                            <h2>條件要求</h2>
+                        </div>
+                        <div class="row job-content-table">
+                            <div class="list-row row mb-2">
+                                <div class="col-lg-2 col-12 list-head">
+                                    <h4 class="mb-0">@Html.DisplayNameFor(model => model.AcademicRequirement)</h4>
+                                </div>
+                                <div class="col-lg-10 col-12 list-data">
+                                    <p class="mb-0">@Model.AcademicRequirement</p>
+                                </div>
+                            </div>
+                            <div class="list-row row mb-2">
+                                <div class="col-lg-2 col-12 list-head">
+                                    <h4 class="mb-0">@Html.DisplayNameFor(model => model.LanguageCondition)</h4>
+                                </div>
+                                <div class="col-lg-10 col-12 list-data">
+                                    <p class="mb-0">@Model.LanguageCondition</p>
+                                </div>
+                            </div>
+                            <div class="list-row row mb-2">
+                                <div class="col-lg-2 col-12 list-head">
+                                    <h4 class="mb-0">@Html.DisplayNameFor(model => model.WorkAbility)</h4>
+                                </div>
+                                <div class="col-lg-10 col-12 list-data">
+                                    <p class="mb-0">@Model.WorkAbility</p>
+                                </div>
+                            </div>
+                            <div class="list-row row mb-2">
+                                <div class="col-lg-2 col-12 list-head">
+                                    <h4 class="mb-0">@Html.DisplayNameFor(model => model.OtherCondition)</h4>
+                                </div>
+                                <div class="col-lg-10 col-12 list-data">
+                                    <p class="mb-0">@Model.OtherCondition</p>
+                                </div>
+                            </div>
+                            <!---->
+                        </div>
+                        <!---->
+                    </div>
+                    <div class="dialog container-fluid">
+                        <div class="row mb-3">
+                            <h2>聯絡方式</h2>
+                        </div>
+                        <div class="row job-content-table">
+                            <div class="list-row row mb-2">
+                                <div class="col-lg-2 col-12 list-head">
+                                    <h4 class="mb-0">@Html.DisplayNameFor(model => model.ContactPerson)</h4>
+                                </div>
+                                <div class="col-lg-10 col-12 list-data">
+                                    <p class="mb-0">@Model.ContactPerson</p>
+                                </div>
+                            </div>
+                            <div class="list-row row mb-2">
+                                <div class="col-lg-2 col-12 list-head">
+                                    <h4 class="mb-0">@Html.DisplayNameFor(model => model.ContactPhone)</h4>
+                                </div>
+                                <div class="col-lg-10 col-12 list-data">
+                                    <p class="mb-0">@Model.ContactPhone</p>
+                                </div>
+                            </div>
+                            <div class="list-row row mb-2">
+                                <div class="col-lg-2 col-12 list-head">
+                                    <h4 class="mb-0">@Html.DisplayNameFor(model => model.ContactEmail)</h4>
+                                </div>
+                                <div class="col-lg-10 col-12 list-data">
+                                    <p class="mb-0">@Model.ContactEmail</p>
+                                </div>
+                            </div>
+                            <!---->
+                        </div>
+                        <!---->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@section Scripts {
+    <script src="~/js/job_vacancy/jobcommon.js"></script>
+    <script>
+        const textarea = document.querySelector('textarea');
+        const wordCount = document.getElementById('word-count');
+        wordCount.textContent = textarea.value.length;
+
+        textarea.addEventListener('input', function () {
+            const content = textarea.value;
+            wordCount.textContent = content.length;
+        });
+
+    </script>
+}
