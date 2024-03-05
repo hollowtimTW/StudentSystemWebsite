@@ -15,6 +15,8 @@ using Newtonsoft.Json.Linq;
 using text_loginWithBackgrount.ViewModels;
 using text_loginWithBackgrount.Data.Encryptor;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Mail;
+using System.Net;
 
 namespace text_loginWithBackgrount.Controllers
 {
@@ -71,7 +73,7 @@ namespace text_loginWithBackgrount.Controllers
                 return BadRequest(new { errorMessage = "註冊失敗，請檢查您的輸入。" });
             }
 
-            if (memberRegisterinfo.信箱==null || memberRegisterinfo.信箱 == "")
+            if (memberRegisterinfo.信箱 == null || memberRegisterinfo.信箱 == "")
             {
                 return BadRequest(new { errorMessage = "請填入正確信箱。" });
             }
@@ -295,7 +297,7 @@ namespace text_loginWithBackgrount.Controllers
         /// <returns>有信箱是true</returns>        
         public bool TeacherCheckEmailAvailability(string email)
         {
-            var user = _dbStudentSystemContext.T會員老師s.FirstOrDefault(a=>a.信箱==email);
+            var user = _dbStudentSystemContext.T會員老師s.FirstOrDefault(a => a.信箱 == email);
             return (user != null);
         }
 
@@ -310,9 +312,9 @@ namespace text_loginWithBackgrount.Controllers
             //var user = (from a in _dbStudentSystemContext.T會員老師s
             //            where a.信箱 == value.Account && a.密碼 == value.Password
             //            select a).SingleOrDefault();
-            var user = _dbStudentSystemContext.T會員老師s.SingleOrDefault(a=> a.信箱== value.Account);
+            var user = _dbStudentSystemContext.T會員老師s.SingleOrDefault(a => a.信箱 == value.Account);
 
-            if (user == null || !VerifyPassword(user.密碼,user.Salt,value.Password))
+            if (user == null || !VerifyPassword(user.密碼, user.Salt, value.Password))
             {
                 TempData["key"] = "alert('帳號密碼錯誤')";
                 return View();
@@ -336,11 +338,100 @@ namespace text_loginWithBackgrount.Controllers
         /// 密碼驗證
         /// </summary>
         /// <returns>正確是回傳 true。</returns>
-        private bool VerifyPassword(string dbPassword ,string dbSalt, string inputPassword)
+        private bool VerifyPassword(string dbPassword, string dbSalt, string inputPassword)
         {
             IRegistrationEncryptor encryptor = EncryptorFactory.CreateEncryptor();
             string hashedPassword = encryptor.HashPassword(inputPassword, dbSalt);
             return dbPassword == hashedPassword;
+        }
+
+        public IActionResult StudentForgetPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult StudentForgetPassword(string email)
+        {
+
+            var user = _dbStudentSystemContext.T會員學生s.SingleOrDefault(a => a.信箱 == email);
+            if (user == null)
+            {
+                return BadRequest(new { errorMessage = "沒有這個信箱。" });
+            }
+            else
+            {
+                //HttpContext.Session.SetString("teacherID", (user.學生id).ToString());
+                //設定使用者資訊
+                var claims = new List<Claim>
+                {
+                    new Claim(JwtRegisteredClaimNames.Email, user.信箱.ToString()),
+                    new Claim(ClaimTypes.Role,"teacher"),
+
+                };
+
+                //取出appsettings.json裡的KEY處理
+                var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:KEY"]));
+
+                //設定jwt相關資訊
+                var jwt = new JwtSecurityToken
+                (
+                    issuer: _configuration["JWT:Issuer"],
+                    audience: _configuration["JWT:Audience"],
+                    claims: claims,
+                    expires: DateTime.Now.AddMinutes(1),
+                    signingCredentials: new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256)
+                );
+
+                //產生JWT Token
+                var token = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+                //產生網址
+                string applicationUrl = "https://"+HttpContext.Request.Host.Value;
+                applicationUrl += "/Login/StudentResetPassword?token=" + token;
+
+                //var jwtToken = JwtTokenParser.ParseJwtToken(token);
+                //var emailClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Email)?.Value;
+                //var roleClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                //var expirationTime = jwtToken.ValidTo;
+
+                try
+                {
+                    if (false)
+                    {
+                        var mail = new MailMessage();
+                        mail.From = new MailAddress("rizeno3260@gmail.com");
+                        mail.Subject = "學生平台認證信";
+                        mail.Body = "<html>\r\n<body>\r\n<p>這是你的忘記密碼連結：</p>\r\n<a href='" +
+                            applicationUrl
+                            + "'>點擊使用TOKEN前往重設密碼頁</a>\r\n</body>\r\n</html>\r\n";
+                        mail.To.Add(user.信箱.ToString());
+                        mail.IsBodyHtml = true;
+                        //--------獲得smtp認證
+                        SmtpClient smtpClient = new SmtpClient("smtp.gmail.com");
+                        smtpClient.Port = 587;
+                        smtpClient.UseDefaultCredentials = false; //是用來指示是否使用預設的網路憑證
+                        smtpClient.Credentials = new NetworkCredential("rizeno3260@gmail.com", "tpsd gliw vmno fpdv");
+                        smtpClient.EnableSsl = true; /// 如果你的 SMTP 伺服器支援 SSL，可以啟用它
+                        smtpClient.Send(mail);
+                    }
+                    return Ok(new { successMessage = "已發送驗證信，請至信箱收取！", linkContent = applicationUrl });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { errorMessage = "發送驗證信失敗！" });
+                }
+
+
+            }
+        }
+
+
+
+
+        public IActionResult StudentResetPassword()
+        {
+            return View();
         }
 
 
@@ -353,6 +444,7 @@ namespace text_loginWithBackgrount.Controllers
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Template");
         }
+
         /// <summary>
         /// 執行忘記密碼的JWT認證
         /// </summary>
@@ -375,6 +467,7 @@ namespace text_loginWithBackgrount.Controllers
                 var claims = new List<Claim>
                 {
                     new Claim(JwtRegisteredClaimNames.Email, user.信箱.ToString()),
+
                 };
 
                 //取出appsettings.json裡的KEY處理
