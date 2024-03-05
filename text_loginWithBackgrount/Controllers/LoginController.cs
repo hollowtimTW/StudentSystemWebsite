@@ -302,7 +302,7 @@ namespace text_loginWithBackgrount.Controllers
         }
 
         /// <summary>
-        /// 老師登入授權帳號驗證
+        /// 老師登入+cookie註冊
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -335,7 +335,7 @@ namespace text_loginWithBackgrount.Controllers
         }
 
         /// <summary>
-        /// 密碼驗證
+        /// 登入的密碼驗證 通用
         /// </summary>
         /// <returns>正確是回傳 true。</returns>
         private bool VerifyPassword(string dbPassword, string dbSalt, string inputPassword)
@@ -350,6 +350,10 @@ namespace text_loginWithBackgrount.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 學生的忘記密碼寄信token
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult StudentForgetPassword(string email)
         {
@@ -366,7 +370,7 @@ namespace text_loginWithBackgrount.Controllers
                 var claims = new List<Claim>
                 {
                     new Claim(JwtRegisteredClaimNames.Email, user.信箱.ToString()),
-                    new Claim(ClaimTypes.Role,"teacher"),
+                    new Claim(ClaimTypes.Role,"student"),
 
                 };
 
@@ -387,17 +391,14 @@ namespace text_loginWithBackgrount.Controllers
                 var token = new JwtSecurityTokenHandler().WriteToken(jwt);
 
                 //產生網址
-                string applicationUrl = "https://"+HttpContext.Request.Host.Value;
-                applicationUrl += "/Login/StudentResetPassword?token=" + token;
+                string applicationUrl = "https://" + HttpContext.Request.Host.Value;
+                applicationUrl += "/Login/StudentTokenConrtol?token=" + token;
 
-                //var jwtToken = JwtTokenParser.ParseJwtToken(token);
-                //var emailClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Email)?.Value;
-                //var roleClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-                //var expirationTime = jwtToken.ValidTo;
+
 
                 try
                 {
-                    if (false)
+                    if (false)//要寄了再開
                     {
                         var mail = new MailMessage();
                         mail.From = new MailAddress("rizeno3260@gmail.com");
@@ -414,8 +415,9 @@ namespace text_loginWithBackgrount.Controllers
                         smtpClient.Credentials = new NetworkCredential("rizeno3260@gmail.com", "tpsd gliw vmno fpdv");
                         smtpClient.EnableSsl = true; /// 如果你的 SMTP 伺服器支援 SSL，可以啟用它
                         smtpClient.Send(mail);
+                        return Ok(new { successMessage = "已發送驗證信，請至信箱收取！", linkContent = "" });
                     }
-                    return Ok(new { successMessage = "已發送驗證信，請至信箱收取！", linkContent = applicationUrl });
+                    return Ok(new { successMessage = "簡易寄送連結模式！", linkContent = applicationUrl });
                 }
                 catch (Exception ex)
                 {
@@ -426,12 +428,82 @@ namespace text_loginWithBackgrount.Controllers
             }
         }
 
+        /// <summary>
+        /// 學生的token接受解析API+取得並在網站註冊token
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult StudentTokenConrtol(string token)
+        {
+            // 使用 JWT Security Token Handler
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            // 定義驗證規則和金鑰
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidIssuer = _configuration["JWT:Issuer"],
+                ValidAudience = _configuration["JWT:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:KEY"])),
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+
+            SecurityToken validatedToken;
+            ClaimsPrincipal claimsPrincipal;
+
+            try
+            {
+                // 使用 ValidateToken 方法進行驗證
+                //claimsPrincipal不會報錯代表是正確的...
+                claimsPrincipal = tokenHandler.ValidateToken(token, tokenValidationParameters, out validatedToken);
+                //claimsPrincipal但取不到email很奇怪，先轉成tokenClaims這種取值法
+                var tokenClaims = ((JwtSecurityToken)validatedToken).Claims;
+
+                var emailClaim = tokenClaims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Email)?.Value;
+                var roleClaim = tokenClaims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                ViewBag.emailClaim = emailClaim;
+                ViewBag.roleClaim = roleClaim;
+
+                Response.Headers.Add("Authorization", "Bearer " + token);
+                return RedirectToAction("StudentResetPassword");
+                //return Ok(tokenClaims);
+            }
+            catch (SecurityTokenException ex)
+            {
+                // 處理驗證失敗的情況，例如返回錯誤訊息
+                return BadRequest("Token 驗證逾期或是錯誤，請再試一次.");
+            }
 
 
+        }
 
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult StudentResetPassword()
         {
             return View();
+        }
+
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public IActionResult StudentResetPassword(string email,string password)
+        {
+            var user = _dbStudentSystemContext.T會員學生s.SingleOrDefault(a => a.信箱 == email);
+            if (user == null)
+            {
+                return BadRequest(new { errorMessage = "沒有這個信箱。" });
+            }
+            else
+            {
+                IRegistrationEncryptor encryptor = EncryptorFactory.CreateEncryptor();
+                (string _hashPassword, string _salt) = encryptor.EncryptPassword(password);
+
+                user.Salt = _salt;
+                user.密碼 = _hashPassword;
+                _dbStudentSystemContext.SaveChanges();
+
+                return Ok();
+            }            
         }
 
 
