@@ -69,15 +69,7 @@ namespace Class_system_Backstage_pj.Areas.student_management.Controllers
         //    return Ok(member);
         //}
 
-        [HttpGet]
-        public IActionResult GetStudentEditPartialView(int id)
-        {
-            
-            var member = _studentContext.T會員學生s.Find(id);
-            //只給_StudentPartialView的話
-            //只會去這邊找/Areas/student_management/Views/Member/_StudentPartialView
-            return PartialView("~/Areas/student_management/Views/PartialView/_StudentPartialView.cshtml", member);
-        }
+
 
 
         public IActionResult RegisterStudent()
@@ -175,6 +167,16 @@ namespace Class_system_Backstage_pj.Areas.student_management.Controllers
                 byte[] hashedBytes = sha256.ComputeHash(combined);
                 return Convert.ToBase64String(hashedBytes);
             }
+        }
+
+        [HttpGet]
+        public IActionResult GetStudentEditPartialView(int id)
+        {
+
+            var member = _studentContext.T會員學生s.Find(id);
+            //只給_StudentPartialView的話
+            //只會去這邊找/Areas/student_management/Views/Member/_StudentPartialView
+            return PartialView("~/Areas/student_management/Views/PartialView/_StudentPartialView.cshtml", member);
         }
 
         // PUT: api/Member/5

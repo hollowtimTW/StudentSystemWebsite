@@ -53,20 +53,21 @@
                     <div class="info-item d-flex">
                         <i class="bi bi-geo-alt flex-shrink-0"></i>
                         <div>
-                            <a href="#" class="fs-4 fw-bold text-white">註冊</a>
-                            <p>Register</p>
+                            <span class="fs-4 fw-bold text-white">登入</span>
+                            <p>Login</p>
+                            <p>需調版面</p>                            
                         </div>
-                    </div><!-- End Info Item -->
+                    </div>
                     <!-- 項目2 -->
-                    <div class="info-item d-flex">
+@*                      <div class="info-item d-flex">
                         <i class="bi bi-envelope flex-shrink-0"></i>
                         <div>
                             <a href="#" class="fs-4 fw-bold text-white">忘記密碼</a>
                             <p>
                                 Forgot Password
                             </p>
-                        </div>
-                    </div><!-- End Info Item -->
+                        </div> 
+                    </div> *@
                 </div>
             </div>
 
@@ -87,7 +88,9 @@
                         <div class="sent-message">完成登入</div>
                     </div>
                     <div class="text-center">
-                        <button type="submit" id="subbtn">登入</button>
+                        <button type="submit" id="btn_login">登入</button>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <button type="submit" id="btn_register">註冊</button>
                     </div>
                 </form>
             </div><!-- End Contact Form -->
@@ -97,7 +100,7 @@
 @section Scripts
 {
     <script>
-        $("#subbtn").click(function (e) {
+        $("#btn_login").click(function (e) {
             e.preventDefault();
             let formData = $('#StudentIndexform').serialize();
             $(".loading").addClass('d-block');
@@ -108,7 +111,7 @@
                 data: formData,
                 success: function () {
                     $(".loading").removeClass('d-block');
-                    // 如果請求成功導致學生專用頁
+                    // 如果請求成功導到學生專用頁
                     $(".error-message").removeClass('d-block');
                     $(".sent-message").addClass('d-block');
                     window.location.href = '@Url.Content("~/Template/Index")';
@@ -119,6 +122,11 @@
                     showError();
                 }
             });
+        });
+
+        $("#btn_register").click(function (e) {
+            e.preventDefault();
+            window.location.href = '@Url.Content("~/Login/StudentRegister")';
         });
 
         function showError() {
