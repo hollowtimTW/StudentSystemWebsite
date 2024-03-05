@@ -7,11 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- 使用的icon頁，有類別效果不要選其他的 https://boxicons.com/ -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <title>Responsive Dashboard Design #2</title>
+    <title>廠商後臺管理系統</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    @* <link rel="stylesheet" href="~/Class_system_Backstage_pj.styles.css" asp-append-version="true" /> *@
     <link href="~/Backstage/style.min.css" rel="stylesheet" asp-append-version="true" />
     <script src="https://kit.fontawesome.com/8acd533af5.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocas/4.2.5/tocas.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocas/4.2.5/tocas.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+
     @await RenderSectionAsync("Styles", required: false)
     <style>
         footer {
@@ -31,28 +36,7 @@
 <body>
 
     <!-- 版面頁左側開始 -->
-    <div class="sidebar">
-        <a class="logo" asp-area="" asp-controller="Template" asp-action="Index">
-            <i class=" fa-solid fa-signature"></i>
-            <div class="logo-name">
-                <span>店家後台</span>
-            </div>
-        </a>
-        <ul class="side-menu">
-            <li class="active"><a asp-area="" asp-controller="StoreBackground" asp-action="Index"><i class='bx bx-cog'></i>首頁</a></li>
-            <li><a href="#"><i class='bx bxs-dashboard'></i>店家資料</a></li>
-            <li><a href="#"><i class='bx bx-store-alt'></i>訂單管理</a></li>
-            <li><a href="#"><i class='bx bxs-book-content'></i>評價財務分析</a></li>
-        </ul>
-        <ul class="side-menu">
-            <li>
-                <a asp-controller="Login" asp-action="logout">
-                    <i class='bx bx-log-out-circle'></i>
-                    登出
-                </a>
-            </li>
-        </ul>
-    </div>
+    <partial name="_StorePartial" />
     <!-- 版面頁左側結束 -->
     <!-- Main Content -->
     <div class="content">
@@ -66,8 +50,8 @@
                     <button class="search-btn" type="submit"><i class='bx bx-search'></i></button>
                 </div>
             </form>
-            <h5>Hello</h5>
-            <h5>@User.Identity?.Name!</h5>
+            <h5 class="text-secondary">Hello</h5>
+            <h5 class="text-secondary">@User.Identity?.Name!</h5>
             <input type="checkbox" id="theme-toggle" hidden>
             <label for="theme-toggle" class="theme-toggle"></label>
             <!-- 通知訊息 -->
@@ -90,13 +74,14 @@
             @RenderBody()
         </main>
     </div>
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - Class_system_Backstage - <a asp-area="" asp-controller="Home" asp-action="Index">首頁</a>
-        </div>
-    </footer>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+@*     <script src="~/lib/datatables/js/jquery.datatables.min.js"></script>
+    <script src="//cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"> </script> *@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     @* <script src="~/js/index.js" asp-append-version="true"></script> *@
     <script src="~/Backstage/index.min.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)

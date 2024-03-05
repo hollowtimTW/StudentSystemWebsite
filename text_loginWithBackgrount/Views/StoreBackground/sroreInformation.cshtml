@@ -1,0 +1,119 @@
+﻿<div class="is-light">
+    <div class="ts-content is-tertiary is-vertically-padded is-rounded">
+        <div class="ts-container is-very-narrow has-vertically-spaced">
+            <div class="ts-header is-big is-massive">商家資料</div>
+            <div class="ts-text is-secondary">你能編輯或調整商家資訊，注意商家資訊會對外影響顧客觀感請小心</div>
+        </div>
+    </div>
+    <div class="bottom-data">
+        <div class="orders">
+            <!-- 放置內容 -->
+            <form class="border border-3">
+                <div class="ts-container is-very-narrow has-vertically-padded-big">
+                    <div class="ts-box bg-transparent m-2">
+                        <div class="ts-image is-medium is-centered">
+                            <img src="~/images/user.jpg" />
+                        </div>
+                        <div class="ts-content">
+                            <div class="ts-header is-heavy">店家封面</div>
+                            <div class="ts-file">
+                                <input type="file" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ts-grid is-relaxed is-2-columns">
+                        <div class="column">
+                            <div class="ts-header is-heavy">店家名稱</div>
+                            <div class="ts-input is-underlined has-top-spaced">
+                                <input type="text" />
+                            </div>
+                            <div class="ts-text is-description has-top-spaced-small"></div>
+                        </div>
+                        <div class="column">
+                            <div class="ts-header is-heavy">營業地址</div>
+                            <div class="ts-input is-underlined has-top-spaced">
+                                <input type="text" />
+                            </div>
+                            <div class="ts-text is-description has-top-spaced-small"></div>
+                        </div>
+                    </div>
+                    <div class="ts-header is-heavy">電子郵件</div>
+                    <div class="ts-input is-underlined has-top-spaced">
+                        <input type="email" />
+                    </div>
+                    <div class="ts-header is-heavy">密碼</div>
+                    <div class="ts-input is-underlined has-top-spaced">
+                        <input type="password" />
+                    </div>
+                    <div class="ts-text is-description has-top-spaced-small">僅能是英文字母和數字，且最少 8 字，最多10 字。</div>
+                    <div class="ts-header is-heavy m-2">商家標籤</div>
+                    <div class="ts-input is-underlined has-top-spaced">
+                        <input type="text" id="taglist" />
+                    </div>
+                    <div class="ts-text is-description has-top-spaced-small">最多選擇5種標籤</div>
+                    <div class="ts-header is-heavy m-2">商家介紹文字</div>
+                    <div class="ts-input is-resizable m-3">
+                        <textarea placeholder="這裡寫入你商店介紹"></textarea>
+                    </div>
+                    <div class="ts-text is-description has-top-spaced-small">商店介紹最多150字</div>
+                    <button class="ts-button is-fluid has-top-spaced-large">確認送出</button>
+                    <div class="ts-box is-light m-3">
+                        <div class="ts-content">
+                            <p>
+                                按下「確認送出」表示您也接受「Rasengan+
+                                協議」、「個人隱私政策」、「使用者規範」。
+                            </p>
+                        </div>
+                        <div class="symbol">
+                            <span class="ts-icon is-circle-exclamation-icon"></span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+        <h3 id="offcanvasRightLabel">標籤列表</h3>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        
+            <form class="m-3">
+            <div class="btn-group-vertical btn-group-lg ts-wrap" role="group" aria-label="Basic checkbox toggle button group">
+                <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btncheck1">星期一</label>
+
+                <input type="checkbox" class="btn-check" id="btncheck2" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btncheck2">星期二</label>
+
+                <input type="checkbox" class="btn-check" id="btncheck3" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btncheck3">星期三</label>
+
+                <input type="checkbox" class="btn-check" id="btncheck4" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btncheck4">星期四</label>
+
+                <input type="checkbox" class="btn-check" id="btncheck5" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btncheck5">星期五</label>
+
+                <input type="checkbox" class="btn-check" id="btncheck6" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btncheck6">星期六</label>
+
+                <input type="checkbox" class="btn-check" id="btncheck7" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btncheck7">星期日</label>
+            </div>
+            </form>
+        <button class="ts-button is-end-icon is-secondary">
+            送出
+            <span class="ts-icon is-check-icon"></span>
+        </button>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $('#taglist').click(() => {
+            $('#offcanvasRight').offcanvas('show');
+        })
+    </script>
+}

@@ -5,5 +5,6 @@
         public int turnover { get; set; }
         public int historyorder { get; set; }
         public string evaluate { get; set; }
+        public int commentsNum { get; set; }
     }
 }

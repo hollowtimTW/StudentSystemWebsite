@@ -1,0 +1,61 @@
+﻿
+    <div class="sidebar">
+        <a class="logo" asp-area="" asp-controller="Template" asp-action="Index">
+            <i class=" fa-solid fa-signature"></i>
+            <div class="logo-name">
+                店家<span>後台</span>
+            </div>
+        </a>
+        <ul class="side-menu">
+        @if (@ViewBag.type == "Menumanagement")
+        {
+            <li ><a asp-area="" asp-controller="StoreBackground" asp-action="Index"><i class='bx bxs-home'></i>首頁</a></li>
+            <li class="active"><a asp-area="" asp-controller="StoreBackground" asp-action="Menumanagement"><i class='bx bxs-food-menu'></i>餐點管理</a></li>
+            <li><a asp-area="" asp-controller="StoreBackground" asp-action="ordermanger"><i class='bx bx-list-ul'></i>訂單管理</a></li>
+            <li><a asp-controller="StoreBackground" asp-action="sroreInformation"><i class='bx bxs-book-content'></i>店家資料</a></li>
+            <li><a asp-controller="StoreBackground" asp-action="moneymanger"><i class='bx bx-time'></i>營業時間管理</a></li>
+        }
+        else if (@ViewBag.type == "ordermanger")
+        {
+            <li><a asp-area="" asp-controller="StoreBackground" asp-action="Index"><i class='bx bxs-home'></i>首頁</a></li>
+            <li><a asp-area="" asp-controller="StoreBackground" asp-action="Menumanagement"><i class='bx bxs-food-menu'></i>餐點管理</a></li>
+            <li class="active"><a asp-area="" asp-controller="StoreBackground" asp-action="ordermanger"><i class='bx bx-list-ul'></i>訂單管理</a></li>
+            <li><a asp-controller="StoreBackground" asp-action="sroreInformation"><i class='bx bxs-book-content'></i>店家資料</a></li>
+            <li><a asp-controller="StoreBackground" asp-action="moneymanger"><i class='bx bx-time'></i>營業時間管理</a></li>
+        }
+        else if (@ViewBag.type == "moneymanger")
+        {
+            <li><a asp-area="" asp-controller="StoreBackground" asp-action="Index"><i class='bx bxs-home'></i>首頁</a></li>
+            <li><a asp-area="" asp-controller="StoreBackground" asp-action="Menumanagement"><i class='bx bxs-food-menu'></i>餐點管理</a></li>
+            <li><a asp-area="" asp-controller="StoreBackground" asp-action="ordermanger"><i class='bx bx-list-ul'></i>訂單管理</a></li>
+            <li><a asp-controller="StoreBackground" asp-action="sroreInformation"><i class='bx bxs-book-content'></i>店家資料</a></li>
+
+            <li class="active"><a asp-controller="StoreBackground" asp-action="moneymanger"><i class='bx bx-time'></i>營業時間管理</a></li>
+        }
+        else if (@ViewBag.type == "sroreInformation")
+        {
+            <li><a asp-area="" asp-controller="StoreBackground" asp-action="Index"><i class='bx bxs-home'></i>首頁</a></li>
+            <li><a asp-area="" asp-controller="StoreBackground" asp-action="Menumanagement"><i class='bx bxs-food-menu'></i>餐點管理</a></li>
+            <li><a asp-area="" asp-controller="StoreBackground" asp-action="ordermanger"><i class='bx bx-list-ul'></i>訂單管理</a></li>
+            <li class="active"><a asp-controller="StoreBackground" asp-action="sroreInformation"><i class='bx bxs-book-content'></i>店家資料</a></li>
+            <li><a asp-controller="StoreBackground" asp-action="moneymanger"><i class='bx bx-time'></i>營業時間管理</a></li>
+        }
+        else
+        {
+            <li class="active"><a asp-area="" asp-controller="StoreBackground" asp-action="Index"><i class='bx bxs-home'></i>首頁</a></li>
+            <li><a asp-area="" asp-controller="StoreBackground" asp-action="Menumanagement"><i class='bx bxs-food-menu'></i>餐點管理</a></li>
+            <li><a asp-area="" asp-controller="StoreBackground" asp-action="ordermanger"><i class='bx bx-list-ul'></i>訂單管理</a></li>
+            <li><a asp-controller="StoreBackground" asp-action="sroreInformation"><i class='bx bxs-book-content'></i>店家資料</a></li>
+            <li><a asp-controller="StoreBackground" asp-action="moneymanger"><i class='bx bx-time'></i>營業時間管理</a></li>
+        }
+    </ul>
+        <ul class="side-menu">
+            <li>
+                <a asp-controller="Login" asp-action="logout">
+                    <i class='bx bx-log-out-circle'></i>
+                    登出
+                </a>
+            </li>
+        </ul>
+    </div>
+

@@ -1,0 +1,181 @@
+﻿@{
+    ViewData["Title"] = "訂單管理列表";
+}
+@model IEnumerable<T訂餐店家資料表>
+@section Styles
+{
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+    @* <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script> *@
+    <link href="~/css/datatablesinline.css" rel="stylesheet" />
+    <style>
+        /*  頭部表格欄位樣式 */
+        .imthead {
+            background-color: #C4E1E1;
+            font-weight: 700;
+        }
+        /*  新刪修按鈕排列方式 */
+        .crudlist {
+            display: flex;
+            align-items: center;
+            grid-gap: 10px;
+        }
+            /*  新刪修按鈕大小微調 */
+            .crudlist li {
+                padding: 15px;
+                margin-bottom: 0;
+            }
+    </style>
+}
+<div class="ts-content is-tertiary is-vertically-padded is-rounded is-light">
+    <div class="ts-container is-very-narrow has-vertically-spaced">
+        <div class="ts-header is-big is-massive">訂單管理</div>
+        <div class="ts-text is-secondary">處理、追蹤、統計線上訂單的工具。它可以幫助商家提升效率、增加顧客滿意度、優化營運流程</div>
+    </div>
+</div>
+<div class="bottom-data">
+    <div class="orders">
+        <div class="header">
+            <i class='bx bx-receipt'></i>
+            <h3>本日訂單</h3>
+            <i class='bx bx-filter'></i>
+            <i class='bx bx-search'></i>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>訂單編號</th>
+                    <th>餐點名稱</th>
+                    <th>數量</th>
+                    <th>付款方式</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <img src="images/profile-1.jpg">
+                        <p>John Doe</p>
+                    </td>
+                    <td>14-08-2023</td>
+                    <td><span class="status completed">已完成</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <img src="images/profile-1.jpg">
+                        <p>John Doe</p>
+                    </td>
+                    <td>14-08-2023</td>
+                    <td><span class="status pending">取消</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <img src="images/profile-1.jpg">
+                        <p>John Doe</p>
+                    </td>
+                    <td>14-08-2023</td>
+                    <td><span class="status process">進行中</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="bottom-data">
+    <div class="orders">
+        <div class="header">
+            @* 表格標題輸入地方 *@
+            <i class='bx bx-receipt'></i> <!-- 表格的小icon -->
+            <h3>歷史訂單列表</h3> <!-- 表格的名稱 -->
+            @*             <i class='bx bx-filter'></i>
+            <i class='bx bx-search'></i>  *@
+
+        </div>
+        @* 表格內容輸入地方 *@
+        <table id="test_table">
+            <thead class="imthead">
+                <tr>
+                    <td>@Html.DisplayNameFor(model => model.店家名稱)</td>
+                    <td>@Html.DisplayNameFor(model => model.電話)</td>
+                    <td>@Html.DisplayNameFor(model => model.地址)</td>
+
+                </tr>
+            </thead>
+            @* 表格內容輸入地方 *@
+        </table>
+        @* 表格輸入結束 *@
+    </div>
+</div>
+<!-- Button trigger modal -->
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered .modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">儲存送出</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="~/lib/datatables/js/jquery.datatables.min.js"></script>
+    <script src="//cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"> </script>
+    <script>
+        $(document).ready(function () {
+            // alert("ready")
+            $("#test_table").dataTable({
+                autoWidth: false,
+                ajax: {
+                    type: 'GET',
+                    url: "/StoreBackground/indexjson",
+                    dataSrc: function (json) {
+                        return json;
+
+                    }
+                },
+                columns: [
+                    { "data": "店家名稱", "width": "10 %" },
+                    { "data": "電話", "width": "10 %" },
+                    { "data": "地址", "width": "10 %" },
+                    { "data": "店家id", "visible": false }, //放入表格pk但不要顯示，為了在row中引用
+                    {
+                        data: null,
+                        title: "function",
+                        render: function (data, type, row) {
+                            return '<i class="bx bxs-trash-alt"data-id="' + row.店家id + '" ></i>' + "&nbsp;&nbsp;&nbsp;" + '<i class="bx bxs-message-square-edit" data-id="' + row.店家id + '"></i>' //引入icon與表格pk識別
+                            //return '<button class="btn btn-danger btn-sm delete-btn" data-id="' + row.店家id + '">刪除</button>';
+                        }
+                    }
+                ],
+                fixedHeader: { header: true },
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/zh-HANT.json'
+                },
+            });
+            $('#test_table tbody').on('click', 'i.bxs-trash-alt', async function () {
+                var productId = $(this).data('id');
+                // console.log(productId)
+                // const url = `@Url.Content("~/Products/DeleteStore/")?id=${productId}`;
+                // const response = await fetch(url);
+                // const data = await response.text();
+                console.log(productId);
+            });
+
+            $('#test_table tbody').on('click', 'i.bxs-message-square-edit', async function () {
+                var productId = $(this).data('id');
+                // console.log(productId)
+                // const url = `@Url.Content("~/Products/DeleteStore/")?id=${productId}`;
+                // const response = await fetch(url);
+                // const data = await response.text();
+                console.log(productId);
+            });
+        })
+    </script>
+}

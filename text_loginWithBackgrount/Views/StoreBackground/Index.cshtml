@@ -1,10 +1,20 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+@model VMstoreInformation
 @section Styles
 {
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
-    @* <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script> *@
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+    <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <link href="~/css/ordering_system/store_index.css" rel="stylesheet" />
+    @* 以上引入圓餅圖資源 *@
+    <link href="~/css/ordering_system/pie_chart.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+    <link href="~/css/datatablesinline.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
     <style>
         .orders {
             margin-top: 30px;
@@ -26,82 +36,257 @@
 }
 <div class="header">
     <div class="left">
-        <h1>歡迎回來</h1>
+        <h1>歡迎回來，@User.Identity?.Name 夥伴</h1>
+    </div>
+</div>
+<div class="ts-grid is-relaxed is-4-columns has-top-spaced-large is-light">
+    <div class="column">
+        <div class="ts-box">
+            <div class="ts-content">
+                <div class="ts-statistic">
+                    <div class="value">@Model.historyorder</div>
+                </div>
+                歷史訂單數
+            </div>
+            <div class="symbol">
+                <span class="ts-icon is-list-check-icon"></span>
+            </div>
+        </div>
+    </div>
+    <div class="column">
+        <div class="ts-box">
+            <div class="ts-content">
+                <div class="ts-statistic">
+                    <div class="value">@Model.turnover</div>
+                    
+                </div>
+                總營業額
+            </div>
+            <div class="symbol">
+                <span class="ts-icon is-circle-dollar-to-slot-icon"></span>
+            </div>
+        </div>
+    </div>
+    <div class="column">
+        <div class="ts-box">
+            <div class="ts-content">
+                <div class="ts-statistic">
+                    <div class="value">@Model.commentsNum</div>
+                    
+                </div>
+                評論數量
+            </div>
+            <div class="symbol">
+                <span class="ts-icon is-eye-icon"></span>
+            </div>
+        </div>
+    </div>
+    <div class="column">
+        <div class="ts-box">
+            <div class="ts-content">
+                <div class="ts-statistic">
+                    <div class="value">@Model.evaluate</div>
+                    
+                </div>
+                平均評價
+            </div>
+            <div class="symbol">
+                <span class="ts-icon is-clock-icon"></span>
+            </div>
+        </div>
     </div>
 </div>
 <div class="bottom-data">
-    <div class="orders">
+    <div class="orders m-0">
         <div class="header">
-            <i class='bx bx-receipt'></i> <!-- 表格的小icon -->
-            <h3>公告資訊</h3> <!-- 表格的名稱 -->
+            <i class='bx bx-bar-chart-alt' onclick="clearbar()"></i>
+            <h3>月營收變化</h3>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    2024年
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li><a class="dropdown-item year" href="#" data-id="2021">2021年</a></li>
+                    <li><a class="dropdown-item year" href="#" data-id="2023">2023年</a></li>
+                    <li><a class="dropdown-item year" href="#" data-id="2024">2024年</a></li>
+                </ul>
+            </div>
         </div>
-        @* 表格標題輸入地方 *@
-        <table>
-            <thead>
-                <tr>
-                    <th>日期</th>
-                    <th>公告事項</th>
-                    <th>發布單位</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr id="124">
-                    <td>
-                        <p>2024/01/28</p>
-                    </td>
-                    <td>學生職業生涯發展中心徵募維護</td>
-                    <td><span class="status completed">學生事務處</span></td>
-                </tr>
-                <tr>
-                    <td>
-                        <p>2024/01/26</p>
-                    </td>
-                    <td>外語教學暨資源中心處理維護期限到期修改</td>
-                    <td><span class="status pending">財務管理處</span></td>
-                </tr>
-                <tr>
-                    <td>
-                        <p>2024/01/26</p>
-                    </td>
-                    <td>誠徵邱老師「新生專題」課程工讀生</td>
-                    <td><span class="status completed">生涯發展服務中心</span></td>
-                </tr>
-                <tr>
-                    <td>
-                        <p>2024/01/24</p>
-                    </td>
-                    <td>2024 台灣萊雅 SeedZ儲備幹部計畫</td>
-                    <td><span class="status pending">財務管理處</span></td>
-                </tr>
-                <tr>
-                    <td>
-                        <p>2023/12/31</p>
-                    </td>
-                    <td>科研採購電源供應器1台 決標公告</td>
-                    <td><span class="status pending">財務管理處</span></td>
-                </tr>
-                <tr>
-                    <td>
-                        <p>2023/12/20</p>
-                    </td>
-                    <td>學員失物招領-黑色錢包、現金</td>
-                    <td><span class="status completed">學生事務處</span></td>
-                </tr>
-            </tbody>
-        </table>
-        @* 表格輸入結束 *@
+        @* 圖表1放置 *@
+        <canvas id="bar-chart" width="500" height="250"></canvas>
+    </div>
+    <div class="reminders">
+        <div class="header m-0">
+            <h3 class="is-heavy">熱門菜單</h3> <!-- 表格的名稱 -->
+        </div>
+        <p>依購買數量排名</p>
+        <hr />
+        <ul class="task-list">
+            <li class="completed">
+                <div class="task-title">
+                    <p>1</p>
+                    <p>紅燒獅子頭</p>
+                </div>
+                <div class="ts-text is-large">654</div>
+            </li>
+            <li class="completed">
+                <div class="task-title">
+                    <p>1</p>
+                    <p>紅燒獅子頭</p>
+                </div>
+                <div class="ts-text is-large">654</div>
+            </li>
+            <li class="completed">
+                <div class="task-title">
+                    <p>1</p>
+                    <p>紅燒獅子頭</p>
+                </div>
+                <div class="ts-text is-large">654</div>
+            </li>
+            <li class="completed">
+                <div class="task-title">
+                    <p>1</p>
+                    <p>紅燒獅子頭</p>
+                </div>
+                <div class="ts-text is-large">654</div>
+            </li>
+            <li class="completed">
+                <div class="task-title">
+                    <p>1</p>
+                    <p>紅燒獅子頭</p>
+                </div>
+                <div class="ts-text is-large">654</div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+@* 圖表、店家、菜單放置區*@
+<div class="bottom-data">
+    <div class="orders m-0">
+        <div class="header">
+            <i class='bx bx-adjust' onclick="clearpie()"></i>
+            <h3>店家評價分析</h3>
+        </div>
+        @* 圖表2放置 *@
+        <div id="pie-chart"></div>
+    </div>
+    <div class="reminders">
+        <div class="header m-0">
+            <h3 class="is-heavy">菜單餐點意見回饋</h3> <!-- 表格的名稱 -->
+        </div>
+        <p>@Model.commentsNum 次評論</p>
+        <hr />
+        <div class="column is-6-wide">
+            <div class="ts-box is-top-indicated is-light">
+                <div class="ts-content is-dense">
+                    <div class="ts-header is-heavy">評論完整分析</div>
+                </div>
+                <div class="ts-divider"></div>
+                <div class="ts-content">
+                    <div class="ts-text is-bold">整體評價優良比</div>
+                    <div class="ts-progress is-small has-top-spaced-small">
+                        <div class="bar" style="width: 50%">
+                            <div class="text">64 GB</div>
+                        </div>
+                    </div>
+                    <div class="ts-text is-bold has-top-spaced-small">評分最高菜單:XXX</div>
+                    <div class="ts-progress is-small has-top-spaced-small">
+                        <div class="bar" style="width: 80%">
+                            <div class="text">4 GB</div>
+                        </div>
+                    </div>
+                    <div class="ts-text is-bold has-top-spaced-small">評分最低菜單:XXX</div>
+                    <div class="ts-progress is-small has-top-spaced-small">
+                        <div class="bar" style="width: 30%">
+                            <div class="text">30%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 @section Scripts
 {
-    <script src="~/lib/datatables/js/jquery.datatables.min.js"></script>
-    <script src="//cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"> </script>
-    <script>
-        // const but1 = document.querySelectorAll('#124') //->id選取器
+    <script src="~/js/ordering_system/pie_chart.js"></script>
 
-        $(document).ready(function () {
-            //限制網頁不要出現卷軸
-            document.documentElement.style.overflow = 'hidden';
-        });
+    <script>
+        let year = 2024;
+        $(".dropdown-menu").on("click", ".year", function () {
+            year = $(this).data("id");
+            barchart_monthly_revenue();
+        })
+        const storeID = @User?.FindFirst("teacherID")?.Value
+        var bar_chart; // 宣告 bar_chart 變數
+        async function barchart_monthly_revenue() {
+            const request = await fetch(`@Url.Content("~/tOrder_StoreAPI/barchart_monthly_revenue")?yaer=${year}&id=${storeID}`);
+            const data1 = await request.json(); // 載入api資料
+
+            if (bar_chart && bar_chart.data.datasets.length > 0) {
+                bar_chart.data.datasets = []; // 清除先前的資料集合
+            }
+
+            var bar_ctx = document.getElementById('bar-chart').getContext('2d');
+            var purple_orange_gradient = bar_ctx.createLinearGradient(0, 0, 0, 600);
+            purple_orange_gradient.addColorStop(0, 'orange');
+            purple_orange_gradient.addColorStop(1, 'purple');
+
+            if (!bar_chart) {
+                // 如果 bar_chart 尚未初始化，則創建一個新的 Chart 物件
+                bar_chart = new Chart(bar_ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+                        datasets: [{
+                            label: '月營收金額',
+                            data: data1,
+                            backgroundColor: purple_orange_gradient,
+                            hoverBackgroundColor: purple_orange_gradient,
+                            hoverBorderWidth: 2,
+                            hoverBorderColor: 'purple'
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
+                    }
+                });
+            } else {
+                // 否則，只更新資料
+                bar_chart.data.datasets.push({
+                    label: '月營收金額',
+                    data: data1,
+                    backgroundColor: purple_orange_gradient,
+                    hoverBackgroundColor: purple_orange_gradient,
+                    hoverBorderWidth: 2,
+                    hoverBorderColor: 'purple'
+                });
+                bar_chart.update();
+            }
+        };
+        async function pieupdate() {
+            const url = `@Url.Content("~/tOrder_StoreAPI/pieComment")`
+            const request = await fetch(url);
+            const data = await request.json();
+            update(data)
+        };
+        //執行指定店家評論分析，圓餅圖資料顯示function
+        async function pieComment_withstore(id) {
+            const url = `@Url.Content("~/tOrder_StoreAPI/pieComment_withstore")?id=${id}`
+            const request = await fetch(url);
+            const data = await request.json();
+            update(data)
+        };
+        //開始啟動載入
+        (async() => {
+            barchart_monthly_revenue();
+            pieComment_withstore(storeID);
+        })()
     </script>
 }

@@ -1,0 +1,97 @@
+﻿@{
+    ViewData["Title"] = "餐點管理系統";
+}
+@section Styles
+{
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+    @* <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script> *@
+    @* <link href="~/css/datatablesinline.css" rel="stylesheet" /> *@
+    <link href="~/css/datatablesinline.min.css" rel="stylesheet" />
+    <style>
+        .imthead {
+            background-color: #C4E1E1;
+            font-weight: 700;
+        }
+    </style>
+}
+<div class="is-light">
+    <div class="ts-content is-tertiary is-vertically-padded is-rounded">
+        <div class="ts-container is-very-narrow has-vertically-spaced">
+            <div class="ts-header is-big is-massive">餐點管理</div>
+            <div class="ts-text is-secondary">點選新增菜單後就能新增菜色，你能針對不同菜單做編輯上架</div>
+        </div>
+    </div>
+</div>
+@* 標題結束*@
+<div class="bottom-data">
+    <div class="orders">
+        <div class="header">
+            <i class='bx bx-receipt'></i>  <!-- 表格的小icon -->
+            <h3>類別</h3> <!-- 表格的名稱 -->
+            <button class="ts-button is-start-icon is-light">
+                <span class="ts-icon is-plus-icon"></span>
+                新增菜單
+            </button>
+            <button class="ts-button is-start-icon is-light">
+                <span class="ts-icon is-plus-icon"></span>
+                新增餐點
+            </button>
+        </div>
+        @* 表格標題輸入地方 *@
+        <table>
+            <thead>
+                <tr>
+                    <th>菜單</th>
+                    <th>餐點數</th>
+                    <th>備註</th>
+                </tr>
+            </thead>
+            @* 表格內容輸入地方 *@
+            <tbody>
+                <tr>
+                    <td>午間餐點</td>
+                    <td>25項</td>
+                    <td>全天候提供溫暖餐點</td>
+                </tr>
+            </tbody>
+        </table>
+        @* 表格輸入結束 *@
+    </div>
+    <!-- End of Reminders-->
+</div>
+
+<div class="container m-4">
+    <div class="row">
+        <div class="col m-3">
+            <div class="card col" style="width: 18rem;">
+                <img src="~/images/user.jpg" class="card-img-top" alt="..." />
+                <div class="card-body">
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col m-3">
+            <div class="card col" style="width: 18rem;">
+                <img src="~/images/user.jpg" class="card-img-top" alt="..." />
+                <div class="card-body">
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col m-3">
+            <div class="card col" style="width: 18rem;">
+                <img src="~/images/user.jpg" class="card-img-top" alt="..." />
+                <div class="card-body">
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col m-3">
+            <div class="card col" style="width: 18rem;">
+                <img src="~/images/user.jpg" class="card-img-top" alt="..." />
+                <div class="card-body">
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+            </div>
+        </div>
+    </div>
