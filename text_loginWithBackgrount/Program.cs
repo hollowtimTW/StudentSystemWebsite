@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using text_loginWithBackgrount.Data;
+using text_loginWithBackgrount.Areas.course_management.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddControllers(); //向DI容器註冊控制器所需的服務
+builder.Services.AddSignalR(); // 將 SignalR 服務添加到 DI 容器中
+
 builder.Services.AddDbContext<studentContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("StudentDB")));
 
@@ -83,6 +86,11 @@ app.UseRouting();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<NotificationHub>("/NotificationHub");
+});
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");

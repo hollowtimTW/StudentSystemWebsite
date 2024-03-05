@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Class_system_Backstage_pj.Areas.ordering_system.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using text_loginWithBackgrount.Areas.course_management.Model;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Class_system_Backstage_pj.Areas.course_management.Controllers
 {
@@ -242,7 +243,34 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
             return Ok();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> notification(int receiveId, int sendId, int classCourseId)
+        {
+            var 班級科目 =
+                _context.T課程班級科目s
+                .Include(t => t.班級)
+                .Include(t => t.科目)
+                .Where(s => classCourseId == s.班級科目id)
+                .FirstOrDefault();
 
+            var 發送訊息內容 = $"已經安排您教授 {班級科目.班級.班級名稱} 班級的 {班級科目.科目.科目名稱} 課程，請查閱您的課程!";
+
+            var t課程訊息 = new T課程通知表
+            {
+                發送者類型 = "T",
+                發送者id = sendId,
+                接收者類型 = "T",
+                發送訊息內容 = 發送訊息內容,
+                接收者id = receiveId,
+                時間 = DateTime.Now,
+                狀態 = 1
+            };
+            _context.Add(t課程訊息);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+
+        }
         private bool T課程班級科目Exists(int id)
         {
           return (_context.T課程班級科目s?.Any(e => e.班級科目id == id)).GetValueOrDefault();

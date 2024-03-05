@@ -81,12 +81,15 @@
             <h5 class="text-secondary">@User.Identity?.Name!</h5>
             <input type="checkbox" id="theme-toggle" hidden>
             <label for="theme-toggle" class="theme-toggle"></label>
+
             <!-- 通知訊息 -->
-            <a href="#" class="notif">
+            <a asp-area="course_management" asp-controller="courseHome" asp-action="notificationView" asp-route-id="@User?.FindFirst("TeacherId")?.Value" class="notif">
                 <i class='bx bx-bell'></i>
-                <span class="count">1</span>
+                <!--顯示紅點-->
+
             </a>
             <!-- 通知訊息 -->
+
             <!-- 使用者頭像 -->
             <a href="#" class="profile">
                 <img src="~/images/user.jpg" />
@@ -108,9 +111,15 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!--通知引入-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.10/signalr.min.js"></script>
+    <script src="~/js/course_management/notification.js"></script>
+    <!--通知引入-->
     @* <script src="~/js/index.js" asp-append-version="true"></script> *@
     <script src="~/Backstage/index.min.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+   
 </body>
 
 </html>

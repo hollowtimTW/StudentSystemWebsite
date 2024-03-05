@@ -130,7 +130,7 @@
 
                 </td>
                 <td>
-                    <a class="btn btn-success" asp-action="Delete" asp-route-id="@item.班級科目id"><i class='bx bx-bell'></i></a>
+                    <a class="btn btn-success" onclick="notification('@item.老師.老師id','@User?.FindFirst("TeacherId")?.Value','@item.班級科目id')"><i class='bx bx-bell'></i></a>
 
                 </td>
 
@@ -388,6 +388,43 @@
                     }
                 });
             }
+
+        function notification(receiveId, sendId, classCourseId) {
+            $.ajax({
+                url: "/course_management/T課程班級科目/notification",
+                type: "POST",
+                data: {
+                    receiveId: receiveId,
+                    sendId: sendId,
+                    classCourseId: classCourseId
+                },
+                success: function (response) {
+
+                    var connection = new signalR.HubConnectionBuilder().withUrl("/NotificationHub").build();
+
+                    connection.start()
+                        .then(function () {
+                            console.log('SignalR connection established.');
+                            console.log('Connected with connection ID:');
+
+                            // 在連線建立後，調用 SignalR hub 方法通知接收者
+                            connection.invoke("SendNotification", receiveId)
+                                .catch(function (err) {
+                                    return console.error(err.toString());
+                                });
+                        })
+                        .catch(function (err) {
+                            console.error(err.toString());
+                            alert("無法建立 SignalR 連線。");
+                        });
+
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error:", error);
+                    alert("發生錯誤，請稍後再試。");
+                }
+            });
+        }
     </script>
 
     

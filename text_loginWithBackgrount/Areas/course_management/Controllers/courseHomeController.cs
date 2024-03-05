@@ -141,6 +141,60 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
             }
         }
 
+        //目前當前使用者的id
+        public bool notificationState(int? id)
+        {
+            var messageUnread = _context
+           .T課程通知表s
+           .Where(t => t.接收者類型 == "T" && t.接收者id == id && t.狀態 == 1)
+           .Count();
+
+            //如果有尚未有讀的，回傳要有紅點
+            if (messageUnread > 0)
+            {
+                return true;
+            }
+            return false;
+        }
+        //目前當前使用者的id
+        async public Task<IActionResult> notificationView(int? id)
+        {
+            var messageList = await _context.T課程通知表s
+                .Where(t => t.接收者類型 == "T" && t.接收者id == id)
+                .OrderByDescending(t => t.時間)
+                .ToListAsync();
+
+            try
+            {
+                foreach (var message in messageList)
+                {
+                    message.狀態 = 2;
+                    _context.Update(message);
+
+                }
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
+            var notificationList = messageList.Select(message => new Notification
+            {
+                訊息id = message.訊息id,
+                發送者類型 = message.發送者類型,
+                發送者id = message.發送者id,
+                接收者類型 = message.接收者類型,
+                接收者id = message.接收者id,
+                發送訊息內容 = message.發送訊息內容,
+                狀態 = message.狀態,
+                時間 = message.時間,
+                SenderName = message.發送者類型 == "T" ? _context.T會員老師s.FirstOrDefault(s => s.老師id == message.發送者id)?.姓名 :
+                                                _context.T會員學生s.FirstOrDefault(s => s.學生id == message.發送者id)?.姓名
+            }).ToList();
+
+            return View(notificationList);
+        }
     }
 }
 
