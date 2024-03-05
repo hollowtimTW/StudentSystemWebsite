@@ -1,76 +1,117 @@
 ﻿<div class="is-light">
-    <div class="ts-content is-tertiary is-vertically-padded is-rounded">
+    <div class="ts-content is-tertiary is-vertically-padded is-rounded m-4">
         <div class="ts-container is-very-narrow has-vertically-spaced">
             <div class="ts-header is-big is-massive">商家資料</div>
             <div class="ts-text is-secondary">你能編輯或調整商家資訊，注意商家資訊會對外影響顧客觀感請小心</div>
         </div>
     </div>
-    <div class="bottom-data">
-        <div class="orders">
-            <!-- 放置內容 -->
-            <form class="border border-3">
-                <div class="ts-container is-very-narrow has-vertically-padded-big">
-                    <div class="ts-box bg-transparent m-2">
-                        <div class="ts-image is-medium is-centered">
-                            <img src="~/images/user.jpg" />
+    <div class="ts-tab is-pilled">
+        <button class="item is-active" data-tab="logs">基本資料</button>
+        <button class="item" data-tab="info">密碼修改</button>
+    </div>
+    <div class="ts-segment" data-name="logs">
+        <div class="bottom-data">
+            <div class="orders">
+                <!-- 放置內容 -->
+                <form class="border border-3" id="informationform" enctype="multipart/form-data">
+                    <div class="ts-container is-very-narrow has-vertically-padded-big">
+                        <div class="ts-box bg-transparent m-2">
+                            <div class="ts-image is-medium is-centered">
+                                <img src="" id="img" />
+                            </div>
+                            <div class="ts-content">
+                                <div class="ts-header is-heavy">店家封面</div>
+                                <div class="ts-file">
+                                    <input type="file" accept="image/*" id="storeImg" name="storeImg" />
+                                </div>
+                            </div>
                         </div>
-                        <div class="ts-content">
-                            <div class="ts-header is-heavy">店家封面</div>
-                            <div class="ts-file">
-                                <input type="file" />
+                        <div class="ts-grid is-relaxed is-2-columns">
+                            <div class="column">
+                                <div class="ts-header is-heavy">店家名稱</div>
+                                <div class="ts-input is-underlined has-top-spaced">
+                                    <input type="text" value="" name="storeName" id="storeName" />
+                                </div>
+                                <span class="ts-text is-negative" id="storeNameError"></span>
+                            </div>
+                            <div class="column">
+                                <div class="ts-header is-heavy">營業地址</div>
+                                <div class="ts-input is-underlined has-top-spaced">
+                                    <input type="text" value="" name="storeAdress" id="storeAdress" />
+                                </div>
+                                <span class="ts-text is-negative" id="storeAdressError"></span>
+                            </div>
+                        </div>
+                        <div class="ts-grid is-relaxed is-2-columns">
+                            <div class="column">
+                                <div class="ts-header is-heavy">電子郵件</div>
+                                <div class="ts-input is-underlined has-top-spaced">
+                                    <input type="text" value="" name="storeEmail" id="storeEmail" />
+                                </div>
+                                <span class="ts-text is-negative" id="storeEmailError"></span>
+                            </div>
+                            <div class="column">
+                                <div class="ts-header is-heavy">電話</div>
+                                <div class="ts-input is-underlined has-top-spaced">
+                                    <input type="text" value="" name="storePhone" id="storePhone" />
+                                </div>
+                                <span class="ts-text is-negative" id="storePhoneError"></span>
+                            </div>
+                        </div>
+                        <div class="ts-header is-heavy m-2">商家標籤</div>
+                        <div class="ts-input is-underlined has-top-spaced">
+                            <input type="text" id="taglist" />
+                        </div>
+                        <div class="ts-text is-description has-top-spaced-small">最多選擇5種標籤</div>
+                        <div class="ts-header is-heavy m-2">商家介紹文字</div>
+                        <div class="ts-input is-resizable m-3">
+                            <textarea placeholder="這裡寫入你商店介紹" name="storeinformation" id="storeinformation"></textarea>
+                        </div>
+                        <span class="ts-text is-negative" id="storeinformationError"></span>
+                        <div class="ts-text is-description has-top-spaced-small">商店介紹最多100字</div>
+                        <button class="ts-button is-fluid has-top-spaced-large" type="button" id="storeInforbtn">確認送出</button>
+                        <div class="ts-box is-light m-3">
+                            <div class="ts-content">
+                                <p>
+                                    按下「確認送出」表示您也接受「Rasengan+
+                                    協議」、「個人隱私政策」、「使用者規範」。
+                                </p>
+                            </div>
+                            <div class="symbol">
+                                <span class="ts-icon is-circle-exclamation-icon"></span>
                             </div>
                         </div>
                     </div>
-                    <div class="ts-grid is-relaxed is-2-columns">
-                        <div class="column">
-                            <div class="ts-header is-heavy">店家名稱</div>
-                            <div class="ts-input is-underlined has-top-spaced">
-                                <input type="text" />
-                            </div>
-                            <div class="ts-text is-description has-top-spaced-small"></div>
-                        </div>
-                        <div class="column">
-                            <div class="ts-header is-heavy">營業地址</div>
-                            <div class="ts-input is-underlined has-top-spaced">
-                                <input type="text" />
-                            </div>
-                            <div class="ts-text is-description has-top-spaced-small"></div>
-                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="ts-segment" data-name="info">
+        <form class="border border-3">
+            <div class="ts-container is-very-narrow has-vertically-padded-big">
+                <div class="ts-header is-heavy">密碼</div>
+                <div class="ts-input is-underlined has-top-spaced">
+                    <input type="password" />
+                </div>
+                <div class="ts-text is-description has-top-spaced-small">僅能是英文字母和數字，且最少 8 字，最多10 字。</div>
+                <div class="ts-header is-heavy">再次輸入密碼</div>
+                <div class="ts-input is-underlined has-top-spaced">
+                    <input type="password" />
+                </div>
+                <button class="ts-button is-fluid has-top-spaced-large">確認送出</button>
+                <div class="ts-box is-light m-3">
+                    <div class="ts-content">
+                        <p>
+                            按下「確認送出」表示您也接受「Rasengan+
+                            協議」、「個人隱私政策」、「使用者規範」。
+                        </p>
                     </div>
-                    <div class="ts-header is-heavy">電子郵件</div>
-                    <div class="ts-input is-underlined has-top-spaced">
-                        <input type="email" />
-                    </div>
-                    <div class="ts-header is-heavy">密碼</div>
-                    <div class="ts-input is-underlined has-top-spaced">
-                        <input type="password" />
-                    </div>
-                    <div class="ts-text is-description has-top-spaced-small">僅能是英文字母和數字，且最少 8 字，最多10 字。</div>
-                    <div class="ts-header is-heavy m-2">商家標籤</div>
-                    <div class="ts-input is-underlined has-top-spaced">
-                        <input type="text" id="taglist" />
-                    </div>
-                    <div class="ts-text is-description has-top-spaced-small">最多選擇5種標籤</div>
-                    <div class="ts-header is-heavy m-2">商家介紹文字</div>
-                    <div class="ts-input is-resizable m-3">
-                        <textarea placeholder="這裡寫入你商店介紹"></textarea>
-                    </div>
-                    <div class="ts-text is-description has-top-spaced-small">商店介紹最多150字</div>
-                    <button class="ts-button is-fluid has-top-spaced-large">確認送出</button>
-                    <div class="ts-box is-light m-3">
-                        <div class="ts-content">
-                            <p>
-                                按下「確認送出」表示您也接受「Rasengan+
-                                協議」、「個人隱私政策」、「使用者規範」。
-                            </p>
-                        </div>
-                        <div class="symbol">
-                            <span class="ts-icon is-circle-exclamation-icon"></span>
-                        </div>
+                    <div class="symbol">
+                        <span class="ts-icon is-circle-exclamation-icon"></span>
                     </div>
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
 </div>
 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
@@ -79,8 +120,8 @@
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
-        
-            <form class="m-3">
+
+        <form class="m-3">
             <div class="btn-group-vertical btn-group-lg ts-wrap" role="group" aria-label="Basic checkbox toggle button group">
                 <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off">
                 <label class="btn btn-outline-primary" for="btncheck1">星期一</label>
@@ -103,17 +144,109 @@
                 <input type="checkbox" class="btn-check" id="btncheck7" autocomplete="off">
                 <label class="btn btn-outline-primary" for="btncheck7">星期日</label>
             </div>
-            </form>
-        <button class="ts-button is-end-icon is-secondary">
-            送出
-            <span class="ts-icon is-check-icon"></span>
-        </button>
+        </form>
+        <div class="position-relative">
+            <button class="ts-button is-end-icon is-secondary position-absolute top-0 start-0" id="listtagbtn">
+                送出
+                <span class="ts-icon is-check-icon"></span>
+            </button>
+            <button class="ts-button is-end-icon is-secondary is-negative position-absolute top-0 end-0" id="clearbtn">
+                清除
+                <span class="ts-icon is-trash-icon"></span>
+            </button>
+        </div>
     </div>
 </div>
 @section Scripts {
     <script>
+        //初始載入店家資料
+        (() => {
+            const id = @User?.FindFirst("teacherID")?.Value
+                $.ajax({
+                    url: `@Url.Content("~/tOrder_StoreAPI/store_Detail_Information")?id=${id}`,
+                    success: (data) => {
+                        $('#img').attr("src", data.餐廳照片);
+                        $('#storeName').val(data.店家名稱);
+                        $('#storeAdress').val(data.地址);
+                        $('#storeEmail').val(data.電子信箱);
+                        $('#storePhone').val(data.電話);
+                        $('#storeinformation').text(data.餐廳介紹);
+                    }
+                });
+        })();
         $('#taglist').click(() => {
             $('#offcanvasRight').offcanvas('show');
+        })
+        //存取修正店家資料
+        $('#storeInforbtn').click(() => {
+            Swal.fire({
+                title: "確定送出店家資料修改嗎?",
+                showDenyButton: false,
+                showCancelButton: true,
+                confirmButtonText: "送出",
+                dismissButtonText:"取消",
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    let formData = new FormData(informationform);
+                    $.ajax({
+                        url: `@Url.Content("~/tOrder_StoreAPI/store_deatail_form")`,
+                        method: 'POST',
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: (datas) => {
+                            if (!datas.isValid) {
+                                $('#storeNameError').text(datas.errors.storeName);
+                                $('#storePhoneError').text(datas.errors.storePhone);
+                                $('#storeEmailError').text(datas.errors.storeEmail);
+                                $('#storeAdressError').text(datas.errors.storeAdress);
+                                $('#storeinformationError').text(datas.errors.storeinformation);
+                            } else {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '店家資料修改',
+                                    text: '資修改完成',
+                                }).then(() => {
+                                    location.reload();
+                                })
+                            }
+                        }
+                    })
+                }
+            });
+        })
+        //載入圖片預覽
+        $('#storeImg').change((e) => {
+            var file = event.target.files[0];
+            var reader = new FileReader();
+            reader.onload = function (event) {
+                var data = this.result;
+                $('#img').attr('src', data);
+            };
+            reader.readAsDataURL(file);
+        })
+        //選取清單中的已選中的
+        $('#listtagbtn').click(() => {
+            let arry = "";
+            $('.btn-check').each(function () {
+                if ($(this).prop('checked')) {
+                    // 如果按鈕被選取，執行相應的操作
+                    var labelText = $(this).next('label').text(); // 獲取被選取按鈕的標籤文字
+                    arry += labelText+","
+                    $('#taglist').val(arry);
+                    $('#offcanvasRight').offcanvas('hide');
+                }
+            });
+        })
+        //清除清單選擇
+        $('#clearbtn').click(() => {
+            $('#taglist').val("");
+            $('.btn-check').each(function () {
+                if ($(this).prop('checked')) {
+                    $(this).prop('checked', false);
+                }
+            })
         })
     </script>
 }
