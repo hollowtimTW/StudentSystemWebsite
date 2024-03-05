@@ -42,6 +42,4 @@ public partial class T工作公司資料
     public string F刪除狀態 { get; set; }
 
     public virtual ICollection<T工作職缺資料> T工作職缺資料s { get; set; } = new List<T工作職缺資料>();
-
-    public virtual ICollection<T通知公司通知> T通知公司通知s { get; set; } = new List<T通知公司通知>();
 }

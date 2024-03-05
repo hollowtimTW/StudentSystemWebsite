@@ -25,7 +25,7 @@ public partial class T工作職缺資料
 
     public string F輪班需求 { get; set; }
 
-    public int? F需求人數 { get; set; }
+    public string F需求人數 { get; set; }
 
     public string F工作內容 { get; set; }
 
@@ -44,6 +44,8 @@ public partial class T工作職缺資料
     public string F刪除狀態 { get; set; }
 
     public string F刪除或關閉原因 { get; set; }
+
+    public string F關鍵字 { get; set; }
 
     public virtual T工作公司資料 F公司 { get; set; }
 

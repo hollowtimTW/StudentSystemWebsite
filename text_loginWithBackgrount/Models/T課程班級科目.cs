@@ -17,7 +17,7 @@ public partial class T課程班級科目
 
     public int 狀態 { get; set; }
 
-    public virtual ICollection<T考試考試總表> T考試考試總表s { get; set; } = new List<T考試考試總表>();
+    public string 網址 { get; set; }
 
     public virtual ICollection<T課程評分主表> T課程評分主表s { get; set; } = new List<T課程評分主表>();
 

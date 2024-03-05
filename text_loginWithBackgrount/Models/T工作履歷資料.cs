@@ -43,6 +43,8 @@ public partial class T工作履歷資料
 
     public string F刪除或關閉原因 { get; set; }
 
+    public string F關鍵字 { get; set; }
+
     public virtual T會員學生 F學員 { get; set; }
 
     public virtual ICollection<T工作履歷表工作經驗> T工作履歷表工作經驗s { get; set; } = new List<T工作履歷表工作經驗>();

@@ -1,5 +1,4 @@
 ﻿using Class_system_Backstage_pj.Models;
-using text_loginWithBackgrount.Models;
 
 namespace text_loginWithBackgrount.Areas.job_vacancy.DTO
 {

@@ -55,15 +55,9 @@ public partial class T會員老師
 
     public virtual ICollection<T會員老師登入紀錄> T會員老師登入紀錄s { get; set; } = new List<T會員老師登入紀錄>();
 
-    public virtual ICollection<T考試考試總表> T考試考試總表s { get; set; } = new List<T考試考試總表>();
-
-    public virtual ICollection<T考試試題總表> T考試試題總表s { get; set; } = new List<T考試試題總表>();
-
     public virtual ICollection<T課程班級> T課程班級s { get; set; } = new List<T課程班級>();
 
     public virtual ICollection<T課程班級科目> T課程班級科目s { get; set; } = new List<T課程班級科目>();
 
     public virtual ICollection<T課程老師科目> T課程老師科目s { get; set; } = new List<T課程老師科目>();
-
-    public virtual ICollection<T通知老師通知> T通知老師通知s { get; set; } = new List<T通知老師通知>();
 }

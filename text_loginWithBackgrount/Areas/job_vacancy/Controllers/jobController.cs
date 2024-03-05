@@ -100,7 +100,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                     JobLocation = !string.IsNullOrEmpty(thisJob.F工作地點) ? thisJob.F工作地點 : "暫不提供",
                     JobTime = !string.IsNullOrEmpty(thisJob.F工作時段) ? thisJob.F工作時段 : "暫不提供",
                     ShiftRequirement = !string.IsNullOrEmpty(thisJob.F輪班需求) ? (thisJob.F輪班需求 == "Y" ? "需要輪班": "不需輪班") : "暫不提供",
-                    RequiredPeople = (thisJob.F需求人數.HasValue ? thisJob.F需求人數 : 0) + "人",
+                    RequiredPeople = (string.IsNullOrEmpty(thisJob.F需求人數)? thisJob.F需求人數 : "0") + "人",
                     AcademicRequirement = !string.IsNullOrEmpty(thisJob.F學歷要求) ? thisJob.F學歷要求 : "不拘",
                     LanguageCondition = !string.IsNullOrEmpty(thisJob.F語文條件) ? thisJob.F語文條件 : "不拘",
                     WorkAbility = !string.IsNullOrEmpty(thisJob.F工作技能) ? thisJob.F工作技能 : "無特別要求",

@@ -65,12 +65,6 @@ public partial class T會員學生
 
     public virtual ICollection<T會員學生登入紀錄> T會員學生登入紀錄s { get; set; } = new List<T會員學生登入紀錄>();
 
-    public virtual ICollection<T考試學生成績> T考試學生成績s { get; set; } = new List<T考試學生成績>();
-
-    public virtual ICollection<T考試學生答題> T考試學生答題s { get; set; } = new List<T考試學生答題>();
-
-    public virtual ICollection<T考試考試權限> T考試考試權限s { get; set; } = new List<T考試考試權限>();
-
     public virtual ICollection<T訂餐學員口味表> T訂餐學員口味表s { get; set; } = new List<T訂餐學員口味表>();
 
     public virtual ICollection<T訂餐學員最愛商家表> T訂餐學員最愛商家表s { get; set; } = new List<T訂餐學員最愛商家表>();
@@ -90,6 +84,4 @@ public partial class T會員學生
     public virtual ICollection<T課程評分主表> T課程評分主表s { get; set; } = new List<T課程評分主表>();
 
     public virtual ICollection<T課程課程> T課程課程s { get; set; } = new List<T課程課程>();
-
-    public virtual ICollection<T通知學生通知> T通知學生通知s { get; set; } = new List<T通知學生通知>();
 }

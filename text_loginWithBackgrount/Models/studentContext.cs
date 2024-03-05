@@ -29,6 +29,8 @@ public partial class studentContext : DbContext
 
     public virtual DbSet<T工作應徵工作紀錄> T工作應徵工作紀錄s { get; set; }
 
+    public virtual DbSet<T工作推薦職缺> T工作推薦職缺s { get; set; }
+
     public virtual DbSet<T工作職缺資料> T工作職缺資料s { get; set; }
 
     public virtual DbSet<T影片Order> T影片Orders { get; set; }
@@ -52,16 +54,6 @@ public partial class studentContext : DbContext
     public virtual DbSet<T會員老師> T會員老師s { get; set; }
 
     public virtual DbSet<T會員老師登入紀錄> T會員老師登入紀錄s { get; set; }
-
-    public virtual DbSet<T考試學生成績> T考試學生成績s { get; set; }
-
-    public virtual DbSet<T考試學生答題> T考試學生答題s { get; set; }
-
-    public virtual DbSet<T考試考試權限> T考試考試權限s { get; set; }
-
-    public virtual DbSet<T考試考試總表> T考試考試總表s { get; set; }
-
-    public virtual DbSet<T考試試題總表> T考試試題總表s { get; set; }
 
     public virtual DbSet<T訂餐口味總表> T訂餐口味總表s { get; set; }
 
@@ -113,13 +105,7 @@ public partial class studentContext : DbContext
 
     public virtual DbSet<T課程課程> T課程課程s { get; set; }
 
-    public virtual DbSet<T通知公司通知> T通知公司通知s { get; set; }
-
-    public virtual DbSet<T通知學生通知> T通知學生通知s { get; set; }
-
-    public virtual DbSet<T通知老師通知> T通知老師通知s { get; set; }
-
-    public virtual DbSet<T通知通知訊息總表> T通知通知訊息總表s { get; set; }
+    public virtual DbSet<T課程通知表> T課程通知表s { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -220,7 +206,7 @@ public partial class studentContext : DbContext
             entity.Property(e => e.F帳號狀態)
                 .IsRequired()
                 .HasMaxLength(10)
-                .HasDefaultValueSql("('待審核')")
+                .HasDefaultValueSql("('???')")
                 .HasColumnName("f帳號狀態");
             entity.Property(e => e.F最後更新時間)
                 .HasColumnType("datetime")
@@ -304,12 +290,10 @@ public partial class studentContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("f希望工作地點");
             entity.Property(e => e.F希望職稱)
-                .HasMaxLength(10)
-                .IsFixedLength()
+                .HasMaxLength(30)
                 .HasColumnName("f希望職稱");
             entity.Property(e => e.F希望薪水待遇)
-                .HasMaxLength(10)
-                .IsFixedLength()
+                .HasMaxLength(15)
                 .HasColumnName("f希望薪水待遇");
             entity.Property(e => e.F建立時間)
                 .HasColumnType("datetime")
@@ -330,6 +314,7 @@ public partial class studentContext : DbContext
                 .IsUnicode(false)
                 .IsFixedLength()
                 .HasColumnName("f配合輪班");
+            entity.Property(e => e.F關鍵字).HasColumnName("f關鍵字");
 
             entity.HasOne(d => d.F學員).WithMany(p => p.T工作履歷資料s)
                 .HasForeignKey(d => d.F學員Id)
@@ -393,14 +378,13 @@ public partial class studentContext : DbContext
                 .IsFixedLength()
                 .HasColumnName("f刪除狀態");
             entity.Property(e => e.F學員Id).HasColumnName("f學員ID");
-            entity.Property(e => e.F履歷版本內容)
+            entity.Property(e => e.F應徵信內容)
                 .IsRequired()
-                .HasColumnName("f履歷版本內容");
+                .HasColumnName("f應徵信內容");
             entity.Property(e => e.F應徵時間)
                 .HasColumnType("datetime")
                 .HasColumnName("f應徵時間");
             entity.Property(e => e.F職缺Id).HasColumnName("f職缺ID");
-            entity.Property(e => e.F通知總表Id).HasColumnName("f通知總表ID");
 
             entity.HasOne(d => d.F學員).WithMany(p => p.T工作應徵工作紀錄s)
                 .HasForeignKey(d => d.F學員Id)
@@ -411,11 +395,20 @@ public partial class studentContext : DbContext
                 .HasForeignKey(d => d.F職缺Id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_t工作_應徵工作紀錄_t工作_職缺資料1");
+        });
 
-            entity.HasOne(d => d.F通知總表).WithMany(p => p.T工作應徵工作紀錄s)
-                .HasForeignKey(d => d.F通知總表Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_t工作_應徵工作紀錄_t通知_通知訊息總表");
+        modelBuilder.Entity<T工作推薦職缺>(entity =>
+        {
+            entity.HasKey(e => e.FId);
+
+            entity.ToTable("t工作_推薦職缺");
+
+            entity.Property(e => e.FId).HasColumnName("fId");
+            entity.Property(e => e.F學員Id).HasColumnName("f學員ID");
+            entity.Property(e => e.F推薦程度)
+                .HasMaxLength(10)
+                .HasColumnName("f推薦程度");
+            entity.Property(e => e.F職缺Id).HasColumnName("f職缺ID");
         });
 
         modelBuilder.Entity<T工作職缺資料>(entity =>
@@ -472,7 +465,10 @@ public partial class studentContext : DbContext
                 .IsUnicode(false)
                 .IsFixedLength()
                 .HasColumnName("f輪班需求");
-            entity.Property(e => e.F需求人數).HasColumnName("f需求人數");
+            entity.Property(e => e.F關鍵字).HasColumnName("f關鍵字");
+            entity.Property(e => e.F需求人數)
+                .HasMaxLength(10)
+                .HasColumnName("f需求人數");
 
             entity.HasOne(d => d.F公司).WithMany(p => p.T工作職缺資料s)
                 .HasForeignKey(d => d.F公司Id)
@@ -792,114 +788,6 @@ public partial class studentContext : DbContext
                 .HasForeignKey(d => d.老師id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_t會員_老師登入紀錄_t會員_老師1");
-        });
-
-        modelBuilder.Entity<T考試學生成績>(entity =>
-        {
-            entity.ToTable("t考試_學生成績");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.備註).HasMaxLength(50);
-            entity.Property(e => e.學生id).HasColumnName("學生ID");
-            entity.Property(e => e.更新時間).HasColumnType("datetime");
-            entity.Property(e => e.考試id).HasColumnName("考試ID");
-
-            entity.HasOne(d => d.學生).WithMany(p => p.T考試學生成績s)
-                .HasForeignKey(d => d.學生id)
-                .HasConstraintName("FK_t考試_學生成績_t會員_學生");
-
-            entity.HasOne(d => d.考試).WithMany(p => p.T考試學生成績s)
-                .HasForeignKey(d => d.考試id)
-                .HasConstraintName("FK_t考試_學生成績_t考試_考試總表");
-        });
-
-        modelBuilder.Entity<T考試學生答題>(entity =>
-        {
-            entity.ToTable("t考試_學生答題");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.學生id).HasColumnName("學生ID");
-            entity.Property(e => e.提交時間).HasColumnType("datetime");
-            entity.Property(e => e.答案).HasMaxLength(200);
-            entity.Property(e => e.考試id).HasColumnName("考試ID");
-
-            entity.HasOne(d => d.學生).WithMany(p => p.T考試學生答題s)
-                .HasForeignKey(d => d.學生id)
-                .HasConstraintName("FK_t考試_學生答題_t會員_學生");
-
-            entity.HasOne(d => d.考試).WithMany(p => p.T考試學生答題s)
-                .HasForeignKey(d => d.考試id)
-                .HasConstraintName("FK_t考試_學生答題_t考試_考試總表");
-        });
-
-        modelBuilder.Entity<T考試考試權限>(entity =>
-        {
-            entity.ToTable("t考試_考試權限");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.學生id).HasColumnName("學生ID");
-            entity.Property(e => e.考試id).HasColumnName("考試ID");
-
-            entity.HasOne(d => d.學生).WithMany(p => p.T考試考試權限s)
-                .HasForeignKey(d => d.學生id)
-                .HasConstraintName("FK_t考試_考試權限_t會員_學生");
-
-            entity.HasOne(d => d.考試).WithMany(p => p.T考試考試權限s)
-                .HasForeignKey(d => d.考試id)
-                .HasConstraintName("FK_t考試_考試權限_t考試_考試總表");
-        });
-
-        modelBuilder.Entity<T考試考試總表>(entity =>
-        {
-            entity.HasKey(e => e.考試id);
-
-            entity.ToTable("t考試_考試總表");
-
-            entity.Property(e => e.考試id).HasColumnName("考試ID");
-            entity.Property(e => e.備註).HasMaxLength(100);
-            entity.Property(e => e.描述).HasMaxLength(100);
-            entity.Property(e => e.班級id).HasColumnName("班級ID");
-            entity.Property(e => e.結束時間).HasColumnType("datetime");
-            entity.Property(e => e.考試名稱).HasMaxLength(50);
-            entity.Property(e => e.考試類型)
-                .HasMaxLength(10)
-                .IsFixedLength();
-            entity.Property(e => e.試卷id).HasColumnName("試卷ID");
-            entity.Property(e => e.開始時間).HasColumnType("datetime");
-
-            entity.HasOne(d => d.班級).WithMany(p => p.T考試考試總表s)
-                .HasForeignKey(d => d.班級id)
-                .HasConstraintName("FK_t考試_考試總表_t課程_班級科目");
-
-            entity.HasOne(d => d.發布者Navigation).WithMany(p => p.T考試考試總表s)
-                .HasForeignKey(d => d.發布者)
-                .HasConstraintName("FK_t考試_考試總表_t會員_老師");
-
-            entity.HasOne(d => d.試卷).WithMany(p => p.T考試考試總表s)
-                .HasForeignKey(d => d.試卷id)
-                .HasConstraintName("FK_t考試_考試總表_t考試_試題總表");
-        });
-
-        modelBuilder.Entity<T考試試題總表>(entity =>
-        {
-            entity.HasKey(e => e.試卷id);
-
-            entity.ToTable("t考試_試題總表");
-
-            entity.Property(e => e.試卷id).HasColumnName("試卷ID");
-            entity.Property(e => e.備註).HasMaxLength(100);
-            entity.Property(e => e.創建時間).HasColumnType("datetime");
-            entity.Property(e => e.更新時間).HasColumnType("datetime");
-            entity.Property(e => e.科目id).HasColumnName("科目ID");
-            entity.Property(e => e.老師id).HasColumnName("老師ID");
-
-            entity.HasOne(d => d.科目).WithMany(p => p.T考試試題總表s)
-                .HasForeignKey(d => d.科目id)
-                .HasConstraintName("FK_t考試_試題總表_t課程_科目");
-
-            entity.HasOne(d => d.老師).WithMany(p => p.T考試試題總表s)
-                .HasForeignKey(d => d.老師id)
-                .HasConstraintName("FK_t考試_試題總表_t會員_老師");
         });
 
         modelBuilder.Entity<T訂餐口味總表>(entity =>
@@ -1292,6 +1180,7 @@ public partial class studentContext : DbContext
             entity.Property(e => e.班級科目id).HasColumnName("班級科目ID");
             entity.Property(e => e.班級id).HasColumnName("班級ID");
             entity.Property(e => e.科目id).HasColumnName("科目ID");
+            entity.Property(e => e.網址).HasMaxLength(255);
             entity.Property(e => e.老師id).HasColumnName("老師ID");
 
             entity.HasOne(d => d.班級).WithMany(p => p.T課程班級科目s)
@@ -1431,107 +1320,27 @@ public partial class studentContext : DbContext
                 .HasConstraintName("FK_t課程_課程_t課程_班級科目");
         });
 
-        modelBuilder.Entity<T通知公司通知>(entity =>
+        modelBuilder.Entity<T課程通知表>(entity =>
         {
-            entity.HasKey(e => e.FId);
+            entity
+                .HasNoKey()
+                .ToTable("t課程_通知表");
 
-            entity.ToTable("t通知_公司通知");
-
-            entity.Property(e => e.FId).HasColumnName("fId");
-            entity.Property(e => e.F公司Id).HasColumnName("f公司ID");
-            entity.Property(e => e.F通知總表Id).HasColumnName("f通知總表ID");
-
-            entity.HasOne(d => d.F公司).WithMany(p => p.T通知公司通知s)
-                .HasForeignKey(d => d.F公司Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_t通知_公司通知_t工作_公司資料");
-
-            entity.HasOne(d => d.F通知總表).WithMany(p => p.T通知公司通知s)
-                .HasForeignKey(d => d.F通知總表Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_t通知_公司通知_t通知_通知訊息總表");
-        });
-
-        modelBuilder.Entity<T通知學生通知>(entity =>
-        {
-            entity.HasKey(e => e.FId);
-
-            entity.ToTable("t通知_學生通知");
-
-            entity.Property(e => e.FId).HasColumnName("fId");
-            entity.Property(e => e.F學生Id).HasColumnName("f學生ID");
-            entity.Property(e => e.F通知總表Id).HasColumnName("f通知總表ID");
-
-            entity.HasOne(d => d.F學生).WithMany(p => p.T通知學生通知s)
-                .HasForeignKey(d => d.F學生Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_t通知_學生通知_t會員_學生");
-
-            entity.HasOne(d => d.F通知總表).WithMany(p => p.T通知學生通知s)
-                .HasForeignKey(d => d.F通知總表Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_t通知_學生通知_t通知_通知訊息總表");
-        });
-
-        modelBuilder.Entity<T通知老師通知>(entity =>
-        {
-            entity.HasKey(e => e.FId);
-
-            entity.ToTable("t通知_老師通知");
-
-            entity.Property(e => e.FId).HasColumnName("fId");
-            entity.Property(e => e.F老師Id).HasColumnName("f老師ID");
-            entity.Property(e => e.F通知總表Id).HasColumnName("f通知總表ID");
-
-            entity.HasOne(d => d.F老師).WithMany(p => p.T通知老師通知s)
-                .HasForeignKey(d => d.F老師Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_t通知_老師通知_t會員_老師");
-
-            entity.HasOne(d => d.F通知總表).WithMany(p => p.T通知老師通知s)
-                .HasForeignKey(d => d.F通知總表Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_t通知_老師通知_t通知_通知訊息總表");
-        });
-
-        modelBuilder.Entity<T通知通知訊息總表>(entity =>
-        {
-            entity.HasKey(e => e.FId).HasName("PK_tMessage");
-
-            entity.ToTable("t通知_通知訊息總表");
-
-            entity.Property(e => e.FId).HasColumnName("fId");
-            entity.Property(e => e.F內容).HasColumnName("f內容");
-            entity.Property(e => e.F刪除狀態)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("f刪除狀態");
-            entity.Property(e => e.F接收者類型)
+            entity.Property(e => e.接收者類型)
                 .IsRequired()
                 .HasMaxLength(1)
                 .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("f接收者類型");
-            entity.Property(e => e.F父訊息Id)
-                .HasDefaultValueSql("((0))")
-                .HasColumnName("f父訊息ID");
-            entity.Property(e => e.F發送時間)
-                .HasColumnType("datetime")
-                .HasColumnName("f發送時間");
-            entity.Property(e => e.F發送者類型)
+                .IsFixedLength();
+            entity.Property(e => e.時間).HasColumnType("datetime");
+            entity.Property(e => e.發送者類型)
                 .IsRequired()
                 .HasMaxLength(1)
                 .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("f發送者類型");
-            entity.Property(e => e.F訊息類別)
-                .HasMaxLength(30)
-                .HasColumnName("f訊息類別");
-
-            entity.HasOne(d => d.F父訊息).WithMany(p => p.InverseF父訊息)
-                .HasForeignKey(d => d.F父訊息Id)
-                .HasConstraintName("FK_tMessage_tMessage");
+                .IsFixedLength();
+            entity.Property(e => e.發送訊息內容)
+                .IsRequired()
+                .HasMaxLength(500);
+            entity.Property(e => e.訊息id).ValueGeneratedOnAdd();
         });
 
         OnModelCreatingPartial(modelBuilder);

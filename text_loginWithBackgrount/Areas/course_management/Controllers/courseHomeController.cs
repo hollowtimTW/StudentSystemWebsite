@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using text_loginWithBackgrount.Areas.course_management.Model;
 using text_loginWithBackgrount.Areas.course_management.ViewModel.courseHome;
-using text_loginWithBackgrount.Models;
 using static text_loginWithBackgrount.Areas.course_management.Model.RateModel;
 
 namespace Class_system_Backstage_pj.Areas.course_management.Controllers

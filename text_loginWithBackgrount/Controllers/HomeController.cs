@@ -1,7 +1,7 @@
 ﻿using Class_system_Backstage_pj.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using text_loginWithBackgrount.Models;
+
 
 namespace text_loginWithBackgrount.Controllers
 {

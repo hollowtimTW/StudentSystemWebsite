@@ -17,8 +17,6 @@ public partial class T課程科目
 
     public virtual ICollection<T影片Video> T影片Videos { get; set; } = new List<T影片Video>();
 
-    public virtual ICollection<T考試試題總表> T考試試題總表s { get; set; } = new List<T考試試題總表>();
-
     public virtual ICollection<T課程班級科目> T課程班級科目s { get; set; } = new List<T課程班級科目>();
 
     public virtual ICollection<T課程老師科目> T課程老師科目s { get; set; } = new List<T課程老師科目>();

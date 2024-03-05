@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Class_system_Backstage_pj.Models;
 
-public partial class T工作應徵工作紀錄
+public partial class T工作推薦職缺
 {
     public int FId { get; set; }
 
@@ -13,13 +13,5 @@ public partial class T工作應徵工作紀錄
 
     public int F職缺Id { get; set; }
 
-    public string F應徵信內容 { get; set; }
-
-    public DateTime F應徵時間 { get; set; }
-
-    public string F刪除狀態 { get; set; }
-
-    public virtual T會員學生 F學員 { get; set; }
-
-    public virtual T工作職缺資料 F職缺 { get; set; }
+    public string F推薦程度 { get; set; }
 }
