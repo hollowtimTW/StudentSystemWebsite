@@ -190,17 +190,14 @@
                 initialView: 'dayGridMonth',
                 height: 'auto',
                 validRange: 
-                       @{
-                        var start = classData.入學日期.ToString("yyyy-MM-ddTHH:mm:ss");
-                        var end = classData.結訓日期.ToString("yyyy-MM-ddTHH:mm:ss");
-
-                                        <text>
-                                        {
-                                            start: '@start',
-                                            end: '@end'
-                                        },
-                                        </text>
-                        }
+                ` <text>
+                       {
+                         start: ${start},
+                         end: ${end}
+                         }
+                 </text>
+                 `
+                ,
                 handleWindowResize: true,
                 windowResize: true,
                 headerToolbar: {
