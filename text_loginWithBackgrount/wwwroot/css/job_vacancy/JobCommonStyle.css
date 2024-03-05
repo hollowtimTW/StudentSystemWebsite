@@ -1,3 +1,9 @@
+pre {
+    font-size: 20px;
+    font-weight: 500;
+    white-space: pre-wrap;
+}
+
 input[type="radio"]:checked,
 input[type="checkbox"]:checked {
     background-color: var(--color-primary);
@@ -64,8 +70,6 @@ input[type="checkbox"]:checked {
         color: var(--color-defalt);
     }
 
-
-
 .btn-circle {
     width: 38px;
     height: 38px;
@@ -125,7 +129,7 @@ input[type="checkbox"]:checked {
 }
 
     .Job-Vacancies .nav-item .active {
-        border-bottom: 2px solid var(--color-primary);
+        border-bottom: 3px solid var(--color-primary);
     }
 
 .Job-Vacancies .btn-detail {
@@ -224,10 +228,6 @@ input[type="checkbox"]:checked {
         font-weight: bold;
         border-bottom: 3px solid var(--color-primary)
     }
-
-.Job-Details .job-content p {
-    font-size: 18px;
-}
 
 .Job-Details .list-head h4 {
     font-weight: 600;
@@ -430,7 +430,7 @@ input[type="checkbox"]:checked {
 /* ================== ¼i¾ú½s¿è ================= */
 
 .Resume-Edit {
-    margin:0;
+    margin: 0;
 }
 
     .Resume-Edit .dialog {
@@ -441,7 +441,7 @@ input[type="checkbox"]:checked {
         border-radius: 8px;
         box-shadow: 0 0 45px rgba(0, 0, 0, .08);
         transition: .5s;
-        width:auto;
+        width: auto;
     }
 
         .Resume-Edit .dialog div {
@@ -502,6 +502,7 @@ input[type="checkbox"]:checked {
     border-radius: 6px;
     box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.06);
 }
+
     .workExpList .exp-item {
         margin: 0;
         padding: 25px 20px 5px 30px;
@@ -522,6 +523,7 @@ input[type="checkbox"]:checked {
     display: flex;
     flex-flow: column nowrap;
 }
+
 .document-editor__toolbar {
     /* Make sure the toolbar container is always above the editable. */
     z-index: 1;

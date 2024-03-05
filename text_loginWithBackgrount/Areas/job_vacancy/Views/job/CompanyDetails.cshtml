@@ -1,6 +1,6 @@
 ﻿@model CompanyDetailViewModel
 @{
-    
+    ViewData["Title"] = "公司詳細頁";
 }
 @section BreadcrumbsSection {
     <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
@@ -19,24 +19,25 @@
 @section Styles {
     <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet" />
     <style>
-        .job-header h1{
-            color:#008374;
-        }
-
-        .pagination li a{
+        .job-header h1 {
             color: #008374;
         }
 
-        .pagination li a:hover {
+        .pagination li a {
             color: #008374;
         }
 
-            .pagination li.disabled {
-                color:grey;
+            .pagination li a:hover {
+                color: #008374;
             }
 
+        .pagination li.disabled {
+            background-color: grey;
+            border-radius: 8px;
+        }
 
-        .pagination{
+
+        .pagination {
             cursor: pointer;
         }
 
@@ -88,10 +89,10 @@
             transition: 0.3s;
         }
 
-        .btn-detail:hover {
-            background: var(--color-primary);
-            color: #fff;
-        }
+            .btn-detail:hover {
+                background: var(--color-primary);
+                color: #fff;
+            }
 
     </style>
 }
@@ -119,9 +120,7 @@
                         </div>
                         <div class="job-description-table row">
                             <div class="job-description col-12 mb-2">
-                                <p>
-                                    @Model.CompanyProfile
-                                </p>
+                                <pre>@Model.CompanyProfile</pre>
                             </div>
                             <div class="list-row row mb-2">
                                 <div class="col-lg-2 list-head">
@@ -201,7 +200,7 @@
                                                     <button class="btn btn-outline-secondary" type="button" id="button-addon2"><i class="bi bi-search"></i></button>
                                                 </div>
                                             </div>
-                                            
+
                                         </div>
 
                                         <div class="col col-auto">
@@ -241,7 +240,7 @@
                             </nav>
                         </div>
 
-                        
+
                     </div>
                 </div>
             </div>
@@ -259,7 +258,7 @@
             "companyID": @Model.companyID,
             "keyword": "",
             "page": 1,
-            "pageSize": 1,
+            "pageSize": 5,
             "location": "",
             "sortBy": "",
             "sortType": "asc"
@@ -278,9 +277,6 @@
             });
             const datas = await resopnse.json();
 
-            console.log(datas);
-
-
             // 創建工作性質與圖片路徑的映射
             const jobTypeImageMap = {
                 '全職': '@Url.Content("~/images/job_vacancy/fulltime.png")',
@@ -291,14 +287,10 @@
 
             //顯示資料（對應CompanyJobPagingDTO）
             const displayData = datas.companyJobsResult.map(jobs => {
-                const { f職務名稱, f工作地點, f工作性質, f薪水待遇, f最後更新時間, fId } = jobs;
+                const { f職務名稱, f工作地點, f工作性質, f薪水待遇, f需求人數, f最後更新時間, fId } = jobs;
 
                 //根據工作性質獲取對應的圖片
                 const jobTypeImagePath = jobTypeImageMap[f工作性質] || jobTypeImageMap['default'];
-
-
-
-                console.log(jobTypeImagePath);
 
                 //設定顯示的工作地點
                 let location = '';
@@ -319,13 +311,14 @@
                                         <h5 class="mb-3">${f職務名稱}</h5>
                                         <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> ${location}</span>
                                         <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> ${f工作性質}</span>
-                                        <span class="text-truncate me-0"><i class="bi bi-cash flex-shrink-0"></i> ${f薪水待遇}</span>
+                                        <span class="text-truncate me-3"><i class="bi bi-cash flex-shrink-0"></i> ${f薪水待遇}</span>
+                                        <span class="text-truncate me-0"><i class="bi bi-people-fill flex-shrink-0"></i> ${f需求人數}</span>
                                     </div>
                                 </div>
                                 <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
                                     <div class="d-flex mb-3">
                                         <button type="button" class="btn btn-light btn-circle me-3 btn-like"><i class="bi bi-heart"></i></button>
-                                        <a asp-area="job_vacancy" asp-controller="Job" asp-action="JobDetails" asp-route-JobID="${fId}" class="btn-detail">詳細資訊</a>
+                                        <a href="/job_vacancy/Job/JobDetails/${fId}" class="btn-detail">詳細資訊</a>
                                     </div>
                                     <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：${updateTime}</small>
                                 </div>
@@ -345,32 +338,34 @@
             ulPaging.innerHTML = liPaging;
         };
 
-        // 根據選取分頁變換內容 todo
+        loadData();
+
+
+        //todo 無法成功增減disabled屬性
+        // 根據選取分頁變換內容
         const pagingHandler = page => {
             const previousPage = document.getElementById('previousPage');
             const nextPage = document.getElementById('nextPage');
 
+
             // 更新查詢頁碼
-            if (page === 'prev' && searchData.page > 1) {
-                searchData.page -= 1;
-            } else if (page === 'next' && searchData.page < totalPages) {
-                searchData.page += 1;
+            if (page === 'prev') {
+                if (searchData.page === 1) {
+                    previousPage.classList.add('disabled');
+                } else {
+                    previousPage.classList.remove('disabled');
+                    searchData.page -= 1;
+                }
+            } else if (page === 'next') {
+                if (searchData.page === totalPages) {
+                    nextPage.classList.add('disabled');
+
+                } else {
+                    nextPage.classList.remove('disabled');
+                    searchData.page += 1;
+                }
             } else {
                 searchData.page = page;
-            }
-            console.log(searchData.page);
-            // 更新上一頁按鈕的狀態
-            if (searchData.page === 1) {
-                previousPage.classList.add('disabled');
-            } else {
-                previousPage.classList.remove('disabled');
-            }
-
-            // 更新下一頁按鈕的狀態
-            if (searchData.page === totalPages) {
-                nextPage.classList.add('disabled');
-            } else {
-                nextPage.classList.remove('disabled');
             }
 
             loadData();
@@ -386,8 +381,6 @@
                 loadData();
             }
         })
-
-        loadData();
 
     </script>
 }

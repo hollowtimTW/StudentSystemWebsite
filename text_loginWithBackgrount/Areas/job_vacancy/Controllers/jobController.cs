@@ -31,7 +31,6 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             return View();
         }
 
-
         // GET: job_vacancy/job/CompanyDetails/5
         [Route("/job_vacancy/job/{Action=Index}/{companyID}")]
         public async Task<IActionResult> CompanyDetails(int companyID)
@@ -54,7 +53,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                     Principal = !string.IsNullOrEmpty(thisCompany.F負責人) ? thisCompany.F負責人 : "暫不提供",
                     CompanyPhone = !string.IsNullOrEmpty(thisCompany.F公司電話) ? thisCompany.F公司電話 : "暫不提供",
                     CompanyAddress = !string.IsNullOrEmpty(thisCompany.F公司地址) ? thisCompany.F公司地址 : "暫不提供",
-                    CompanyProfile = !string.IsNullOrEmpty(thisCompany.F公司簡介) ? thisCompany.F公司簡介 : "暫不提供",
+                    CompanyProfile = !string.IsNullOrEmpty(thisCompany.F公司簡介) ? thisCompany.F公司簡介.Replace("\\n", "\n") : "暫不提供",
                     ContactPerson = !string.IsNullOrEmpty(thisCompany.F聯絡人) ? thisCompany.F聯絡人 : "請洽平台系統管理員",
                     ContactPhone = !string.IsNullOrEmpty(thisCompany.F聯絡人電話) ? thisCompany.F聯絡人電話 : "請洽平台系統管理員",
                     ContactEmail = !string.IsNullOrEmpty(thisCompany.F聯絡人Email) ? thisCompany.F聯絡人Email : "請洽平台系統管理員"
@@ -94,17 +93,17 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
 
                     JobTitle = thisJob.F職務名稱,
                     UpdateTime = thisJob.F最後更新時間.HasValue ? thisJob.F最後更新時間.Value.ToString("yyyy/MM/dd HH:mm:ss") + "更新" : string.Empty,
-                    JobContent = !string.IsNullOrEmpty(thisJob.F工作內容) ? thisJob.F工作內容 : "暫不提供",
+                    JobContent = !string.IsNullOrEmpty(thisJob.F工作內容) ? thisJob.F工作內容.Replace("\\n", "\n") : "暫不提供",
                     Salary = !string.IsNullOrEmpty(thisJob.F薪水待遇) ? thisJob.F薪水待遇 : "暫不提供",
                     JobType = !string.IsNullOrEmpty(thisJob.F工作性質) ? thisJob.F工作性質 : "暫不提供",
                     JobLocation = !string.IsNullOrEmpty(thisJob.F工作地點) ? thisJob.F工作地點 : "暫不提供",
                     JobTime = !string.IsNullOrEmpty(thisJob.F工作時段) ? thisJob.F工作時段 : "暫不提供",
-                    ShiftRequirement = !string.IsNullOrEmpty(thisJob.F輪班需求) ? (thisJob.F輪班需求 == "Y" ? "需要輪班": "不需輪班") : "暫不提供",
-                    RequiredPeople = (string.IsNullOrEmpty(thisJob.F需求人數)? thisJob.F需求人數 : "0") + "人",
-                    AcademicRequirement = !string.IsNullOrEmpty(thisJob.F學歷要求) ? thisJob.F學歷要求 : "不拘",
-                    LanguageCondition = !string.IsNullOrEmpty(thisJob.F語文條件) ? thisJob.F語文條件 : "不拘",
-                    WorkAbility = !string.IsNullOrEmpty(thisJob.F工作技能) ? thisJob.F工作技能 : "無特別要求",
-                    OtherCondition = !string.IsNullOrEmpty(thisJob.F其他條件) ? thisJob.F其他條件 : "無特別要求",
+                    ShiftRequirement = !string.IsNullOrEmpty(thisJob.F輪班需求) ? (thisJob.F輪班需求 == "Y" ? "需要輪班" : "不需輪班") : "暫不提供",
+                    RequiredPeople = !string.IsNullOrEmpty(thisJob.F需求人數) ? thisJob.F需求人數 : "暫不提供",
+                    AcademicRequirement = !string.IsNullOrEmpty(thisJob.F學歷要求) ? thisJob.F學歷要求.Replace("\\n", "\n") : "不拘",
+                    LanguageCondition = !string.IsNullOrEmpty(thisJob.F語文條件) ? thisJob.F語文條件.Replace("\\n", "\n") : "不拘",
+                    WorkAbility = !string.IsNullOrEmpty(thisJob.F工作技能) ? thisJob.F工作技能.Replace("\\n", "\n") : "無特別要求",
+                    OtherCondition = !string.IsNullOrEmpty(thisJob.F其他條件) ? thisJob.F其他條件.Replace("\\n", "\n") : "無特別要求",
 
                     CompanyID = thisCompany.FId,
                     CompanyName = thisCompany.F公司名稱,

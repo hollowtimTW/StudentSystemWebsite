@@ -20,6 +20,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         public jobforStudentController(studentContext context)
         {
             _context = context;
+
         }
 
         public IActionResult Index()

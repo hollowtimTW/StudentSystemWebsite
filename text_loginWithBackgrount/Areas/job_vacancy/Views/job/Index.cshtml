@@ -31,7 +31,7 @@
 @section Styles {
     <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet" />
     <style>
-
+        
     </style>
 }
 
@@ -44,30 +44,23 @@
         </div>
 
         <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.3s">
-
+            <!-- 分頁標籤 -->
             <ul class="nav nav-pills d-inline-flex justify-content-center border-bottom mb-5">
-
                 <li class="nav-item d-flex align-items-center justify-content-center">
-                    <a class="text-center pb-3  active" data-bs-toggle="pill" href="#tab-all">
-                        所有職缺
-                    </a>
+                    <a class="text-center pb-3 active" id="tab-all">所有職缺</a>
                 </li>
                 <li class="nav-item d-flex align-items-center justify-content-center">
-                    <a class="text-center pb-3" data-bs-toggle="pill" href="#tab-fulltime">
-                        全職
-                    </a>
+                    <a class="text-center pb-3" id="tab-fulltime">全職</a>
                 </li>
                 <li class="nav-item d-flex align-items-center justify-content-center">
-                    <a class="text-center pb-3" data-bs-toggle="pill" href="#tab-parttime">
-                        兼職
-                    </a>
+                    <a class="text-center pb-3" id="tab-parttime">兼職</a>
                 </li>
                 <li class="nav-item d-flex align-items-center justify-content-center">
-                    <a class="text-center pb-3" data-bs-toggle="pill" href="#tab-dispatche">
-                        派遣
-                    </a>
+                    <a class="text-center pb-3" id="tab-dispatch">派遣</a>
                 </li>
             </ul>
+
+            <!-- 查詢列 -->
             <div class="joblist-header">
                 <div class="row justify-content-between">
                     <div class="col col-auto col--type pr-0">
@@ -77,7 +70,7 @@
                                 <div class="position-relative">
 
                                     <div class="input-group mb-3">
-                                        <input type="text" class="form-control" placeholder="搜尋職務名稱" aria-label="搜尋職務名稱" maxlength="50">
+                                        <input type="text" class="form-control" placeholder="搜尋職務名稱" aria-label="搜尋職務名稱" maxlength="50" id="inputKeyword">
                                         <button class="btn btn-outline-secondary" type="button" id="button-addon2"><i class="bi bi-search"></i></button>
                                     </div>
                                 </div>
@@ -106,143 +99,12 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-content">
-                <div id="tab-all" class="tab-pane show p-0 active">
-                    <div class="job-item p-4 mb-4">
-                        <div class="row g-4">
-                            <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                <img src="~/images/job_vacancy/fulltime.png" class="img-fluid border rounded flex-shrink-0" alt="">
-                                <div class="text-start ps-4">
-                                    <h5>機器學習工程師</h5>
-                                    <h6 class="mb-3"><a asp-area="job_vacancy" asp-controller="Job" asp-action="CompanyDetails" asp-route-companyID="23">鼎新生技股份有限公司</a></h6>
-                                    <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> 台北市 大安區</span>
-                                    <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> 全職</span>
-                                    <span class="text-truncate me-0"><i class="bi bi-cash flex-shrink-0"></i> $35000 - 40000</span>
-                                </div>
-                            </div>
-                            <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
-                                <div class="d-flex mb-3 mt-3">
-                                    <button type="button" class="btn btn-light btn-circle me-3 btn-like"><i class="bi bi-heart"></i></button>
-                                    <a asp-area="job_vacancy" asp-controller="Job" asp-action="JobDetails" asp-route-jobID="64" class="btn-detail">詳細資訊</a>
-                                </div>
-                                <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：2024/02/28 14:27:36</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="job-item p-4 mb-4">
-                        <div class="row g-4">
-                            <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                <img src="~/images/job_vacancy/parttime.png" class="img-fluid border rounded flex-shrink-0" alt="">
-                                <div class="text-start ps-4">
-                                    <h5>系統架構師</h5>
-                                    <h6 class="mb-3"><a asp-area="job_vacancy" asp-controller="Job" asp-action="CompanyDetails" asp-route-companyID="24">瑞安科技股份有限公司</a></h6>
-                                    <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> 台北市 大安區</span>
-                                    <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> 兼職</span>
-                                    <span class="text-truncate me-0"><i class="bi bi-cash flex-shrink-0"></i> $35000 - 40000</span>
-                                </div>
-                            </div>
-                            <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
-                                <div class="d-flex mb-3 mt-3">
-                                    <button type="button" class="btn btn-light btn-circle me-3 btn-like"><i class="bi bi-heart"></i></button>
-                                    <a asp-area="job_vacancy" asp-controller="Job" asp-action="JobDetails" asp-route-jobID="67" class="btn-detail">詳細資訊</a>
-                                </div>
-                                <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：2024/02/28 14:27:36</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="job-item p-4 mb-4">
-                        <div class="row g-4">
-                            <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                <img src="~/images/job_vacancy/dispatche.png" class="img-fluid border rounded flex-shrink-0" alt="">
-                                <div class="text-start ps-4">
-                                    <h5>後端工程師</h5>
-                                    <h6 class="mb-3"><a asp-area="job_vacancy" asp-controller="Job" asp-action="CompanyDetails">知訊股份有限公司</a></h6>
-                                    <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> 台北市 大安區</span>
-                                    <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> 派遣</span>
-                                    <span class="text-truncate me-0"><i class="bi bi-cash flex-shrink-0"></i> $35000 - 40000</span>
-                                </div>
-                            </div>
-                            <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
-                                <div class="d-flex mb-3 mt-3">
-                                    <button type="button" class="btn btn-light btn-circle me-3 btn-like"><i class="bi bi-heart"></i></button>
-                                    <a asp-area="job_vacancy" asp-controller="Job" asp-action="JobDetails" class="btn-detail">詳細資訊</a>
-                                </div>
-                                <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：2024/02/28 14:27:36</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="tab-fulltime" class="tab-pane show p-0">
-                    <div class="job-item p-4 mb-4">
-                        <div class="row g-4">
-                            <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                <img src="~/images/job_vacancy/fulltime.png" class="img-fluid border rounded flex-shrink-0" alt="">
-                                <div class="text-start ps-4">
-                                    <h5>APP程式設計師</h5>
-                                    <h6 class="mb-3"><a asp-area="job_vacancy" asp-controller="Job" asp-action="CompanyDetails">知訊股份有限公司</a></h6>
-                                    <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> 台北市 大安區</span>
-                                    <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> 全職</span>
-                                    <span class="text-truncate me-0"><i class="bi bi-cash flex-shrink-0"></i> $35000 - 40000</span>
-                                </div>
-                            </div>
-                            <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
-                                <div class="d-flex mb-3 mt-3">
-                                    <button type="button" class="btn btn-light btn-circle me-3 btn-like"><i class="bi bi-heart"></i></button>
-                                    <a asp-area="job_vacancy" asp-controller="Job" asp-action="JobDetails" class="btn-detail">詳細資訊</a>
-                                </div>
-                                <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：2024/02/28 14:27:36</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="tab-parttime" class="tab-pane show p-0">
-                    <div class="job-item p-4 mb-4">
-                        <div class="row g-4">
-                            <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                <img src="~/images/job_vacancy/parttime.png" class="img-fluid border rounded flex-shrink-0" alt="">
-                                <div class="text-start ps-4">
-                                    <h5>APP程式設計師</h5>
-                                    <h6 class="mb-3"><a asp-area="job_vacancy" asp-controller="Job" asp-action="CompanyDetails">知訊股份有限公司</a></h6>
-                                    <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> 台北市 大安區</span>
-                                    <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> 兼職</span>
-                                    <span class="text-truncate me-0"><i class="bi bi-cash flex-shrink-0"></i> $35000 - 40000</span>
-                                </div>
-                            </div>
-                            <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
-                                <div class="d-flex mb-3 mt-3">
-                                    <button type="button" class="btn btn-light btn-circle me-3 btn-like"><i class="bi bi-heart"></i></button>
-                                    <a asp-area="job_vacancy" asp-controller="Job" asp-action="JobDetails" class="btn-detail">詳細資訊</a>
-                                </div>
-                                <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：2024/02/28 14:27:36</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="tab-dispatche" class="tab-pane show p-0">
-                    <div class="job-item p-4 mb-4">
-                        <div class="row g-4">
-                            <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                <img src="~/images/job_vacancy/dispatche.png" class="img-fluid border rounded flex-shrink-0" alt="">
-                                <div class="text-start ps-4">
-                                    <h5>後端工程師</h5>
-                                    <h6 class="mb-3"><a asp-area="job_vacancy" asp-controller="Job" asp-action="CompanyDetails">知訊股份有限公司</a></h6>
-                                    <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> 台北市 大安區</span>
-                                    <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> 派遣</span>
-                                    <span class="text-truncate me-0"><i class="bi bi-cash flex-shrink-0"></i> $35000 - 40000</span>
-                                </div>
-                            </div>
-                            <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
-                                <div class="d-flex mb-3 mt-3">
-                                    <button type="button" class="btn btn-light btn-circle me-3 btn-like"><i class="bi bi-heart"></i></button>
-                                    <a asp-area="job_vacancy" asp-controller="Job" asp-action="JobDetails" class="btn-detail">詳細資訊</a>
-                                </div>
-                                <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：2024/02/28 14:27:36</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
+            <!-- 職缺內容 -->
+            <div class="tab-content" id="jobList">
+                <!-- 動態生成 -->
             </div>
-            <a class="btn btn-more py-3 px-5" href="">更多職缺</a>
+            @* <a class="btn btn-more py-3 px-5" href="">更多職缺</a> *@
         </div>
 
     </div>
@@ -251,6 +113,123 @@
 @section Scripts {
     <script src="~/js/job_vacancy/jobcommon.js"></script>
     <script>
+
+        let currentPage = 1; // 當前頁數
+        let currentTabName = 'all'; //當前頁籤
+
+        const jobListElement = document.getElementById('jobList');
+
+        // 定義不同 tab 的 ID 和對應名稱
+        const tabs = [
+            { id: 'tab-all', name: 'all' },
+            { id: 'tab-fulltime', name: 'fulltime' },
+            { id: 'tab-parttime', name: 'parttime' },
+            { id: 'tab-dispatch', name: 'dispatch' }
+        ];
+
+        // 根據 tabName 載入相應的的職缺資料
+        const loadJobs = async (tabName) => {
+            const response = await fetch(`@Url.Content("~/job_vacancy/JobAPI/GetJobsByTabName/${tabName}")`);
+            const jobs = await response.json();
+
+            renderJobs(jobs, true);
+        }
+
+        // 渲染職缺資料到UI
+        const renderJobs = (jobs, clearExisting = true) => {
+
+            // 根據clearExisting參數的值，決定是否清空現有列表
+            if (clearExisting) {
+                jobListElement.innerHTML = '';
+            }
+
+            // 創建工作性質與圖片路徑的映射
+            const jobTypeImageMap = {
+                '全職': '@Url.Content("~/images/job_vacancy/fulltime.png")',
+                '兼職': '@Url.Content("~/images/job_vacancy//parttime.png")',
+                '派遣': '@Url.Content("~/images/job_vacancy/dispatche.png")',
+                'default': '@Url.Content("~/images/job_vacancy/jobtype.png")'
+            };
+
+            jobs.forEach(job => {
+
+                //根據工作性質獲取對應的圖片
+                const jobTypeImagePath = jobTypeImageMap[job.jobType] || jobTypeImageMap['default'];
+
+                //設定顯示的工作地點
+                let jobLocation = job.jobLocation.substring(0, 6);
+
+                // 設定顯示的最後更新時間（呼叫共用方法）
+                let updateTime = formatDateTime(job.updateTime);
+
+                const jobHTML = `<div class="job-item p-4 mb-4">
+                                    <div class="row g-4">
+                                        <div class="col-sm-12 col-md-8 d-flex align-items-center">
+                                            <img src="${jobTypeImagePath}" class="img-fluid border rounded flex-shrink-0" alt="">
+                                            <div class="text-start ps-4">
+                                                <h5>${job.jobTitle}</h5>
+                                                <h6 class="mb-3"><a href="/job_vacancy/Job/CompanyDetails/${job.companyID}">${job.companyName}</a></h6>
+                                                <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> ${jobLocation}</span>
+                                                <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> ${job.jobType}</span>
+                                                <span class="text-truncate me-3"><i class="bi bi-cash flex-shrink-0"></i> ${job.salary}</span>
+                                                <span class="text-truncate me-0"><i class="bi bi-people-fill flex-shrink-0"></i> ${job.requiredPeople}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                            <div class="d-flex mb-3 mt-3">
+                                                <button type="button" class="btn btn-light btn-circle me-3 btn-like"><i class="bi bi-heart"></i></button>
+                                                <a href="/job_vacancy/Job/JobDetails/${job.jobID}" class="btn-detail">詳細資訊</a>
+                                            </div>
+                                            <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：${updateTime}</small>
+                                        </div>
+                                    </div>
+                                </div>`;
+
+                jobListElement.innerHTML += jobHTML;
+            });
+        }
+
+        // 初始化頁面，默認加載全部職缺
+        loadJobs(currentTabName);
+
+        // 監聽頁籤點擊事件，切換不同類別的職缺
+        tabs.forEach(tab => {
+            const tabElement = document.getElementById(tab.id);
+            tabElement.addEventListener('click', () => {
+
+                tabs.forEach(tab => {
+                    document.getElementById(tab.id).classList.remove('active');
+                });
+
+                tabElement.classList.add('active');
+
+                // 設置currentTabName並載入對應的資料
+                currentTabName = tab.name;
+                loadJobs(tab.name);
+            });
+        });
+
+
+
+        //監聽視窗滾動事件，滾動到底部執行載入更多資料
+        window.addEventListener('scroll', () => {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+                loadMoreData();
+            }
+        });
+
+        //載入更多職缺資料
+        const loadMoreData = async () => {
+            // 呼叫後端API獲取下一批資料
+            const response = await fetch(`@Url.Content("~/job_vacancy/JobAPI/GetJobsByTabName/")${currentTabName}?page=${currentPage + 1}`);
+            const newData = await response.json();
+
+            // 更新畫面，將新資料加入到列表中
+            renderJobs(newData, false);
+
+            // 更新當前頁數
+            currentPage++;
+        };
 
     </script>
 }

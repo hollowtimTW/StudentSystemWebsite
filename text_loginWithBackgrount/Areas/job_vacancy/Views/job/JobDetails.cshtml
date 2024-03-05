@@ -1,6 +1,6 @@
 ﻿@model JobDetailViewModel
 @{
-
+    ViewData["Title"] = "職缺詳細頁";
 }
 @section BreadcrumbsSection {
     <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
@@ -15,7 +15,7 @@
                 </ol>
                 <div style="margin-top: -10px; margin-bottom: -10px">
                     <button type="button" class="btn btn-hollow btn-like"><i class="bi bi-heart"></i> 收藏</button>
-                    <button type="button" class="btn btn-normal" data-bs-toggle="modal" data-bs-target="#applyModal">
+                    <button type="button" class="btn btn-normal" data-bs-toggle="modal" data-bs-target="#applyModal" onclick="popup_apply(17)">
                         <i class="bi bi-envelope"></i> 應徵
                     </button>
                 </div>
@@ -38,34 +38,8 @@
                 <h4 class="modal-title" id="applyModalLabel">發送應徵信</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <form>
-                    <div class="row">
-                        <div class="form-group mb-1">
-                            <div class="control-label mb-2">應徵工作：<span>@Model.JobTitle</span></div>
-                        </div>
-
-                        <div class="form-group mb-4">
-                            <div class="control-label col-lg-4 mb-2">選擇履歷：</div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="resumes" id="resume1" value="" checked>
-                                <label class="form-check-label" for="resume1">我的履歷1</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="resumes" id="resume2" value="">
-                                <label class="form-check-label" for="resume2">我的履歷2</label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="control-label mb-2">應徵信件內容：</div>
-                            <textarea class="container-fluid">您好，希望能有參加面試的機會。</textarea>
-                            <div class="d-flex justify-content-end">
-                                <div>字數：<span id="word-count">0</span> / <span style="color:#f85a40">2000</span></div>
-                            </div>
-                        </div>
-
-                    </div>
-                </form>
+            <div class="modal-body" id="switch_context">
+                <!-- 互動視窗內容 -->
             </div>
 
             <div class="modal-footer">
@@ -104,9 +78,7 @@
                         </div>
                         <div class="job-description-table row">
                             <div class="job-content col-12 mb-2">
-                                <p>
-                                    @Model.JobContent
-                                </p>
+                                <pre>@Model.JobContent</pre>
                             </div>
                             <div class="row job-content-table">
                                 <div class="list-row row mb-2">
@@ -176,7 +148,7 @@
                                     <h4 class="mb-0">@Html.DisplayNameFor(model => model.AcademicRequirement)</h4>
                                 </div>
                                 <div class="col-lg-10 col-12 list-data">
-                                    <p class="mb-0">@Model.AcademicRequirement</p>
+                                    <pre class="mb-0">@Model.AcademicRequirement</pre>
                                 </div>
                             </div>
                             <div class="list-row row mb-2">
@@ -184,7 +156,7 @@
                                     <h4 class="mb-0">@Html.DisplayNameFor(model => model.LanguageCondition)</h4>
                                 </div>
                                 <div class="col-lg-10 col-12 list-data">
-                                    <p class="mb-0">@Model.LanguageCondition</p>
+                                    <pre class="mb-0">@Model.LanguageCondition</pre>
                                 </div>
                             </div>
                             <div class="list-row row mb-2">
@@ -192,7 +164,7 @@
                                     <h4 class="mb-0">@Html.DisplayNameFor(model => model.WorkAbility)</h4>
                                 </div>
                                 <div class="col-lg-10 col-12 list-data">
-                                    <p class="mb-0">@Model.WorkAbility</p>
+                                    <pre class="mb-0">@Model.WorkAbility</pre>
                                 </div>
                             </div>
                             <div class="list-row row mb-2">
@@ -200,7 +172,7 @@
                                     <h4 class="mb-0">@Html.DisplayNameFor(model => model.OtherCondition)</h4>
                                 </div>
                                 <div class="col-lg-10 col-12 list-data">
-                                    <p class="mb-0">@Model.OtherCondition</p>
+                                    <pre class="mb-0">@Model.OtherCondition</pre>
                                 </div>
                             </div>
                             <!---->
@@ -248,14 +220,45 @@
 @section Scripts {
     <script src="~/js/job_vacancy/jobcommon.js"></script>
     <script>
-        const textarea = document.querySelector('textarea');
-        const wordCount = document.getElementById('word-count');
-        wordCount.textContent = textarea.value.length;
 
-        textarea.addEventListener('input', function () {
-            const content = textarea.value;
-            wordCount.textContent = content.length;
-        });
+
+        function popup_apply(studentId) {
+
+            const switchContext = $("#switch_context");
+            const applyUrl = "/job_vacancy/jobapi/GetResumeTitles" + studentId;
+
+            //return console.log("呼叫成功" + studentId);
+            $.ajax({
+                type: 'GET',
+                url: applyUrl,
+                success: function (result) {
+                    console.log('Ajax request success');
+                    // 清空並設置內容
+                    switchContext.html(result);
+                },
+                error: function (error) {
+                    console.error('Ajax request error', error);
+                    // 顯示錯誤提示給用戶
+                    switchContext.html(`<div class="alert alert-danger" role="alert">請求失敗：${error.statusText}</div>`);
+                }
+            });
+        }
+
+
+
+
+
+
+
+
+        // const textarea = document.querySelector('textarea');
+        // const wordCount = document.getElementById('word-count');
+        // wordCount.textContent = textarea.value.length;
+
+        // textarea.addEventListener('input', function () {
+        //     const content = textarea.value;
+        //     wordCount.textContent = content.length;
+        // });
 
     </script>
 }
