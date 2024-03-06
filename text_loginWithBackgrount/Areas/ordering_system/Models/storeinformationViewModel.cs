@@ -25,6 +25,8 @@ namespace Class_system_Backstage_pj.Areas.ordering_system.Models
         [Display(Name = "店家介紹")]
         [MaxLength(length:100, ErrorMessage = "店家介紹字數不可超過100字")]
         public string? storeinformation { get; set; }
+        public string? taglist { get; set; }
+        public IFormFile? storeImg { get; set; }
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             //目前不用使用自訂驗證

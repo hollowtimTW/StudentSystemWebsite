@@ -73,6 +73,12 @@
         <!-- 引入主頁 -->
         <main>
             @RenderBody()
+            @* 顯示頁尾 *@
+            <div class="text-center bottom-data">
+                <div class="card-body header">
+                    <h6 class="card-title">&copy; 2024 - Class_system_Backstage &nbsp;<a asp-area="" asp-controller="StoreBackground" asp-action="Index">首頁</a></h6>
+                </div>
+            </div>
         </main>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>

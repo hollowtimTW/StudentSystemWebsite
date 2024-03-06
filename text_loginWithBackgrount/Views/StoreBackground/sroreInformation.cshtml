@@ -46,7 +46,7 @@
                             <div class="column">
                                 <div class="ts-header is-heavy">電子郵件</div>
                                 <div class="ts-input is-underlined has-top-spaced">
-                                    <input type="text" value="" name="storeEmail" id="storeEmail" />
+                                    <input type="email" value="" name="storeEmail" id="storeEmail" />
                                 </div>
                                 <span class="ts-text is-negative" id="storeEmailError"></span>
                             </div>
@@ -60,7 +60,7 @@
                         </div>
                         <div class="ts-header is-heavy m-2">商家標籤</div>
                         <div class="ts-input is-underlined has-top-spaced">
-                            <input type="text" id="taglist" />
+                            <input type="text" id="taglist" name="taglist" />
                         </div>
                         <div class="ts-text is-description has-top-spaced-small">最多選擇5種標籤</div>
                         <div class="ts-header is-heavy m-2">商家介紹文字</div>
@@ -87,31 +87,37 @@
         </div>
     </div>
     <div class="ts-segment" data-name="info">
-        <form class="border border-3">
-            <div class="ts-container is-very-narrow has-vertically-padded-big">
-                <div class="ts-header is-heavy">密碼</div>
-                <div class="ts-input is-underlined has-top-spaced">
-                    <input type="password" />
-                </div>
-                <div class="ts-text is-description has-top-spaced-small">僅能是英文字母和數字，且最少 8 字，最多10 字。</div>
-                <div class="ts-header is-heavy">再次輸入密碼</div>
-                <div class="ts-input is-underlined has-top-spaced">
-                    <input type="password" />
-                </div>
-                <button class="ts-button is-fluid has-top-spaced-large">確認送出</button>
-                <div class="ts-box is-light m-3">
-                    <div class="ts-content">
-                        <p>
-                            按下「確認送出」表示您也接受「Rasengan+
-                            協議」、「個人隱私政策」、「使用者規範」。
-                        </p>
+        <div class="bottom-data">
+            <div class="orders">
+                <form class="border border-3" id="password">
+                    <div class="ts-container is-very-narrow has-vertically-padded-big">
+                        <div class="ts-header is-heavy">密碼</div>
+                        <div class="ts-input is-underlined has-top-spaced">
+                            <input type="password" name="newPassword" />
+                        </div>
+                        <span class="ts-text is-negative" id="newPassword"></span>
+                        <div class="ts-text is-description has-top-spaced-small">必須包含一個大寫英文，至少需要八個英文與數字</div>
+                        <div class="ts-header is-heavy">再次輸入密碼</div>
+                        <div class="ts-input is-underlined has-top-spaced">
+                            <input type="password" name="newPassword_again" />
+                        </div>
+                        <span class="ts-text is-negative" id="newPassword_again"></span>
+                        <button type="button" class="ts-button is-fluid has-top-spaced-large" id="passwordBtn">確認送出</button>
+                        <div class="ts-box is-light m-3">
+                            <div class="ts-content">
+                                <p>
+                                    按下「確認送出」表示您也接受「Rasengan+
+                                    協議」、「個人隱私政策」、「使用者規範」。
+                                </p>
+                            </div>
+                            <div class="symbol">
+                                <span class="ts-icon is-circle-exclamation-icon"></span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="symbol">
-                        <span class="ts-icon is-circle-exclamation-icon"></span>
-                    </div>
-                </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
@@ -122,7 +128,7 @@
     <div class="offcanvas-body">
 
         <form class="m-3">
-            <div class="btn-group-vertical btn-group-lg ts-wrap" role="group" aria-label="Basic checkbox toggle button group">
+            <div class="btn-group-vertical btn-group-lg ts-wrap" role="group" aria-label="Basic checkbox toggle button group" id="taglist01">
                 <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off">
                 <label class="btn btn-outline-primary" for="btncheck1">星期一</label>
 
@@ -159,6 +165,7 @@
 </div>
 @section Scripts {
     <script>
+        let tagarry = [];
         //初始載入店家資料
         (() => {
             const id = @User?.FindFirst("teacherID")?.Value
@@ -171,12 +178,45 @@
                         $('#storeEmail').val(data.電子信箱);
                         $('#storePhone').val(data.電話);
                         $('#storeinformation').text(data.餐廳介紹);
+                        const tagconst = data.風味列表.map(a => `${a} `);
+                        tagarry = tagconst;
+                        if (tagconst != "") {
+                            $('#taglist').val(tagconst + ',');
+                        }
+                        else {
+                            $('#taglist').val(tagconst);
+                        }
                     }
                 });
+            $.ajax({
+                url: `@Url.Content("~/tOrder_StoreAPI/storeStyle")`,
+                success: (data) => {
+                    var datalist = data.map((a, index) => {
+                        return (`
+                                        <input type="checkbox" class="btn-check" id="btncheck_${index}" autocomplete="off">
+                                        <label class="btn btn-outline-primary" for="btncheck_${index}">${a}</label>`)
+                    })
+                    // console.log(datalist);
+                    $('#taglist01').html(datalist);
+                }
+            })
         })();
-        $('#taglist').click(() => {
+        //開啟清單
+        $('#taglist').click((e) => {
+            e.preventDefault();
+            $('.btn-check').prop('checked', false); // 先將所有按鈕設置為未選中狀態
+
+            $.each(tagarry, (index, value) => {
+                $('.btn-check').each(function () {
+                    var buttonText = $(this).next('label').text().trim(); // 移除可能的空格和不可見字符
+                    if (value.replace(",", "").trim() === buttonText) {
+                        $(this).prop('checked', true); // 將符合條件的按鈕設置為選中狀態
+                    }
+                });
+            });
             $('#offcanvasRight').offcanvas('show');
-        })
+        });
+
         //存取修正店家資料
         $('#storeInforbtn').click(() => {
             Swal.fire({
@@ -184,7 +224,7 @@
                 showDenyButton: false,
                 showCancelButton: true,
                 confirmButtonText: "送出",
-                dismissButtonText:"取消",
+                dismissButtonText: "取消",
             }).then((result) => {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
@@ -226,25 +266,60 @@
             };
             reader.readAsDataURL(file);
         })
-        //選取清單中的已選中的
+        //右側口味標籤視窗選取
         $('#listtagbtn').click(() => {
             let arry = "";
+            let count = 0;
             $('.btn-check').each(function () {
                 if ($(this).prop('checked')) {
                     // 如果按鈕被選取，執行相應的操作
-                    var labelText = $(this).next('label').text(); // 獲取被選取按鈕的標籤文字
-                    arry += labelText+","
-                    $('#taglist').val(arry);
-                    $('#offcanvasRight').offcanvas('hide');
+                    count++;
+                    if (count < 6) {
+                        var labelText = $(this).next('label').text(); // 獲取被選取按鈕的標籤文字
+                        tagarry.push(labelText + ',');
+                        arry += labelText + ","
+                        $('#taglist').val(arry);
+                        $('#offcanvasRight').offcanvas('hide');
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: '標籤選取過多',
+                            text: '注意最多只能選取五個標籤',
+                        })
+                    }
                 }
             });
         })
+
         //清除清單選擇
         $('#clearbtn').click(() => {
             $('#taglist').val("");
+            tagarry = [];
             $('.btn-check').each(function () {
                 if ($(this).prop('checked')) {
                     $(this).prop('checked', false);
+                }
+            })
+        })
+        //送出修改密碼
+        $('#passwordBtn').click(() => {
+            let formData = $('#password').serialize()
+            $.ajax({
+                url: '@Url.Content("~/tOrder_StoreAPI/Contact")',
+                method:'post',
+                data: formData,
+                success: (datas) => {
+                    if (!datas.isValid) {
+                        $('#newPassword').text(datas.errors.newPassword);
+                        $('#newPassword_again').text(datas.errors.newPassword_again);
+                    }
+                    else {
+                        alert("修改完成，請重新登入");
+                        Promise.resolve().then(() => {
+                            window.location.href = '@Url.Action("logout", "Login")';
+                        });
+                    }
                 }
             })
         })
