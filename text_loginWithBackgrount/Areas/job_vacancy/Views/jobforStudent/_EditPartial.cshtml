@@ -62,37 +62,47 @@
 
             <!-- 1-2.學歷-->
             <div class="row dialog container-fluid">
-                <div class="form-group flex-container">
-                    <label asp-for="School" class="control-label"></label>
-                    <input asp-for="School" class="form-control" />
-                </div>
-                <div class="form-group flex-container">
-                    <label asp-for="Department" class="control-label"></label>
-                    <input asp-for="Department" class="form-control" />
-                </div>
-                <div class="form-group flex-container">
-                    <label asp-for="Academic" class="control-label"></label>
-                    <select asp-for="Academic" class="form-control">
-                        <option value="">無</option>
-                        <option value="學士" selected="@(Model.Academic == "學士")">學士</option>
-                        <option value="副學士" selected="@(Model.Academic == "副學士")">副學士</option>
-                        <option value="碩士" selected="@(Model.Academic == "碩士")">碩士</option>
-                        <option value="博士" selected="@(Model.Academic == "博士")">博士</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Graduated" class="control-label col-md-2"></label>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="Graduated" id="graduated1" value="畢業" @(Model.Graduated == "畢業" ? "checked" : "")>
-                        <label class="form-check-label" for="graduated1">畢業</label>
+                <div class="col-md-6">
+                    <div class="form-group flex-container">
+                        <label asp-for="School" class="control-label"></label>
+                        <input asp-for="School" class="form-control" />
+                        <span asp-validation-for="School" class="text-danger"></span>
                     </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="Graduated" id="graduated2" value="肄業" @(Model.Graduated == "肄業" ? "checked" : "")>
-                        <label class="form-check-label" for="graduated2">肄業</label>
+                    <div class="form-group flex-container">
+                        <label asp-for="Department" class="control-label"></label>
+                        <input asp-for="Department" class="form-control" />
+                        <span asp-validation-for="Department" class="text-danger"></span>
                     </div>
-                    <span asp-validation-for="Graduated" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group flex-container">
+                        <label asp-for="Academic" class="control-label"></label>
+                        <select asp-for="Academic" class="form-control">
+                            <option value="">無</option>
+                            <option value="學士" selected="@(Model.Academic == "學士")">學士</option>
+                            <option value="副學士" selected="@(Model.Academic == "副學士")">副學士</option>
+                            <option value="碩士" selected="@(Model.Academic == "碩士")">碩士</option>
+                            <option value="博士" selected="@(Model.Academic == "博士")">博士</option>
+                        </select>
+                        <span asp-validation-for="Academic" class="text-danger"></span>
+                    </div>
+                    <div class="form-group row">
+                        <label asp-for="Graduated" class="control-label col-md-3"></label>
+                        <div class="col-md-8">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="Graduated" id="graduated1" value="畢業" @(Model.Graduated == "畢業" ? "checked" : "")>
+                                <label class="form-check-label" for="graduated1">畢業</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="Graduated" id="graduated2" value="肄業" @(Model.Graduated == "肄業" ? "checked" : "")>
+                                <label class="form-check-label" for="graduated2">肄業</label>
+                            </div>
+                            <span asp-validation-for="Graduated" class="text-danger"></span>
+                        </div>
+                    </div>
                 </div>
             </div>
+
 
             <!-- 2.技能能力-->
             <div class="row dialog container-fluid">
@@ -118,12 +128,12 @@
                     <label for="workExpCheck" class="form-check-label">沒有工作經驗</label>
                 </div>
                 <div class="col-12">
-                    <button id="btnAdd" type="button" class="btn btn-normal">新增</button>
+                    <button id="btnExpAdd" type="button" class="btn btn-normal">新增</button>
                 </div>
 
                 <span asp-validation-for="WorkExperience" class="text-danger"></span>
 
-                <div class="workExpList" id="expList" style="display: none;">
+                <div class="workExpList" id="expListArea" style="display: none;">
 
                     <div class="exp-item">
                         <div class="d-flex w-100 justify-content-between">
@@ -149,15 +159,15 @@
                     </div>
                 </div>
 
-                <div id="expEdit" style="display: none;">
+                <div id="expEditArea" style="display: none;">
                     <div class="checkbox-list">
                         <input type="checkbox" id="workexp1" name="workexp1" value="option1">
                         <label for="workexp1">心心早餐店 2018/6 - 2019/12</label><br>
                         <input type="checkbox" id="workexp2" name="workexp2" value="option2">
                         <label for="workexp2">義全義大利餐館 2020/3 - 2022/5</label>
                     </div>
-                    <button id="btnConfirm" type="button" class="btn btn-normal">確定</button>
-                    <button id="btnCancel" type="button" class="btn btn-secondary">取消</button>
+                    <button id="btnExpEditConfirm" type="button" class="btn btn-normal">確定</button>
+                    <button id="btnExpEditCancel" type="button" class="btn btn-secondary">取消</button>
                 </div>
             </div>
 
@@ -253,7 +263,7 @@
                         <div class="document-editor__toolbar"></div>
                         <div class="document-editor__editable-container">
                             <div class="document-editor__editable">
-                                <p>The initial editor data.</p>
+                                <p>@Model.Autobiography</p>
                             </div>
                         </div>
                     </div>
@@ -267,72 +277,33 @@
 
 
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script src="~/js/job_vacancy/resume.js"></script>
+@* <script src="~/js/job_vacancy/resume.js"></script> *@
 @* <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script> *@
 @* <script src="~/js/job_vacancy/summernote-zh-tw.js"></script> *@
 <script src="~/js/job_vacancy/ckeditor5/build/ckeditor.js"></script>
 
 <script>
 
-    DecoupledEditor
-        .create(document.querySelector('.document-editor__editable'), {
-            cloudServices: {
-                // A configuration of CKEditor Cloud Services.
-                // ...
-            }
-        })
-        .then(editor => {
-            const toolbarContainer = document.querySelector('.document-editor__toolbar');
-
-            toolbarContainer.appendChild(editor.ui.view.toolbar.element);
-
-            window.editor = editor;
-        })
-        .catch(err => {
-            console.error(err);
-        });
-
-
-    const btnAdd = document.getElementById("btnAdd");
-    const expEdit = document.getElementById("expEdit");
-    const btnConfirm = document.getElementById("btnConfirm");
-    const btnCancel = document.getElementById("btnCancel");
-    const expList = document.getElementById("expList");
-
-    btnAdd.addEventListener("click", function () {
-        expEdit.style.display = "block";
-        expList.style.display = "none";
-        btnAdd.style.display = "none";
-    });
-
-    btnConfirm.addEventListener("click", function () {
-        // 在此處處理勾選後的操作，例如將選項添加到頁面上的某個位置
-
-        // 隱藏新增區域，顯示新增按鈕
-        expEdit.style.display = "none";
-        btnAdd.style.display = "block";
-        expList.style.display = "block";
-    });
-
-    btnCancel.addEventListener("click", function () {
-        // 隱藏新增區域，顯示新增按鈕
-        expEdit.style.display = "none";
-        btnAdd.style.display = "block";
-    });
-
-
-
-
+    // 初始化相關的變數
     const resumeID = "@Model.ResumeID";
     const hopeSalary = "@Html.Raw(Model.HopeSalary)".trim();
     const autobiography = "@Model.Autobiography";
 
-    // 將特殊字符進行轉義，再傳遞給 Summernote 編輯器
-    const decodedAutobiography = autobiography.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+    // 需要監聽的元素
+    const Photo = document.getElementById('Photo');
+    const salaryInput = document.getElementById('salaryInput');
+
+    // 工作經驗編輯相關的變數
+    const btnExpAdd = document.getElementById("btnExpAdd");
+    const expEditArea = document.getElementById("expEditArea");
+    const btnExpEditConfirm = document.getElementById("btnExpEditConfirm");
+    const btnExpEditCancel = document.getElementById("btnExpEditCancel");
+    const expListArea = document.getElementById("expListArea");
 
     $(document).ready(function () {
 
-        //處理希望薪資的選項
+        // ========= 載入資料時 =========
+        // 處理希望薪資的選項
         switch (hopeSalary) {
             case "面議":
                 document.getElementById('hopeSalary1').checked = true;
@@ -341,74 +312,95 @@
                 document.getElementById('hopeSalary2').checked = true;
                 break;
             default:
-                hopeSalary3.checked = true;
+                document.getElementById('hopeSalary3').checked = true;
                 salaryInput.value = hopeSalary;
                 salaryInput.style.visibility = "visible";
                 break;
         }
 
-        // 將自傳內容設置為 Summernote 編輯器的內容
-        // $('#summernote').summernote('code', decodedAutobiography);
-    });
+        // ========= CKEditor 相關 =========
+        // DecoupledEditor
+        // .create(document.querySelector('.document-editor__editable'), {
+        //     cloudServices: {
+        //         // A configuration of CKEditor Cloud Services.
+        //         // ...
+        //     }
+        // })
+        // .then(editor => {
+        //     const toolbarContainer = document.querySelector('.document-editor__toolbar');
 
-    //提交表單事件
-    btnSummit.addEventListener('click', async (event) => {
+        //     toolbarContainer.appendChild(editor.ui.view.toolbar.element);
 
-        event.preventDefault();  //停止預設行為
+        //     window.editor = editor;
+        // })
+        // .catch(err => {
+        //     console.error(err);
+        // });
 
-        const formData = new FormData(document.getElementById('formEdit'));
+        // ====================== 事件監聽器 ===========================
 
-        //公開狀態
-        let checkbox = document.getElementById('resumeStatus');
-        let resumeStatusValue = checkbox.checked ? '公開' : '關閉';
-        formData.set('resumeStatus', resumeStatusValue);
-
-        //有無工作經驗
-        checkbox = document.getElementById('workExpCheck');
-        let workExpValue = checkbox.checked ? 'N' : 'Y';
-        formData.set('WorkExperience', workExpValue);
-
-        //輪班
-        checkbox = document.getElementById('workShiftCheck');
-        let workShiftValue = checkbox.checked ? 'Y' : 'N';
-        formData.set('WorkShift', workShiftValue);
-
-        //希望薪資
-        let selectedValue;
-        if (hopeSalary3.checked) {
-            selectedValue = document.getElementById('salaryInput').value;
-        }
-        else {
-            selectedValue = document.querySelector('input[name="HopeSalary"]:checked')?.value;
-        }
-        formData.set('HopeSalary', selectedValue);
-
-        //自傳
-        const autobiography = $('#summernote').summernote('code');
-        //let regEx = /<[^>]*>/g;  //去除HTML標籤
-        //const plain = autobiography.replace(regEx, "");
-        formData.set('Autobiography', autobiography);
-
-
-        // for (const pair of formData.entries()) {
-        //     console.log(pair[0] + ', ' + pair[1]);
-        // }
-        //return;
-
-        const url = '/job_vacancy/Resume/UpdateResume/' + resumeID;
-        const response = await fetch(url, {
-            body: formData,
-            method: 'POST'
+        // 顯示圖片
+        Photo.addEventListener('change', function (event) {
+            var inputFile = event.target;
+            var img = document.getElementById('previewImage');
+            previewImage(inputFile, img);
         });
-        const data = await response.json();
-        if (response.ok) {
-            if (data.redirectUrl) {
-                window.location.href = data.redirectUrl; // 重定向履歷管理首頁
-            } else {
-                alert(data.message);
+
+        // 當選擇"自訂薪資"時，顯示薪資輸入框
+        document.getElementById('hopeSalary3').addEventListener("change", function () {
+            if (this.checked) {
+                salaryInput.style.visibility = "visible";
             }
-        } else {
-            alert(data.message);
-        }
+        });
+
+        // 當選擇其他選項時，隱藏薪資輸入框
+        const otherRadios = document.querySelectorAll('input[name="HopeSalary"]:not(#hopeSalary3)');
+        otherRadios.forEach(function (radio) {
+            radio.addEventListener("change", function () {
+                salaryInput.style.visibility = "hidden";
+            });
+        });
+
+        // 新增工作經驗（開啟編輯區）
+        btnExpAdd.addEventListener("click", function () {
+            expEditArea.style.display = "block";
+            expListArea.style.display = "none";
+            btnExpAdd.style.display = "none";
+        });
+        // 確認工作經驗（關閉編輯區並顯示列表）
+        btnExpEditConfirm.addEventListener("click", function () {
+            expEditArea.style.display = "none";
+            btnExpAdd.style.display = "block";
+            expListArea.style.display = "block";
+        });
+        // 取消工作經驗（關閉編輯區）
+        btnExpEditCancel.addEventListener("click", function () {
+            expEditArea.style.display = "none";
+            btnExpAdd.style.display = "block";
+        });
+
     });
+
+    // ========= 照片預覽函式 =========
+    function previewImage(inputFile, img) {
+        if (inputFile.files && inputFile.files[0]) {
+            let allowType = "image.*";
+            // 檢查上傳的檔案類型是否符合允許的檔案類型
+            if (inputFile.files[0].type.match(allowType)) {
+                // 創建 FileReader 物件用於讀取檔案
+                let reader = new FileReader();
+                reader.onload = function (e) {
+                    $(img).attr('src', e.target.result); // 將 img 包裝在 $() 函數中
+                    $(img).attr('title', inputFile.files[0].name); // 將 img 包裝在 $() 函數中
+                    //$(".btn").prop('disabled', false);
+                };
+                // 開始讀取檔案內容，這會觸發上述的 reader.onload 事件
+                reader.readAsDataURL(inputFile.files[0]);
+            } else {
+                alert("不支援的檔案上傳格式！");
+                //$(".btn").prop('disabled', true);
+            }
+        }
+    }
+    
 </script>

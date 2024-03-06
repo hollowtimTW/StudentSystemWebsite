@@ -1,0 +1,194 @@
+﻿@model List<MyResumesViewModel>
+<style>
+    <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet"/>
+</style> 
+<div id="tab1" class="tab-page active">
+    <div class="container">
+        <div class="row gy-4">
+
+            @foreach (var viewModel in Model)
+            {
+                <div class="col-lg-4 col-md-6">
+                    <div class="resume-item position-relative">
+                        <div>
+                            <button type="button" class="btn btn-close" data-bs-toggle="modal" data-bs-target="#deleteModal"></button>
+                        </div>
+                        <div class="icon">
+                            <i class="bi bi-file-earmark-person"></i>
+                        </div>
+                        <div>
+                            <h3>@viewModel.ResumeTitle</h3>
+                            <h6 class="card-subtitle mb-2 text-muted">@viewModel.LastUpdate</h6>
+                            <span>@viewModel.HopeJobTitle</span> <span>@viewModel.WorkType</span>
+                            @* <a asp-area="job_vacancy" asp-controller="jobforStudent" asp-action="EditResume" asp-route-resumeID="18" target="_blank" class="readmore stretched-link"></a> *@
+                            <a class="stretched-link" data-bs-toggle="modal" data-bs-target="#editModal" onclick="popup_edit(@viewModel.ResumeID)"></a>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="col-lg-4 col-md-6">
+                <div class="resume-item position-relative d-flex flex-column align-items-center create-resume">
+                    <div class="icon">
+                        <i class="bi bi-file-earmark-plus-fill"></i>
+                    </div>
+                    <h3>新增履歷</h3>
+                    <a asp-area="job_vacancy" asp-controller="jobforStudent" asp-action=""></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+            
+
+<!-- Modal 互動視窗：刪除履歷 -->
+<div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">確認刪除</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                確定要刪除嗎？
+            </div>
+            <select class="form-select" aria-label="Default select example" id="deleteReasonSelect" required>
+                <option value="" disabled selected hidden>請選擇刪除原因</option>
+                <option value="已找到工作">已找到工作</option>
+                <option value="求職需求變更">求職需求變更</option>
+                <option value="暫時無求職需求">暫時無求職需求</option>
+                <option value="不適合在本平台刊登">不適合在本平台刊登</option>
+                <option value="其他">其他</option>
+            </select>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btnConfirmDelete">確定刪除</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal 互動視窗：編輯履歷 -->
+<div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" id="editModal" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">編輯履歷</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="btnCloseEdit"></button>
+            </div>
+            <div class="modal-body" id="resume_context">
+                <!-- 互動視窗內容 -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btnCancelEdit">取消編輯</button>
+                <input type="submit" class="btn btn-submit" id="btnSummit" value="儲存" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    @* 呼叫編輯視窗的內容 *@
+    function popup_edit(resumeId) {
+
+        const switchContext = $("#resume_context");
+        const detailUrl = "/job_vacancy/jobforStudent/EditResume/" + resumeId;
+
+        $.ajax({
+            type: 'GET',
+            url: detailUrl,
+            success: function (result) {
+                console.log('呼叫編輯視窗 success');
+                switchContext.html(result);
+            },
+            error: function (error) {
+                console.error('呼叫編輯視窗 error', error);
+                switchContext.html(`<div class="alert alert-danger" role="alert">請求失敗：${error.statusText}</div>`);
+            }
+        });
+    }
+
+    @* 取消編輯 *@
+    document.getElementById('btnCancelEdit').addEventListener('click', function () {
+        Swal.fire({
+            title: '確認取消編輯',
+            text: '取消編輯將不會儲存修改，確定要取消嗎？',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '確定取消',
+            cancelButtonText: '繼續編輯',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('btnCloseEdit').click();
+
+
+            } else {
+                // 使用者點擊了 "繼續編輯" 按鈕，不執行任何操作
+            }
+        });
+    });
+
+
+    @* 提交編輯表單 *@
+    btnSummit.addEventListener('click', async (event) => {
+
+        event.preventDefault();  //停止預設行為
+
+        const formData = new FormData(document.getElementById('formEdit'));
+
+        //公開狀態
+        let checkbox = document.getElementById('resumeStatus');
+        let resumeStatusValue = checkbox.checked ? '公開' : '關閉';
+        formData.set('resumeStatus', resumeStatusValue);
+
+        //有無工作經驗
+        checkbox = document.getElementById('workExpCheck');
+        let workExpValue = checkbox.checked ? 'N' : 'Y';
+        formData.set('WorkExperience', workExpValue);
+
+        //輪班
+        checkbox = document.getElementById('workShiftCheck');
+        let workShiftValue = checkbox.checked ? 'Y' : 'N';
+        formData.set('WorkShift', workShiftValue);
+
+        //希望薪資
+        let selectedValue;
+        if (hopeSalary3.checked) {
+            selectedValue = document.getElementById('salaryInput').value;
+        }
+        else {
+            selectedValue = document.querySelector('input[name="HopeSalary"]:checked')?.value;
+        }
+        formData.set('HopeSalary', selectedValue);
+
+        //自傳
+        //const autobiography = $('#summernote').summernote('code');
+        //let regEx = /<[^>]*>/g;  //去除HTML標籤
+        //const plain = autobiography.replace(regEx, "");
+        formData.set('Autobiography', '自傳內容');
+
+
+        // for (const pair of formData.entries()) {
+        //     console.log(pair[0] + ', ' + pair[1]);
+        // }
+        //return;
+
+        const url = '/job_vacancy/Resume/UpdateResume/' + resumeID;
+        const response = await fetch(url, {
+            body: formData,
+            method: 'POST'
+        });
+        const data = await response.json();
+        if (response.ok) {
+            if (data.redirectUrl) {
+                window.location.href = data.redirectUrl; // 重定向履歷管理首頁
+            } else {
+                alert(data.message);
+            }
+        } else {
+            alert(data.message);
+        }
+    });
+</script>

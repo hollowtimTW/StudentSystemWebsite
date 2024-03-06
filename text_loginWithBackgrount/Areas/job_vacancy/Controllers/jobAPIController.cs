@@ -1,6 +1,8 @@
-﻿using Class_system_Backstage_pj.Models;
+﻿using Class_system_Backstage_pj.Areas.job_vacancy.ViewModels;
+using Class_system_Backstage_pj.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using text_loginWithBackgrount.Areas.job_vacancy.DTO;
 using text_loginWithBackgrount.Areas.job_vacancy.ViewModels;
 
@@ -15,6 +17,144 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         {
             _studentContext = studentContext;
         }
+
+        // GET: job_vacancy/jobapi/GetResumeTitles/5
+        [Route("/job_vacancy/jobapi/{Action=Index}/{studentID}")]
+        public async Task<IActionResult> GetMyResumes(int studentID)
+        {
+            var resumeData = await _studentContext.T工作履歷資料s
+                            .Where(r => r.F學員Id == studentID && r.F刪除狀態 == "0")
+                            .OrderByDescending(r => r.F最後更新時間)
+                            .Select(r => new { r.FId, r.F履歷名稱, r.F最後更新時間, r.F希望職稱, r.F工作性質 })
+                            .ToListAsync();
+
+            var viewModelList = new List<MyResumesViewModel>();
+
+            foreach (var data in resumeData)
+            {
+                var viewModel = new MyResumesViewModel
+                {
+                    ResumeID = data.FId,
+                    ResumeTitle = data.F履歷名稱,
+                    HopeJobTitle = data.F希望職稱,
+                    WorkType = data.F工作性質,
+                    LastUpdate = data.F最後更新時間
+                };
+                viewModelList.Add(viewModel);
+            }
+
+            return PartialView("_MyResumesPartial", viewModelList);
+        }
+
+        // GET: job_vacancy/jobapi/GetMyApplyRecords/5
+        [Route("/job_vacancy/jobapi/{Action=Index}/{studentID}")]
+        public async Task<IActionResult> GetMyApplyRecords(int studentID)
+        {
+
+            var recordData = await _studentContext.T工作應徵工作紀錄s
+                        .Where(r => r.F學員Id == studentID && r.F刪除狀態 == "0")
+                        .Include(r => r.F職缺)
+                        .ThenInclude(j => j.F公司)
+                        .OrderByDescending(r => r.F應徵時間)
+                        .ToListAsync();
+
+
+            var viewModelList = new List<MyApplyRecordsViewModel>();
+
+            foreach (var data in recordData)
+            {
+                var viewModel = new MyApplyRecordsViewModel
+                {
+                    ApplyRecordID = data.FId,
+                    JobID = data.F職缺Id,
+                    JobTitle = data.F職缺.F職務名稱,
+                    LetterContent = data.F應徵信內容,
+                    ApplyTime = data.F應徵時間,
+
+                    CompanyID = data.F職缺.F公司Id,
+                    CompanyName = data.F職缺.F公司.F公司名稱,
+                    Salary = !string.IsNullOrEmpty(data.F職缺.F薪水待遇) ? data.F職缺.F薪水待遇 : "暫不提供",
+                    JobType = !string.IsNullOrEmpty(data.F職缺.F工作性質) ? data.F職缺.F工作性質 : "暫不提供",
+                    JobLocation = !string.IsNullOrEmpty(data.F職缺.F工作地點) ? data.F職缺.F工作地點 : "暫不提供",
+                    UpdateTime = data.F職缺.F最後更新時間
+                };
+                viewModelList.Add(viewModel);
+            }
+
+            return PartialView("_MyApplyRecordsPartial", viewModelList);
+        }
+
+        // GET: job_vacancy/jobapi/GetMyFavoritesJobs/5
+        [Route("/job_vacancy/jobapi/{Action=Index}/{studentID}")]
+        public async Task<IActionResult> GetMyFavoritesJobs(int studentID)
+        {
+
+            var jobData = await _studentContext.T工作儲存工作紀錄s
+                          .Where(r => r.F學員Id == studentID)
+                          .Include(r => r.F職缺)
+                          .ThenInclude(j => j.F公司)
+                          .OrderByDescending(r => r.F儲存時間)
+                          .ToListAsync();
+
+            var viewModelList = new List<MyFavoritesJobsViewModel>();
+
+            foreach (var data in jobData)
+            {
+                var viewModel = new MyFavoritesJobsViewModel
+                {
+                    FavoriteID = data.FId,
+                    JobID = data.F職缺Id,
+                    JobTitle = data.F職缺.F職務名稱,
+                    AddTime = data.F儲存時間,
+
+                    CompanyID = data.F職缺.F公司Id,
+                    CompanyName = data.F職缺.F公司.F公司名稱,
+                    Salary = !string.IsNullOrEmpty(data.F職缺.F薪水待遇) ? data.F職缺.F薪水待遇 : "暫不提供",
+                    JobType = !string.IsNullOrEmpty(data.F職缺.F工作性質) ? data.F職缺.F工作性質 : "暫不提供",
+                    JobLocation = !string.IsNullOrEmpty(data.F職缺.F工作地點) ? data.F職缺.F工作地點 : "暫不提供",
+                    UpdateTime = data.F職缺.F最後更新時間
+                };
+                viewModelList.Add(viewModel);
+            }
+
+            return PartialView("_MyFavoritesJobsPartial", viewModelList);
+        }
+
+        // GET: job_vacancy/jobapi/GetMyRecommendedJobs/5
+        [Route("/job_vacancy/jobapi/{Action=Index}/{studentID}")]
+        public async Task<IActionResult> GetMyRecommendedJobs(int studentID)
+        {
+
+            var jobData = await _studentContext.T工作推薦職缺s
+                          .Where(r => r.F學員Id == studentID)
+                          .Include(r => r.F職缺)
+                          .ThenInclude(j => j.F公司)
+                          .ToListAsync();
+
+            var viewModelList = new List<MyRecommendedJobsViewModel>();
+
+            foreach (var data in jobData)
+            {
+                var viewModel = new MyRecommendedJobsViewModel
+                {
+                    RecommendedID = data.FId,
+                    JobID = data.F職缺Id,
+                    JobTitle = data.F職缺.F職務名稱,
+                    Score = data.F推薦程度,
+
+                    CompanyID = data.F職缺.F公司Id,
+                    CompanyName = data.F職缺.F公司.F公司名稱,
+                    Salary = !string.IsNullOrEmpty(data.F職缺.F薪水待遇) ? data.F職缺.F薪水待遇 : "暫不提供",
+                    JobType = !string.IsNullOrEmpty(data.F職缺.F工作性質) ? data.F職缺.F工作性質 : "暫不提供",
+                    JobLocation = !string.IsNullOrEmpty(data.F職缺.F工作地點) ? data.F職缺.F工作地點 : "暫不提供",
+                    UpdateTime = data.F職缺.F最後更新時間
+                };
+                viewModelList.Add(viewModel);
+            }
+
+            return PartialView("_MyRecommendedJobsPartial", viewModelList);
+        }
+
 
         // GET: job_vacancy/jobapi/GetResumeTitles
         [Route("/job_vacancy/jobapi/{Action=Index}")]
@@ -55,7 +195,6 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                     JobLocation = !string.IsNullOrEmpty(job.F工作地點) ? job.F工作地點 : "暫不提供",
                     JobType = !string.IsNullOrEmpty(job.F工作性質) ? job.F工作性質 : "暫不提供",
                     Salary = !string.IsNullOrEmpty(job.F薪水待遇) ? job.F薪水待遇 : "暫不提供",
-                    //UpdateTime = job.F最後更新時間.HasValue ? job.F最後更新時間.Value : DateTime.MinValue,
                     UpdateTime = job.F最後更新時間,
                     RequiredPeople = !string.IsNullOrEmpty(job.F需求人數) ? job.F需求人數 : "暫不提供"
                 });
