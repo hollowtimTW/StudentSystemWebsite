@@ -40,135 +40,7 @@ namespace text_loginWithBackgrount.Controllers
             return View();
         }
 
-        /// <summary>
-        /// 學生登入頁
-        /// </summary>
-        /// <returns></returns>
-        public IActionResult StudentIndex()
-        {
-            return View();
-        }
 
-        /// <summary>
-        /// 學生註冊頁View
-        /// </summary>
-        /// <returns></returns>
-        public IActionResult StudentRegister()
-        {
-            return View();
-        }
-
-
-        /// <summary>
-        /// 學生註冊頁
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public async Task<IActionResult> StudentRegister(MemberViewModel memberRegisterinfo)
-        {
-            if (!ModelState.IsValid)
-            {
-                //ViewBag.ErrorMessage = "註冊失敗，請檢查您的輸入。";
-                //return View(memberRegisterinfo);
-                return BadRequest(new { errorMessage = "註冊失敗，請檢查您的輸入。" });
-            }
-
-            if (memberRegisterinfo.信箱 == null || memberRegisterinfo.信箱 == "")
-            {
-                return BadRequest(new { errorMessage = "請填入正確信箱。" });
-            }
-
-            if (CheckEmailAvailability(memberRegisterinfo.信箱))
-            {
-                return BadRequest(new { errorMessage = "信箱重複。" });
-            }
-
-            //先不處理圖片
-            //byte[]? _filebyte = null;
-            //if (memberRegisterinfo.圖片 != null && memberRegisterinfo.圖片.Length > 0)
-            //{
-            //    using (var memoryStream = new MemoryStream())
-            //    {
-            //        // 將圖片數據讀取到內存流中
-            //        memberRegisterinfo.圖片.CopyTo(memoryStream);
-            //        // 將內存流中的數據轉換為 byte 陣列
-            //        _filebyte = memoryStream.ToArray();
-            //    }
-            //}
-
-            IRegistrationEncryptor encryptor = EncryptorFactory.CreateEncryptor();
-            (string _hashPassword, string _salt) = encryptor.EncryptPassword(memberRegisterinfo.密碼);
-
-            var memberEntity = new T會員學生
-            {
-                姓名 = memberRegisterinfo.姓名,
-                性別 = memberRegisterinfo.性別,
-                身分證字號 = memberRegisterinfo.身分證字號,
-                信箱 = memberRegisterinfo.信箱,
-                手機 = memberRegisterinfo.手機,
-                地址 = memberRegisterinfo.地址,
-                生日 = memberRegisterinfo.生日,
-                學校 = memberRegisterinfo.學校,
-                科系 = memberRegisterinfo.科系,
-                學位 = memberRegisterinfo.學位,
-                畢肄 = memberRegisterinfo.畢肄,
-                圖片 = null,
-                密碼 = _hashPassword,
-                Salt = _salt,
-                註冊日期 = DateTime.Now,
-                修改日期 = DateTime.Now,
-            };
-
-            _dbStudentSystemContext.T會員學生s.Add(memberEntity);
-            await _dbStudentSystemContext.SaveChangesAsync();
-
-            return Ok(new { successMessage = "註冊成功！" });
-        }
-
-
-        /// <summary>
-        /// 學生確認重複email
-        /// </summary>
-        /// <returns></returns>        
-        public bool CheckEmailAvailability(string email)
-        {
-            var user = _dbStudentSystemContext.T會員學生s.FirstOrDefault(a => a.信箱 == email);
-            return (user != null);
-        }
-
-
-        /// <summary>
-        /// 執行授權學生登入，回傳頁寫在StudentIndex view的js中
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public IActionResult StudentIndex(LoginPost value)
-        {
-            //var user = (from a in _dbStudentSystemContext.T會員學生s
-            //            where a.信箱 == value.Account && a.密碼 == value.Password
-            //            select a).FirstOrDefault();
-
-            var user = _dbStudentSystemContext.T會員學生s.SingleOrDefault(a => a.信箱 == value.Account);
-
-            if (user == null || !VerifyPassword(user.密碼, user.Salt, value.Password))
-            {
-                return BadRequest(new { errorMessage = "帳號密碼錯誤。" });
-            }
-            else
-            {
-                var claims = new List<Claim>
-                {
-                   new Claim(ClaimTypes.Name, user.姓名),
-                   new Claim("FullName", user.姓名),
-                   new Claim("StudentId", user.學生id.ToString()),
-                   new Claim(ClaimTypes.Role,"student")
-                };
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-                return Ok(new { successMessage = "註冊成功！" });
-            }
-        }
 
 
         /// <summary>
@@ -211,7 +83,7 @@ namespace text_loginWithBackgrount.Controllers
                 return View("TeacherIndex");
             }
 
-            if (CheckEmailAvailability(memberRegisterinfo.信箱))
+            if (TeacherCheckEmailAvailability(memberRegisterinfo.信箱))
             {
                 //return BadRequest(new { errorMessage = "信箱重複。" });
                 TempData["teacherIndexMessage"] = "alert('信箱重複。')";
@@ -303,6 +175,154 @@ namespace text_loginWithBackgrount.Controllers
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
                 return RedirectToAction("Index", "SystemBackground");
+            }
+        }
+
+        public IActionResult GetTeacherImage(int teacherId)
+        {
+            //var user = _dbStudentSystemContext.T會員老師s.SingleOrDefault(a => a.老師id == teacherId);
+            var user = _dbStudentSystemContext.T會員學生s.SingleOrDefault(a => a.學生id == 5);//應急
+
+            if (user == null || user.圖片 == null || user.圖片.Length == 0)
+            {
+                return NotFound("沒有圖片");
+            }
+
+            string base64Image = Convert.ToBase64String(user.圖片);
+            return Content(base64Image);
+        }
+
+        //------------------------學生---------------------------
+
+
+        /// <summary>
+        /// 學生登入頁
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult StudentIndex()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// 學生註冊頁View
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult StudentRegister()
+        {
+            return View();
+        }
+
+
+        /// <summary>
+        /// 學生註冊頁
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> StudentRegister(MemberViewModel memberRegisterinfo)
+        {
+            if (!ModelState.IsValid)
+            {
+                //ViewBag.ErrorMessage = "註冊失敗，請檢查您的輸入。";
+                //return View(memberRegisterinfo);
+                return BadRequest(new { errorMessage = "註冊失敗，請檢查您的輸入。" });
+            }
+
+            if (memberRegisterinfo.信箱 == null || memberRegisterinfo.信箱 == "")
+            {
+                return BadRequest(new { errorMessage = "請填入正確信箱。" });
+            }
+
+            if (CheckEmailAvailability(memberRegisterinfo.信箱))
+            {
+                return BadRequest(new { errorMessage = "信箱重複。" });
+            }
+
+            //先不處理圖片
+            //byte[]? _filebyte = null;
+            //if (memberRegisterinfo.圖片 != null && memberRegisterinfo.圖片.Length > 0)
+            //{
+            //    using (var memoryStream = new MemoryStream())
+            //    {
+            //        // 將圖片數據讀取到內存流中
+            //        memberRegisterinfo.圖片.CopyTo(memoryStream);
+            //        // 將內存流中的數據轉換為 byte 陣列
+            //        _filebyte = memoryStream.ToArray();
+            //    }
+            //}
+
+            IRegistrationEncryptor encryptor = EncryptorFactory.CreateEncryptor();
+            (string _hashPassword, string _salt) = encryptor.EncryptPassword(memberRegisterinfo.密碼);
+
+            var memberEntity = new T會員學生
+            {
+                姓名 = memberRegisterinfo.姓名,
+                性別 = memberRegisterinfo.性別,
+                身分證字號 = memberRegisterinfo.身分證字號,
+                信箱 = memberRegisterinfo.信箱,
+                手機 = memberRegisterinfo.手機,
+                地址 = memberRegisterinfo.地址,
+                生日 = memberRegisterinfo.生日,
+                學校 = memberRegisterinfo.學校,
+                科系 = memberRegisterinfo.科系,
+                學位 = memberRegisterinfo.學位,
+                畢肄 = memberRegisterinfo.畢肄,
+                圖片 = null,
+                密碼 = _hashPassword,
+                Salt = _salt,
+                註冊日期 = DateTime.Now,
+                修改日期 = DateTime.Now,
+            };
+
+            _dbStudentSystemContext.T會員學生s.Add(memberEntity);
+            await _dbStudentSystemContext.SaveChangesAsync();
+
+            return Ok(new { successMessage = "註冊成功！" });
+        }
+
+
+
+        /// <summary>
+        /// 學生確認重複email
+        /// </summary>
+        /// <returns></returns>        
+        public bool CheckEmailAvailability(string email)
+        {
+            var user = _dbStudentSystemContext.T會員學生s.FirstOrDefault(a => a.信箱 == email);
+            return (user != null);
+        }
+
+
+        /// <summary>
+        /// 執行授權學生登入，回傳頁寫在StudentIndex view的js中
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult StudentIndex(LoginPost value)
+        {
+            //var user = (from a in _dbStudentSystemContext.T會員學生s
+            //            where a.信箱 == value.Account && a.密碼 == value.Password
+            //            select a).FirstOrDefault();
+
+            var user = _dbStudentSystemContext.T會員學生s.SingleOrDefault(a => a.信箱 == value.Account);
+
+            if (user == null || !VerifyPassword(user.密碼, user.Salt, value.Password))
+            {
+                return BadRequest(new { errorMessage = "帳號密碼錯誤。" });
+            }
+            else
+            {
+                var claims = new List<Claim>
+                {
+                   new Claim(ClaimTypes.Name, user.姓名),
+                   new Claim("FullName", user.姓名),
+                   new Claim("StudentId", user.學生id.ToString()),
+                   new Claim(ClaimTypes.Role,"student")
+                };
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+                return Ok(new { successMessage = "註冊成功！" });
             }
         }
 
@@ -442,15 +462,6 @@ namespace text_loginWithBackgrount.Controllers
             }
         }
 
-
-        ///// <summary>
-        ///// 學生修改密碼頁
-        ///// </summary>
-        ///// <returns></returns>
-        //public IActionResult StudentResetPassword()
-        //{
-        //    return View();
-        //}
 
         /// <summary>
         /// 學生修改密碼頁實作
