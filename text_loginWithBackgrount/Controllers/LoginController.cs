@@ -145,12 +145,16 @@ namespace text_loginWithBackgrount.Controllers
         [HttpPost]
         public IActionResult StudentIndex(LoginPost value)
         {
-            var user = (from a in _dbStudentSystemContext.T會員學生s
-                        where a.信箱 == value.Account && a.密碼 == value.Password
-                        select a).FirstOrDefault();
-            if (user == null)
+            //var user = (from a in _dbStudentSystemContext.T會員學生s
+            //            where a.信箱 == value.Account && a.密碼 == value.Password
+            //            select a).FirstOrDefault();
+
+            var user = _dbStudentSystemContext.T會員學生s.SingleOrDefault(a => a.信箱 == value.Account);
+
+            if (user == null || !VerifyPassword(user.密碼, user.Salt, value.Password))
             {
-                return BadRequest();
+                TempData["key"] = "alert('帳號密碼錯誤')";
+                return View();
             }
             else
             {
@@ -168,37 +172,6 @@ namespace text_loginWithBackgrount.Controllers
         }
 
 
-        /// <summary>
-        /// 執行授權店家登入
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public IActionResult StoreIndex(LoginPost value)
-        {
-            var user = (from a in _dbStudentSystemContext.T訂餐店家資料表s
-                        where a.電子信箱 == value.Account && a.密碼 == value.Password
-                        select a).FirstOrDefault();
-            if (user == null)
-            {
-                TempData["key"] = "alert('帳號密碼錯誤')";
-                return View();
-            }
-            else
-            {
-                var claims = new List<Claim>
-                {
-                   new Claim(ClaimTypes.Name, user.店家名稱),
-                   new Claim("FullName", user.店家名稱),
-                   new Claim("teacherID", user.店家id.ToString()),
-                   new Claim(ClaimTypes.Role,"store")
-                };
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-                return RedirectToAction("Index", "StoreBackground");
-                //return Ok();
-            }
-        }
         /// <summary>
         /// 老師重置密碼頁面
         /// </summary>
@@ -334,21 +307,12 @@ namespace text_loginWithBackgrount.Controllers
             }
         }
 
-        /// <summary>
-        /// 登入的密碼驗證 通用
-        /// </summary>
-        /// <returns>正確是回傳 true。</returns>
-        private bool VerifyPassword(string dbPassword, string dbSalt, string inputPassword)
-        {
-            IRegistrationEncryptor encryptor = EncryptorFactory.CreateEncryptor();
-            string hashedPassword = encryptor.HashPassword(inputPassword, dbSalt);
-            return dbPassword == hashedPassword;
-        }
 
         public IActionResult StudentForgetPassword()
         {
             return View();
         }
+
 
         /// <summary>
         /// 學生的忘記密碼寄信token
@@ -461,29 +425,34 @@ namespace text_loginWithBackgrount.Controllers
 
                 var emailClaim = tokenClaims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Email)?.Value;
                 var roleClaim = tokenClaims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-                ViewBag.emailClaim = emailClaim;
-                ViewBag.roleClaim = roleClaim;
+                TempData["emailClaim"] = emailClaim;
+                TempData["roleClaim"] = roleClaim;
 
                 Response.Headers.Add("Authorization", "Bearer " + token);
                 return RedirectToAction("StudentResetPassword");
-                //return Ok(tokenClaims);
             }
             catch (SecurityTokenException ex)
             {
                 // 處理驗證失敗的情況，例如返回錯誤訊息
                 return BadRequest("Token 驗證逾期或是錯誤，請再試一次.");
             }
-
-
         }
 
 
+        /// <summary>
+        /// 學生修改密碼頁
+        /// </summary>
+        /// <returns></returns>
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult StudentResetPassword()
         {
             return View();
         }
 
+        /// <summary>
+        /// 學生修改密碼頁實作
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult StudentResetPassword(string email,string password)
@@ -508,6 +477,18 @@ namespace text_loginWithBackgrount.Controllers
 
 
         /// <summary>
+        /// 登入的密碼驗證 通用
+        /// </summary>
+        /// <returns>正確是回傳 true。</returns>
+        private bool VerifyPassword(string dbPassword, string dbSalt, string inputPassword)
+        {
+            IRegistrationEncryptor encryptor = EncryptorFactory.CreateEncryptor();
+            string hashedPassword = encryptor.HashPassword(inputPassword, dbSalt);
+            return dbPassword == hashedPassword;
+        }
+
+
+        /// <summary>
         /// 帳號登出
         /// </summary>
         /// <returns></returns>
@@ -516,6 +497,40 @@ namespace text_loginWithBackgrount.Controllers
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Template");
         }
+
+
+        /// <summary>
+        /// 執行授權店家登入
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult StoreIndex(LoginPost value)
+        {
+            var user = (from a in _dbStudentSystemContext.T訂餐店家資料表s
+                        where a.電子信箱 == value.Account && a.密碼 == value.Password
+                        select a).FirstOrDefault();
+            if (user == null)
+            {
+                TempData["key"] = "alert('帳號密碼錯誤')";
+                return View();
+            }
+            else
+            {
+                var claims = new List<Claim>
+                {
+                   new Claim(ClaimTypes.Name, user.店家名稱),
+                   new Claim("FullName", user.店家名稱),
+                   new Claim("teacherID", user.店家id.ToString()),
+                   new Claim(ClaimTypes.Role,"store")
+                };
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+                return RedirectToAction("Index", "StoreBackground");
+                //return Ok();
+            }
+        }
+
 
         /// <summary>
         /// 執行忘記密碼的JWT認證
@@ -562,6 +577,7 @@ namespace text_loginWithBackgrount.Controllers
                 return token;
             }
         }
+
         /// <summary>
         /// 執行確認授權還沒到期，完成修改密碼
         /// </summary>
