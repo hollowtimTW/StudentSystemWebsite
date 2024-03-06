@@ -572,6 +572,46 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
 
             return Ok(data);
         }
+        public IActionResult ReviewExcellentRatio(int id)
+        {
+            var orderCount = _myDBContext.T訂餐訂單詳細資訊表s.Where(a => a.店家id == id).Count();
+
+            var totalStars = (from item in _myDBContext.T訂餐訂單詳細資訊表s
+                             join a in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals a.訂單id
+                             join b in _myDBContext.T訂餐評論表s on a.訂單id equals b.訂單id
+                             where item.店家id == id && Convert.ToInt32(b.滿意度星數) >= 4
+                             select b).Count();
+            var hotmeal = from item in _myDBContext.T訂餐訂單詳細資訊表s
+                          join a in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals a.訂單id
+                          join b in _myDBContext.T訂餐評論表s on a.訂單id equals b.訂單id
+                          join c in _myDBContext.T訂餐餐點資訊表s on item.餐點id equals c.餐點id
+                          where item.店家id == id && Convert.ToInt32(b.滿意度星數) > 4
+                          group c by c.餐點名稱 into g
+                          select new
+                          {
+                              餐點名稱 = g.Key,
+                              筆數 = g.Count()
+                          };
+            var icemeal = from item in _myDBContext.T訂餐訂單詳細資訊表s
+                          join a in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals a.訂單id
+                          join b in _myDBContext.T訂餐評論表s on a.訂單id equals b.訂單id
+                          join c in _myDBContext.T訂餐餐點資訊表s on item.餐點id equals c.餐點id
+                          where item.店家id == id && Convert.ToInt32(b.滿意度星數) <= 3
+                          group c by c.餐點名稱 into g
+                          select new
+                          {
+                              餐點名稱 = g.Key,
+                              筆數 = g.Count()
+                          };
+
+            var dataobject =new{
+                總筆數= orderCount,
+                優良筆數= totalStars,
+                最熱門菜單= hotmeal,
+                最冷門菜單= icemeal
+            };
+            return Ok(dataobject);
+        }
         // https://localhost:7150/tOrder_StoreAPI/bestStoreTop5
     }
 }
