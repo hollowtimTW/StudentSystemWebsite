@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using text_loginWithBackgrount.Areas.question_bank.Mongodb;
 using text_loginWithBackgrount.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +18,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddControllers(); //向DI容器註冊控制器所需的服務
 builder.Services.AddDbContext<studentContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("StudentDB")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Azure")));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -58,6 +59,12 @@ builder.Services.AddSession(options =>
 });
 builder.Services.AddTransient<IEmailSender, Emailsender>();
 builder.Services.AddControllersWithViews();
+
+
+// MongoDb
+builder.Services.Configure<MongoDbCollectionSettings>(
+    builder.Configuration.GetSection("MongoDb"));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

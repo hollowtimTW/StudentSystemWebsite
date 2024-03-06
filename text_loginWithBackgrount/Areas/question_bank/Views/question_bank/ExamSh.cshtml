@@ -127,7 +127,7 @@
 
         // 更新表格資料
         function updateDataTable() {
-            const dt = $('#exam_table').DataTable();
+           
             $('#exam_table').DataTable().destroy()
             $('#exam_table').DataTable({
                 autoWidth: false,
@@ -154,8 +154,7 @@
                         }                       
                     }       
                 ],
-                order: [],
-                dom: 'lrtip',
+                dom: 'lrtipf',
                 fixedHeader: {
                     header: true
                 },
