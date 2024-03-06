@@ -553,6 +553,25 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             var data= _myDBContext.T訂餐口味總表s.Select(a=>a.風味名稱).ToList();
             return Ok(data);
         }
+        /// <summary>
+        /// 回傳找出店家中銷售最高的前五名菜單
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult topfivemenu(int id) 
+        {
+            var data = (from item in _myDBContext.T訂餐訂單詳細資訊表s
+                       join a in _myDBContext.T訂餐店家資料表s on item.店家id equals a.店家id
+                       join b in _myDBContext.T訂餐餐點資訊表s on item.餐點id equals b.餐點id
+                       where a.店家id == id
+                       group item by b into g
+                       select new
+                       {
+                           餐點名稱 = g.Key.餐點名稱,
+                           銷售數量 = g.Sum(x => x.餐點數量)
+                       }).OrderByDescending(a=>a.銷售數量).Take(5).ToList();
+
+            return Ok(data);
+        }
         // https://localhost:7150/tOrder_StoreAPI/bestStoreTop5
     }
 }
