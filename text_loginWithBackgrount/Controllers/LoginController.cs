@@ -153,8 +153,7 @@ namespace text_loginWithBackgrount.Controllers
 
             if (user == null || !VerifyPassword(user.密碼, user.Salt, value.Password))
             {
-                TempData["key"] = "alert('帳號密碼錯誤')";
-                return View();
+                return BadRequest(new { errorMessage = "帳號密碼錯誤。" });
             }
             else
             {
@@ -167,7 +166,7 @@ namespace text_loginWithBackgrount.Controllers
                 };
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-                return Ok();
+                return Ok(new { successMessage = "註冊成功！" });
             }
         }
 
@@ -201,21 +200,21 @@ namespace text_loginWithBackgrount.Controllers
             if (!ModelState.IsValid)
             {
                 //return BadRequest(new { errorMessage = "註冊失敗，請檢查您的輸入。" });
-                TempData["key"] = "alert('註冊失敗，請檢查您的輸入。')";
+                TempData["teacherIndexMessage"] = "alert('註冊失敗，請檢查您的輸入。')";
                 return View("TeacherIndex");
             }
 
             if (memberRegisterinfo.信箱 == null || memberRegisterinfo.信箱 == "")
             {
                 //return BadRequest(new { errorMessage = "請填入正確信箱。" });
-                TempData["key"] = "alert('請填入正確信箱。')";
+                TempData["teacherIndexMessage"] = "alert('請填入正確信箱。')";
                 return View("TeacherIndex");
             }
 
             if (CheckEmailAvailability(memberRegisterinfo.信箱))
             {
                 //return BadRequest(new { errorMessage = "信箱重複。" });
-                TempData["key"] = "alert('信箱重複。')";
+                TempData["teacherIndexMessage"] = "alert('信箱重複。')";
                 return View("TeacherIndex");
             }
 
@@ -259,7 +258,7 @@ namespace text_loginWithBackgrount.Controllers
             await _dbStudentSystemContext.SaveChangesAsync();
 
             //return Ok(new { successMessage = "註冊成功！" });
-            TempData["key"] = "alert('註冊成功！')";
+            TempData["teacherIndexMessage"] = "alert('註冊成功！')";
             return View("TeacherIndex");
         }
 
@@ -289,7 +288,7 @@ namespace text_loginWithBackgrount.Controllers
 
             if (user == null || !VerifyPassword(user.密碼, user.Salt, value.Password))
             {
-                TempData["key"] = "alert('帳號密碼錯誤')";
+                TempData["teacherIndexMessage"] = "alert('帳號密碼錯誤')";
                 return View();
             }
             else
@@ -313,7 +312,6 @@ namespace text_loginWithBackgrount.Controllers
             return View();
         }
 
-
         /// <summary>
         /// 學生的忘記密碼寄信token
         /// </summary>
@@ -335,7 +333,6 @@ namespace text_loginWithBackgrount.Controllers
                 {
                     new Claim(JwtRegisteredClaimNames.Email, user.信箱.ToString()),
                     new Claim(ClaimTypes.Role,"student"),
-
                 };
 
                 //取出appsettings.json裡的KEY處理
@@ -347,7 +344,7 @@ namespace text_loginWithBackgrount.Controllers
                     issuer: _configuration["JWT:Issuer"],
                     audience: _configuration["JWT:Audience"],
                     claims: claims,
-                    expires: DateTime.Now.AddMinutes(1),
+                    expires: DateTime.Now.AddMinutes(3),
                     signingCredentials: new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256)
                 );
 
@@ -356,7 +353,7 @@ namespace text_loginWithBackgrount.Controllers
 
                 //產生網址
                 string applicationUrl = "https://" + HttpContext.Request.Host.Value;
-                applicationUrl += "/Login/StudentTokenConrtol?token=" + token;
+                applicationUrl += "/Login/StudentResetPassword?token=" + token;
 
 
 
@@ -397,8 +394,13 @@ namespace text_loginWithBackgrount.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult StudentTokenConrtol(string token)
+        public IActionResult StudentResetPassword(string token) //StudentTokenConrtol(string token)
         {
+            if (token == null) {
+                return View();
+            }
+
+
             // 使用 JWT Security Token Handler
             var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -425,29 +427,30 @@ namespace text_loginWithBackgrount.Controllers
 
                 var emailClaim = tokenClaims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Email)?.Value;
                 var roleClaim = tokenClaims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+
+                //把需要的資料丟到前台
                 TempData["emailClaim"] = emailClaim;
                 TempData["roleClaim"] = roleClaim;
+                TempData["token"] = token;
 
-                Response.Headers.Add("Authorization", "Bearer " + token);
-                return RedirectToAction("StudentResetPassword");
+                return View();
             }
             catch (SecurityTokenException ex)
             {
-                // 處理驗證失敗的情況，例如返回錯誤訊息
+                // 驗證失敗 這邊就丟一行字，頁面再說
                 return BadRequest("Token 驗證逾期或是錯誤，請再試一次.");
             }
         }
 
 
-        /// <summary>
-        /// 學生修改密碼頁
-        /// </summary>
-        /// <returns></returns>
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public IActionResult StudentResetPassword()
-        {
-            return View();
-        }
+        ///// <summary>
+        ///// 學生修改密碼頁
+        ///// </summary>
+        ///// <returns></returns>
+        //public IActionResult StudentResetPassword()
+        //{
+        //    return View();
+        //}
 
         /// <summary>
         /// 學生修改密碼頁實作
@@ -455,9 +458,9 @@ namespace text_loginWithBackgrount.Controllers
         /// <returns></returns>
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public IActionResult StudentResetPassword(string email,string password)
+        public IActionResult StudentResetGo(PasswordConfirmViewModel pcc)
         {
-            var user = _dbStudentSystemContext.T會員學生s.SingleOrDefault(a => a.信箱 == email);
+            var user = _dbStudentSystemContext.T會員學生s.SingleOrDefault(a => a.信箱 == pcc.email);
             if (user == null)
             {
                 return BadRequest(new { errorMessage = "沒有這個信箱。" });
@@ -465,7 +468,7 @@ namespace text_loginWithBackgrount.Controllers
             else
             {
                 IRegistrationEncryptor encryptor = EncryptorFactory.CreateEncryptor();
-                (string _hashPassword, string _salt) = encryptor.EncryptPassword(password);
+                (string _hashPassword, string _salt) = encryptor.EncryptPassword(pcc.password);
 
                 user.Salt = _salt;
                 user.密碼 = _hashPassword;
