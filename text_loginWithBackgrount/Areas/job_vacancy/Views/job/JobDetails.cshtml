@@ -1,6 +1,7 @@
 ﻿@model JobDetailViewModel
 @{
     ViewData["Title"] = "職缺詳細頁";
+    ViewData["StudentId"] = @User?.FindFirst("StudentId")?.Value;
 }
 @section BreadcrumbsSection {
     <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
@@ -30,9 +31,9 @@
     </style>
 }
 
-<!-- Modal -->
+<!-- 應徵 Modal -->
 <div class="modal fade" id="applyModal" tabindex="-1" aria-labelledby="applyModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="applyModalLabel">發送應徵信</h4>
@@ -46,9 +47,9 @@
                 <button type="button" class="btn btn-normal">
                     <a asp-area="job_vacancy" asp-controller="Job" asp-action="Index">確認送出</a>
                 </button>
-                <button type="button" class="btn btn-preview">
+                @* <button type="button" class="btn btn-preview">
                     <a asp-area="job_vacancy" asp-controller="Job" asp-action="ResumePreview" target="_blank">送出前預覽</a>
-                </button>
+                </button> *@
             </div>
         </div>
     </div>
@@ -221,16 +222,13 @@
     <script src="~/js/job_vacancy/jobcommon.js"></script>
     <script>
 
-
         function popup_apply(studentId) {
-
+            return console.log(studentId);
             const switchContext = $("#switch_context");
-            const applyUrl = "/job_vacancy/jobapi/GetResumeTitles" + studentId;
-
-            //return console.log("呼叫成功" + studentId);
             $.ajax({
                 type: 'GET',
-                url: applyUrl,
+                url: '/job_vacancy/jobapi/GetResumeTitles/',
+                data: { studentID: studentId, jobTitle: '@Html.Raw(Model.JobTitle)' },
                 success: function (result) {
                     console.log('Ajax request success');
                     // 清空並設置內容
