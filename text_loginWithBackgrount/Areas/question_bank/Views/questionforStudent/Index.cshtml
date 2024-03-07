@@ -5,6 +5,52 @@
 @* @User?.FindFirst("FullName")?.Value 也能抓到使用者的名稱*@
 @* @User?.FindFirst("StudentId")?.Value 這能抓到使用者的PK *@
 
+
+
+@section Styles
+{
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+    <link href="~/css/datatablesinline.min.css" rel="stylesheet" />
+    <style>
+        article{
+            height:100%;
+        }
+
+        #table-container{
+            display: flex;
+            
+        }
+
+        .tcd1 {
+            margin: 10px;
+            text-align: center;
+            align-content: center;
+            justify-content: center;
+            flex: 1 1 auto;
+        }
+
+        .tcd2{
+            font-size:22px
+        }
+
+   
+        .s-table{
+            border-collapse: collapse;
+            background-color: #C4E1E1;
+            font-weight: 700;
+            width: 100%;
+            margin: 10px;
+            border: 3px #cccccc solid;
+            text-align: center;
+        }
+    </style>
+}
+
+
+
+
+
+
 @section BreadcrumbsSection {
     <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
     <div class="breadcrumbs">
@@ -60,7 +106,7 @@
                             <a asp-area="video_management" asp-controller="videoforStudent" asp-action="Index" class="list-group-item list-group-item-action m-2 border border-3 text-center">影片教材</a>
                             <a asp-area="ordering_system" asp-controller="orderforStudent" asp-action="Index" class="list-group-item list-group-item-action m-2 border border-3 text-center">餐點訂單管理</a>
                             <a asp-area="job_vacancy" asp-controller="jobforStudent" asp-action="Index" class="list-group-item list-group-item-action m-2 border border-3 text-center">我的履歷</a>
-                            <a asp-area="question_bank" asp-controller="questionforStudent" asp-action="Index" class="list-group-item list-group-item-action m-2 border border-3 text-center active">線上考試</a>
+                            <a asp-area="question_bank" asp-controller="questionforStudent" asp-action="Index" class="list-group-item list-group-item-action m-2 border border-3 text-center active">班級成員</a>
                             <a asp-area="" asp-controller="Login" asp-action="logout" class="list-group-item list-group-item-action m-2 border border-3 text-center text-danger">登出</a>
                         </div>
                     </div><!-- End sidebar categories-->
@@ -70,10 +116,100 @@
             <div class="col-lg-8">
                 <!-- 內容 -->
                 <article class="blog-details">
-                    <h2 class="title">線上考試</h2>
+                    <h2 class="title">班級成員</h2>
+                    <hr />
+
+                    <div id="table-container">
+                        <div class="tcd1">
+                            <div class="tcd2">學生</div>
+                            <table id="std-table" class="s-table table table-light table-striped table-bordered">
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+         
+
+                        <div class="tcd1">
+                            <div class="tcd2">老師</div>
+                            <table id="tea-table" class="s-table table table-light table-striped table-bordered">
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+           
+                 
+                    </div>
+                    
+
 
                 </article><!-- End blog post -->
             </div>
         </div>
     </div>
 </section><!-- End Blog Details Section -->
+
+
+
+@section Scripts {
+    <script src="~/lib/datatables/js/jquery.datatables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            $.ajax({
+                type: 'GET',
+                url: '/Api/Chat/GetAllStudents/6',
+                success: function (data) {
+                    console.log(data);
+
+                    var tbody = $('#std-table tbody');
+                    tbody.empty();
+
+                    for (var i = 0; i < data.length; i++) {
+                        var row = '<tr>';
+                        row += '<td hidden>' + data[i].sId + '</td>';
+                        row += '<td>' + data[i].sName + '</td>';
+                        row += '<td><button id="btnedit" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#staticBackdrop"> 發送訊息 </ button ></td>';
+                        row += '</tr>';
+                        tbody.append(row);
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+
+
+
+            $.ajax({
+                type: 'GET',
+                url: '/Api/Chat/GetAllTeachers/3',
+                success: function (data) {
+                    console.log(data);
+
+                    var tbody = $('#tea-table tbody');
+                    tbody.empty();
+
+                    for (var i = 0; i < data.length; i++) {
+                        var row = '<tr>';
+                        row += '<td hidden>' + data[i].tId + '</td>';
+                        row += '<td>' + data[i].tSubName + '</td>';
+                        row += '<td>' + data[i].tName + '</td>';
+                        row += '<td><button id="btnedit" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#staticBackdrop"> 發送訊息 </ button ></td>';
+                        row += '</tr>';
+                        tbody.append(row);
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+
+
+        });
+
+
+
+    </script>
+}
+
+

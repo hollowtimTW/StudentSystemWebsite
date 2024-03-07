@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using text_loginWithBackgrount.Areas.question_bank.Mongodb;
 using text_loginWithBackgrount.Data;
 using text_loginWithBackgrount.Areas.course_management.Hubs;
 
@@ -20,7 +21,7 @@ builder.Services.AddControllers(); //向DI容器註冊控制器所需的服務
 builder.Services.AddSignalR(); // 將 SignalR 服務添加到 DI 容器中
 
 builder.Services.AddDbContext<studentContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("StudentDB")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Azure")));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -61,6 +62,12 @@ builder.Services.AddSession(options =>
 });
 builder.Services.AddTransient<IEmailSender, Emailsender>();
 builder.Services.AddControllersWithViews();
+
+
+// MongoDb
+builder.Services.Configure<MongoDbCollectionSettings>(
+    builder.Configuration.GetSection("MongoDb"));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
