@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
 {
@@ -34,10 +36,132 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         }
 
         /// <summary>
+        /// 新增履歷1：返回視圖。
+        /// </summary>
+        // GET: job_vacancy/jobforStudent/Create/5
+        public async Task<IActionResult> Create(int studentID)
+        {
+            try
+            {
+                var theStudent = await _context.T會員學生s.FirstOrDefaultAsync(data => data.學生id == studentID);
+
+                if (theStudent != null)
+                {
+                    var viewModel = new ResumeCreateViewModel
+                    {
+                        StudentID = theStudent.學生id,
+                        Name = theStudent.姓名,
+                        ResumeTitle = theStudent.姓名 + "的履歷",
+                        Photo = theStudent.圖片,
+                        Gender = theStudent.性別,
+                        Birth = theStudent.生日,
+                        Email = theStudent.信箱,
+                        Phone = theStudent.手機,
+                        School = theStudent.學校,
+                        Department = theStudent.科系,
+                        Academic = theStudent.學位,
+                        Graduated = theStudent.畢肄
+                    };
+
+                    return PartialView("_CreatePartial", viewModel);
+                }
+                else
+                {
+                    // 如果學生不存在，返回查無此學生
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                // 如果發生異常，返回問題詳細訊息
+                return Problem(detail: ex.Message + "異常");
+            }
+        }
+
+        /// <summary>
+        /// 新增履歷2：將前端傳回的資料進行驗證，通過後存入資料庫。
+        /// </summary>
+        /// <param name="viewModel"></param>
+        // POST: job_vacancy/jobforStudent/CreateResume
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateResume(
+            [Bind("StudentID, Name, Birth, Photo, Gender, Phone, Email, School, Academic, Department, Graduated, ResumeTitle, ResumeStatus, HopeJobTitle, HopeSalary, HopeLocation, Skill, Language, WorkExperience, WorkType, WorkTime, WorkShift, Autobiography")] ResumeCreateViewModel viewModel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    //更新學生資料
+                    var theStudent = await _context.T會員學生s.FindAsync(viewModel.StudentID);
+                    if (theStudent == null)
+                    {
+                        return NotFound();
+                    }
+
+                    byte[]? photoData = await ReadUploadImage(Request.Form.Files["Photo"], null);
+
+                    theStudent.姓名 = viewModel.Name;
+                    theStudent.圖片 = photoData;
+                    theStudent.性別 = viewModel.Gender;
+                    theStudent.手機 = viewModel.Phone;
+                    theStudent.生日 = viewModel.Birth;
+                    theStudent.信箱 = viewModel.Email;
+                    theStudent.學校 = viewModel.School;
+                    theStudent.學位 = viewModel.Academic;
+                    theStudent.科系 = viewModel.Department;
+                    theStudent.畢肄 = viewModel.Graduated;
+                    theStudent.修改日期 = DateTime.Now;
+                    _context.Update(theStudent);
+
+                    // 新增履歷資料
+                    var newResume = new T工作履歷資料
+                    {
+                        F學員Id = viewModel.StudentID,
+                        F履歷名稱 = viewModel.ResumeTitle,
+                        F履歷狀態 = "公開",
+                        F專長技能 = viewModel.Skill,
+                        F語文能力 = viewModel.Language,
+                        F有無工作經驗 = viewModel.WorkExperience,
+                        F工作性質 = viewModel.WorkType,
+                        F工作時段 = viewModel.WorkTime,
+                        F配合輪班 = viewModel.WorkShift,
+                        F希望職稱 = viewModel.HopeJobTitle,
+                        F希望薪水待遇 = viewModel.HopeSalary,
+                        F希望工作地點 = viewModel.HopeLocation,
+                        F自傳 = viewModel.Autobiography,
+                        F建立時間 = DateTime.Now,
+                        F最後更新時間 = DateTime.Now,
+                        F刪除狀態 = "0",
+                        F刪除或關閉原因 = "0"
+                    };
+
+                    // 將新的履歷添加到資料庫中
+                    _context.T工作履歷資料s.Add(newResume);
+                    await _context.SaveChangesAsync();
+
+                    return Json(new { redirectUrl = Url.Action("Index", "Resume") });
+
+                }
+                else
+                {
+                    string errorMessage = string.Join("；", ModelState.Values
+                                        .SelectMany(v => v.Errors)
+                                        .Select(e => e.ErrorMessage));
+                    return Json(new { success = false, message = errorMessage });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "發生異常：" + ex.Message });
+            }
+        }
+
+        /// <summary>
         /// 編輯履歷1：根據履歷編號提取相應的資料，並返回視圖。
         /// </summary>
         /// <param name="resumeID">履歷ID</param>
-        // GET: job_vacancy/Resume/Edit/5
+        // GET: job_vacancy/jobforStudent/Edit/5
         public async Task<IActionResult> EditResume(int resumeID)
         {
             var thisResume = await _context.T工作履歷資料s.FindAsync(resumeID);
@@ -89,7 +213,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         /// 根據學生編號顯示照片。
         /// </summary>
         /// <param name="studentID">學生ID</param>
-        // GET: job_vacancy/Resume/ShowPhoto/5
+        // GET: job_vacancy/jobforStudent/ShowPhoto/5
         public async Task<FileResult> ShowPhoto(int studentID)
         {
             var student = await _context.T會員學生s.FindAsync(studentID);

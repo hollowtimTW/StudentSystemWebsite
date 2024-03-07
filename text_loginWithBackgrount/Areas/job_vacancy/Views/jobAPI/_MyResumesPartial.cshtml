@@ -69,6 +69,25 @@
     </div>
 </div>
 
+<!-- Modal 互動視窗：新增履歷 -->
+<div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" id="createModal" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createModalLabel">新增履歷</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="btnCloseCreate"></button>
+            </div>
+            <div class="modal-body" id="resume_context">
+                <!-- 互動視窗內容 -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btnCancelCreate">取消編輯</button>
+                <input type="submit" class="btn btn-submit" id="btnSummitCreate" value="儲存" />
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- Modal 互動視窗：編輯履歷 -->
 <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" id="editModal" aria-labelledby="editModalLabel" aria-hidden="true">
