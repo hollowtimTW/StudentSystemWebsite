@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using text_loginWithBackgrount.Areas.video_management.Repositories;
 using text_loginWithBackgrount.Areas.question_bank.Mongodb;
 using text_loginWithBackgrount.Data;
 using text_loginWithBackgrount.Areas.course_management.Hubs;
@@ -61,6 +62,7 @@ builder.Services.AddSession(options =>
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // 要求 Session Cookie 僅透過 HTTPS 傳輸
 });
 builder.Services.AddTransient<IEmailSender, Emailsender>();
+builder.Services.AddTransient<IHomeRepository, HomeRepository>();//胡洧銘新增的地方(03/07)
 builder.Services.AddControllersWithViews();
 
 

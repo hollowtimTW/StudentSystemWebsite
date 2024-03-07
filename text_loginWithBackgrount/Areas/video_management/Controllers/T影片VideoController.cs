@@ -49,8 +49,11 @@ namespace Class_system_Backstage_pj.Areas.video_management.Controllers
                 _studentContext.T影片OrderDetails.RemoveRange(dependentData);
                 _studentContext.SaveChanges();
 
-                // 再刪除主要的資料
-                _studentContext.T影片Videos.Remove(video);
+                var deletedate = _studentContext.T影片Genres.Where(x => x.Id == id);
+                _studentContext.T影片Genres.RemoveRange(deletedate);
+                _studentContext.SaveChanges();
+				// 再刪除主要的資料
+				_studentContext.T影片Videos.Remove(video);
                 _studentContext.SaveChanges();
 
                 return Json(new { success = true, message = "刪除成功" });

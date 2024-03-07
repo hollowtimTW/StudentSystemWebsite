@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Class_system_Backstage_pj.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace text_loginWithBackgrount.Data
@@ -9,5 +10,6 @@ namespace text_loginWithBackgrount.Data
             : base(options)
         {
         }
+      
     }
 }

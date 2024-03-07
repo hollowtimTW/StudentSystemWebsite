@@ -11,7 +11,11 @@ public partial class T影片Order
 
     public int FStudentId { get; set; }
 
-    public DateTime FDate { get; set; }
+    public int FOrderOrderStatusId { get; set; }
+
+    public DateTime? CreateDate { get; set; }
+
+    public bool? IsDeleted { get; set; }
 
     public virtual T會員學生 FStudent { get; set; }
 
