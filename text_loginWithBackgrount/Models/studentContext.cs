@@ -1051,6 +1051,9 @@ public partial class studentContext : DbContext
             entity.ToTable("t訂餐_餐點資訊表");
 
             entity.Property(e => e.餐點id).HasColumnName("餐點ID");
+            entity.Property(e => e.上架)
+                .HasMaxLength(10)
+                .IsFixedLength();
             entity.Property(e => e.店家id).HasColumnName("店家ID");
             entity.Property(e => e.餐點名稱).HasMaxLength(50);
             entity.Property(e => e.餐點定價).HasColumnType("money");
