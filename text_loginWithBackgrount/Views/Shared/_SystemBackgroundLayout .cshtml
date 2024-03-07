@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@{
+    var authenticateResult = await Context.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+}
+<!DOCTYPE html>
 
 <html lang="en">
 
@@ -91,9 +96,24 @@
             <!-- 通知訊息 -->
 
             <!-- 使用者頭像 -->
-            <a href="#" class="profile">
-                <img src="~/images/user.jpg" />
-            </a>
+            @if (authenticateResult.Succeeded)
+            {
+                @if (authenticateResult.Principal.IsInRole("teacher"))
+                {
+                    <a href="#" class="profile1">
+                        <img src="~/images/user.jpg" id="profileImage" style="width: 50px; height: 50px; border-radius: 50%;" />
+                    </a>
+                    <script>
+                        loadProfileImage();
+                    </script>
+                }
+            }
+            else
+            {
+                <a href="#" class="profile2">
+                    <img src="~/images/user.jpg" />
+                </a>
+            }
             <!-- 使用者頭像 -->
             <!-- 版面頁上方結束 -->
         </nav>
@@ -118,8 +138,22 @@
     @* <script src="~/js/index.js" asp-append-version="true"></script> *@
     <script src="~/Backstage/index.min.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+        <script>    
 
-   
+        function loadProfileImage() {
+            var teacherId = '@User?.FindFirst("TeacherId")?.Value';
+            $.ajax({
+                url: '/Login/GetTeacherImage/' + teacherId,
+                type: 'GET',
+                success: function (data) {
+                    $('#profileImage').attr('src', 'data:image/png;base64,' + data);
+                },
+                error: function (xhr, status, error) {
+                    console.log('錯誤：' + error);
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>

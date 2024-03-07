@@ -5,15 +5,18 @@
 
     string layout = "_Layout";
 
-    if (controllerName == "Login" && actionName == "resetPassword")
-    {
-        layout = "_Layout";
-    }
-    else if (controllerName == "Login" && (actionName == "StudentIndex" || actionName == "StudentRegister"))
-    {
-        layout = "_Layout";
-    }
+    string[] allowedActions = { 
+        "resetPassword", 
+        "StudentIndex", 
+        "StudentRegister",
+        "StudentForgetPassword",
+        "StudentResetPassword"
+    };
 
+    if (controllerName == "Login" && allowedActions.Contains(actionName))
+    {
+        layout = "_Layout";
+    }
     else if (controllerName == "Login")
     {
         layout = null;
