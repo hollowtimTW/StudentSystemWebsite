@@ -9,7 +9,7 @@
                 <div class="row d-flex justify-content-center">
                     <div class="col-lg-6 text-center">
                         <h2>@ViewData["Title"]</h2>
-                        <p>Odio et unde deleniti. Deserunt numquam exercitationem. Officiis quo odio sint voluptas consequatur ut a odio voluptatem. Sit dolorum debitis veritatis natus dolores. Quasi ratione sint. Sit quaerat ipsum dolorem.</p>
+                        <p>來場同儕間的激烈溝通吧！</p>
                     </div>
                 </div>
             </div>
@@ -25,11 +25,64 @@
         </nav>
     </div>
 }
-<section id="contact" class="contact">
+
+<style>
+    .img-center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+
+<section id="portfolio" class="portfolio">
     <div class="container" data-aos="fade-up">
+        
         <div class="section-header">
-            <h2>標題</h2>
-            <p>Nulla dolorum nulla nesciunt rerum facere sed ut inventore quam porro nihil id ratione ea sunt quis dolorem dolore earum</p>
+            <h2>科目看板</h2>
+        </div>
+
+        <div class="portfolio-isotope" data-portfolio-filter="*" data-portfolio-layout="masonry" data-portfolio-sort="original-order" data-aos="fade-up" data-aos-delay="100">
+            <div class="row gy-4 portfolio-container" id="subject">
+
+                <div class="col-xl-4 col-md-6 portfolio-item">
+                    <div class="portfolio-wrap" data-id="">
+                        <a href="" data-gallery="portfolio-gallery-app" style="display: block; width: 400px; height: 300px;">
+                            <img src="*" class="img-fluid" style="width: 100%; height: 100%; object-fit: contain;">
+                        </a>
+                        <div class="portfolio-info">
+                            <h4>
+                                <a href="" title="More Details"></a>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 </section><!-- End Contact Section -->
+
+@section Scripts{
+    <script>
+        (async () => {
+            const url = '@Url.Content("~/WebApi/Subject")'
+            const request = await fetch(url);
+            const data = await request.json();
+            const datalist = data.map(a => `
+                    <div class="col-xl-4 col-md-6 portfolio-item">
+                      <div class="portfolio-wrap" data-id="${a.看板id}">
+                 <a href="/class_discuss/discuss/Articles?board_id=${a.看板id}" data-gallery="portfolio-gallery-app" style="display: block; width: 400px; height: 300px;">
+                         <img src="/images/t論壇/看板封面/${encodeURIComponent(a.名稱)}.png" class="img-fluid" style="width: 100%; height: 100%; object-fit: contain;">
+                            </a>
+                    <div class="portfolio-info">
+                        <h4>
+                <a href="/class_discuss/discuss/Articles?board_id=${a.看板id}" title="More Details">${a.名稱}</a>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+            `);
+            $('#subject').html(datalist);
+        })();
+    </script>
+}

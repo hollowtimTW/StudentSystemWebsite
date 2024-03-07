@@ -12,6 +12,17 @@ namespace text_loginWithBackgrount.Areas.class_discuss.Controllers
         {
             return View();
         }
+
+        public IActionResult Articles()
+        {
+            return View();
+        }
+
+        public IActionResult ArticleDetails()
+        {
+            return View();
+        }
+
         public IActionResult Announcement()
         {
             return View();
