@@ -2384,6 +2384,16 @@ section {
   font-size: 14px;
 }
 
+    /* 學生專區側邊欄的樣式 -------- */
+    .blog .sidebar .categories a {
+        border-radius: 15px;
+    }
+
+        .blog .sidebar .categories a.active {
+            background-color: var(--color-primary);
+        }
+    /* -------- 學生專區側邊欄的樣式 */
+
 .blog .sidebar .recent-posts .post-item+.post-item {
   margin-top: 15px;
 }

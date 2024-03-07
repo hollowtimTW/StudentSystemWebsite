@@ -1,3 +1,9 @@
+pre {
+    font-size: 20px;
+    font-weight: 500;
+    white-space: pre-wrap;
+}
+
 input[type="radio"]:checked,
 input[type="checkbox"]:checked {
     background-color: var(--color-primary);
@@ -21,18 +27,18 @@ input[type="checkbox"]:checked {
         background-color: rgba(0, 131, 116, 0.5);
     }
 
-.btn-hollow {
-    font-family: var(--font-primary);
-    font-weight: 600;
-    font-size: 16px;
-    letter-spacing: 1px;
-    color: var(--color-primary);
-    background-color: #fff;
-    border-radius: 10px;
-    transition: 0.3s;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
-    border: 2px solid var(--color-primary);
-}
+    .btn-hollow {
+        font-family: var(--font-primary);
+        font-weight: 600;
+        font-size: 16px;
+        letter-spacing: 1px;
+        color: var(--color-primary);
+        background-color: #fff;
+        border-radius: 10px;
+        transition: 0.3s;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+        border: 2px solid var(--color-primary);
+    }
 
     .btn-hollow:hover {
         background-color: var(--color-primary);
@@ -63,8 +69,6 @@ input[type="checkbox"]:checked {
     .modal-footer a:hover {
         color: var(--color-defalt);
     }
-
-
 
 .btn-circle {
     width: 38px;
@@ -125,7 +129,7 @@ input[type="checkbox"]:checked {
 }
 
     .Job-Vacancies .nav-item .active {
-        border-bottom: 2px solid var(--color-primary);
+        border-bottom: 3px solid var(--color-primary);
     }
 
 .Job-Vacancies .btn-detail {
@@ -224,10 +228,6 @@ input[type="checkbox"]:checked {
         font-weight: bold;
         border-bottom: 3px solid var(--color-primary)
     }
-
-.Job-Details .job-content p {
-    font-size: 18px;
-}
 
 .Job-Details .list-head h4 {
     font-weight: 600;
@@ -430,7 +430,7 @@ input[type="checkbox"]:checked {
 /* ================== 履歷編輯 ================= */
 
 .Resume-Edit {
-    margin:0;
+    margin: 0;
 }
 
     .Resume-Edit .dialog {
@@ -441,7 +441,7 @@ input[type="checkbox"]:checked {
         border-radius: 8px;
         box-shadow: 0 0 45px rgba(0, 0, 0, .08);
         transition: .5s;
-        width:auto;
+        width: auto;
     }
 
         .Resume-Edit .dialog div {
@@ -502,6 +502,7 @@ input[type="checkbox"]:checked {
     border-radius: 6px;
     box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.06);
 }
+
     .workExpList .exp-item {
         margin: 0;
         padding: 25px 20px 5px 30px;
@@ -514,14 +515,15 @@ input[type="checkbox"]:checked {
 /* todo--  CKEditor的相關樣式，待研究*/
 
 .document-editor {
-    border: 1px solid var(--ck-color-base-border);
-    border-radius: var(--ck-border-radius);
+    border: 1px solid lightgrey;
+    border-radius: 10px;
     /* Set vertical boundaries for the document editor. */
     max-height: 700px;
     /* This element is a flex container for easier rendering. */
     display: flex;
     flex-flow: column nowrap;
 }
+
 .document-editor__toolbar {
     /* Make sure the toolbar container is always above the editable. */
     z-index: 1;
@@ -546,8 +548,10 @@ input[type="checkbox"]:checked {
 
     .document-editor__editable-container .ck-editor__editable {
         /* Set the dimensions of the "page". */
-        width: 15.8cm;
-        min-height: 21cm;
+        /*width: 15.8cm;
+        min-height: 21cm;*/
+        width: auto;
+        min-height: 300px;
         /* Keep the "page" off the boundaries of the container. */
         padding: 1cm 2cm 2cm;
         border: 1px hsl( 0,0%,82.7% ) solid;

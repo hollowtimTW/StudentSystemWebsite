@@ -1,0 +1,45 @@
+﻿@model ApplyViewModel
+<style>
+    <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet"/>
+</style>
+
+<form>
+    <div class="row">
+        <div class="form-group mb-1">
+            <div class="control-label mb-2">應徵工作：<span>@Model.JobTitle</span></div>
+        </div>
+
+        <div class="form-group mb-4">
+            <div class="control-label col-lg-4 mb-2">選擇履歷：</div>
+            @if (Model.ResumeTitles != null && Model.ResumeTitles.Any() && Model.ResumeIDs != null)
+            {
+                @for (var i = 0; i < Model.ResumeTitles.Count; i++)
+                {
+                    var resumeTitle = Model.ResumeTitles[i];
+                    var resumeId = Model.ResumeIDs[i];
+                    var isChecked = i == 0 ? "checked" : ""; //預設第一個生成的radio為選取狀態
+
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="resumes" id="resume@(resumeId)" value="@resumeId" @isChecked>
+                        <label class="form-check-label" for="resume@(resumeId)">@resumeTitle</label>
+                    </div>
+                }
+                <!-- todo 履歷過多時會影響到視窗長度，考慮改成下拉選單，或者限制履歷數量 -->
+            }
+            else
+            {
+                <button type="button" class="btn btn-normal" id="btnCreate">
+                    <a asp-area="job_vacancy" asp-controller="jobforStudent" asp-action="Index" target="_blank" style="color:#fff">新增履歷</a>
+                </button>
+            }
+        </div>
+        <div class="form-group">
+            <div class="control-label mb-2">應徵信件內容：</div>
+            <textarea class="container-fluid">您好，希望能有參加面試的機會。</textarea>
+            <div class="d-flex justify-content-end">
+                <div>字數：<span id="word-count">0</span> / <span style="color:#f85a40">500</span></div>
+            </div>
+        </div>
+
+    </div>
+</form>
