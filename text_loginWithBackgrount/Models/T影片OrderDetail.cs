@@ -13,9 +13,9 @@ public partial class T影片OrderDetail
 
     public int FVideoId { get; set; }
 
-    public decimal FPrice { get; set; }
+    public double FUnitPrice { get; set; }
 
-    public string FType { get; set; }
+    public string FQuantity { get; set; }
 
     public virtual T影片Order FOrder { get; set; }
 

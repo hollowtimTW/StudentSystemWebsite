@@ -33,13 +33,17 @@ public partial class studentContext : DbContext
 
     public virtual DbSet<T工作職缺資料> T工作職缺資料s { get; set; }
 
+    public virtual DbSet<T影片CartDetail> T影片CartDetails { get; set; }
+
+    public virtual DbSet<T影片Genre> T影片Genres { get; set; }
+
     public virtual DbSet<T影片Order> T影片Orders { get; set; }
 
     public virtual DbSet<T影片OrderDetail> T影片OrderDetails { get; set; }
 
-    public virtual DbSet<T影片Tag中繼表> T影片Tag中繼表s { get; set; }
+    public virtual DbSet<T影片OrderStatus> T影片OrderStatuses { get; set; }
 
-    public virtual DbSet<T影片Tag表> T影片Tag表s { get; set; }
+    public virtual DbSet<T影片ShoppingCart> T影片ShoppingCarts { get; set; }
 
     public virtual DbSet<T影片Video> T影片Videos { get; set; }
 
@@ -476,6 +480,31 @@ public partial class studentContext : DbContext
                 .HasConstraintName("FK_tJobs_tCompany");
         });
 
+        modelBuilder.Entity<T影片CartDetail>(entity =>
+        {
+            entity.ToTable("t影片_CartDetail");
+
+            entity.Property(e => e.FVideoId).HasColumnName("fVideoId");
+
+            entity.HasOne(d => d.FVideo).WithMany(p => p.T影片CartDetails)
+                .HasForeignKey(d => d.FVideoId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_t影片_CartDetail_t影片_Video");
+
+            entity.HasOne(d => d.ShoppingCart).WithMany(p => p.T影片CartDetails)
+                .HasForeignKey(d => d.ShoppingCartId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_t影片_CartDetail_t影片_ShoppingCart");
+        });
+
+        modelBuilder.Entity<T影片Genre>(entity =>
+        {
+            entity.ToTable("t影片_Genre");
+
+            entity.Property(e => e.GenreName).HasMaxLength(50);
+        });
+        //胡洧銘有改03/07
+
         modelBuilder.Entity<T影片Order>(entity =>
         {
             entity.HasKey(e => e.FOrderId);
@@ -483,9 +512,7 @@ public partial class studentContext : DbContext
             entity.ToTable("t影片_Order");
 
             entity.Property(e => e.FOrderId).HasColumnName("fOrderId");
-            entity.Property(e => e.FDate)
-                .HasColumnType("datetime")
-                .HasColumnName("fDate");
+            entity.Property(e => e.FOrderOrderStatusId).HasColumnName("fOrder_OrderStatusId");
             entity.Property(e => e.FStudentId).HasColumnName("fStudentId");
 
             entity.HasOne(d => d.FStudent).WithMany(p => p.T影片Orders)
@@ -502,14 +529,12 @@ public partial class studentContext : DbContext
 
             entity.Property(e => e.FSeqNo).HasColumnName("fSeqNO");
             entity.Property(e => e.FOrderId).HasColumnName("fOrderId");
-            entity.Property(e => e.FPrice)
-                .HasColumnType("money")
-                .HasColumnName("fPrice");
-            entity.Property(e => e.FType)
+            entity.Property(e => e.FQuantity)
                 .IsRequired()
                 .HasMaxLength(10)
                 .IsFixedLength()
-                .HasColumnName("fType");
+                .HasColumnName("fQuantity");
+            entity.Property(e => e.FUnitPrice).HasColumnName("fUnitPrice");
             entity.Property(e => e.FVideoId).HasColumnName("fVideoId");
 
             entity.HasOne(d => d.FOrder).WithMany(p => p.T影片OrderDetails)
@@ -523,38 +548,33 @@ public partial class studentContext : DbContext
                 .HasConstraintName("FK_t影片_OrderDEtail_t影片_Video1");
         });
 
-        modelBuilder.Entity<T影片Tag中繼表>(entity =>
+        modelBuilder.Entity<T影片OrderStatus>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK_t影片_type中繼表");
+            entity
+                .HasNoKey()
+                .ToTable("t影片_OrderStatus");
 
-            entity.ToTable("t影片_tag中繼表");
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            entity.Property(e => e.StatusName)
+                .IsRequired()
+                .HasMaxLength(50);
 
-            entity.Property(e => e.FId).HasColumnName("fId");
-            entity.Property(e => e.FTagId).HasColumnName("fTagId");
-            entity.Property(e => e.FVideoId).HasColumnName("fVideoId");
-
-            entity.HasOne(d => d.FTag).WithMany(p => p.T影片Tag中繼表s)
-                .HasForeignKey(d => d.FTagId)
+            entity.HasOne(d => d.IdNavigation).WithMany()
+                .HasForeignKey(d => d.Id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_t影片_tag中繼表_t影片_Tag表");
-
-            entity.HasOne(d => d.FVideo).WithMany(p => p.T影片Tag中繼表s)
-                .HasForeignKey(d => d.FVideoId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_t影片_tag中繼表_t影片_Video");
+                .HasConstraintName("FK_t影片_OrderStatus_t影片_Order");
         });
 
-        modelBuilder.Entity<T影片Tag表>(entity =>
+        modelBuilder.Entity<T影片ShoppingCart>(entity =>
         {
-            entity.HasKey(e => e.FTagId).HasName("PK_tLabel小表");
+            entity.ToTable("t影片_ShoppingCart");
 
-            entity.ToTable("t影片_Tag表");
+            entity.Property(e => e.FStudentId).HasColumnName("fStudentId");
 
-            entity.Property(e => e.FTagId).HasColumnName("fTagId");
-            entity.Property(e => e.FTag)
-                .IsRequired()
-                .HasMaxLength(50)
-                .HasColumnName("fTag");
+            entity.HasOne(d => d.FStudent).WithMany(p => p.T影片ShoppingCarts)
+                .HasForeignKey(d => d.FStudentId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_t影片_ShoppingCart_t會員_學生");
         });
 
         modelBuilder.Entity<T影片Video>(entity =>
@@ -563,10 +583,9 @@ public partial class studentContext : DbContext
 
             entity.ToTable("t影片_Video");
 
-            entity.Property(e => e.FVideoId).HasColumnName("fVideoId");
-            entity.Property(e => e.FImagePath)
-                .HasMaxLength(500)
-                .HasColumnName("fImagePath");
+            entity.Property(e => e.FVideoId)
+                .ValueGeneratedNever()
+                .HasColumnName("fVideoId");
             entity.Property(e => e.FPrice)
                 .HasColumnType("money")
                 .HasColumnName("fPrice");
@@ -574,10 +593,14 @@ public partial class studentContext : DbContext
                 .IsRequired()
                 .HasMaxLength(500)
                 .HasColumnName("fURL");
+            entity.Property(e => e.FVideoName)
+                .HasMaxLength(100)
+                .HasColumnName("fVideoName");
             entity.Property(e => e.FVideoTitle)
                 .IsRequired()
                 .HasMaxLength(50)
                 .HasColumnName("fVideoTitle");
+            entity.Property(e => e.GenreId).ValueGeneratedOnAdd();
             entity.Property(e => e.科目id).HasColumnName("科目ID");
 
             entity.HasOne(d => d.科目).WithMany(p => p.T影片Videos)
@@ -1322,9 +1345,9 @@ public partial class studentContext : DbContext
 
         modelBuilder.Entity<T課程通知表>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("t課程_通知表");
+            entity.HasKey(e => e.訊息id);
+
+            entity.ToTable("t課程_通知表");
 
             entity.Property(e => e.接收者類型)
                 .IsRequired()
@@ -1340,7 +1363,6 @@ public partial class studentContext : DbContext
             entity.Property(e => e.發送訊息內容)
                 .IsRequired()
                 .HasMaxLength(500);
-            entity.Property(e => e.訊息id).ValueGeneratedOnAdd();
         });
 
         OnModelCreatingPartial(modelBuilder);

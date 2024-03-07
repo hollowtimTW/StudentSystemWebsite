@@ -26,6 +26,15 @@ namespace Class_system_Backstage_pj.Areas.video_management.Controllers
             });
             return Json(result);
         }
+        public IActionResult genreInformation() 
+        {
+            var result = _myDBContext.T影片Genres.Select(a => new
+            {
+                ID = a.Id,
+                title = a.GenreName
+            });
+            return Json(result);
+        }
         [HttpPost]
         public IActionResult createvideo(videocreatViewModel videocreatViewModel, IFormFile videoUrl)
         {
@@ -39,13 +48,16 @@ namespace Class_system_Backstage_pj.Areas.video_management.Controllers
                 {
                     videoUrl.CopyTo(system);
                 }
-                var memberEntity = new T影片Video
-                {
-                    FVideoTitle = videocreatViewModel.videoTitle,
-                    科目id = Convert.ToInt32(videocreatViewModel.subjectid),
-                    FUrl = filescombine,
-                    FPrice= Convert.ToDecimal(videocreatViewModel.videoPrice),
-                };
+               
+                    var memberEntity = new T影片Video
+                    {
+                        FVideoTitle = videocreatViewModel.videoTitle,
+                        科目id = Convert.ToInt32(videocreatViewModel.subjectid),
+                        FUrl = filescombine,
+                        FPrice = Convert.ToDecimal(videocreatViewModel.videoPrice),
+						FVideoName = filesName,
+                        GenreId = Convert.ToInt32(videocreatViewModel.GenreId)
+                    };
                 _myDBContext.T影片Videos.Add(memberEntity);
                 _myDBContext.SaveChanges();
                 return Ok();

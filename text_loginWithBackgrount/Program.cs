@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using text_loginWithBackgrount.Areas.video_management.Repositories;
 using text_loginWithBackgrount.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +18,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddControllers(); //向DI容器註冊控制器所需的服務
 builder.Services.AddDbContext<studentContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("StudentDB")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Azure")));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -57,7 +58,10 @@ builder.Services.AddSession(options =>
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // 要求 Session Cookie 僅透過 HTTPS 傳輸
 });
 builder.Services.AddTransient<IEmailSender, Emailsender>();
+builder.Services.AddTransient<IHomeRepository, HomeRepository>();//胡洧銘新增的地方(03/07)
 builder.Services.AddControllersWithViews();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -78,7 +78,7 @@
                     <td>@Html.DisplayNameFor(model =>model.FUrl)</td>
                     <td>@Html.DisplayNameFor(model => model.FPrice)</td>
                     <td>@Html.DisplayNameFor(model => model.科目id)</td>
-                    <td>@Html.DisplayNameFor(model => model.FImagePath)</td>
+                    <td>@Html.DisplayNameFor(model => model.FVideoName)</td>
 
                 </tr>
             </thead>
@@ -119,6 +119,13 @@
 
                         </div>
                     </div>
+                    <div class="mb-3">
+                        <div class="dropdown">
+                            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="genreid" name="genreid">
+                            </select>
+
+                        </div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -151,7 +158,7 @@
                     columns: [
                         { "data": "fVideoTitle", "width": "10 %" },
                         { "data": "fUrl", "width": "10 %" },
-                        // { "data": "fImagePath", "width": "10 %" },
+                        { "data": "fVideoName", "width": "10 %" },
                         { "data": "fPrice", "width": "10 %" },
                         { "data": "科目id", "width": "10 %" },
                         { "data": "fVideoId", "visible": false }, //放入表格pk但不要顯示，為了在row中引用
@@ -212,16 +219,46 @@
 
                 // 其他 JavaScript 代碼...
             });
-            $('#buttoncreate').click(async function () {
-                const url = `@Url.Content("~/api/subjectInformation/")`;
-                const response = await fetch(url)
-                const data = await response.json()
-                const datalist = data.map(a =>
-                    `
-                                <option value="${a.id}">${a.title}</option>
-                                `);
-                $('#subjectid').html(datalist);
-            });
+        //     $('#buttoncreate').click(async function () {
+        //         const url = `@Url.Content("~/api/subjectInformation/")`;
+        //         const response = await fetch(url)
+        //         const data = await response.json()
+        //         const datalist = data.map(a =>
+        //             `
+        //                         <option value="${a.id}">${a.title}</option>
+        //                         `);
+        //         $('#subjectid').html(datalist);
+        //     });
+
+        // $('#buttoncreate').click(async function () {
+        //     const url = `@Url.Content("~/api/genreInformation/")`;
+        //     const response = await fetch(url)
+        //     const data = await response.json()
+        //     const datalist = data.map(a =>
+        //         `
+        //                                 <option value="${a.Id}">${a.title}</option>
+        //                                 `);
+        //     $('#subjectid').html(datalist);
+        // });
+
+        $('#buttoncreate').click(async function () {
+            const urlSubject = `@Url.Content("~/api/subjectInformation/")`;
+            const responseSubject = await fetch(urlSubject);
+            const dataSubject = await responseSubject.json();
+            const dataListSubject = dataSubject.map(a =>
+                `<option value="${a.id}">${a.title}</option>`
+            );
+
+            const urlGenre = `@Url.Content("~/api/genreInformation/")`;
+            const responseGenre = await fetch(urlGenre);
+            const dataGenre = await responseGenre.json();
+            const dataListGenre = dataGenre.map(a =>
+                `<option value="${a.Id}">${a.title}</option>`
+            );
+
+            $('#subjectid').html(dataListSubject);
+            $('#genreid').html(dataListGenre); // 請確保這裡的 id 正確
+        });
 
             $("#subbtn").click(async function () 
             {

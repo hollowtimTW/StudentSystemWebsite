@@ -1,0 +1,98 @@
+﻿@using text_loginWithBackgrount.Areas.video_management.DTO
+
+@model VideoDisPlay
+@{
+}
+<section>
+  @*   <div class="my-2">
+        <form asp-action="Index" class="row row-cols-lg-auto g-3 align-items-center">
+            <div class="col-12">
+                <label class="visually-hidden" for="genreId">Genres</label>
+                <select class="form-select" id="genreId" name="genreId">
+                    <option selected>Genre</option>
+                    @foreach (var genre in Model.Genres)
+                    {
+                        <option selected="@(genre.Id == Model.GenreId)" value="@genre.Id">@genre.GenreName</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-12">
+                <label class="visually-hidden" for="sterm">Search by title</label>
+                <div class="input-group">
+                    <div class="input-group-text"></div>
+                    <input type="text" class="form-control" value="@Model.STerm" id="sterm" name="sterm" placeholder="Sarch by title">
+                </div>
+            </div>
+
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Search</button>
+                <a href="/Home/Index" class="btn btn-dark">Reset</a>
+            </div>
+        </form>
+    </div> *@
+    <div class="w-100 d-flex flex-wrap container">
+        @if (Model == null)
+        {
+            <p>Model is null</p>
+        }
+        else if (Model.Videos == null)
+        {
+            <p>Model.Videos is null</p>
+        }
+        else
+        {
+            @foreach (var video in Model.Videos)
+            {
+                <div class="card mx-2 mb-4" style="width: 16rem;">
+                    @if (video != null && !string.IsNullOrEmpty(video.FVideoName))
+                    {//這裡要改東西
+                        <video controls>
+                            @{
+                                var videoPath = $"~/video/{video.FVideoName}.mp4";
+                                Console.WriteLine($"Generated Video Path: {videoPath}");
+                            }
+                            <source src="@Url.Content(videoPath)" type="video/mp4">
+                        </video>
+
+                    }
+                    else
+                    {
+                        <p>Video not available</p>
+                    }
+                </div>
+            }
+        }
+    </div>
+
+
+    </section>
+
+    @section Scripts {
+        <script>
+            async function add(bookId) {
+                var usernameEl = document.getElementById("username");
+                if (usernameEl == null) {
+                    window.location.href = "/Identity/Account/Login";
+                    //var username=usernameEl.innerText;
+                    //  if(username.length<1){
+                    //      window.location.href="/Identity/Account/Login";
+                    //  }
+                }
+                try {
+                    var response = await fetch(`/Cart/AddItem?bookId=${bookId}`);
+                    if (response.status == 200) {
+                        var result = await response.json();
+                        var cartCountEl = document.getElementById("cartCount");
+                        cartCountEl.innerHTML = result;
+                        window.location.href = "#cartCount";
+                    }
+                }
+                catch (err) {
+                    console.log(err);
+                }
+            }
+        </script>
+    }
+
+

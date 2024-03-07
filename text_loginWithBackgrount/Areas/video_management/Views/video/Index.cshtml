@@ -9,7 +9,7 @@
                 <div class="row d-flex justify-content-center">
                     <div class="col-lg-6 text-center">
                         <h2>@ViewData["Title"]</h2>
-                        <p>Odio et unde deleniti. Deserunt numquam exercitationem. Officiis quo odio sint voluptas consequatur ut a odio voluptatem. Sit dolorum debitis veritatis natus dolores. Quasi ratione sint. Sit quaerat ipsum dolorem.</p>
+                        <p>使用影片輔助學習，24小時不間斷!</p>
                     </div>
                 </div>
             </div>
@@ -21,15 +21,154 @@
                     <li><a asp-area="" asp-controller="Template" asp-action="Index">首頁</a></li>
                     <li>@ViewData["Title"]</li>
                 </ol>
+                <button type="button" class="btn btn-outline-success">
+                    <a asp-area="video_management" asp-controller="videoforStudent" asp-action="videoshopping">影片商城</a>
+                </button>
             </div>
         </nav>
     </div>
 }
-<section id="contact" class="contact">
+<!-- 輪播卡片區（共有5張） -->
+<section id="testimonials" class="testimonials">
     <div class="container" data-aos="fade-up">
+
         <div class="section-header">
-            <h2>標題</h2>
-            <p>Nulla dolorum nulla nesciunt rerum facere sed ut inventore quam porro nihil id ratione ea sunt quis dolorem dolore earum</p>
+            <h2>推薦熱門課程</h2>
+            <p>
+                解鎖專業技能的精選課程，助你掌握前沿科技
+            </p>
+        </div>
+
+        <div class="slides-3 swiper" data-aos="fade-up" data-aos-delay="100">
+            <div class="swiper-wrapper">
+
+                <!-- 輪播卡片1 -->
+                <div class="swiper-slide">
+                    <div class="testimonial-wrap">
+                        <div class="testimonial-item">
+                            <div class="d-flex align-items-center">
+                                <img src="~/assets/img/testimonials/640px-Python.svg.jpg" class="testimonial-img flex-shrink-0" alt="">
+                                <div>
+                                    <h3>Python</h3>
+                                    <h4>資料科學、機器學習、網站開發等</h4>
+                                    <div class="stars">
+                                        <i class="bi bi-fire"></i>
+                                        <i class="bi bi-fire"></i>
+                                        <i class="bi bi-fire"></i>
+                                        <i class="bi bi-fire"></i>
+                                        <i class="bi bi-fire"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p>
+                                <i class="bi bi-quote quote-icon-left"></i>
+                                熱門原因：Python 的語法簡單、易讀，對於初學者來說，是非常友善的入門語言。同時也有強大的社區支援，許多函式庫和框架可以方便開發者使用。
+                                <i class="bi bi-quote quote-icon-right"></i>
+                            </p>
+                        </div>
+                    </div>
+                </div><!-- End testimonial item -->
+                <!-- 輪播卡片2 -->
+                <div class="swiper-slide">
+                    <div class="testimonial-wrap">
+                        <div class="testimonial-item">
+                            <div class="d-flex align-items-center">
+                                <img src="~/assets/img/testimonials/JavaScript-logo.jpg" class="testimonial-img flex-shrink-0" alt="">
+                                <div>
+                                    <h3>JavaScript</h3>
+                                    <h4>主要應用場景：網頁開發、後端開發等</h4>
+
+                                    <div class="stars">
+                                        <i class="bi bi-fire"></i>
+                                        <i class="bi bi-fire"></i>
+                                        <i class="bi bi-fire"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p>
+                                <i class="bi bi-quote quote-icon-left"></i>
+                                熱門原因：作為前端開發的主要語言，JavaScript 在網頁開發中扮演關鍵角色。隨著 Node.js 的出現，JavaScript 也可以用於後端開發。
+                                <i class="bi bi-quote quote-icon-right"></i>
+                            </p>
+                        </div>
+                    </div>
+                </div><!-- End testimonial item -->
+                <!-- 輪播卡片3 -->
+                <div class="swiper-slide">
+                    <div class="testimonial-wrap">
+                        <div class="testimonial-item">
+                            <div class="d-flex align-items-center">
+                                <img src="~/assets/img/testimonials/ISO_C++_Logo.svg.jpg" class="testimonial-img flex-shrink-0" alt="">
+                                <div>
+                                    <h3>C++</h3>
+                                    <h4>主要應用場景：遊戲開發、系統級程式、實時系統等。</h4>
+                                    <div class="stars">
+                                        <i class="bi bi-fire"></i>
+                                        <i class="bi bi-fire"></i>
+                                        <i class="bi bi-fire"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p>
+                                <i class="bi bi-quote quote-icon-left"></i>
+                                熱門原因：C++ 是一種能夠直接操作記憶體的強大語言，適合需要高效能和控制的場景。
+                                <i class="bi bi-quote quote-icon-right"></i>
+                            </p>
+                        </div>
+                    </div>
+                </div><!-- End testimonial item -->
+                <!-- 輪播卡片4 -->
+                <div class="swiper-slide">
+                    <div class="testimonial-wrap">
+                        <div class="testimonial-item">
+                            <div class="d-flex align-items-center">
+                                <img src="~/assets/img/testimonials/Typescript_logo_2020.svg.jpg" class="testimonial-img flex-shrink-0" alt="">
+                                <div>
+                                    <h3>TypeScript</h3>
+                                    <h4>主要應用場景：大型前端應用開發</h4>
+                                    <div class="stars">
+                                        <i class="bi bi-fire"></i>
+                                        <i class="bi bi-fire"></i>
+                                        <i class="bi bi-fire"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p>
+                                <i class="bi bi-quote quote-icon-left"></i>
+                                熱門原因：TypeScript 是 JavaScript 的超集，提供了類型系統和編譯功能，能提高大型專案的開發效率。
+                                <i class="bi bi-quote quote-icon-right"></i>
+                            </p>
+                        </div>
+                    </div>
+                </div><!-- End testimonial item -->
+                <!-- 輪播卡片5 -->
+                <div class="swiper-slide">
+                    <div class="testimonial-wrap">
+                        <div class="testimonial-item">
+                            <div class="d-flex align-items-center">
+                                <img src="~/assets/img/testimonials/unnamed.jpg" class="testimonial-img flex-shrink-0" alt="">
+                                <div>
+                                    <h3>C#</h3>
+                                    <h4>主要應用場景：Windows 應用開發、遊戲開發（Unity）等。</h4>
+                                    <div class="stars">
+                                        <i class="bi bi-fire"></i>
+                                        <i class="bi bi-fire"></i>
+                                        <i class="bi bi-fire"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p>
+                                <i class="bi bi-quote quote-icon-left"></i>
+                                熱門原因：作為 .NET 平台的主要語言，C# 提供了一種面向物件和型別安全的環境。
+                                <i class="bi bi-quote quote-icon-right"></i>
+                            </p>
+                        </div>
+                    </div>
+                </div><!-- End testimonial item -->
+
+            </div>
+            <!-- 分頁指示器（小圓點） -->
+            <div class="swiper-pagination"></div>
         </div>
     </div>
-</section><!-- End Contact Section -->
+</section><!-- End Testimonials Section -->

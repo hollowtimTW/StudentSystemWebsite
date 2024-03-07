@@ -59,6 +59,8 @@ public partial class T會員學生
 
     public virtual ICollection<T影片Order> T影片Orders { get; set; } = new List<T影片Order>();
 
+    public virtual ICollection<T影片ShoppingCart> T影片ShoppingCarts { get; set; } = new List<T影片ShoppingCart>();
+
     public virtual ICollection<T影片問題單表> T影片問題單表s { get; set; } = new List<T影片問題單表>();
 
     public virtual ICollection<T會員出勤> T會員出勤s { get; set; } = new List<T會員出勤>();

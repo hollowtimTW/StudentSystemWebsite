@@ -12,5 +12,6 @@ namespace text_loginWithBackgrount.Areas.video_management.Controllers
         {
             return View();
         }
+
     }
 }
