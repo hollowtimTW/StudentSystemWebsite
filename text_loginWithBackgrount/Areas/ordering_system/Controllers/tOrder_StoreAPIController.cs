@@ -339,7 +339,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
         [HttpPost]
         public async Task<IActionResult> store_deatail_form(storeinformationViewModel model)
         {
-            string fileLocation="";
+            string fileLocation = "";
             int? storeID = Convert.ToInt32(HttpContext.Session.GetString("storeID"));
             if (!ModelState.IsValid)
             {
@@ -349,13 +349,14 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                 );
                 return Json(new { isValid = false, errors = errors });
             }
-            if (model.storeImg!=null&& model.storeImg.Length > 0) {
+            if (model.storeImg != null && model.storeImg.Length > 0)
+            {
                 var guid = Guid.NewGuid();
                 var filesName = $"{guid}_{model.storeImg.FileName}";
                 var rootDirectory = _env.ContentRootPath;
                 var uploadDirectory = rootDirectory + @"\wwwroot\images\t訂餐\店家照片\"; // 指定路径
                 var filescombine = Path.Combine(uploadDirectory, filesName);  //存進資料庫的影片位置
-                fileLocation = "/images/t訂餐/店家照片/"+ filesName;
+                fileLocation = "/images/t訂餐/店家照片/" + filesName;
                 using (var system = System.IO.File.Create(filescombine)) //**補充
                 {
                     await model.storeImg.CopyToAsync(system);
@@ -365,7 +366,8 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             var store = _myDBContext.T訂餐店家資料表s.FirstOrDefault(a => a.店家id == storeID);
             if (store != null)
             {
-                if (fileLocation.IsNullOrEmpty()) {
+                if (fileLocation.IsNullOrEmpty())
+                {
                     store.餐廳照片 = store.餐廳照片.IsNullOrEmpty() ? "/images/t訂餐/店家照片/jai西門.jpg" : store.餐廳照片;
                 }
                 else
@@ -550,65 +552,82 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
         /// <returns></returns>
         public IActionResult storeStyle()
         {
-            var data= _myDBContext.T訂餐口味總表s.Select(a=>a.風味名稱).ToList();
+            var data = _myDBContext.T訂餐口味總表s.Select(a => a.風味名稱).ToList();
             return Ok(data);
         }
         /// <summary>
         /// 回傳找出店家中銷售最高的前五名菜單
         /// </summary>
         /// <returns></returns>
-        public IActionResult topfivemenu(int id) 
+        public IActionResult topfivemenu(int id)
         {
             var data = (from item in _myDBContext.T訂餐訂單詳細資訊表s
-                       join a in _myDBContext.T訂餐店家資料表s on item.店家id equals a.店家id
-                       join b in _myDBContext.T訂餐餐點資訊表s on item.餐點id equals b.餐點id
-                       where a.店家id == id
-                       group item by b into g
-                       select new
-                       {
-                           餐點名稱 = g.Key.餐點名稱,
-                           銷售數量 = g.Sum(x => x.餐點數量)
-                       }).OrderByDescending(a=>a.銷售數量).Take(5).ToList();
+                        join a in _myDBContext.T訂餐店家資料表s on item.店家id equals a.店家id
+                        join b in _myDBContext.T訂餐餐點資訊表s on item.餐點id equals b.餐點id
+                        where a.店家id == id
+                        group item by b into g
+                        select new
+                        {
+                            餐點名稱 = g.Key.餐點名稱,
+                            銷售數量 = g.Sum(x => x.餐點數量)
+                        }).OrderByDescending(a => a.銷售數量).Take(5).ToList();
 
             return Ok(data);
         }
+        /// <summary>
+        /// 菜單餐點意見回饋，計算優良佔筆與熱門菜單
+        /// </summary>https://localhost:7150/tOrder_StoreAPI/ReviewExcellentRatio/2
+        /// <param name="id"></param>
+        /// <returns></returns>
         public IActionResult ReviewExcellentRatio(int id)
         {
             var orderCount = _myDBContext.T訂餐訂單詳細資訊表s.Where(a => a.店家id == id).Count();
 
             var totalStars = (from item in _myDBContext.T訂餐訂單詳細資訊表s
-                             join a in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals a.訂單id
-                             join b in _myDBContext.T訂餐評論表s on a.訂單id equals b.訂單id
-                             where item.店家id == id && Convert.ToInt32(b.滿意度星數) >= 4
-                             select b).Count();
+                              join a in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals a.訂單id
+                              join b in _myDBContext.T訂餐評論表s on a.訂單id equals b.訂單id
+                              where item.店家id == id && Convert.ToInt32(b.滿意度星數) >= 4
+                              select b).Count();
             var hotmeal = from item in _myDBContext.T訂餐訂單詳細資訊表s
                           join a in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals a.訂單id
                           join b in _myDBContext.T訂餐評論表s on a.訂單id equals b.訂單id
                           join c in _myDBContext.T訂餐餐點資訊表s on item.餐點id equals c.餐點id
-                          where item.店家id == id && Convert.ToInt32(b.滿意度星數) > 4
-                          group c by c.餐點名稱 into g
+                          where item.店家id == id && Convert.ToInt32(b.滿意度星數) >= 4
+                          group new { c, b } by c.餐點名稱 into g
                           select new
                           {
                               餐點名稱 = g.Key,
-                              筆數 = g.Count()
+                              評價分數 = g.Select(x => x.b.滿意度星數).FirstOrDefault(),
+                              筆數 = g.Count(),
+                              加總評分 = (Convert.ToInt32(g.Select(x => x.b.滿意度星數).FirstOrDefault())) * g.Count()
                           };
+            var hotmealest = hotmeal.OrderByDescending(a => a.加總評分).FirstOrDefault();
             var icemeal = from item in _myDBContext.T訂餐訂單詳細資訊表s
-                          join a in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals a.訂單id
-                          join b in _myDBContext.T訂餐評論表s on a.訂單id equals b.訂單id
-                          join c in _myDBContext.T訂餐餐點資訊表s on item.餐點id equals c.餐點id
-                          where item.店家id == id && Convert.ToInt32(b.滿意度星數) <= 3
-                          group c by c.餐點名稱 into g
-                          select new
-                          {
-                              餐點名稱 = g.Key,
-                              筆數 = g.Count()
-                          };
+                           join a in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals a.訂單id
+                           join b in _myDBContext.T訂餐評論表s on a.訂單id equals b.訂單id
+                           join c in _myDBContext.T訂餐餐點資訊表s on item.餐點id equals c.餐點id
+                           where item.店家id == id && Convert.ToInt32(b.滿意度星數) <= 3
+                           group new { c, b } by c.餐點名稱 into g
+                           select new
+                           {
+                               餐點名稱 = g.Key,
+                               評價分數 = g.Select(x => x.b.滿意度星數).FirstOrDefault(),
+                               筆數 = g.Count(),
+                               加總評分 = (Convert.ToInt32(g.Select(x => x.b.滿意度星數).FirstOrDefault())) * g.Count()
+                           };
 
-            var dataobject =new{
-                總筆數= orderCount,
-                優良筆數= totalStars,
-                最熱門菜單= hotmeal,
-                最冷門菜單= icemeal
+            var lowmealest= icemeal.OrderBy(a=>a.加總評分).First();
+            var dataobject = new
+            {
+                總筆數 = orderCount,
+                優良筆數 = totalStars,
+                總訂單評價優良比 = (totalStars!=0)?Math.Round((double)totalStars / (double)orderCount * 100, 1):0,
+                最熱門菜單 = hotmealest.餐點名稱,
+                熱門菜單平均評價= (hotmealest.加總評分!=null)? Math.Round((double)(hotmealest.加總評分/ hotmealest.筆數),1):0,
+                熱門佔總訂單的比率 = (hotmealest != null) ? Math.Round(((double)hotmealest.筆數 / orderCount) * 100, 1) : 0,
+                最冷門菜單= lowmealest.餐點名稱,
+                冷門平均評價= (lowmealest.加總評分 != null)? Math.Round(((double)lowmealest.加總評分/ lowmealest.筆數),1) : 0,
+                冷門菜單總訂單的比率= (lowmealest != null) ? Math.Round(((double)lowmealest.筆數 / orderCount) * 100, 1) : 0,
             };
             return Ok(dataobject);
         }
