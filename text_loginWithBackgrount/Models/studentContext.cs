@@ -110,6 +110,7 @@ public partial class studentContext : DbContext
     public virtual DbSet<T課程課程> T課程課程s { get; set; }
 
     public virtual DbSet<T課程通知表> T課程通知表s { get; set; }
+    public virtual DbSet<T訂餐菜單> T訂餐菜單s { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -948,6 +949,28 @@ public partial class studentContext : DbContext
                 .HasForeignKey(d => d.店家id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_t訂餐_營業時間表_t訂餐_店家資料表");
+        });
+
+        modelBuilder.Entity<T訂餐菜單>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("t訂餐_菜單");
+
+            entity.Property(e => e.營業時間表id).HasColumnName("營業時間表ID");
+            entity.Property(e => e.菜單id)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("菜單ID");
+            entity.Property(e => e.菜單名稱).HasMaxLength(50);
+            entity.Property(e => e.餐點id).HasColumnName("餐點ID");
+
+            entity.HasOne(d => d.營業時間表).WithMany()
+                .HasForeignKey(d => d.營業時間表id)
+                .HasConstraintName("FK_t訂餐_菜單_t訂餐_營業時間表");
+
+            entity.HasOne(d => d.餐點).WithMany()
+                .HasForeignKey(d => d.餐點id)
+                .HasConstraintName("FK_t訂餐_菜單_t訂餐_餐點資訊表");
         });
 
         modelBuilder.Entity<T訂餐訂單詳細資訊表>(entity =>
