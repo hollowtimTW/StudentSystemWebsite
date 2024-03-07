@@ -34,6 +34,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             {
                 var viewModel = new MyResumesViewModel
                 {
+                    StudentID = studentID,
                     ResumeID = data.FId,
                     ResumeTitle = data.F履歷名稱,
                     HopeJobTitle = data.F希望職稱,

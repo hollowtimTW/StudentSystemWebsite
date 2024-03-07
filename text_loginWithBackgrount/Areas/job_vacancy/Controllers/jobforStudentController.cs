@@ -87,7 +87,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateResume(
-            [Bind("StudentID, Name, Birth, Photo, Gender, Phone, Email, School, Academic, Department, Graduated, ResumeTitle, ResumeStatus, HopeJobTitle, HopeSalary, HopeLocation, Skill, Language, WorkExperience, WorkType, WorkTime, WorkShift, Autobiography")] ResumeCreateViewModel viewModel)
+            [Bind("StudentID, Name, Birth, Photo, Gender, Phone, Email, School, Academic, Department, Graduated, ResumeTitle, HopeJobTitle, HopeSalary, HopeLocation, Skill, Language, WorkExperience, WorkType, WorkTime, WorkShift, Autobiography")] ResumeCreateViewModel viewModel)
         {
             try
             {
@@ -100,7 +100,8 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                         return NotFound();
                     }
 
-                    byte[]? photoData = await ReadUploadImage(Request.Form.Files["Photo"], null);
+                    var originalPhoto = theStudent.圖片;
+                    byte[]? photoData = await ReadUploadImage(Request.Form.Files["Photo"], originalPhoto);
 
                     theStudent.姓名 = viewModel.Name;
                     theStudent.圖片 = photoData;
@@ -141,7 +142,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                     _context.T工作履歷資料s.Add(newResume);
                     await _context.SaveChangesAsync();
 
-                    return Json(new { redirectUrl = Url.Action("Index", "Resume") });
+                    return Json(new { redirectUrl = Url.Action("Index", "jobforStudent") });
 
                 }
                 else
@@ -177,6 +178,15 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                 return NotFound("無這筆資料");
             }
 
+            var studentWorkExp = await _context.T工作工作經驗s
+                                .Where(data => data.F學員Id == thisResume.F學員Id)
+                                .ToListAsync();
+
+            var thisResumeWorkExpIDs = await _context.T工作履歷表工作經驗s
+                                       .Where(data => data.F履歷Id == thisResume.FId)
+                                       .Select(data => data.FId)
+                                       .ToListAsync();
+
             var viewModel = new ResumeCreateViewModel
             {
                 ResumeID = resumeID,
@@ -205,9 +215,122 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                 HopeSalary = thisResume.F希望薪水待遇,
                 HopeLocation = thisResume.F希望工作地點,
                 Autobiography = thisResume.F自傳,
+                ThisResumeWorkExpIDs = thisResumeWorkExpIDs,
+                StudentWorkExp = studentWorkExp
             };
             //return View(viewModel);
             return PartialView("_EditPartial", viewModel);
+        }
+
+
+        /// <summary>
+        /// 編輯履歷2：更新資料庫的履歷資料。
+        /// </summary>
+        /// <param name="resumeID">履歷ID</param>
+        /// <param name="viewModel">包含更新資訊的履歷視圖模型</param>
+        // POST: job_vacancy/jobforStudent/UpdateResume/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateResume(int resumeID,
+            [Bind("ResumeID, Name, Birth, Photo, Gender, Phone, Email, School, Department, Academic, Graduated, ResumeTitle, HopeJobTitle, HopeSalary, HopeLocation, Skill, Language, WorkExperience, WorkType, WorkTime, WorkShift, Autobiography")] ResumeCreateViewModel viewModel)
+        {
+            try
+            {
+                var thisResume = await _context.T工作履歷資料s.FindAsync(resumeID);
+                if (thisResume == null || resumeID != viewModel.ResumeID)
+                {
+                    return NotFound("無此履歷");
+                }
+
+                var theStudent = await _context.T會員學生s.FindAsync(thisResume.F學員Id);
+                if (theStudent == null)
+                {
+                    return NotFound("無此學生");
+                }
+
+                if (ModelState.IsValid)
+                {
+                    //更新學生資料
+                    var originalPhoto = theStudent.圖片;
+                    byte[]? photoData = await ReadUploadImage(Request.Form.Files["Photo"], originalPhoto);
+
+                    theStudent.姓名 = viewModel.Name;
+                    theStudent.圖片 = photoData;
+                    theStudent.性別 = viewModel.Gender;
+                    theStudent.手機 = viewModel.Phone;
+                    theStudent.生日 = viewModel.Birth;
+                    theStudent.信箱 = viewModel.Email;
+                    theStudent.學校 = viewModel.School;
+                    theStudent.學位 = viewModel.Academic;
+                    theStudent.科系 = viewModel.Department;
+                    theStudent.畢肄 = viewModel.Graduated;
+                    theStudent.修改日期 = DateTime.Now;
+                    _context.Update(theStudent);
+
+                    //更新履歷資料
+                    thisResume.F履歷名稱 = viewModel.ResumeTitle;
+                    thisResume.F履歷狀態 = "公開";  //已拔除更改狀態的功能，固定為公開狀態
+                    thisResume.F專長技能 = viewModel.Skill;
+                    thisResume.F語文能力 = viewModel.Language;
+                    thisResume.F有無工作經驗 = viewModel.WorkExperience;
+                    thisResume.F工作性質 = viewModel.WorkType;
+                    thisResume.F工作時段 = viewModel.WorkTime;
+                    thisResume.F配合輪班 = viewModel.WorkShift;
+                    thisResume.F希望職稱 = viewModel.HopeJobTitle;
+                    thisResume.F希望薪水待遇 = viewModel.HopeSalary;
+                    thisResume.F希望工作地點 = viewModel.HopeLocation;
+                    thisResume.F自傳 = viewModel.Autobiography;
+                    thisResume.F最後更新時間 = DateTime.Now;
+
+                    _context.Update(thisResume);
+                    await _context.SaveChangesAsync();
+
+                    return Json(new { redirectUrl = Url.Action("Index", "jobforStudent") });
+                }
+                else
+                {
+                    string errorMessage = string.Join("；", ModelState.Values
+                                        .SelectMany(v => v.Errors)
+                                        .Select(e => e.ErrorMessage));
+                    return Json(new { success = false, message = errorMessage });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "發生異常：" + ex.Message });
+            }
+        }
+
+
+        /// <summary>
+        /// 刪除履歷（軟刪除）
+        /// </summary>
+        /// <param name="resumeID">履歷ID</param>
+        /// <param name="deleteReason">刪除履歷的原因</param>
+        // POST: job_vacancy/jobforStudent/Delete/5
+        [HttpPost]
+        public async Task<IActionResult> Delete(int resumeID, string deleteReason)
+        {
+            try
+            {
+                var thisResume = await _context.T工作履歷資料s.FindAsync(resumeID);
+
+                if (thisResume == null)
+                {
+                    return NotFound("無這筆資料");
+                }
+
+                thisResume.F刪除狀態 = "1";
+                thisResume.F刪除或關閉原因 = deleteReason;
+                thisResume.F最後更新時間 = Convert.ToDateTime(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"));
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = "刪除成功" });
+            }
+            catch (Exception ex)
+            {
+                return Problem("刪除失敗：" + ex.Message, statusCode: 500);
+            }
         }
 
         /// <summary>

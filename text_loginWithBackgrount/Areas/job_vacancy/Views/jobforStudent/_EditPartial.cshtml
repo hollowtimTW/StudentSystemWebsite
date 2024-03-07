@@ -274,9 +274,6 @@
     </div>
 </section>
 
-
-
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 @* <script src="~/js/job_vacancy/resume.js"></script> *@
 @* <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script> *@
 @* <script src="~/js/job_vacancy/summernote-zh-tw.js"></script> *@
@@ -284,27 +281,11 @@
 
 <script>
 
-    // 初始化相關的變數
-    const resumeID = "@Model.ResumeID";
-    const hopeSalary = "@Html.Raw(Model.HopeSalary)".trim();
-    const autobiography = "@Model.Autobiography";
-
-    // 需要監聽的元素
-    const Photo = document.getElementById('Photo');
-    const salaryInput = document.getElementById('salaryInput');
-
-    // 工作經驗編輯相關的變數
-    const btnExpAdd = document.getElementById("btnExpAdd");
-    const expEditArea = document.getElementById("expEditArea");
-    const btnExpEditConfirm = document.getElementById("btnExpEditConfirm");
-    const btnExpEditCancel = document.getElementById("btnExpEditCancel");
-    const expListArea = document.getElementById("expListArea");
-
     $(document).ready(function () {
 
         // ========= 載入資料時 =========
         // 處理希望薪資的選項
-        switch (hopeSalary) {
+        switch ("@Html.Raw(Model.HopeSalary)".trim()) {
             case "面議":
                 document.getElementById('hopeSalary1').checked = true;
                 break;
@@ -337,10 +318,11 @@
         //     console.error(err);
         // });
 
+
         // ====================== 事件監聽器 ===========================
 
         // 顯示圖片
-        Photo.addEventListener('change', function (event) {
+        document.getElementById('Photo').addEventListener('change', function (event) {
             var inputFile = event.target;
             var img = document.getElementById('previewImage');
             previewImage(inputFile, img);
@@ -349,34 +331,33 @@
         // 當選擇"自訂薪資"時，顯示薪資輸入框
         document.getElementById('hopeSalary3').addEventListener("change", function () {
             if (this.checked) {
-                salaryInput.style.visibility = "visible";
+                document.getElementById('salaryInput').style.visibility = "visible";
             }
         });
 
         // 當選擇其他選項時，隱藏薪資輸入框
-        const otherRadios = document.querySelectorAll('input[name="HopeSalary"]:not(#hopeSalary3)');
-        otherRadios.forEach(function (radio) {
+        document.querySelectorAll('input[name="HopeSalary"]:not(#hopeSalary3)').forEach(function (radio) {
             radio.addEventListener("change", function () {
-                salaryInput.style.visibility = "hidden";
+                document.getElementById('salaryInput').style.visibility = "hidden";
             });
         });
 
         // 新增工作經驗（開啟編輯區）
-        btnExpAdd.addEventListener("click", function () {
-            expEditArea.style.display = "block";
-            expListArea.style.display = "none";
-            btnExpAdd.style.display = "none";
+        document.getElementById("btnExpAdd").addEventListener("click", function () {
+            document.getElementById("expEditArea").style.display = "block";
+            document.getElementById("expListArea").style.display = "none";
+            document.getElementById("btnExpAdd").style.display = "none";
         });
         // 確認工作經驗（關閉編輯區並顯示列表）
-        btnExpEditConfirm.addEventListener("click", function () {
-            expEditArea.style.display = "none";
-            btnExpAdd.style.display = "block";
-            expListArea.style.display = "block";
+        document.getElementById("btnExpEditConfirm").addEventListener("click", function () {
+            document.getElementById("expEditArea").style.display = "none";
+            document.getElementById("btnExpAdd").style.display = "block";
+            document.getElementById("expListArea").style.display = "block";
         });
         // 取消工作經驗（關閉編輯區）
-        btnExpEditCancel.addEventListener("click", function () {
-            expEditArea.style.display = "none";
-            btnExpAdd.style.display = "block";
+        document.getElementById("btnExpEditCancel").addEventListener("click", function () {
+            document.getElementById("expEditArea").style.display = "none";
+            document.getElementById("btnExpAdd").style.display = "block";
         });
 
     });

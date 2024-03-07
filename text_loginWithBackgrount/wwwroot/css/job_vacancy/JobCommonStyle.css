@@ -335,6 +335,14 @@ input[type="checkbox"]:checked {
         box-shadow: none;
     }
 
+        .resume-item:hover .icon:before {
+            background: #00b6a1;
+        }
+
+        .resume-item:hover h3 {
+            border-color: var(--color-primary);
+        }
+
     .resume-item .btn-close {
         position: absolute;
         top: 20px;
@@ -401,19 +409,15 @@ input[type="checkbox"]:checked {
         margin-bottom: 0;
     }
 
-
-    .resume-item:hover .icon:before {
-        background: #00b6a1;
-    }
-
-    .resume-item:hover h3 {
-        border-color: var(--color-primary);
+    .resume-item .stretched-link {
+        cursor: pointer;
     }
 
 .create-resume {
     border: 4px dotted Grey;
 }
 
+#createModal,
 #editModal {
     position: fixed;
     top: 50%;
@@ -421,6 +425,7 @@ input[type="checkbox"]:checked {
     transform: translate(-50%, -50%);
 }
 
+    #createModal .modal-content,
     #editModal .modal-content {
         width: 860px;
     }
