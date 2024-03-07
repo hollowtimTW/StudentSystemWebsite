@@ -413,6 +413,16 @@ public partial class studentContext : DbContext
                 .HasMaxLength(10)
                 .HasColumnName("f推薦程度");
             entity.Property(e => e.F職缺Id).HasColumnName("f職缺ID");
+
+            entity.HasOne(d => d.F學員).WithMany(p => p.T工作推薦職缺s)
+                .HasForeignKey(d => d.F學員Id)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_t工作_推薦職缺_t會員_學生");
+
+            entity.HasOne(d => d.F職缺).WithMany(p => p.T工作推薦職缺s)
+                .HasForeignKey(d => d.F職缺Id)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_t工作_推薦職缺_t工作_職缺資料");
         });
 
         modelBuilder.Entity<T工作職缺資料>(entity =>
@@ -503,7 +513,6 @@ public partial class studentContext : DbContext
 
             entity.Property(e => e.GenreName).HasMaxLength(50);
         });
-        //胡洧銘有改03/07
 
         modelBuilder.Entity<T影片Order>(entity =>
         {
@@ -583,9 +592,7 @@ public partial class studentContext : DbContext
 
             entity.ToTable("t影片_Video");
 
-            entity.Property(e => e.FVideoId)
-                .ValueGeneratedNever()
-                .HasColumnName("fVideoId");
+            entity.Property(e => e.FVideoId).HasColumnName("fVideoId");
             entity.Property(e => e.FPrice)
                 .HasColumnType("money")
                 .HasColumnName("fPrice");
@@ -600,8 +607,12 @@ public partial class studentContext : DbContext
                 .IsRequired()
                 .HasMaxLength(50)
                 .HasColumnName("fVideoTitle");
-            entity.Property(e => e.GenreId).ValueGeneratedOnAdd();
             entity.Property(e => e.科目id).HasColumnName("科目ID");
+
+            entity.HasOne(d => d.Genre).WithMany(p => p.T影片Videos)
+                .HasForeignKey(d => d.GenreId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_t影片_Video_t影片_Genre");
 
             entity.HasOne(d => d.科目).WithMany(p => p.T影片Videos)
                 .HasForeignKey(d => d.科目id)
@@ -891,7 +902,6 @@ public partial class studentContext : DbContext
                 .IsRequired()
                 .HasMaxLength(50);
             entity.Property(e => e.餐廳介紹).IsRequired();
-            entity.Property(e => e.餐廳照片).HasMaxLength(50);
         });
 
         modelBuilder.Entity<T訂餐店家風味表>(entity =>

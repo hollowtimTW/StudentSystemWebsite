@@ -52,4 +52,6 @@ public partial class T工作職缺資料
     public virtual ICollection<T工作儲存工作紀錄> T工作儲存工作紀錄s { get; set; } = new List<T工作儲存工作紀錄>();
 
     public virtual ICollection<T工作應徵工作紀錄> T工作應徵工作紀錄s { get; set; } = new List<T工作應徵工作紀錄>();
+
+    public virtual ICollection<T工作推薦職缺> T工作推薦職缺s { get; set; } = new List<T工作推薦職缺>();
 }

@@ -57,6 +57,8 @@ public partial class T會員學生
 
     public virtual ICollection<T工作應徵工作紀錄> T工作應徵工作紀錄s { get; set; } = new List<T工作應徵工作紀錄>();
 
+    public virtual ICollection<T工作推薦職缺> T工作推薦職缺s { get; set; } = new List<T工作推薦職缺>();
+
     public virtual ICollection<T影片Order> T影片Orders { get; set; } = new List<T影片Order>();
 
     public virtual ICollection<T影片ShoppingCart> T影片ShoppingCarts { get; set; } = new List<T影片ShoppingCart>();

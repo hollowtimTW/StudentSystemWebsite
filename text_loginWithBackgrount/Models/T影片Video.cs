@@ -21,6 +21,8 @@ public partial class T影片Video
 
     public int GenreId { get; set; }
 
+    public virtual T影片Genre Genre { get; set; }
+
     public virtual ICollection<T影片CartDetail> T影片CartDetails { get; set; } = new List<T影片CartDetail>();
 
     public virtual ICollection<T影片OrderDetail> T影片OrderDetails { get; set; } = new List<T影片OrderDetail>();
