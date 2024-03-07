@@ -21,7 +21,5 @@ public partial class T影片Video
 
     public virtual ICollection<T影片OrderDetail> T影片OrderDetails { get; set; } = new List<T影片OrderDetail>();
 
-    public virtual ICollection<T影片Tag中繼表> T影片Tag中繼表s { get; set; } = new List<T影片Tag中繼表>();
-
     public virtual T課程科目 科目 { get; set; }
 }
