@@ -39,6 +39,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         /// 新增履歷1：返回視圖。
         /// </summary>
         // GET: job_vacancy/jobforStudent/Create/5
+        [Route("/job_vacancy/jobforStudent/{Action=Index}/{studentID?}")]
         public async Task<IActionResult> Create(int studentID)
         {
             try
@@ -161,7 +162,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         /// 編輯履歷1：根據履歷編號提取相應的資料，並返回視圖。
         /// </summary>
         /// <param name="resumeID">履歷ID</param>
-        // GET: job_vacancy/jobforStudent/Edit/5
+        // GET: job_vacancy/jobforStudent/EditResume/5
         public async Task<IActionResult> EditResume(int resumeID)
         {
             var thisResume = await _context.T工作履歷資料s.FindAsync(resumeID);
