@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IO;
 using TEXTpie_chart.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -15,10 +17,12 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
     {
         private readonly studentContext _myDBContext;
         private readonly IEmailSender _emailSender;
-        public tOrder_StoreAPIController(studentContext myDBContext, IEmailSender emailSender)
+        private readonly IWebHostEnvironment _env;
+        public tOrder_StoreAPIController(studentContext myDBContext, IEmailSender emailSender, IWebHostEnvironment env)
         {
             _myDBContext = myDBContext;
             _emailSender = emailSender;
+            _env = env;
         }
         /// <summary>
         /// 呼叫所有店家資料
@@ -90,7 +94,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             {
                 滿意度星數 = Convert.ToInt32(b.Key),
                 評論數量 = b.Count(),
-                加權= Convert.ToInt32(b.Key)* b.Count()
+                加權 = Convert.ToInt32(b.Key) * b.Count()
             });
             int totalComments = storedata.Sum(item => item.評論數量);
             int totalWeight = storedata.Sum(item => item.加權);
@@ -99,8 +103,8 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             {
                 turnover = result1,
                 historyorder = result,
-                evaluate= evaluate.ToString("0.0"),
-                commentsNum= totalComments
+                evaluate = evaluate.ToString("0.0"),
+                commentsNum = totalComments
             };
             return Json(storeInformationVM);
         }
@@ -238,7 +242,12 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                 餐廳介紹 = b.餐廳介紹,
                 餐廳照片 = b.餐廳照片 ?? "/images/user.jpg",
                 電子信箱 = b.電子信箱,
-                密碼 = b.密碼
+                密碼 = b.密碼,
+                風味列表 = (from tagItem in _myDBContext.T訂餐店家資料表s
+                        join tagE in _myDBContext.T訂餐店家風味表s on tagItem.店家id equals tagE.店家id
+                        join tagF in _myDBContext.T訂餐口味總表s on tagE.口味id equals tagF.口味id
+                        where tagItem.店家名稱 == b.店家名稱
+                        select tagF.風味名稱).ToList()
             }).FirstOrDefault();
             if (store != null)
             {
@@ -303,6 +312,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
         [HttpPost]
         public async Task<IActionResult> Contact(PasswordviewModel model)
         {
+            int? storeID = Convert.ToInt32(HttpContext.Session.GetString("storeID"));
             if (!ModelState.IsValid)
             {
                 var errors = ModelState.ToDictionary(
@@ -312,13 +322,12 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                 return Json(new { isValid = false, errors = errors });
             }
             //通過驗證，抓取特定店家修改密碼
-            int? storeID = Convert.ToInt32(HttpContext.Session.GetString("storeID"));
             var store = _myDBContext.T訂餐店家資料表s.FirstOrDefault(a => a.店家id == storeID);
             if (store != null)
             {
                 store.密碼 = model.newPassword;
                 await _myDBContext.SaveChangesAsync();
-                HttpContext.Session.Remove("storeID");
+                //HttpContext.Session.Remove("storeID");
             }
             return Json(new { isValid = true });
         }
@@ -330,6 +339,8 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
         [HttpPost]
         public async Task<IActionResult> store_deatail_form(storeinformationViewModel model)
         {
+            string fileLocation="";
+            int? storeID = Convert.ToInt32(HttpContext.Session.GetString("storeID"));
             if (!ModelState.IsValid)
             {
                 var errors = ModelState.ToDictionary(
@@ -338,18 +349,55 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                 );
                 return Json(new { isValid = false, errors = errors });
             }
+            if (model.storeImg!=null&& model.storeImg.Length > 0) {
+                var guid = Guid.NewGuid();
+                var filesName = $"{guid}_{model.storeImg.FileName}";
+                var rootDirectory = _env.ContentRootPath;
+                var uploadDirectory = rootDirectory + @"\wwwroot\images\t訂餐\店家照片\"; // 指定路径
+                var filescombine = Path.Combine(uploadDirectory, filesName);  //存進資料庫的影片位置
+                fileLocation = "/images/t訂餐/店家照片/"+ filesName;
+                using (var system = System.IO.File.Create(filescombine)) //**補充
+                {
+                    await model.storeImg.CopyToAsync(system);
+                }
+            }
             //通過驗證，抓取特定店家修改店家資料
-            int? storeID = Convert.ToInt32(HttpContext.Session.GetString("storeID"));
             var store = _myDBContext.T訂餐店家資料表s.FirstOrDefault(a => a.店家id == storeID);
             if (store != null)
             {
+                if (fileLocation.IsNullOrEmpty()) {
+                    store.餐廳照片 = store.餐廳照片.IsNullOrEmpty() ? "/images/t訂餐/店家照片/jai西門.jpg" : store.餐廳照片;
+                }
+                else
+                {
+                    store.餐廳照片 = fileLocation;
+                }
                 store.店家名稱 = model.storeName;
                 store.電子信箱 = model.storeEmail;
                 store.電話 = model.storePhone;
                 store.地址 = model.storeAdress;
                 store.餐廳介紹 = model.storeinformation;
-                await _myDBContext.SaveChangesAsync();
-                HttpContext.Session.Remove("storeID");
+                var oldtag = (_myDBContext.T訂餐店家風味表s.Where(a => a.店家id == storeID)).ToList();
+                _myDBContext.RemoveRange(oldtag);
+                _myDBContext.SaveChanges();
+                if (model.taglist != null)
+                {
+                    List<string> tagArray = (model.taglist.Split(",")).ToList();
+                    tagArray.RemoveAt(tagArray.Count - 1);
+                    foreach (var tag in tagArray)
+                    {
+                        int tagid = Convert.ToInt32(_myDBContext.T訂餐口味總表s.FirstOrDefault(a => a.風味名稱.Trim() == tag).口味id);
+                        var newTag = new T訂餐店家風味表
+                        {
+                            店家id = (int)storeID,
+                            口味id = tagid
+                        };
+                        _myDBContext.T訂餐店家風味表s.Add(newTag);
+                        _myDBContext.SaveChanges();
+                    }
+                }
+                _myDBContext.SaveChanges();
+                //HttpContext.Session.Remove("storeID");
             }
             return Json(new { isValid = true });
         }
@@ -479,12 +527,12 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                                          join e in _myDBContext.T訂餐店家風味表s on c.店家id equals e.店家id
                                          join f in _myDBContext.T訂餐口味總表s on e.口味id equals f.口味id
                                          where (b.訂單狀態).Trim() == "完成" && (b.訂單時間).Substring(0, 4) == "2023"
-                                         group new { item,b ,a, c, d,e,f } by  c into g
+                                         group new { item, b, a, c, d, e, f } by c into g
                                          select new
                                          {
                                              店家名稱 = g.Key.店家名稱,
-                                             店家介紹=g.Key.餐廳介紹,
-                                             店家圖片=g.Key.餐廳照片 ?? "/images/user.jpg",
+                                             店家介紹 = g.Key.餐廳介紹,
+                                             店家圖片 = g.Key.餐廳照片 ?? "/images/user.jpg",
                                              訂單總額 = g.Sum(x => x.item.餐點數量 * x.a.餐點定價),
                                              評價星數 = Math.Round(g.Average(x => Convert.ToInt32(x.d.滿意度星數))),
                                              風味列表 = (from tagItem in _myDBContext.T訂餐店家資料表s
@@ -495,6 +543,74 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                                          }).OrderByDescending(c => c.訂單總額).ThenByDescending(a => a.評價星數).Take(5).ToList();
 
             return Json(order2023totalByStore);
+        }
+        /// <summary>
+        /// 取得口味總表的清單
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult storeStyle()
+        {
+            var data= _myDBContext.T訂餐口味總表s.Select(a=>a.風味名稱).ToList();
+            return Ok(data);
+        }
+        /// <summary>
+        /// 回傳找出店家中銷售最高的前五名菜單
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult topfivemenu(int id) 
+        {
+            var data = (from item in _myDBContext.T訂餐訂單詳細資訊表s
+                       join a in _myDBContext.T訂餐店家資料表s on item.店家id equals a.店家id
+                       join b in _myDBContext.T訂餐餐點資訊表s on item.餐點id equals b.餐點id
+                       where a.店家id == id
+                       group item by b into g
+                       select new
+                       {
+                           餐點名稱 = g.Key.餐點名稱,
+                           銷售數量 = g.Sum(x => x.餐點數量)
+                       }).OrderByDescending(a=>a.銷售數量).Take(5).ToList();
+
+            return Ok(data);
+        }
+        public IActionResult ReviewExcellentRatio(int id)
+        {
+            var orderCount = _myDBContext.T訂餐訂單詳細資訊表s.Where(a => a.店家id == id).Count();
+
+            var totalStars = (from item in _myDBContext.T訂餐訂單詳細資訊表s
+                             join a in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals a.訂單id
+                             join b in _myDBContext.T訂餐評論表s on a.訂單id equals b.訂單id
+                             where item.店家id == id && Convert.ToInt32(b.滿意度星數) >= 4
+                             select b).Count();
+            var hotmeal = from item in _myDBContext.T訂餐訂單詳細資訊表s
+                          join a in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals a.訂單id
+                          join b in _myDBContext.T訂餐評論表s on a.訂單id equals b.訂單id
+                          join c in _myDBContext.T訂餐餐點資訊表s on item.餐點id equals c.餐點id
+                          where item.店家id == id && Convert.ToInt32(b.滿意度星數) > 4
+                          group c by c.餐點名稱 into g
+                          select new
+                          {
+                              餐點名稱 = g.Key,
+                              筆數 = g.Count()
+                          };
+            var icemeal = from item in _myDBContext.T訂餐訂單詳細資訊表s
+                          join a in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals a.訂單id
+                          join b in _myDBContext.T訂餐評論表s on a.訂單id equals b.訂單id
+                          join c in _myDBContext.T訂餐餐點資訊表s on item.餐點id equals c.餐點id
+                          where item.店家id == id && Convert.ToInt32(b.滿意度星數) <= 3
+                          group c by c.餐點名稱 into g
+                          select new
+                          {
+                              餐點名稱 = g.Key,
+                              筆數 = g.Count()
+                          };
+
+            var dataobject =new{
+                總筆數= orderCount,
+                優良筆數= totalStars,
+                最熱門菜單= hotmeal,
+                最冷門菜單= icemeal
+            };
+            return Ok(dataobject);
         }
         // https://localhost:7150/tOrder_StoreAPI/bestStoreTop5
     }

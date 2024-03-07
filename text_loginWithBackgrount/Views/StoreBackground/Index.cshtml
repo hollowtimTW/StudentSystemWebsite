@@ -46,7 +46,7 @@
                 <div class="ts-statistic">
                     <div class="value">@Model.historyorder</div>
                 </div>
-                歷史訂單數
+                <div class="ts-header is-heavy">歷史訂單數</div>
             </div>
             <div class="symbol">
                 <span class="ts-icon is-list-check-icon"></span>
@@ -57,10 +57,9 @@
         <div class="ts-box">
             <div class="ts-content">
                 <div class="ts-statistic">
-                    <div class="value">@Model.turnover</div>
-                    
+                    <div class="value">@Model.turnover.ToString("N0")</div>
                 </div>
-                總營業額
+                <div class="ts-header is-heavy">總營業額</div>
             </div>
             <div class="symbol">
                 <span class="ts-icon is-circle-dollar-to-slot-icon"></span>
@@ -72,9 +71,8 @@
             <div class="ts-content">
                 <div class="ts-statistic">
                     <div class="value">@Model.commentsNum</div>
-                    
                 </div>
-                評論數量
+                <div class="ts-header is-heavy">評論數量</div>
             </div>
             <div class="symbol">
                 <span class="ts-icon is-eye-icon"></span>
@@ -86,9 +84,8 @@
             <div class="ts-content">
                 <div class="ts-statistic">
                     <div class="value">@Model.evaluate</div>
-                    
                 </div>
-                平均評價
+                <div class="ts-header is-heavy">平均評價</div>
             </div>
             <div class="symbol">
                 <span class="ts-icon is-clock-icon"></span>
@@ -121,35 +118,7 @@
         </div>
         <p>依購買數量排名</p>
         <hr />
-        <ul class="task-list">
-            <li class="completed">
-                <div class="task-title">
-                    <p>1</p>
-                    <p>紅燒獅子頭</p>
-                </div>
-                <div class="ts-text is-large">654</div>
-            </li>
-            <li class="completed">
-                <div class="task-title">
-                    <p>1</p>
-                    <p>紅燒獅子頭</p>
-                </div>
-                <div class="ts-text is-large">654</div>
-            </li>
-            <li class="completed">
-                <div class="task-title">
-                    <p>1</p>
-                    <p>紅燒獅子頭</p>
-                </div>
-                <div class="ts-text is-large">654</div>
-            </li>
-            <li class="completed">
-                <div class="task-title">
-                    <p>1</p>
-                    <p>紅燒獅子頭</p>
-                </div>
-                <div class="ts-text is-large">654</div>
-            </li>
+        <ul class="task-list" id="topfivemenu">
             <li class="completed">
                 <div class="task-title">
                     <p>1</p>
@@ -175,28 +144,28 @@
         <div class="header m-0">
             <h3 class="is-heavy">菜單餐點意見回饋</h3> <!-- 表格的名稱 -->
         </div>
-        <p>@Model.commentsNum 次評論</p>
+        <p class="fs-5 fw-bold">@Model.commentsNum 次評論</p>
         <hr />
         <div class="column is-6-wide">
             <div class="ts-box is-top-indicated is-light">
                 <div class="ts-content is-dense">
-                    <div class="ts-header is-heavy">評論完整分析</div>
+                    <div class="ts-header is-heavy is-big is-center-aligned">評論完整分析</div>
                 </div>
                 <div class="ts-divider"></div>
                 <div class="ts-content">
-                    <div class="ts-text is-bold">整體評價優良比</div>
+                    <div class="ts-text is-bold is-large">整體評價優良比</div>
                     <div class="ts-progress is-small has-top-spaced-small">
-                        <div class="bar" style="width: 50%">
+                        <div class="bar" style="width: 100%">
                             <div class="text">64 GB</div>
                         </div>
                     </div>
-                    <div class="ts-text is-bold has-top-spaced-small">評分最高菜單:XXX</div>
+                    <div class="ts-text is-bold has-top-spaced-small is-large">評分最高菜單:<span class="ts-text is-negative">xxx</span></div>
                     <div class="ts-progress is-small has-top-spaced-small">
                         <div class="bar" style="width: 80%">
                             <div class="text">4 GB</div>
                         </div>
                     </div>
-                    <div class="ts-text is-bold has-top-spaced-small">評分最低菜單:XXX</div>
+                    <div class="ts-text is-bold has-top-spaced-small is-large">評分最低菜單:<span class="ts-text is-negative">xxx</span></div>
                     <div class="ts-progress is-small has-top-spaced-small">
                         <div class="bar" style="width: 30%">
                             <div class="text">30%</div>
@@ -213,11 +182,11 @@
 
     <script>
         let year = 2024;
-        $(".dropdown-menu").on("click", ".year", function () {
-            year = $(this).data("id");
-            barchart_monthly_revenue();
-        })
         const storeID = @User?.FindFirst("teacherID")?.Value
+            $(".dropdown-menu").on("click", ".year", function () {
+                year = $(this).data("id");
+                barchart_monthly_revenue();
+            })
         var bar_chart; // 宣告 bar_chart 變數
         async function barchart_monthly_revenue() {
             const request = await fetch(`@Url.Content("~/tOrder_StoreAPI/barchart_monthly_revenue")?yaer=${year}&id=${storeID}`);
@@ -283,10 +252,38 @@
             const data = await request.json();
             update(data)
         };
+        //載入銷售量最高的前五名
+        async function topmenu() {
+            $.ajax({
+                url: `@Url.Content("~/tOrder_StoreAPI/topfivemenu")?id=${storeID}`,
+                success: function (data) {
+                    const datalist = data.map((a, index) => {
+                        const { 餐點名稱, 銷售數量 } = a
+                        return (`
+                                    <li class="completed">
+                                      <div class="task-title">
+                                         <p class="fs-3">${index + 1} .</p>
+                                         <p>${餐點名稱}</p>
+                                      </div>
+                                      <div class="ts-statistic">
+                                        <div class="value">${銷售數量}</div>
+                                         <div class="unit is-light">次</div>
+                                        </div>
+                                    </li>
+                                    `)
+                    })
+                    $('#topfivemenu').html(datalist);
+                },
+                error: function (xhr, status, error) {
+                    console.error('發生錯誤:', error);
+                }
+            });
+        }
         //開始啟動載入
-        (async() => {
+        (async () => {
             barchart_monthly_revenue();
             pieComment_withstore(storeID);
+            topmenu();
         })()
     </script>
 }

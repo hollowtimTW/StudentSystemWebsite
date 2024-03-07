@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using text_loginWithBackgrount.Areas.ordering_system.Controllers;
+using text_loginWithBackgrount.Areas.ordering_system.Models;
 
 namespace text_loginWithBackgrount.Controllers
 {
@@ -26,8 +27,8 @@ namespace text_loginWithBackgrount.Controllers
         {
             var user = HttpContext.User.Claims.ToList();
             var userName = user.Where(a => a.Type == "teacherID").First().Value;//找登入的使用ID
-
-            return View(storeDeatail(Convert.ToInt32(userName)));
+            var id = Convert.ToInt32(userName);
+            return View(storeDeatail(id));
         }
         /// <summary>
         /// 餐點管理頁
@@ -99,5 +100,6 @@ namespace text_loginWithBackgrount.Controllers
             };
             return storeInformationVM;
         }
+
     }
 }
