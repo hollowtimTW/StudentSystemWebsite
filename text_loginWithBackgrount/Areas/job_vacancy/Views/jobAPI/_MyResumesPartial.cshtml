@@ -21,7 +21,7 @@
                             <h6 class="card-subtitle mb-2 text-muted">@viewModel.LastUpdate</h6>
                             <span>@viewModel.HopeJobTitle</span> <span>@viewModel.WorkType</span>
                             @* <a asp-area="job_vacancy" asp-controller="jobforStudent" asp-action="EditResume" asp-route-resumeID="18" target="_blank" class="readmore stretched-link"></a> *@
-                            <a class="stretched-link" data-bs-toggle="modal" data-bs-target="#editModal" onclick="popup_edit(@viewModel.ResumeID)"></a>
+                            <a class="stretched-link" onclick="popup_edit(@viewModel.ResumeID)"></a>
                         </div>
                     </div>
                 </div>
@@ -33,7 +33,7 @@
                         <i class="bi bi-file-earmark-plus-fill"></i>
                     </div>
                     <h3>新增履歷</h3>
-                    <a class="stretched-link" data-bs-toggle="modal" data-bs-target="#createModal" onclick="popup_create()"></a>
+                    <a class="stretched-link" data-bs-toggle="modal" data-bs-target="#createModal" onclick="popup_create(17)"></a>
                 </div>
             </div>
         </div>
@@ -114,13 +114,13 @@
     function popup_create(studentId) {
 
         const createContext = $("#create_context");
-        const url = "/job_vacancy/jobforStudent/Create/" + 17;
+        const url = "/job_vacancy/jobforStudent/Create/" + studentId;
 
         $.ajax({
             type: 'GET',
             url: url,
             success: function (result) {
-                console.log('呼叫新增視窗 success' + 17);
+                return console.log('呼叫新增視窗 success' + studentId);
                 createContext.html(result);
             },
             error: function (error) {
@@ -129,6 +129,25 @@
             }
         });
     }
+
+    @* 取消新增編輯 *@
+    document.getElementById('btnCancelCreate').addEventListener('click', function () {
+        Swal.fire({
+            title: '確認取消編輯',
+            text: '取消編輯將不會儲存修改，確定要取消嗎？',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '確定取消',
+            cancelButtonText: '繼續編輯',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#create_context').empty(); //清空partialview的內容
+                document.getElementById('btnCloseCreate').click();
+            } else {
+                // 使用者點擊了 "繼續編輯" 按鈕，不執行任何操作
+            }
+        });
+    });
 
     @* 呼叫編輯視窗的內容 *@
     function popup_edit(resumeId) {
@@ -142,6 +161,7 @@
             success: function (result) {
                 console.log('呼叫編輯視窗 success');
                 switchContext.html(result);
+                $('#editModal').modal('show');
             },
             error: function (error) {
                 console.error('呼叫編輯視窗 error', error);
