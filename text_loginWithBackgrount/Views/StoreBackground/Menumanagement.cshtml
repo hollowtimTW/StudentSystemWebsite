@@ -22,134 +22,283 @@
         </div>
     </div>
 </div>
+<div class="ts-box is-light">
+    <div class="ts-app-layout is-horizontal">
+        <div class="cell is-fluid">
+            <div class="ts-content">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="搜尋........." aria-label="Recipient's username" aria-describedby="button-addon2" id="searchKeyWord">
+                    <button class="ts-button is-icon" onclick="search()">
+                        <span class="ts-icon is-magnifying-glass-icon"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="cell">
+            <div class="ts-content ts-wrap">
+                <button class="ts-button is-start-labeled-icon">
+                    <span class="ts-icon is-check-to-slot-icon"></span>
+                    儲存
+                </button>
+                <button class="ts-button is-start-icon" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+                    <span class="ts-icon is-plus-icon"></span>
+                    新增餐點
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 @* 標題結束*@
 <div class="bottom-data">
     <div class="orders">
-        <div class="header">
+        <div class="header m-0">
             <i class='bx bx-receipt'></i>  <!-- 表格的小icon -->
-            <h3>菜單</h3> <!-- 表格的名稱 -->
-            <button class="ts-button is-start-icon is-light">
-                <span class="ts-icon is-plus-icon"></span>
-                新增菜單
-            </button>
-            <button class="ts-button is-start-icon is-light">
-                <span class="ts-icon is-trash-icon"></span>
-                編輯菜單
-            </button>
+            <h3>店家餐點</h3> <!-- 表格的名稱 -->
         </div>
+        <div class="ts-text is-secondary m-1">雙擊餐點能針對該品項編輯</div>
         <div class="ts-box is-light">
             <table class="ts-table is-basic is-large">
                 <thead>
                     <tr>
                         <th></th>
-                        <th class="fs-5">菜單名稱</th>
-                        <th class="fs-5">餐點</th>
-                        <th class="fs-5">時段</th>
+                        <th class="fs-5">名稱</th>
+                        <th class="fs-5">餐點描述</th>
+                        <th class="fs-5">價格</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="align-middle" id="menulist">
                     <tr>
-                        <td>1.</td>
-                        <td>午間套餐</td>
-                        <td>提供 5 項餐點</td>
-                        <td>全</td>
+
                     </tr>
                 </tbody>
             </table>
         </div>
-    </div>
-</div>
-<div class="bottom-data">
-    <div class="orders">
-        <div class="header">
-            <i class='bx bx-receipt'></i>  <!-- 表格的小icon -->
-            <h3>店家餐點</h3> <!-- 表格的名稱 -->
-            <button class="ts-button is-start-icon is-light">
-                <span class="ts-icon is-trash-icon"></span>
-                新增餐點
-            </button>
-            <button class="ts-button is-start-icon is-light">
-                <span class="ts-icon is-trash-icon"></span>
-                刪除餐點
-            </button>
-        </div>
-        @* 放置內容 *@
-        <div class="container m-4">
-            <div class="row">
-                <div class="col m-3">
-                    <div class="card col" style="width: 18rem;">
-                        <img src="~/images/user.jpg" class="card-img-top" alt="..." />
-                        <div class="card-body">
-                            <h5 class="card-title">餐點名稱</h5>
-                            <p class="card-text">餐點描述</p>
-                        </div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">售價:$100</li>
-                        </ul>
-                        <div class="card-body ts-wrap is-end-aligned">
-                            <div class="ts-button is-icon is-light">
-                                <span class="ts-icon is-pen-icon"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col m-3">
-                    <div class="card col" style="width: 18rem;">
-                        <img src="~/images/user.jpg" class="card-img-top" alt="..." />
-                        <div class="card-body">
-                            <h5 class="card-title">餐點名稱</h5>
-                            <p class="card-text">餐點描述</p>
-                        </div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">售價:$100</li>
-                        </ul>
-                        <div class="card-body ts-wrap is-end-aligned">
-                            <div class="ts-button is-icon is-light">
-                                <span class="ts-icon is-pen-icon"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col m-3">
-                    <div class="card col" style="width: 18rem;">
-                        <img src="~/images/user.jpg" class="card-img-top" alt="..." />
-                        <div class="card-body">
-                            <h5 class="card-title">餐點名稱</h5>
-                            <p class="card-text">餐點描述</p>
-                        </div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">售價:$100</li>
-                        </ul>
-                        <div class="card-body ts-wrap is-end-aligned">
-                            <div class="ts-button is-icon is-light">
-                                <span class="ts-icon is-pen-icon"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col m-3">
-                    <div class="card col" style="width: 18rem;">
-                        <img src="~/images/user.jpg" class="card-img-top" alt="..." />
-                        <div class="card-body">
-                            <h5 class="card-title">餐點名稱</h5>
-                            <p class="card-text">餐點描述</p>
-                        </div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">售價:$100</li>
-                        </ul>
-                        <div class="card-body ts-wrap is-end-aligned">
-                            <div class="ts-button is-icon is-light">
-                                <span class="ts-icon is-pen-icon"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div class="ts-wrap is-center-aligned">
+            <div class="ts-pagination is-light">
+                <a class="item is-back"></a>
+                <a class="item">1</a>
+                <a class="item is-active">2</a>
+                <a class="item">3</a>
+                <a class="item">4</a>
+                <a class="item is-next"></a>
             </div>
         </div>
-        <!-- End of Reminders-->
     </div>
-    @section Scripts {
-        <script>
+</div>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+        <h4 id="offcanvasRightLabel">編輯餐點</h4>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="title is-mark"><span class="ts-text is-mark">注意</span>編輯後記得儲存變更</div>
+        <form class="m-3" id="myForm">
+            <div class="mb-3">
+                <label for="餐點名稱" class="form-label">餐點名稱</label>
+                <input type="text" class="form-control" id="餐點名稱" aria-describedby="emailHelp" name="餐點名稱">
+                <div id="emailHelp" class="form-text">注意名稱是否符合審核規範</div>
+                <span class="ts-text is-negative" id="store餐點名稱Error"></span>
+            </div>
+            <div class="mb-3">
+                <label for="餐點售價" class="form-label">餐點售價</label>
+                <div class="ts-input is-start-labeled is-light">
+                    <span class="label">$</span>
+                    <input type="number" name="餐點售價" id="餐點售價">
+                    <span class="ts-text is-negative" id="store餐點售價Error"></span>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="餐點描述" class="form-label">餐點描述</label>
+                <div class="ts-input is-resizable is-light">
+                    <textarea placeholder="餐點描述......" name="餐點描述" id="餐點描述"></textarea>
+                </div>
+                <span class="ts-text is-negative" id="store餐點描述Error"></span>
+                <span class="ts-text is-secondary">餐點描述避免超過50個字為限</span>
+            </div>
+            <div class="mb-3">
+                <div class="ts-box is-hollowed is-light ts-file" id="fileupdate">
+                    <div class="ts-blankslate is-interactive">
+                        <img style="display: none; width: 100%; height: 100%;" url="" />
+                        <span class="ts-icon is-upload-icon"></span>
+                        <div class="header">上傳餐點圖片</div>
+                    </div>
+                </div>
+                <input type="text" style="display:none" name="menuID" id="menuID">
+                <input type="file" style="display:none" name="file" id="fileInput">
+            </div>
+            <button class="ts-button is-start-labeled-icon is-outlined is-light is-fluid" type="submit" id="subBtn">
+                <span class="ts-icon is-check-icon"></span>
+                儲存變更
+            </button>
+        </form>
+    </div>
+</div>
 
-        </script>
-    }
+@section Scripts {
+    <script>
+        const storeID = @User?.FindFirst("teacherID")?.Value;
+        let menuID=0;
+        let searchData = {
+            "storeID": storeID,
+            "keyword": "",
+            "page": 1,
+            "pageSize": 5,
+            "sortType": "asc",
+            "sortBy": ""
+        };
+        const loadSpots = () => {
+            $.ajax({
+                url: '@Url.Content("~/tOrder_StoreAPI/storeMenu")',
+                method: 'post',
+                contentType: 'application/json',
+                data: JSON.stringify(searchData),
+                success: (data) => {
+                    const datalist = data.spotMeauList.map(a => {
+                        const { 餐點id, 餐點名稱, 餐點描述, 餐點定價, 餐點照片 } = a;
+                        const formattedPrice = 餐點定價.toLocaleString();
+                        const imageUrl = 餐點照片 ? 餐點照片 : '/images/t訂餐/餐點/noimage.jpg';
+                        return (`
+                              <tr data-id="${餐點id}">
+                                <td class="mh-100" style="width: 100px; height: 100; display: flex; align-items: center; justify-content: center;">
+                                    <div style="width: 75px; height: 75px; overflow: hidden;">
+                                       <img src="${imageUrl}" style="width: 100%; height: 100%; object-fit: cover;" />
+                                    </div>
+                                </td>
+                                <td class="fs-4">${餐點名稱}</td>
+                                 <td class="fs-4">
+                                    <div class="ts-text is-truncated" style="max-width: 500px;">
+                                      ${餐點描述}
+                                     </div>
+                                </td>
+                                <td class="fs-4">$ ${formattedPrice}</td>
+                                <td><span class="ts-icon is-negative is-rounded is-trash-icon" data-id="${餐點id}"></span></td>
+                            </tr>
+                        `);
+                    })
+                    $('#menulist').html(datalist);
+                },
+                error: (xhr, status, error) => {
+                    // 處理Ajax請求失敗的情況
+                    console.error('Ajax request failed:', status, error);
+                }
+            })
+        };
+        //點選刪除菜單
+        $('#menulist').on('click', 'span.ts-icon', async function () {
+            var menuID = $(this).data('id');
+            
+        })
+        //網頁載入
+        $(document).ready(function () {
+            //點選圖片做檔案上傳
+            $('#fileupdate').click(() => {
+                $('#fileInput').click();
+            });
+            // 執行上傳預覽，當 fileInput 元素的值發生改變時
+            $('#fileInput').change(function (event) {
+                const file = event.target.files[0]; // 獲取選擇的文件
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        // 將 img 元素的 src 屬性設置為所選文件的數據 URL，以顯示預覽圖片
+                        $('#fileupdate img').attr('src', e.target.result).show();
+                        // 隱藏 "上傳餐點圖片" 標題
+                        $('#fileupdate .header').hide();
+                    };
+                    reader.readAsDataURL(file); // 讀取文件
+                }
+            });
+            loadSpots();
+        })
+        //雙點選餐點出現右側視窗，帶進資料
+        $('#menulist').on('dblclick', 'tr', async function () {
+            var storeID = $(this).data('id');
+            menuID = storeID;
+            $.ajax({
+                url: `@Url.Content("~/tOrder_StoreAPI/MenuDeatail")?id=${storeID}`,
+                success: (data) => {
+                    const formattedPrice = data[0].餐點定價.toLocaleString();
+                    const imageUrl = data[0].餐點照片==null;
+                    $('#餐點名稱').val(data[0].餐點名稱);
+                    $('#餐點售價').val(formattedPrice);
+                    $('#餐點描述').text(data[0].餐點描述);
+                    if (imageUrl) {
+                        $('#fileupdate img').hide();
+                        $('#fileupdate .header').show();
+                    } else {
+                        $('#fileupdate img').attr('src', data[0].餐點照片).show();
+                        $('#fileupdate .header').hide();
+                    }
+                }
+            }).then(() => {
+                $('#offcanvasRight').offcanvas('show');
+            });
+        });
+
+        //設置關閉回歸初始狀態
+        $('#offcanvasRight').on('hidden.bs.offcanvas', function () {
+            // 獲取表單元素
+            $('#fileupdate img').hide();
+            $('#fileupdate .header').show();
+            const form = document.getElementById('myForm');
+            const fileInput = document.getElementById('fileInput');
+            fileInput.value = '';
+            $('#store餐點名稱Error').text('');
+            $('#store餐點售價Error').text('');
+            $('#store餐點描述Error').text('');
+            $('#餐點描述').text('');
+            menuID = 0;
+            // 重置表單
+            form.reset();
+        });
+        //設定表單送出
+        $('#myForm').submit(function (event) {
+            event.preventDefault();
+            $('#menuID').val(menuID);
+            const file = $('#fileInput')[0].files[0];
+            const menuForm = $('#myForm')[0]; // 使用 jQuery 选择器获取表单元素
+            let formData = new FormData(menuForm);
+            formData.append('file', file);
+            $.ajax({
+                url: '@Url.Content("~/tOrder_StoreAPI/meal_deatail_form")',
+                method:'post',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: (datas) => {
+                    if (!datas.isValid) {
+                        $('#store餐點名稱Error').text(datas.errors.餐點名稱);
+                        $('#store餐點售價Error').text(datas.errors.餐點售價);
+                        $('#store餐點描述Error').text(datas.errors.餐點描述);
+                    } else {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '店家資料修改',
+                            text: '資修改完成',
+                        }).then(() => {
+                            $('#offcanvasRight').offcanvas('hide');
+                            loadSpots();
+                        })
+                    }
+                },
+                error: (xhr, status, error) => {
+                    // 處理Ajax請求失敗的情況
+                    console.error('Ajax request failed:', status, error);
+                }
+            })
+            
+        })
+        //執行搜尋功能與搜尋完後清除輸入項
+        function search() {
+            let key = $('#searchKeyWord').val();
+            searchData.keyword = key;
+            loadSpots();
+            $('#searchKeyWord').val("");
+        }
+        $('#searchKeyWord').keydown((event) => {
+            if (event.key === 'Enter' || event.keyCode === 13) {
+                search();
+            }
+        })
+    </script>
+}

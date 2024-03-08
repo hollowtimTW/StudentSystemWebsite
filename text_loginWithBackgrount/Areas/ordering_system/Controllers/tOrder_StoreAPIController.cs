@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IO;
+using text_loginWithBackgrount.Areas.ordering_system.Models;
 using TEXTpie_chart.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -631,6 +632,100 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             };
             return Ok(dataobject);
         }
+        /// <summary>
+        /// 透過顯示呼叫特定店家的所有餐點
+        /// </summary>
+        /// <param name="_search"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult storeMenu([FromBody] StoreShow _search)
+        {
+            var spots = _search.storeID == 0 ? _myDBContext.T訂餐餐點資訊表s : _myDBContext.T訂餐餐點資訊表s.Where(s => s.店家id == _search.storeID);
+            if (!string.IsNullOrEmpty(_search.keyword))
+            {
+                spots = spots.Where(s => s.餐點名稱.Contains(_search.keyword) || s.餐點描述.Contains(_search.keyword));
+            }
+            int totalCount = spots.Count(); //總共幾筆
+            int pagesize = _search.pageSize ?? 5; //一頁有幾筆資料
+            int page = _search.page ?? 1; //目前顯示哪一頁
+            int totalpage = (int)Math.Ceiling((decimal)(totalCount) / pagesize); //將小數點無條件進位，
+            spots = spots.Skip((int)(page - 1) * pagesize).Take(pagesize);
+            //轉換輸出格式，為了前端需求輸出
+            PagingDTO sportsPagingDTO = new PagingDTO();
+            sportsPagingDTO.TotalPages = totalpage;
+            sportsPagingDTO.spotMeauList = spots.ToList();
+            return Json(sportsPagingDTO);
+        }
+        /// <summary>
+        /// 顯示該筆餐點的詳細資料
+        /// </summary>
+        /// <param name="id">餐點ID</param>
+        /// <returns></returns>
+        public IActionResult MenuDeatail (int id)
+        {
+            var result = _myDBContext.T訂餐餐點資訊表s.Where(a => a.餐點id == id);
+            return Json(result);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> meal_deatail_form(menuDeatailDTO model)
+        {
+            int ID= model.menuID!=0 ? model.menuID : 0;
+            var fileLocation = "";
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).FirstOrDefault()
+                );
+                return Json(new { isValid = false, errors = errors });
+            }
+            if (model.file != null && model.file.Length > 0)
+            {
+                var guid = Guid.NewGuid();
+                var filesName = $"{guid}_{model.file.FileName}";
+                var rootDirectory = _env.ContentRootPath;
+                var uploadDirectory = rootDirectory + @"\wwwroot\images\t訂餐\餐點\"; // 指定路径
+                var filescombine = Path.Combine(uploadDirectory, filesName);  //存進資料庫的影片位置
+                fileLocation = "/images/t訂餐/餐點/" + filesName;
+                using (var system = System.IO.File.Create(filescombine)) //**補充
+                {
+                    await model.file.CopyToAsync(system);
+                }
+            }
+            //通過驗證，抓取特定餐點資料
+            var store = _myDBContext.T訂餐餐點資訊表s.FirstOrDefault(a => a.餐點id == model.menuID);
+            if (store != null)
+            {
+                if (fileLocation.IsNullOrEmpty())
+                {
+                    store.餐點照片 = store.餐點照片.IsNullOrEmpty() ? "/images/t訂餐/餐點/noimage.jpg" : store.餐點照片;
+                }
+                else
+                {
+                    store.餐點照片 = fileLocation;
+                }
+                store.餐點名稱 = model.餐點名稱;
+                store.餐點定價 = model.餐點售價;
+                store.餐點描述 = model.餐點描述;
+                _myDBContext.SaveChanges();
+            }
+            else
+            {
+                T訂餐餐點資訊表 newMenu = new T訂餐餐點資訊表 {
+                    餐點名稱 = model.餐點名稱,
+                    餐點定價 = model.餐點售價,
+                    餐點描述 = model.餐點描述,
+                    餐點照片 = fileLocation.IsNullOrEmpty()? "/images/t訂餐/餐點/noimage.jpg": fileLocation
+                };
+                _myDBContext.T訂餐餐點資訊表s.Add(newMenu);
+                _myDBContext.SaveChanges();
+            }
+            return Json(new { isValid = true });
+        }
         // https://localhost:7150/tOrder_StoreAPI/bestStoreTop5
+
     }
+
 }
