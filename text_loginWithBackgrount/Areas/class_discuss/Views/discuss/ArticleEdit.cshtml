@@ -1,0 +1,64 @@
+﻿@{
+    ViewData["Title"] = "新增文章";
+}
+@section BreadcrumbsSection {
+    <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
+    <div class="breadcrumbs">
+        <div class="page-header d-flex align-items-center" style="background-image: url('');">
+            <div class="container position-relative">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-lg-6 text-center">
+                        <h2>@ViewData["Title"]</h2>
+                        <p>來場同儕間的激烈溝通吧！</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav>
+            <div class="container d-flex justify-content-between align-items-center">
+                <!-- 導覽列項目設置，請根據目前網頁的深度增減 -->
+                <ol>
+                    <li><a asp-area="" asp-controller="Template" asp-action="Index">首頁</a></li>
+                    <li><a asp-area="class_discuss" asp-controller="discuss" asp-action="Index">學生論壇</a></li>
+                    <li>@ViewData["Title"]</li>
+                </ol>
+            </div>
+        </nav>
+    </div>
+}
+<section id="blog" class="blog">
+    <div id="editorwidth">
+        <div id="editor">123444456</div>
+    </div>
+    <button id="saveBtn">保存</button>
+</section>
+@section Styles{
+    <style>
+        #editorwidth{
+            margin:auto;
+            width:1000px;
+            
+        }
+    </style>
+}
+@section Scripts{
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor'))
+            .catch(error => {
+                console.error(error);
+            });
+        $(document).ready(function () {
+            $('#saveBtn').click(function () {
+                var editorContent = $('#editor').text(); // 获取编辑器内容
+                $.ajax({
+                    url: '/saveData',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ content: editorContent })
+                });
+                //這裡要切換頁面 還沒打
+            });
+        });
+    </script>
+}
