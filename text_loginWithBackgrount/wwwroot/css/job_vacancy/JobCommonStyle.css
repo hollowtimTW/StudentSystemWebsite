@@ -9,6 +9,10 @@ input[type="checkbox"]:checked {
     background-color: var(--color-primary);
 }
 
+.pointer-link {
+    cursor: pointer;
+}
+
 .btn-cancel {
     font-family: var(--font-primary);
     font-weight: 600;
@@ -24,7 +28,6 @@ input[type="checkbox"]:checked {
 
     .btn-cancel:hover {
         background-color: rgba(92, 99, 106, 0.5);
-        border-color: #565e64;
     }
 
 
@@ -438,10 +441,6 @@ input[type="checkbox"]:checked {
         margin-bottom: 0;
     }
 
-    .resume-item .stretched-link {
-        cursor: pointer;
-    }
-
 .create-resume {
     border: 4px dotted Grey;
 }
@@ -512,7 +511,7 @@ input[type="checkbox"]:checked {
         margin: 20px;
     }
 
-    .Resume-Edit .btn-secondary {
+    .Resume-Edit .btn-cancel {
         margin: 20px 10px;
     }
 

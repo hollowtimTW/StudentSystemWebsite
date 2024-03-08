@@ -69,7 +69,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                 else
                 {
                     // 如果學生不存在，返回查無此學生
-                    return NotFound();
+                    return NotFound("查無此學生");
                 }
             }
             catch (Exception ex)
@@ -142,7 +142,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                     _context.T工作履歷資料s.Add(newResume);
                     await _context.SaveChangesAsync();
 
-                    return Json(new { redirectUrl = Url.Action("Index", "jobforStudent") });
+                    return Json(new { success = true, message = "新增成功" });
 
                 }
                 else
@@ -228,7 +228,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         /// </summary>
         /// <param name="resumeID">履歷ID</param>
         /// <param name="viewModel">包含更新資訊的履歷視圖模型</param>
-        // POST: job_vacancy/jobforStudent/UpdateResume/5
+        // POST: job_vacancy/jobforStudent/UpdateResume/
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateResume(int resumeID,
@@ -285,7 +285,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                     _context.Update(thisResume);
                     await _context.SaveChangesAsync();
 
-                    return Json(new { redirectUrl = Url.Action("Index", "jobforStudent") });
+                    return Json(new { success = true, message = "修改成功" });
                 }
                 else
                 {
@@ -307,7 +307,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         /// </summary>
         /// <param name="resumeID">履歷ID</param>
         /// <param name="deleteReason">刪除履歷的原因</param>
-        // POST: job_vacancy/jobforStudent/Delete/5
+        // POST: job_vacancy/jobforStudent/Delete/
         [HttpPost]
         public async Task<IActionResult> Delete(int resumeID, string deleteReason)
         {
@@ -317,7 +317,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
 
                 if (thisResume == null)
                 {
-                    return NotFound("無這筆資料");
+                    return NotFound("無這筆履歷資料");
                 }
 
                 thisResume.F刪除狀態 = "1";
@@ -329,7 +329,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             }
             catch (Exception ex)
             {
-                return Problem("刪除失敗：" + ex.Message, statusCode: 500);
+                return StatusCode(500, new { success = false, message = "刪除失敗：" + ex.Message });
             }
         }
 

@@ -1,6 +1,10 @@
 ﻿@model ResumeCreateViewModel
 <style>
     <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet"/>
+
+    .text-danger{
+        background-color:yellow;
+    }
 </style> 
 <section class="Resume-Edit">
     <div class="container-fluid">
@@ -16,7 +20,7 @@
                     <div class="form-group flex-container">
                         <label asp-for="ResumeTitle" class="control-label"></label>
                         <input asp-for="ResumeTitle" class="form-control" />
-                        <span asp-validation-for="ResumeTitle" class="text-danger"></span>
+                        <span asp-validation-for="ResumeTitle" class="text-danger" aria-live="polite"></span>
                     </div>
                     <div class="form-group flex-container">
                         <label asp-for="Name" class="control-label"></label>
@@ -57,6 +61,7 @@
                     </div>
                     <input asp-for="Photo" type="file" id="Photo" class="form-control mt-2" accept="image/*" />
                     <span asp-validation-for="Photo" class="text-danger"></span>
+                    <span asp-validation-for="Name" class="text-danger">1234</span>
                 </div>
             </div>
 
@@ -167,7 +172,7 @@
                         <label for="workexp2">義全義大利餐館 2020/3 - 2022/5</label>
                     </div>
                     <button id="btnExpEditConfirm" type="button" class="btn btn-normal">確定</button>
-                    <button id="btnExpEditCancel" type="button" class="btn btn-secondary">取消</button>
+                    <button id="btnExpEditCancel" type="button" class="btn btn-cancel">取消</button>
                 </div>
             </div>
 
@@ -270,10 +275,8 @@
     </div>
 </section>
 
-
 @* <script src="~/js/job_vacancy/resume.js"></script> *@
 <script src="~/js/job_vacancy/ckeditor5/build/ckeditor.js"></script>
-
 <script>
 
     $(document).ready(function () {
