@@ -3,7 +3,10 @@
     <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet"/>
 </style>
 
-<form>
+<form id="formApply" enctype="multipart/form-data">
+    <!--隱藏職缺ID值-->
+    <input type="hidden" asp-for="JobID" value="@Model.JobID" />
+
     <div class="row">
         <div class="form-group mb-1">
             <div class="control-label mb-2">應徵工作：<span>@Model.JobTitle</span></div>
@@ -35,11 +38,10 @@
         </div>
         <div class="form-group">
             <div class="control-label mb-2">應徵信件內容：</div>
-            <textarea class="container-fluid">您好，希望能有參加面試的機會。</textarea>
+            <textarea class="container-fluid" asp-for="ApplyLetter">@Model.ApplyLetter</textarea>
             <div class="d-flex justify-content-end">
                 <div>字數：<span id="word-count">0</span> / <span style="color:#f85a40">500</span></div>
             </div>
         </div>
-
     </div>
 </form>

@@ -31,31 +31,6 @@
     </style>
 }
 
-<!-- 應徵 Modal -->
-<div class="modal fade" id="applyModal" tabindex="-1" aria-labelledby="applyModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="applyModalLabel">發送應徵信</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="switch_context">
-                <!-- 互動視窗內容 -->
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-normal">
-                    <a asp-area="job_vacancy" asp-controller="Job" asp-action="Index">確認送出</a>
-                </button>
-                @* <button type="button" class="btn btn-preview">
-                    <a asp-area="job_vacancy" asp-controller="Job" asp-action="ResumePreview" target="_blank">送出前預覽</a>
-                </button> *@
-            </div>
-        </div>
-    </div>
-</div>
-
-
 <section class="Job-Details">
     <div class="container">
         <div class="job-header">
@@ -218,32 +193,110 @@
         </div>
     </div>
 </section>
+
+<!-- 應徵 Modal -->
+<div class="modal fade" id="applyModal" tabindex="-1" aria-labelledby="applyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="applyModalLabel">發送應徵信</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="btnCloseApply"></button>
+            </div>
+            <div class="modal-body" id="apply_context">
+                <!-- 互動視窗內容 -->
+            </div>
+
+            <div class="modal-footer">
+                <input type="submit" class="btn btn-normal" id="btnSummitApply" value="確認送出" />
+                @* <button type="button" class="btn btn-preview">
+                <a asp-area="job_vacancy" asp-controller="Job" asp-action="ResumePreview" target="_blank">送出前預覽</a>
+                </button> *@
+            </div>
+        </div>
+    </div>
+</div>
 @section Scripts {
     <script src="~/js/job_vacancy/jobcommon.js"></script>
     <script>
 
+        //呼叫應徵信
         function popup_apply(studentId) {
-            
-            const switchContext = $("#switch_context");
+
+            const applyContext = $("#apply_context");
             $.ajax({
                 type: 'GET',
-                url: '/job_vacancy/jobapi/GetResumeTitles/',
-                data: { studentID: studentId, jobTitle: '@Html.Raw(Model.JobTitle)' },
+                url: '/job_vacancy/job/GetResumeTitles/',
+                data: { studentID: studentId, jobID: '@Model.JobID' },
                 success: function (result) {
-                    console.log('Ajax request success');
+                    console.log('呼叫應徵信 success');
                     // 清空並設置內容
-                    switchContext.html(result);
+                    applyContext.html(result);
                 },
                 error: function (error) {
-                    console.error('Ajax request error', error);
+                    console.error('呼叫應徵信 error', error);
                     // 顯示錯誤提示給用戶
-                    switchContext.html(`<div class="alert alert-danger" role="alert">請求失敗：${error.statusText}</div>`);
+                    applyContext.html(`<div class="alert alert-danger" role="alert">請求失敗：${error.statusText}</div>`);
                 }
             });
         }
 
+        // 提交應徵信
+        document.getElementById('btnSummitApply').addEventListener('click', async (event) => {
 
+            event.preventDefault();  //停止預設行為
 
+            const formData = new FormData(document.getElementById('formApply'));
+            //formData.set('resumeID', document.querySelector('input[name="resumes"]:checked')?.value);
+            formData.set("JobID", document.getElementById('JobID').value);
+            //formData.set("applyLetter", document.getElementById('ApplyLetter').value);
+
+            // for (const pair of formData.entries()) {
+            //     console.log(pair[0] + ': ' + pair[1]);
+            // }
+            // return;
+
+            const url = '/job_vacancy/job/ApplyLetter';
+            const response = await fetch(url, {
+                body: formData,
+                method: 'POST'
+            });
+            const data = await response.json();
+            if (response.ok) {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '應徵成功',
+                        customClass: {
+                            confirmButton: 'btn btn-normal',
+                        },
+                        confirmButtonColor: '#008374',
+                    });
+
+                    $('#apply_context').empty(); //清空partialview的內容
+                    document.getElementById('btnCloseApply').click();  //關閉modal
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '應徵送出失敗',
+                        text: data.message,
+                        customClass: {
+                            confirmButton: 'btn btn-normal',
+                        },
+                        confirmButtonColor: '#008374',
+                    });
+                }
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: '應徵送出失敗',
+                    text: data.message,
+                    customClass: {
+                        confirmButton: 'btn btn-normal',
+                    },
+                    confirmButtonColor: '#008374',
+                });
+            }
+        });
 
 
 
