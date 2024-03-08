@@ -9,19 +9,48 @@ input[type="checkbox"]:checked {
     background-color: var(--color-primary);
 }
 
-
-.btn-normal {
+.btn-cancel {
     font-family: var(--font-primary);
     font-weight: 600;
     font-size: 16px;
     letter-spacing: 1px;
     color: #fff;
-    background-color: var(--color-primary);
+    background-color: #6c757d;
     border-radius: 10px;
     transition: 0.3s;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    border: 2px solid #6c757d;
 }
+
+    .btn-cancel:hover {
+        background-color: rgba(92, 99, 106, 0.5);
+        border-color: #565e64;
+    }
+
+
+    .btn-cancel:active {
+        background-color: rgba(86, 94, 100, 0.5);
+        border-color: #51585e;
+
+    }
+
+    .btn-cancel:disabled {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    .btn-normal {
+        font-family: var(--font-primary);
+        font-weight: 600;
+        font-size: 16px;
+        letter-spacing: 1px;
+        color: #fff;
+        background-color: var(--color-primary);
+        border-radius: 10px;
+        transition: 0.3s;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+    }
 
     .btn-normal:hover {
         background-color: rgba(0, 131, 116, 0.5);

@@ -1,7 +1,12 @@
 ﻿@model List<MyResumesViewModel>
 <style>
     <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet"/>
-</style> 
+    .swl-select{
+        width:70%;
+        border-radius: 8px;
+    }
+</style>
+
 <div id="tab1" class="tab-page active">
     <div class="container">
         <div class="row gy-4">
@@ -114,6 +119,7 @@
 
         const { value: deleteReason } = Swal.fire({
             title: "確認刪除履歷？",
+            icon: 'warning',
             input: "select",
             inputOptions: {
                 found: "已找到工作",
@@ -124,6 +130,15 @@
             },
             inputPlaceholder: "請選擇刪除原因",
             showCancelButton: true,
+            confirmButtonText: '確定',
+            cancelButtonText: '取消',
+            customClass: {
+                input: 'swl-select',
+                confirmButton: 'btn btn-normal',
+                cancelButton: 'btn btn-cancel'
+            },
+            confirmButtonColor: '#008374',
+            cancelButtonColor: '#6c757d',
             inputValidator: (value) => {
                 return new Promise((resolve) => {
                     if (value) {
@@ -186,6 +201,12 @@
             showCancelButton: true,
             confirmButtonText: '確定取消',
             cancelButtonText: '繼續編輯',
+            customClass: {
+                confirmButton: 'btn btn-cancel',
+                cancelButton: 'btn btn-normal'
+            },
+            confirmButtonColor: '#6c757d',
+            cancelButtonColor: '#008374'
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#create_context').empty(); //清空partialview的內容
@@ -282,6 +303,12 @@
             showCancelButton: true,
             confirmButtonText: '確定取消',
             cancelButtonText: '繼續編輯',
+            customClass: {
+                confirmButton: 'btn btn-cancel',
+                cancelButton: 'btn btn-normal'
+            },
+            confirmButtonColor: '#6c757d',
+            cancelButtonColor: '#008374'
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#resume_context').empty(); //清空partialview的內容
