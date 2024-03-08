@@ -165,7 +165,7 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    throw new Error('連線失敗');
                 }
 
                 $(".loading").removeClass('d-block');
@@ -178,7 +178,7 @@
             } catch (error) {
                 $(".loading").removeClass('d-block');
                 $(".error-message").addClass('d-block');
-                console.error('There was an error!', error);
+                console.error('錯誤!', error);
             }
         });
 

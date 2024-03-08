@@ -286,11 +286,19 @@ namespace text_loginWithBackgrount.Controllers
         /// 學生確認重複email
         /// </summary>
         /// <returns></returns>        
-        public bool CheckEmailAvailability(string email)
+        public bool CheckEmailAvailability(string email, string originalEmail = null)
         {
-            var user = _dbStudentSystemContext.T會員學生s.FirstOrDefault(a => a.信箱 == email);
-            return (user != null);
+            if (originalEmail == null)
+            {
+                var user = _dbStudentSystemContext.T會員學生s.FirstOrDefault(a => a.信箱 == email);
+                return (user != null);
+            }
+            else {
+                var user = _dbStudentSystemContext.T會員學生s.FirstOrDefault(a => a.信箱 == email && a.信箱 != originalEmail);
+                return (user != null);
+            }
         }
+
 
 
         /// <summary>
