@@ -13,6 +13,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Models
         public string 餐點描述 { get; set; }
         public IFormFile? file { get; set; }
         public int menuID { get; set; }
+        public int storeID { get; set; }
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             //目前不用使用自訂驗證

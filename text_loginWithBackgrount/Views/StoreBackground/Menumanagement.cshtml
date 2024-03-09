@@ -36,7 +36,7 @@
         </div>
         <div class="cell">
             <div class="ts-content ts-wrap">
-                <button class="ts-button is-start-labeled-icon">
+                <button class="ts-button is-start-labeled-icon" onclick="textdonotthing()">
                     <span class="ts-icon is-check-to-slot-icon"></span>
                     儲存
                 </button>
@@ -57,27 +57,50 @@
         </div>
         <div class="ts-text is-secondary m-1">雙擊餐點能針對該品項編輯</div>
         <div class="ts-box is-light">
-            <table class="ts-table is-basic is-large">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th class="fs-5">名稱</th>
-                        <th class="fs-5">餐點描述</th>
-                        <th class="fs-5">價格</th>
-                    </tr>
-                </thead>
-                <tbody class="align-middle" id="menulist">
-                    <tr>
-
-                    </tr>
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="ts-table is-basic is-large table align-middle">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th class="fs-5">
+                                <div class="ts-content is-secondary is-dense is-start-aligned" onclick="orderClick('餐點名稱')">
+                                    <span class="ts-icon is-end-spaced is-arrow-down-up-across-line-icon"></span> 名稱
+                                </div>
+                            </th>
+                            <th class="fs-5">
+                                <div class="ts-content is-secondary is-dense is-start-aligned" onclick="orderClick('餐點描述')">
+                                    <span class="ts-icon is-end-spaced is-arrow-down-up-across-line-icon"></span> 餐點描述
+                                </div>
+                            </th>
+                            <th class="fs-5">
+                                <div class="ts-content is-secondary is-dense is-center-aligned" onclick="orderClick('餐點定價')">
+                                    <span class="ts-icon is-end-spaced is-arrow-down-up-across-line-icon"></span> 價格
+                                </div>
+                            </th>
+                            <th class="fs-5">
+                                <div class="ts-content is-secondary is-dense is-center-aligned">
+                                    <span class="ts-icon is-end-spaced is-lock-icon"></span> 上下架管理
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="align-middle" id="menulist">
+                        <tr class="is-tertiary is-negative is-indicated">
+@*                             <td>1212</td>
+                            <td>1212</td>
+                            <td>1212</td>
+                            <td>1212</td>
+                            <td>1212</td> *@
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
         <div class="ts-wrap is-center-aligned">
-            <div class="ts-pagination is-light">
+            <div class="ts-pagination is-light" id="pagelocation">
                 <a class="item is-back"></a>
-                <a class="item">1</a>
-                <a class="item is-active">2</a>
+                <a class="item is-active" onclick="page(1)">1</a>
+                <a class="item">2</a>
                 <a class="item">3</a>
                 <a class="item">4</a>
                 <a class="item is-next"></a>
@@ -137,56 +160,109 @@
 @section Scripts {
     <script>
         const storeID = @User?.FindFirst("teacherID")?.Value;
-        let menuID=0;
+        let menuID = 0;
         let searchData = {
             "storeID": storeID,
             "keyword": "",
             "page": 1,
             "pageSize": 5,
-            "sortType": "asc",
-            "sortBy": ""
+            "sortType": "",
+            "sortBy": "上架"
         };
         const loadSpots = () => {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: '@Url.Content("~/tOrder_StoreAPI/storeMenu")',
+                    method: 'post',
+                    contentType: 'application/json',
+                    data: JSON.stringify(searchData),
+                    success: (data) => {
+                        const datalist = data.spotMeauList.map(a => {
+                            const { 餐點id, 餐點名稱, 餐點描述, 餐點定價, 餐點照片, 上架 } = a;
+                            const formattedPrice = 餐點定價.toLocaleString();
+                            const imageUrl = 餐點照片 ? 餐點照片 : '/images/t訂餐/餐點/noimage.jpg';
+                            if (上架 && 上架.trim() === "1") {
+                                return (`
+                                            <tr data-id="${餐點id}">
+                                                <td class="mh-100" style="width: 100px; height: 100; display: flex; align-items: center; justify-content: center;">
+                                                    <div style="width: 75px; height: 75px; overflow: hidden;">
+                                                       <img src="${imageUrl}" style="width: 100%; height: 100%; object-fit: cover;" />
+                                                    </div>
+                                                </td>
+                                                <td class="fs-4">${餐點名稱}</td>
+                                                 <td class="fs-4">
+                                                    <div class="ts-text is-truncated" style="max-width: 500px;">
+                                                      ${餐點描述}
+                                                     </div>
+                                                </td>
+                                                <td class="fs-4 is-center-aligned">$ ${formattedPrice}</td>
+                                                <td class="is-center-aligned">
+                                                        <button class="ts-button is-icon is-negative is-outlined"data-id="${餐點id}" data-bs-toggle="tooltip" data-bs-placement="top" title="商品下架">
+                                                        <span class="ts-icon is-trash-icon"></span>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        `);
+                            } else {
+                                return (`
+                                                <tr data-id="${餐點id}" class="is-tertiary is-negative is-indicated">
+                                                 <td class="mh-100" style="width: 100px; height: 100; display: flex; align-items: center; justify-content: center;">
+                                                   <div style="width: 75px; height: 75px; overflow: hidden;">
+                                                         <img src="${imageUrl}" style="width: 100%; height: 100%; object-fit: cover;" />
+                                                   </div>
+                                                  </td>
+                                                  <td class="fs-4">${餐點名稱}</td>
+                                                  <td class="fs-4">
+                                                   <div class="ts-text is-truncated" style="max-width: 500px;">
+                                                     ${餐點描述}
+                                                   </div>
+                                                        </td>
+                                                         <td class="fs-4 is-center-aligned">$ ${formattedPrice}</td>
+                                                         <td class="is-center-aligned">
+                                                          <button class="ts-button is-icon" data-id="${餐點id}" data-bs-toggle="tooltip" data-bs-placement="top" title="商品重新上架">
+                                                                <span class="ts-icon is-square-plus-icon"></span>
+                                                          </button>
+                                                        </td>
+                                                    </tr>
+                                                `);
+                            }
+                        })
+                        $('#menulist').html(datalist);
+                        let liPaging = '<a class="item is-back"></a>';
+                        for (let i = 1, max = data.totalPages; i <= max; i++) {
+                            liPaging += `<a class="item" onclick="page(${i})" id='page${i}'>${i}</a>`;
+                        }
+                        liPaging += '<a class="item is-next"></a>';
+                        $('#pagelocation').html(liPaging);
+                        resolve();
+                    },
+                    error: (xhr, status, error) => {
+                        // 處理Ajax請求失敗的情況
+                        console.error('Ajax request failed:', status, error);
+                    }
+                })
+            })
+        };
+        //點選下架菜單
+        $('#menulist').on('click', 'button.is-icon', async function () {
+            var menuID = $(this).data('id');
             $.ajax({
-                url: '@Url.Content("~/tOrder_StoreAPI/storeMenu")',
-                method: 'post',
-                contentType: 'application/json',
-                data: JSON.stringify(searchData),
-                success: (data) => {
-                    const datalist = data.spotMeauList.map(a => {
-                        const { 餐點id, 餐點名稱, 餐點描述, 餐點定價, 餐點照片 } = a;
-                        const formattedPrice = 餐點定價.toLocaleString();
-                        const imageUrl = 餐點照片 ? 餐點照片 : '/images/t訂餐/餐點/noimage.jpg';
-                        return (`
-                              <tr data-id="${餐點id}">
-                                <td class="mh-100" style="width: 100px; height: 100; display: flex; align-items: center; justify-content: center;">
-                                    <div style="width: 75px; height: 75px; overflow: hidden;">
-                                       <img src="${imageUrl}" style="width: 100%; height: 100%; object-fit: cover;" />
-                                    </div>
-                                </td>
-                                <td class="fs-4">${餐點名稱}</td>
-                                 <td class="fs-4">
-                                    <div class="ts-text is-truncated" style="max-width: 500px;">
-                                      ${餐點描述}
-                                     </div>
-                                </td>
-                                <td class="fs-4">$ ${formattedPrice}</td>
-                                <td><span class="ts-icon is-negative is-rounded is-trash-icon" data-id="${餐點id}"></span></td>
-                            </tr>
-                        `);
+                url: `@Url.Content("~/tOrder_StoreAPI/MenuShelves")?id=${menuID}`,
+                success: () => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '餐點修改',
+                        text: '資料修改完成',
+                    }).then(() => {
+                        searchData.sortType = "";
+                        searchData.sortBy = "上架"
+                        loadSpots();
                     })
-                    $('#menulist').html(datalist);
                 },
                 error: (xhr, status, error) => {
-                    // 處理Ajax請求失敗的情況
                     console.error('Ajax request failed:', status, error);
                 }
             })
-        };
-        //點選刪除菜單
-        $('#menulist').on('click', 'span.ts-icon', async function () {
-            var menuID = $(this).data('id');
-            
         })
         //網頁載入
         $(document).ready(function () {
@@ -208,7 +284,9 @@
                     reader.readAsDataURL(file); // 讀取文件
                 }
             });
-            loadSpots();
+            loadSpots().then(() => {
+                $('#page1').addClass('is-active');
+            });
         })
         //雙點選餐點出現右側視窗，帶進資料
         $('#menulist').on('dblclick', 'tr', async function () {
@@ -218,7 +296,7 @@
                 url: `@Url.Content("~/tOrder_StoreAPI/MenuDeatail")?id=${storeID}`,
                 success: (data) => {
                     const formattedPrice = data[0].餐點定價.toLocaleString();
-                    const imageUrl = data[0].餐點照片==null;
+                    const imageUrl = data[0].餐點照片 == null;
                     $('#餐點名稱').val(data[0].餐點名稱);
                     $('#餐點售價').val(formattedPrice);
                     $('#餐點描述').text(data[0].餐點描述);
@@ -256,12 +334,13 @@
             event.preventDefault();
             $('#menuID').val(menuID);
             const file = $('#fileInput')[0].files[0];
-            const menuForm = $('#myForm')[0]; // 使用 jQuery 选择器获取表单元素
+            const menuForm = $('#myForm')[0];
             let formData = new FormData(menuForm);
             formData.append('file', file);
+            formData.append('storeID', storeID);
             $.ajax({
                 url: '@Url.Content("~/tOrder_StoreAPI/meal_deatail_form")',
-                method:'post',
+                method: 'post',
                 data: formData,
                 contentType: false,
                 processData: false,
@@ -273,8 +352,8 @@
                     } else {
                         Swal.fire({
                             icon: 'success',
-                            title: '店家資料修改',
-                            text: '資修改完成',
+                            title: '餐點修改',
+                            text: '資料修改完成',
                         }).then(() => {
                             $('#offcanvasRight').offcanvas('hide');
                             loadSpots();
@@ -286,7 +365,7 @@
                     console.error('Ajax request failed:', status, error);
                 }
             })
-            
+
         })
         //執行搜尋功能與搜尋完後清除輸入項
         function search() {
@@ -300,5 +379,51 @@
                 search();
             }
         })
+        //移動跳頁面左右鍵
+        $('.ts-wrap').on('click', 'a.is-back', function () {
+            var activeItem = $(".is-active");
+            var prevItem = activeItem.prev(".item");
+            if (prevItem.length) {
+                prevItem.click();
+                $('.is-next').removeClass('is-disabled');
+                if (prevItem.index() == 1) {
+                    $(this).addClass('is-disabled');
+                }
+            }
+        })
+        $('.ts-wrap').on('click', 'a.is-next', function () {
+            var max = $('.item');
+            var activeItem = $(".is-active");
+            var prevItem = activeItem.next(".item");
+            if (prevItem.length) {
+                $('.is-back').removeClass('is-disabled');
+                prevItem.click();
+                if (!prevItem.nextAll(".item:not(.is-next)").first().length) {
+                    $(this).addClass('is-disabled');
+                }
+            }
+        })
+        //切換跳頁
+        function page(a) {
+            searchData.page = a;
+            loadSpots().then(() => {
+                $(`#page${a}`).addClass('is-active');
+            });
+        }
+        function orderClick(name) {
+            searchData.sortBy = name;
+            searchData.sortType = searchData.sortType == "" ? "asc" : "";
+            loadSpots();
+        }
+        function textdonotthing() 
+        {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "完成儲存餐點資料",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
     </script>
 }

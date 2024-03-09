@@ -2,6 +2,7 @@
 using Class_system_Backstage_pj.Areas.ordering_system.Models;
 using Class_system_Backstage_pj.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -645,6 +646,22 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             {
                 spots = spots.Where(s => s.餐點名稱.Contains(_search.keyword) || s.餐點描述.Contains(_search.keyword));
             }
+            switch (_search.sortBy)
+            {
+                case "上架":
+                    spots = _search.sortType == "asc" ? spots.OrderBy(a => a.上架) : spots.OrderByDescending(a => a.上架);
+                    break;
+                case "餐點定價":
+                    spots = _search.sortType == "asc" ? spots.OrderBy(a => a.餐點定價) : spots.OrderByDescending(a => a.餐點定價);
+                    break;
+                case "餐點名稱":
+                    spots = _search.sortType == "asc" ? spots.OrderBy(a => a.餐點名稱) : spots.OrderByDescending(a => a.餐點名稱);
+                    break;
+                case "餐點描述":
+                    spots = _search.sortType == "asc" ? spots.OrderBy(a => a.餐點描述) : spots.OrderByDescending(a => a.餐點描述);
+                    break;
+
+            }
             int totalCount = spots.Count(); //總共幾筆
             int pagesize = _search.pageSize ?? 5; //一頁有幾筆資料
             int page = _search.page ?? 1; //目前顯示哪一頁
@@ -666,8 +683,11 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             var result = _myDBContext.T訂餐餐點資訊表s.Where(a => a.餐點id == id);
             return Json(result);
         }
-
-
+        /// <summary>
+        /// 新增或是修改餐點資料
+        /// </summary>
+        /// <param name="model">Menumanagement餐點資訊表格</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> meal_deatail_form(menuDeatailDTO model)
         {
@@ -714,9 +734,11 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             else
             {
                 T訂餐餐點資訊表 newMenu = new T訂餐餐點資訊表 {
+                    店家id = model.storeID,
                     餐點名稱 = model.餐點名稱,
                     餐點定價 = model.餐點售價,
                     餐點描述 = model.餐點描述,
+                    上架="1",
                     餐點照片 = fileLocation.IsNullOrEmpty()? "/images/t訂餐/餐點/noimage.jpg": fileLocation
                 };
                 _myDBContext.T訂餐餐點資訊表s.Add(newMenu);
@@ -724,8 +746,27 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             }
             return Json(new { isValid = true });
         }
+        /// <summary>
+        /// 選擇餐點修改上下架餐點
+        /// </summary>
+        /// <param name="id">餐點ID</param>
+        /// <returns></returns>
+        public IActionResult MenuShelves(int id) {
+            var result = _myDBContext.T訂餐餐點資訊表s.Where(a => a.餐點id == id).FirstOrDefault();
+            if (result != null) {
+                if (result.上架.Trim() == "1") {
+                    result.上架 = "0";
+                }
+                else
+                {
+                    result.上架 = "1";
+                }
+                _myDBContext.SaveChanges();
+                return Ok();
+            }
+            return NotFound();
+        }
         // https://localhost:7150/tOrder_StoreAPI/bestStoreTop5
-
     }
 
 }
