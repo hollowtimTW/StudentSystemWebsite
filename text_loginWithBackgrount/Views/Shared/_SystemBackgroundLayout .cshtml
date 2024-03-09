@@ -150,7 +150,11 @@
                 url: '/Login/GetTeacherImage/' + teacherId,
                 type: 'GET',
                 success: function (data) {
-                    $('#profileImage').attr('src', 'data:image/png;base64,' + data);
+                    if (data != null) {
+                        $('#profileImage').attr('src', 'data:image/png;base64,' + data);
+                    } else {
+                        $('#profileImage').attr('src', '~/images/user.jpg');
+                    }
                 },
                 error: function (xhr, status, error) {
                     console.log('錯誤：' + error);

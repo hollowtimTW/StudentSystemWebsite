@@ -180,12 +180,11 @@ namespace text_loginWithBackgrount.Controllers
 
         public IActionResult GetTeacherImage(int teacherId)
         {
-            //var user = _dbStudentSystemContext.T會員老師s.SingleOrDefault(a => a.老師id == teacherId);
-            var user = _dbStudentSystemContext.T會員學生s.SingleOrDefault(a => a.學生id == 5);//應急
+            var user = _dbStudentSystemContext.T會員老師s.SingleOrDefault(a => a.老師id == teacherId);
 
             if (user == null || user.圖片 == null || user.圖片.Length == 0)
             {
-                return NotFound("沒有圖片");
+                return NotFound("null");
             }
 
             string base64Image = Convert.ToBase64String(user.圖片);

@@ -79,6 +79,7 @@
                     </div><!-- End meta top -->
                     <hr />
                     <form asp-action="StudentEdit" asp-controller="Student" role="form" class="php-email-form" id="StudentEdit">
+                    <form asp-action="StudentEdit" asp-controller="Student" method="post" role="form" class="php-email-form" id="StudentEdit">
                         <div class="row">
                             <div class="col-md-8 form-group mt-3">
                                 <input asp-for="姓名" class="form-control" placeholder="姓名" id="name">
@@ -112,6 +113,10 @@
                             <div class="col-md-12 form-group mt-3">
                                 <input asp-for="生日" class="form-control" placeholder="生日" id="birthday">
                                 <span asp-validation-for="生日" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-12 form-group mt-3">
+                                <input type="file" asp-for="圖片" class="form-control" placeholder="頭像" id="UserImage" accept=".png, .jpg, .jpeg" />
+                                <span asp-validation-for="圖片" class="text-danger"></span>
                             </div>
                             <div class="col-md-12 form-group mt-3">
                                 <input asp-for="學校" class="form-control" placeholder="學校" id="school">
@@ -152,11 +157,11 @@
                             <div class="col-md-12 text-center mt-3">
                                 <button type="submit" id="btn_edit">修改資訊</button>
                                 @* <button type="button" id="fillDataBtn" class="btn btn-primary">DEMO</button> *@
- @*                                <div class="my-3">
+                                 <div class="my-3">
                                     <div class="loading">Loading</div>
                                     <div class="error-message">請完成項目</div>
                                     <div class="sent-message">修改成功</div>
-                                </div> *@
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -191,10 +196,10 @@
         //     $(".loading").addClass('d-block');
 
         //     try {
-        //         const response = await fetch('/Login/StudentEdit', {
+        //         const response = await fetch('/Student/StudentEdit', {
         //             method: 'POST',
         //             headers: {
-        //                 'Content-Type': 'application/x-www-form-urlencoded' //好像一定要加?
+        //                 'Content-Type': 'application/x-www-form-urlencoded' 
         //             },
         //             body: formData
         //         });
