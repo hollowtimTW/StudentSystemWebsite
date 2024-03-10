@@ -605,31 +605,31 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                           };
             var hotmealest = hotmeal.OrderByDescending(a => a.加總評分).FirstOrDefault();
             var icemeal = from item in _myDBContext.T訂餐訂單詳細資訊表s
-                           join a in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals a.訂單id
-                           join b in _myDBContext.T訂餐評論表s on a.訂單id equals b.訂單id
-                           join c in _myDBContext.T訂餐餐點資訊表s on item.餐點id equals c.餐點id
-                           where item.店家id == id && Convert.ToInt32(b.滿意度星數) <= 3
-                           group new { c, b } by c.餐點名稱 into g
-                           select new
-                           {
-                               餐點名稱 = g.Key,
-                               評價分數 = g.Select(x => x.b.滿意度星數).FirstOrDefault(),
-                               筆數 = g.Count(),
-                               加總評分 = (Convert.ToInt32(g.Select(x => x.b.滿意度星數).FirstOrDefault())) * g.Count()
-                           };
+                          join a in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals a.訂單id
+                          join b in _myDBContext.T訂餐評論表s on a.訂單id equals b.訂單id
+                          join c in _myDBContext.T訂餐餐點資訊表s on item.餐點id equals c.餐點id
+                          where item.店家id == id && Convert.ToInt32(b.滿意度星數) <= 3
+                          group new { c, b } by c.餐點名稱 into g
+                          select new
+                          {
+                              餐點名稱 = g.Key,
+                              評價分數 = g.Select(x => x.b.滿意度星數).FirstOrDefault(),
+                              筆數 = g.Count(),
+                              加總評分 = (Convert.ToInt32(g.Select(x => x.b.滿意度星數).FirstOrDefault())) * g.Count()
+                          };
 
-            var lowmealest= icemeal.OrderBy(a=>a.加總評分).First();
+            var lowmealest = icemeal.OrderBy(a => a.加總評分).First();
             var dataobject = new
             {
                 總筆數 = orderCount,
                 優良筆數 = totalStars,
-                總訂單評價優良比 = (totalStars!=0)?Math.Round((double)totalStars / (double)orderCount * 100, 1):0,
+                總訂單評價優良比 = (totalStars != 0) ? Math.Round((double)totalStars / (double)orderCount * 100, 1) : 0,
                 最熱門菜單 = hotmealest.餐點名稱,
-                熱門菜單平均評價= (hotmealest.加總評分!=null)? Math.Round((double)(hotmealest.加總評分/ hotmealest.筆數),1):0,
+                熱門菜單平均評價 = (hotmealest.加總評分 != null) ? Math.Round((double)(hotmealest.加總評分 / hotmealest.筆數), 1) : 0,
                 熱門佔總訂單的比率 = (hotmealest != null) ? Math.Round(((double)hotmealest.筆數 / orderCount) * 100, 1) : 0,
-                最冷門菜單= lowmealest.餐點名稱,
-                冷門平均評價= (lowmealest.加總評分 != null)? Math.Round(((double)lowmealest.加總評分/ lowmealest.筆數),1) : 0,
-                冷門菜單總訂單的比率= (lowmealest != null) ? Math.Round(((double)lowmealest.筆數 / orderCount) * 100, 1) : 0,
+                最冷門菜單 = lowmealest.餐點名稱,
+                冷門平均評價 = (lowmealest.加總評分 != null) ? Math.Round(((double)lowmealest.加總評分 / lowmealest.筆數), 1) : 0,
+                冷門菜單總訂單的比率 = (lowmealest != null) ? Math.Round(((double)lowmealest.筆數 / orderCount) * 100, 1) : 0,
             };
             return Ok(dataobject);
         }
@@ -678,7 +678,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
         /// </summary>
         /// <param name="id">餐點ID</param>
         /// <returns></returns>
-        public IActionResult MenuDeatail (int id)
+        public IActionResult MenuDeatail(int id)
         {
             var result = _myDBContext.T訂餐餐點資訊表s.Where(a => a.餐點id == id);
             return Json(result);
@@ -691,7 +691,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
         [HttpPost]
         public async Task<IActionResult> meal_deatail_form(menuDeatailDTO model)
         {
-            int ID= model.menuID!=0 ? model.menuID : 0;
+            int ID = model.menuID != 0 ? model.menuID : 0;
             var fileLocation = "";
             if (!ModelState.IsValid)
             {
@@ -733,13 +733,14 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             }
             else
             {
-                T訂餐餐點資訊表 newMenu = new T訂餐餐點資訊表 {
+                T訂餐餐點資訊表 newMenu = new T訂餐餐點資訊表
+                {
                     店家id = model.storeID,
                     餐點名稱 = model.餐點名稱,
                     餐點定價 = model.餐點售價,
                     餐點描述 = model.餐點描述,
-                    上架="1",
-                    餐點照片 = fileLocation.IsNullOrEmpty()? "/images/t訂餐/餐點/noimage.jpg": fileLocation
+                    上架 = "1",
+                    餐點照片 = fileLocation.IsNullOrEmpty() ? "/images/t訂餐/餐點/noimage.jpg" : fileLocation
                 };
                 _myDBContext.T訂餐餐點資訊表s.Add(newMenu);
                 _myDBContext.SaveChanges();
@@ -751,10 +752,13 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
         /// </summary>
         /// <param name="id">餐點ID</param>
         /// <returns></returns>
-        public IActionResult MenuShelves(int id) {
+        public IActionResult MenuShelves(int id)
+        {
             var result = _myDBContext.T訂餐餐點資訊表s.Where(a => a.餐點id == id).FirstOrDefault();
-            if (result != null) {
-                if (result.上架.Trim() == "1") {
+            if (result != null)
+            {
+                if (result.上架.Trim() == "1")
+                {
                     result.上架 = "0";
                 }
                 else
@@ -766,7 +770,70 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             }
             return NotFound();
         }
+        /// <summary>
+        /// 本日訂單數、當月新訂單比率、過往訂單回購率
+        /// </summary>
+        /// <param name="id">店家ID</param>
+        /// <returns></returns>
+        public IActionResult Orderanalysis(int id)
+        {
+            DateTime date = DateTime.Now;
+            string[] formattedDate = date.ToString("yyyy-MM-dd").Split("-");
+            string year = formattedDate[0];
+            string month = formattedDate[1];
+            string day = formattedDate[2];
+
+            var resultToday = from item in _myDBContext.T訂餐訂單詳細資訊表s
+                              join a in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals a.訂單id
+                              join b in _myDBContext.T訂餐餐點資訊表s on item.餐點id equals b.餐點id
+                              join c in _myDBContext.T訂餐店家資料表s on item.店家id equals c.店家id
+                              where c.店家id == id && (a.訂單時間).Substring(0, 4) == year && (a.訂單時間).Substring(4, 2) == month && (a.訂單時間).Substring(6, 2) == day
+                              select new orderdeatialViewModel
+                              {
+                                  訂單編號 = (item.訂單詳細表id),
+                                  餐點名稱 = b.餐點名稱,
+                                  數量 = item.餐點數量,
+                                  金額 = Convert.ToInt32(b.餐點定價 * item.餐點數量),
+                                  支付方式 = (a.支付方式).Trim(),
+                                  訂單狀態 = (a.訂單狀態).Trim(),
+                                  訂單日期 = a.訂單時間,
+                                  type = (a.訂單狀態).Trim() == "完成" ? "completed" : "pending" ?? "completed"
+                              };
+            //回傳本日訂單數資料
+            int todayOrderCount = resultToday.Count();
+            //店家當月份母訂單資料
+            var intermediateResult = (from item in _myDBContext.T訂餐訂單資訊表s
+                                      join a in _myDBContext.T訂餐訂單詳細資訊表s on item.訂單id equals a.訂單id
+                                      where a.店家id == id && item.訂單時間.Substring(0, 4) == year && (item.訂單時間).Substring(4, 2) == month
+                                      select new { item, a }).ToList();
+            //當月中是首次購買的訂單數量
+            var result = (intermediateResult
+                        .GroupBy(x => x.item.學員id) // 按照學員ID分組
+                        .Where(g => g.Count() == 1) // 只出现一次的訂單ID
+                        .SelectMany(g => g.Select(x => x.item.訂單id))).Distinct().ToList().Count();
+
+            //回傳當月訂單中是首次購買的比率
+            double firstOrderMonth = result != 0 ? ((double)result / (double)intermediateResult.Select(a => a.item.訂單id).Distinct().Count()) * 100 : 0;
+
+            //店家全部母訂單資料
+            var orderTotal = (from item in _myDBContext.T訂餐訂單資訊表s
+                              join a in _myDBContext.T訂餐訂單詳細資訊表s on item.訂單id equals a.訂單id
+                              where a.店家id == id
+                              select new { item, a }).ToList();
+            var result1 = (orderTotal.GroupBy(x => x.item.學員id) // 按照學員ID分組
+                           .Where(g => g.Count() > 1) // 出現超過一次的訂單ID
+                          .SelectMany(g => g.Select(x => x.item.訂單id))).Distinct().ToList().Count();
+
+            //回傳全部訂單中的回購比率
+            double notfirstOrder = result1 != 0 ? ((double)result1 / (double)orderTotal.Select(a => a.item.訂單id).Distinct().Count()) * 100 : 0;
+
+            var resultObject = new {
+                本日訂單數 = todayOrderCount,
+                當月新訂單比率= firstOrderMonth.ToString("0.00")+"%",
+                過往訂單回購率= notfirstOrder.ToString("0.00")+"%",
+            };
+            return Ok(resultObject);
+        }
         // https://localhost:7150/tOrder_StoreAPI/bestStoreTop5
     }
-
 }
