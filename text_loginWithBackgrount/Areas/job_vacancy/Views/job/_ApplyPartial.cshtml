@@ -3,7 +3,9 @@
     <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet"/>
 </style>
 
-<form id="formApply" enctype="multipart/form-data">
+<form asp-action="ApplyLetter" id="formApply" enctype="application/x-www-form-urlencoded">
+    <!--隱藏學生ID值-->
+    <input type="hidden" asp-for="StudentID" value="@Model.StudentID" />
     <!--隱藏職缺ID值-->
     <input type="hidden" asp-for="JobID" value="@Model.JobID" />
 

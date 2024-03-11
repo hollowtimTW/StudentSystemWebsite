@@ -153,11 +153,12 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
 
             var viewModel = new ApplyViewModel
             {
+                StudentID = studentID,
                 JobID = jobID,
                 JobTitle = jobTitle,
                 ResumeIDs = resumeIDs,
                 ResumeTitles = resumeTitles,
-                ApplyLetter = "您好，我是{studentName}，希望能獲得面試的機會。"
+                ApplyLetter = $"您好，我是{studentName}，希望能獲得面試的機會。"
             };
 
             return PartialView("_ApplyPartial", viewModel);
@@ -170,8 +171,9 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         // POST: job_vacancy/job/ApplyLetter
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("/job_vacancy/job/{Action=Index}")]
         public async Task<IActionResult> ApplyLetter(
-            [Bind("StudentID, JobID, JobTitle, ApplyLetter")] ApplyViewModel viewModel)
+            [Bind("StudentID, JobID, ApplyLetter")] ApplyViewModel viewModel)
         {
             try
             {
