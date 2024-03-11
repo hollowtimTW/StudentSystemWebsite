@@ -64,7 +64,26 @@ namespace text_loginWithBackgrount.Controllers
         }
         public JsonResult indexjson()
         {
-            return Json(_myDBContext.T訂餐店家資料表s);
+            var user = HttpContext.User.Claims.ToList();
+            var userName = user.Where(a => a.Type == "teacherID").First().Value;//找登入的使用ID
+            var id = Convert.ToInt32(userName);
+            var result = from item in _myDBContext.T訂餐訂單詳細資訊表s
+                              join a in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals a.訂單id
+                              join b in _myDBContext.T訂餐餐點資訊表s on item.餐點id equals b.餐點id
+                              join c in _myDBContext.T訂餐店家資料表s on item.店家id equals c.店家id
+                              where c.店家id == id
+                              select new orderdeatialViewModel
+                              {
+                                  訂單編號 = (item.訂單詳細表id),
+                                  餐點名稱 = b.餐點名稱,
+                                  數量 = item.餐點數量,
+                                  金額 = Convert.ToInt32(b.餐點定價 * item.餐點數量),
+                                  支付方式 = (a.支付方式).Trim(),
+                                  訂單狀態 = item.狀態 == "1" ? "完成" : item.狀態 == "0" ? "進行中" : item.狀態 == "-1" ? "取消" : "取消",
+                                  訂單日期 = (a.訂單時間).Substring(0, 4)+"-"+ (a.訂單時間).Substring(4, 2)+"-"+ (a.訂單時間).Substring(6, 2),
+                                  type = item.狀態
+                              };
+            return Json(result);
         }
         /// <summary>
         /// 透過店家ID查詢回傳需要的VMstoreInformation
@@ -79,7 +98,7 @@ namespace text_loginWithBackgrount.Controllers
                            join a in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals a.訂單id
                            join b in _myDBContext.T訂餐訂單詳細資訊表s on a.訂單id equals b.訂單id
                            join c in _myDBContext.T訂餐店家資料表s on b.店家id equals c.店家id
-                           where c.店家id == id
+                           where c.店家id == id && b.狀態=="1"
                            select item).Distinct();
             var storedata = result3.GroupBy(a => a.滿意度星數).Select(b =>
             new

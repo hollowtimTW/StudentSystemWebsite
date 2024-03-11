@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "訂單管理列表";
 }
-@model IEnumerable<T訂餐店家資料表>
+@model IEnumerable<T訂餐訂單詳細資訊表>
 @section Styles
 {
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
@@ -57,7 +57,7 @@
                         <div class="ts-header is-heavy">當月新訂單比率</div>
                     </div>
                     <div class="symbol">
-                        <span class="ts-icon is-list-check-icon"></span>
+                        <span class="ts-icon is-chart-line-icon"></span>
                     </div>
                 </div>
             </div>
@@ -70,7 +70,7 @@
                         <div class="ts-header is-heavy">過往訂單回購率</div>
                     </div>
                     <div class="symbol">
-                        <span class="ts-icon is-list-check-icon"></span>
+                        <span class="ts-icon is-chart-simple-icon"></span>
                     </div>
                 </div>
             </div>
@@ -91,29 +91,21 @@
                     <th>餐點名稱</th>
                     <th>數量</th>
                     <th>狀態</th>
+                    <th>小計</th>
+                    <th>支付方式</th>
+                    <th>時間</th>
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
+            <tbody id="todayOrderIng">
+                <tr data-id="2">
                     <td>1</td>
                     <td>大麥克</td>
                     <td>2</td>
                     <td><span class="status process">進行中</span></td>
-                    <td><button class="ts-button is-negative is-outlined" data-id="1">取消訂單</button></td>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td>大麥克</td>
-                    <td>2</td>
-                    <td><span class="status process">進行中</span></td>
-                    <td><button class="ts-button is-negative is-outlined" data-id="1">取消訂單</button></td>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td>大麥克</td>
-                    <td>2</td>
-                    <td><span class="status process">進行中</span></td>
+                    <td>$150</td>
+                    <td>現金支付</td>
+                    <td>17:48</td>
                     <td><button class="ts-button is-negative is-outlined" data-id="1">取消訂單</button></td>
                 </tr>
             </tbody>
@@ -135,21 +127,7 @@
                         <th>狀態</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>大麥克</td>
-                        <td>3</td>
-                        <td>完成</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>大麥克</td>
-                        <td>3</td>
-                        <td>
-                            <span class="status pending">取消</span>
-                        </td>
-                    </tr>
+                <tbody id="finishOrder">
                     <tr>
                         <td>1</td>
                         <td>大麥克</td>
@@ -159,7 +137,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="3">統計筆數：3</th>
+                        <th colspan="4"><span class="ts-text is-heavy is-large" id="完成訂單總額"></span></th>
                     </tr>
                 </tfoot>
             </table>
@@ -180,10 +158,13 @@
         <table id="test_table">
             <thead class="imthead">
                 <tr>
-                    <td>@Html.DisplayNameFor(model => model.店家名稱)</td>
-                    <td>@Html.DisplayNameFor(model => model.電話)</td>
-                    <td>@Html.DisplayNameFor(model => model.地址)</td>
-
+                    <td>訂單ID</td>
+                    <td>餐點名稱</td>
+                    <td>餐點數量</td>
+                    <td>小計</td>
+                    <td>狀態</td>
+                    <td>支付方式</td>
+                    <td>日期</td>
                 </tr>
             </thead>
             @* 表格內容輸入地方 *@
@@ -191,34 +172,56 @@
         @* 表格輸入結束 *@
     </div>
 </div>
-<!-- Button trigger modal -->
-<!-- Modal -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered .modal-dialog-scrollable">
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalLabel">歷史訂單明細</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                ...
+                <div class="ts-box is-light">
+                    <table class="ts-table is-basic">
+                        <thead>
+                            <tr>
+                                <th>訂單ID</th>
+                                <th>餐點名稱</th>
+                                <th>數量</th>
+                                <th>訂單狀態</th>
+                                <th>訂單日期</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="datatablelist">
+                                <td>3</td>
+                                <td>測試三</td>
+                                <td>4</td>
+                                <td>完成</td>
+                                <td>2023-04-12</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="ts-text is-center-aligned">
+                <span class="ts-text is-heavy" id="company" style="display:none">訂單已完成或取消則無法再進行修改編輯</span>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="chickbtn">確認</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">儲存送出</button>
             </div>
         </div>
     </div>
 </div>
-
 @section Scripts
 {
     <script src="~/lib/datatables/js/jquery.datatables.min.js"></script>
     <script src="//cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"> </script>
     <script>
+        let orderID;
         const storeID = @User?.FindFirst("teacherID")?.Value //店家ID
-        //訂單當日與當月訂單分析
-        const orderanalys = () => { 
+                //訂單當日與當月訂單分析
+                const orderanalys = () => {
             $.ajax({
                 url: `@Url.Content("~/tOrder_StoreAPI/Orderanalysis")?id=${storeID}`,
                 success: (data) => {
@@ -231,8 +234,108 @@
                 }
             })
         };
-        $(document).ready(function () {
-            orderanalys();
+        //取得當日進行中訂單與完成訂單顯示
+        const todayOrderIng = () => {
+            $.ajax({
+                url: `@Url.Content("~/tOrder_StoreAPI/Orderanalysis")?id=${storeID}`,
+                success: (datas) => {
+                    const datalist = datas.本日進行中訂單.map(a => {
+                        const { 訂單編號, 餐點名稱, 數量, 金額, 支付方式, 訂單日期 } = a;
+                        return (`
+                                <tr data-id="${訂單編號}">
+                                    <td>${訂單編號}</td>
+                                    <td>${餐點名稱}</td>
+                                    <td>${數量}</td>
+                                    <td><span class="status process">進行中</span></td>
+                                    <td>$${金額}</td>
+                                    <td>${支付方式}</td>
+                                    <td>${訂單日期}</td>
+                                    <td><button class="ts-button is-negative is-outlined" data-id="${訂單編號}">取消訂單</button></td>
+                                </tr>
+                                `);
+                    })
+                    $('#todayOrderIng').html(datalist);
+                    const finishlist = datas.本日完成或取消訂單.map(b => {
+                        const { 訂單編號, 餐點名稱, 數量, type } = b;
+                        const 狀態 = type == '-1' ? '取消' : '完成';
+                        return (`
+                                     <tr>
+                                        <td>${訂單編號}</td>
+                                        <td>${餐點名稱}</td>
+                                        <td>${數量}</td>
+                                        <td>${狀態}</td>
+                                    </tr>`)
+                    });
+                    $('#finishOrder').html(finishlist);
+                    $('#完成訂單總額').text(`統計金額：$${datas.完成訂單總額}`)
+                },
+                error: (xhr, status, error) => {
+                    console.error('Ajax request failed:', status, error);
+                }
+            })
+        }
+        //點選後跳出alert取消該訂單
+        $('#todayOrderIng').on('click', 'button.ts-button', function () {
+            orderID = $(this).data('id');
+            const type = '-1';
+            Swal.fire({
+                title: "確定要取消訂單嗎?",
+                text: "訂單取消會無法回復，需與學員確認訂單狀況",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "確認"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `@Url.Content("~/tOrder_StoreAPI/OrdertypeOK")?id=${orderID}&type=${type}`,
+                        method: 'POST',
+                        success: () => {
+                            Swal.fire({
+                                title: "完成!",
+                                text: "訂單已經取消",
+                                icon: "success"
+                            }).then(() => {
+                                todayOrderIng();
+                                $('#test_table').DataTable().destroy();
+                                dataTable();
+                            });
+                        },
+                        error: () => {
+                            console.log('目前有回傳問題');
+                        }
+                    })
+                }
+            });
+        })
+        //雙擊後將該訂單完成
+        $('#todayOrderIng').on('dblclick', 'tr', function () {
+            orderID = $(this).data('id');
+            type = '1';
+            //console.log(orderID);
+            $.ajax({
+                url: `@Url.Content("~/tOrder_StoreAPI/OrdertypeOK")?id=${orderID}&type=${type}`,
+                method: 'POST',
+                success: () => {
+                    todayOrderIng();
+                    $('#test_table').DataTable().destroy();
+                    dataTable();
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "完成訂單送出變更",
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                },
+                error: () => {
+                    console.log('目前有回傳問題');
+                }
+            })
+        })
+        //載入dataTable方式
+        const dataTable = () => {
             $("#test_table").dataTable({
                 autoWidth: false,
                 ajax: {
@@ -240,19 +343,23 @@
                     url: "/StoreBackground/indexjson",
                     dataSrc: function (json) {
                         return json;
-
                     }
                 },
                 columns: [
-                    { "data": "店家名稱", "width": "10 %" },
-                    { "data": "電話", "width": "10 %" },
-                    { "data": "地址", "width": "10 %" },
-                    { "data": "店家id", "visible": false }, //放入表格pk但不要顯示，為了在row中引用
+                    { "data": "訂單編號", "width": "10 %" },
+                    { "data": "餐點名稱", "width": "10 %" },
+                    { "data": "數量", "width": "10 %" },
+                    { "data": "金額", "width": "10 %" },
+                    { "data": "訂單狀態", "width": "10 %" },
+                    { "data": "支付方式", "width": "10 %" },
+                    { "data": "訂單日期", "width": "10 %" },
+                    { "data": "訂單編號", "visible": false }, //放入表格pk但不要顯示，為了在row中引用
+                    { "data": "type", "visible": false }, //放入表格pk但不要顯示，為了在row中引用
                     {
                         data: null,
                         title: "function",
                         render: function (data, type, row) {
-                            return '<i class="bx bxs-trash-alt"data-id="' + row.店家id + '" ></i>' + "&nbsp;&nbsp;&nbsp;" + '<i class="bx bxs-message-square-edit" data-id="' + row.店家id + '"></i>' //引入icon與表格pk識別
+                            return '<i class="bx bxs-message-square-edit" data-id="' + row.訂單編號 + '"></i>' //引入icon與表格pk識別
                             //return '<button class="btn btn-danger btn-sm delete-btn" data-id="' + row.店家id + '">刪除</button>';
                         }
                     }
@@ -262,23 +369,82 @@
                     url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/zh-HANT.json'
                 },
             });
-            $('#test_table tbody').on('click', 'i.bxs-trash-alt', async function () {
-                var productId = $(this).data('id');
-                // console.log(productId)
-                // const url = `@Url.Content("~/Products/DeleteStore/")?id=${productId}`;
-                // const response = await fetch(url);
-                // const data = await response.text();
-                console.log(productId);
-            });
-
+        }
+        //執行網頁載入
+        $(document).ready(function () {
+            orderanalys();
+            todayOrderIng();
+            dataTable();
+            //Datatable點擊事件
             $('#test_table tbody').on('click', 'i.bxs-message-square-edit', async function () {
                 var productId = $(this).data('id');
-                // console.log(productId)
-                // const url = `@Url.Content("~/Products/DeleteStore/")?id=${productId}`;
-                // const response = await fetch(url);
-                // const data = await response.text();
-                console.log(productId);
+                orderID = productId;
+                $.ajax({
+                    url: `@Url.Content("~/tOrder_StoreAPI/OrdertypeForDataTable")?id=${productId}`,
+                    success: (datas) => {
+                        var result = datas[0];
+                        if (result.type == "1" || result.type == "-1") {
+                            var data = (`<td>${result.訂單編號}</td>
+                                                     <td>${result.餐點名稱}</td>
+                                                    <td>${result.數量}</td>
+                                                    <td>${result.訂單狀態}</td>
+                                                     <td>${result.訂單日期}</td>`);
+                            $('#datatablelist').html(data);
+                            $('#company').show();
+                            $('#chickbtn').hide();
+                        }
+                        else {
+                            var data = (`<td>${result.訂單編號}</td>
+                             <td>${result.餐點名稱}</td>
+                             <td>${result.數量}</td>
+                             <td>
+                            <div class="ts-select is-active">
+                                <select id="typeSelect">
+                                    <option value="0">${result.訂單狀態}</option>
+                                    <option value="1">完成</option>
+                                    <option value="-1">取消</option>
+                                </select>
+                            </div>
+                            </td>
+                            <td>${result.訂單日期}</td>`);
+
+                            $('#datatablelist').html(data);
+                            $('#company').hide();
+                            $('#chickbtn').show();
+                        }
+                        $('#exampleModal').modal('show');
+                    },
+                    error: () => {
+                        console.log("失敗回傳")
+                        alert('伺服器維護，稍後再試')
+                    }
+                })
             });
-        })
+            //修改訂單狀態送出
+            $('#chickbtn').click(() => {
+               // console.log('送出');
+                type = $('#typeSelect').val();
+                $.ajax({
+                    url: `@Url.Content("~/tOrder_StoreAPI/OrdertypeOK")?id=${orderID}&type=${type}`,
+                    method: 'POST',
+                    success: () => {
+                        Swal.fire({
+                            title: "完成修改!",
+                            text: "歷史訂單已修改",
+                            icon: "success"
+                        }).then(() => {
+                            $('#exampleModal').modal('hide');
+                            todayOrderIng();
+                            $('#test_table').DataTable().destroy();
+                            dataTable();
+                                });
+            },
+                error: () => {
+                    console.log("修改失敗");
+                    alert("稍後再試");
+                }
+                        })
+                    })
+                })
     </script>
 }

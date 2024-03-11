@@ -67,7 +67,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
         public IActionResult orderCount()
         {
             var result = _myDBContext.T訂餐訂單資訊表s.Count();
-            var result1 = Convert.ToInt32(_myDBContext.T訂餐訂單詳細資訊表s.Sum(a => a.金額小記));
+            var result1 = Convert.ToInt32(_myDBContext.T訂餐訂單詳細資訊表s.Where(x=>x.狀態=="1").Sum(a => a.金額小記));
             var result3 = Math.Round(_myDBContext.T訂餐評論表s.Average(a => Convert.ToDouble(a.滿意度星數)), 1);
             VMstoreInformation storeInformationVM = new VMstoreInformation()
             {
@@ -84,7 +84,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
         public IActionResult orderCount01(int id)
         {
             var result = _myDBContext.T訂餐訂單詳細資訊表s.Where(a => a.店家id == id).Count();
-            var result1 = Convert.ToInt32(_myDBContext.T訂餐訂單詳細資訊表s.Where(a => a.店家id == id).Sum(a => a.金額小記));
+            var result1 = Convert.ToInt32(_myDBContext.T訂餐訂單詳細資訊表s.Where(a => a.店家id == id&&a.狀態=="1").Sum(a => a.金額小記));
             var result3 = (from item in _myDBContext.T訂餐評論表s
                            join a in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals a.訂單id
                            join b in _myDBContext.T訂餐訂單詳細資訊表s on a.訂單id equals b.訂單id
@@ -417,7 +417,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                          join a in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals a.訂單id
                          join b in _myDBContext.T訂餐餐點資訊表s on item.餐點id equals b.餐點id
                          join c in _myDBContext.T訂餐店家資料表s on item.店家id equals c.店家id
-                         where c.店家id == _search.storeID && (a.訂單時間).Substring(0, 4) == (_search.year).ToString() && (a.訂單時間).Substring(4, 2) == (_search.mounth).ToString().PadLeft(2, '0')
+                         where c.店家id == _search.storeID && (a.訂單時間).Substring(0, 4) == (_search.year).ToString() && (a.訂單時間).Substring(4, 2) == (_search.mounth).ToString().PadLeft(2, '0') && item.狀態!="-1"
                          select new orderdeatialViewModel
                          {
                              訂單編號 = (item.訂單詳細表id),
@@ -425,9 +425,9 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                              數量 = item.餐點數量,
                              金額 = Convert.ToInt32(b.餐點定價 * item.餐點數量),
                              支付方式 = (a.支付方式).Trim(),
-                             訂單狀態 = (a.訂單狀態).Trim(),
+                             訂單狀態 = item.狀態 == "1" ? "完成" : item.狀態 == "0" ? "進行中" : item.狀態 == "-1" ? "取消" : "取消",
                              訂單日期 = a.訂單時間,
-                             type = (a.訂單狀態).Trim() == "完成" ? "completed" : "pending" ?? "completed"
+                             type = item.狀態 == "1" ? "completed" : item.狀態 == "0" ? "process" : item.狀態 == "-1" ? "pending" : "completed"
                          };
             switch (_search.sortBy)
             {
@@ -486,7 +486,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
         /// <summary>
         /// 顯示該子訂單的所有關聯訂單
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">詳細訂單</param>
         /// <returns></returns>
         public IActionResult order_showdeatial(int id)
         {
@@ -497,7 +497,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                               join a in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals a.訂單id
                               join b in _myDBContext.T訂餐餐點資訊表s on item.餐點id equals b.餐點id
                               join c in _myDBContext.T訂餐店家資料表s on item.店家id equals c.店家id
-                              where a.訂單id == order
+                              where a.訂單id == order && item.狀態!="-1"
                               select new
                               {
                                   訂單編號 = (item.訂單詳細表id),
@@ -566,7 +566,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             var data = (from item in _myDBContext.T訂餐訂單詳細資訊表s
                         join a in _myDBContext.T訂餐店家資料表s on item.店家id equals a.店家id
                         join b in _myDBContext.T訂餐餐點資訊表s on item.餐點id equals b.餐點id
-                        where a.店家id == id
+                        where a.店家id == id &&item.狀態=="1"
                         group item by b into g
                         select new
                         {
@@ -772,7 +772,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
         }
         /// <summary>
         /// 本日訂單數、當月新訂單比率、過往訂單回購率
-        /// </summary>
+        /// </summary>https://localhost:7150/tOrder_StoreAPI/Orderanalysis/2
         /// <param name="id">店家ID</param>
         /// <returns></returns>
         public IActionResult Orderanalysis(int id)
@@ -796,8 +796,8 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                                   金額 = Convert.ToInt32(b.餐點定價 * item.餐點數量),
                                   支付方式 = (a.支付方式).Trim(),
                                   訂單狀態 = (a.訂單狀態).Trim(),
-                                  訂單日期 = a.訂單時間,
-                                  type = (a.訂單狀態).Trim() == "完成" ? "completed" : "pending" ?? "completed"
+                                  訂單日期 = (a.訂單時間).Substring(9, 5),
+                                  type = (item.狀態).Trim()
                               };
             //回傳本日訂單數資料
             int todayOrderCount = resultToday.Count();
@@ -823,7 +823,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             var result1 = (orderTotal.GroupBy(x => x.item.學員id) // 按照學員ID分組
                            .Where(g => g.Count() > 1) // 出現超過一次的訂單ID
                           .SelectMany(g => g.Select(x => x.item.訂單id))).Distinct().ToList().Count();
-
+            var todayFinishOrder = resultToday.Where(a => a.type == "1").ToList();
             //回傳全部訂單中的回購比率
             double notfirstOrder = result1 != 0 ? ((double)result1 / (double)orderTotal.Select(a => a.item.訂單id).Distinct().Count()) * 100 : 0;
 
@@ -831,8 +831,56 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                 本日訂單數 = todayOrderCount,
                 當月新訂單比率= firstOrderMonth.ToString("0.00")+"%",
                 過往訂單回購率= notfirstOrder.ToString("0.00")+"%",
+                本日進行中訂單= resultToday.Where(a=>a.type=="0").ToList(),
+                本日完成或取消訂單= resultToday.Where(a => a.type != "0").ToList(),
+                完成訂單總額= todayFinishOrder.Sum(a=>a.金額),
             };
             return Ok(resultObject);
+        }
+        /// <summary>
+        /// 指定詳細訂單修改狀態資訊
+        /// </summary>
+        /// <param name="id">詳細訂單ID</param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult OrdertypeOK(int id ,string type) 
+        {
+            var result = _myDBContext.T訂餐訂單詳細資訊表s.FirstOrDefault(a => a.訂單詳細表id == id);
+            if (result != null) 
+            {
+                result.狀態 = type;
+                _myDBContext.SaveChanges();
+                return Ok();
+            }
+            return BadRequest();
+        }
+        /// <summary>
+        /// 
+        /// </summary>https://localhost:7150/tOrder_StoreAPI/OrdertypeForDataTable/3
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult OrdertypeForDataTable(int id) {
+            var result = from item in _myDBContext.T訂餐訂單詳細資訊表s
+                         join a in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals a.訂單id
+                         join b in _myDBContext.T訂餐餐點資訊表s on item.餐點id equals b.餐點id
+                         join c in _myDBContext.T訂餐店家資料表s on item.店家id equals c.店家id
+                         where item.訂單詳細表id == id
+                         select new orderdeatialViewModel
+                         {
+                             訂單編號 = (item.訂單詳細表id),
+                             餐點名稱 = b.餐點名稱,
+                             數量 = item.餐點數量,
+                             金額 = Convert.ToInt32(b.餐點定價 * item.餐點數量),
+                             支付方式 = (a.支付方式).Trim(),
+                             訂單狀態 = item.狀態 == "1" ? "完成" : item.狀態 == "0" ? "進行中" : item.狀態 == "-1" ? "取消" : "取消",
+                             訂單日期 = (a.訂單時間).Substring(0, 4) + "-" + (a.訂單時間).Substring(4, 2) + "-" + (a.訂單時間).Substring(6, 2),
+                             type = (item.狀態).Trim(),
+                         };
+            if (result != null) {
+                return Ok(result);
+            }
+            return BadRequest();
         }
         // https://localhost:7150/tOrder_StoreAPI/bestStoreTop5
     }

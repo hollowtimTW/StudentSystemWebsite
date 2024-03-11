@@ -958,6 +958,7 @@ public partial class studentContext : DbContext
 
             entity.Property(e => e.訂單詳細表id).HasColumnName("訂單詳細表ID");
             entity.Property(e => e.店家id).HasColumnName("店家ID");
+            entity.Property(e => e.狀態).HasMaxLength(10).IsFixedLength();
             entity.Property(e => e.訂單id).HasColumnName("訂單ID");
             entity.Property(e => e.金額小記).HasColumnType("money");
             entity.Property(e => e.餐點id).HasColumnName("餐點ID");
