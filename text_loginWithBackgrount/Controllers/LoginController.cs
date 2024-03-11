@@ -191,6 +191,27 @@ namespace text_loginWithBackgrount.Controllers
             return Content(base64Image);
         }
 
+        /// <summary>
+        /// 老師忘記密碼頁
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult TeacherForgetPassword()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// 老師重設密碼頁
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult TeacherResetPassword()
+        {
+            return View();
+        }
+
+
+
+
         //------------------------學生---------------------------
 
 
@@ -411,8 +432,6 @@ namespace text_loginWithBackgrount.Controllers
                 {
                     return BadRequest(new { errorMessage = "發送驗證信失敗！" });
                 }
-
-
             }
         }
 
