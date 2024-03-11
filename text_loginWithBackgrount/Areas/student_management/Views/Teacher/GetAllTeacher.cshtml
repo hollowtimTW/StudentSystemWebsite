@@ -1,7 +1,7 @@
-﻿@model IEnumerable<T會員學生>
+﻿@model IEnumerable<T會員老師>
 
 @{
-    ViewData["Title"] = "學員資料管理";
+    ViewData["Title"] = "老師資料管理";
 }
 
 @section Styles
@@ -48,7 +48,7 @@
     <ul class="crudlist">
         <li>
             @* <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">新增</button> *@
-            <a asp-area="student_management" asp-controller="Member" asp-action="RegisterStudent" class="btn btn-primary">新增</a>
+            <a asp-area="student_management" asp-controller="Teacher" asp-action="RegisterTeacher" class="btn btn-primary">新增</a>
 
         </li>
         @*         <li><button class="btn btn-primary">刪除</button></li>
@@ -96,7 +96,7 @@
         <div class="header">
             @* 表格標題輸入地方 *@
             <i class='bx bx-receipt'></i> <!-- 表格的小icon -->
-            <h3>學生資訊</h3> <!-- 表格的名稱 -->
+            <h3>老師資訊</h3> <!-- 表格的名稱 -->
             @*             <i class='bx bx-filter'></i>
             <i class='bx bx-search'></i>  *@
 
@@ -163,7 +163,7 @@
                 autoWidth: false,
                 ajax: {
                     type: 'GET',
-                    url: "/student_management/Member/GetAllStudentJson",
+                    url: "/student_management/Teacher/GetAllTeacherJson",
                     dataSrc: function (json) {
                         return json;
                     }
@@ -176,15 +176,12 @@
                     { "data": "地址", "width": "20 %" },
                     { "data": "狀態", "width": "5 %" },
                     { "data": "鎖定", "width": "5 %" },
-                    { "data": "學生id", "visible": false }, //放入表格pk但不要顯示，為了在row中引用
+                    { "data": "老師id", "visible": false }, //放入表格pk但不要顯示，為了在row中引用
                     {
                         data: null,
                         title: "function",
                         render: function (data, type, row) {
-                            return '<i class="bx bxs-message-square-edit" data-id="' + row.學生id + '"></i>'
-                            // + '<i class="bx bxs-trash-alt"data-id="' + row.學生id + '" ></i>'
-                            //引入icon與表格pk識別
-                            //return '<button class="btn btn-danger btn-sm delete-btn" data-id="' + row.店家id + '">刪除</button>';
+                            return '<i class="bx bxs-message-square-edit" data-id="' + row.老師id + '"></i>'                            
                         }
                     }
                 ],
@@ -210,10 +207,10 @@
                 //$('#memberModal').modal('show');
                 var memberId = $(this).data('id');
                 //console.log(">>" + memberId);
-                //const urla = `@Url.Content("~/student_management/Member/GetStudentEditPartialView")?id=${memberId}`;
+                //const urla = `@Url.Content("~/student_management/Teacher/GetTeacherEditPartialView")?id=${memberId}`;
                 //console.log(">>" + urla);
                 try {
-                    const url = `@Url.Content("~/student_management/Member/GetStudentEditPartialView")?id=${memberId}`;
+                    const url = `@Url.Content("~/student_management/Teacher/GetTeacherEditPartialView")?id=${memberId}`;
                     const response = await fetch(url, { method: 'GET' });
                     const data = await response.text();
                     document.getElementById('edit_member').innerHTML = data;
