@@ -67,7 +67,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
         public IActionResult orderCount()
         {
             var result = _myDBContext.T訂餐訂單資訊表s.Count();
-            var result1 = Convert.ToInt32(_myDBContext.T訂餐訂單詳細資訊表s.Where(x=>x.狀態=="1").Sum(a => a.金額小記));
+            var result1 = Convert.ToInt32(_myDBContext.T訂餐訂單詳細資訊表s.Where(x => x.狀態 == "1").Sum(a => a.金額小記));
             var result3 = Math.Round(_myDBContext.T訂餐評論表s.Average(a => Convert.ToDouble(a.滿意度星數)), 1);
             VMstoreInformation storeInformationVM = new VMstoreInformation()
             {
@@ -84,7 +84,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
         public IActionResult orderCount01(int id)
         {
             var result = _myDBContext.T訂餐訂單詳細資訊表s.Where(a => a.店家id == id).Count();
-            var result1 = Convert.ToInt32(_myDBContext.T訂餐訂單詳細資訊表s.Where(a => a.店家id == id&&a.狀態=="1").Sum(a => a.金額小記));
+            var result1 = Convert.ToInt32(_myDBContext.T訂餐訂單詳細資訊表s.Where(a => a.店家id == id && a.狀態 == "1").Sum(a => a.金額小記));
             var result3 = (from item in _myDBContext.T訂餐評論表s
                            join a in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals a.訂單id
                            join b in _myDBContext.T訂餐訂單詳細資訊表s on a.訂單id equals b.訂單id
@@ -417,7 +417,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                          join a in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals a.訂單id
                          join b in _myDBContext.T訂餐餐點資訊表s on item.餐點id equals b.餐點id
                          join c in _myDBContext.T訂餐店家資料表s on item.店家id equals c.店家id
-                         where c.店家id == _search.storeID && (a.訂單時間).Substring(0, 4) == (_search.year).ToString() && (a.訂單時間).Substring(4, 2) == (_search.mounth).ToString().PadLeft(2, '0') && item.狀態!="-1"
+                         where c.店家id == _search.storeID && (a.訂單時間).Substring(0, 4) == (_search.year).ToString() && (a.訂單時間).Substring(4, 2) == (_search.mounth).ToString().PadLeft(2, '0') && item.狀態 != "-1"
                          select new orderdeatialViewModel
                          {
                              訂單編號 = (item.訂單詳細表id),
@@ -497,7 +497,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                               join a in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals a.訂單id
                               join b in _myDBContext.T訂餐餐點資訊表s on item.餐點id equals b.餐點id
                               join c in _myDBContext.T訂餐店家資料表s on item.店家id equals c.店家id
-                              where a.訂單id == order && item.狀態!="-1"
+                              where a.訂單id == order && item.狀態 != "-1"
                               select new
                               {
                                   訂單編號 = (item.訂單詳細表id),
@@ -566,7 +566,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             var data = (from item in _myDBContext.T訂餐訂單詳細資訊表s
                         join a in _myDBContext.T訂餐店家資料表s on item.店家id equals a.店家id
                         join b in _myDBContext.T訂餐餐點資訊表s on item.餐點id equals b.餐點id
-                        where a.店家id == id &&item.狀態=="1"
+                        where a.店家id == id && item.狀態 == "1"
                         group item by b into g
                         select new
                         {
@@ -827,13 +827,14 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             //回傳全部訂單中的回購比率
             double notfirstOrder = result1 != 0 ? ((double)result1 / (double)orderTotal.Select(a => a.item.訂單id).Distinct().Count()) * 100 : 0;
 
-            var resultObject = new {
+            var resultObject = new
+            {
                 本日訂單數 = todayOrderCount,
-                當月新訂單比率= firstOrderMonth.ToString("0.00")+"%",
-                過往訂單回購率= notfirstOrder.ToString("0.00")+"%",
-                本日進行中訂單= resultToday.Where(a=>a.type=="0").ToList(),
-                本日完成或取消訂單= resultToday.Where(a => a.type != "0").ToList(),
-                完成訂單總額= todayFinishOrder.Sum(a=>a.金額),
+                當月新訂單比率 = firstOrderMonth.ToString("0.00") + "%",
+                過往訂單回購率 = notfirstOrder.ToString("0.00") + "%",
+                本日進行中訂單 = resultToday.Where(a => a.type == "0").ToList(),
+                本日完成或取消訂單 = resultToday.Where(a => a.type != "0").ToList(),
+                完成訂單總額 = todayFinishOrder.Sum(a => a.金額),
             };
             return Ok(resultObject);
         }
@@ -843,10 +844,10 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
         /// <param name="id">詳細訂單ID</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult OrdertypeOK(int id ,string type) 
+        public IActionResult OrdertypeOK(int id, string type)
         {
             var result = _myDBContext.T訂餐訂單詳細資訊表s.FirstOrDefault(a => a.訂單詳細表id == id);
-            if (result != null) 
+            if (result != null)
             {
                 result.狀態 = type;
                 _myDBContext.SaveChanges();
@@ -855,12 +856,13 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             return BadRequest();
         }
         /// <summary>
-        /// 
+        /// 依照DataTable回傳詳細訂單的資料
         /// </summary>https://localhost:7150/tOrder_StoreAPI/OrdertypeForDataTable/3
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">詳細訂單ID</param>
+        /// <returns>詳細訂單資料</returns>
         [HttpGet]
-        public IActionResult OrdertypeForDataTable(int id) {
+        public IActionResult OrdertypeForDataTable(int id)
+        {
             var result = from item in _myDBContext.T訂餐訂單詳細資訊表s
                          join a in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals a.訂單id
                          join b in _myDBContext.T訂餐餐點資訊表s on item.餐點id equals b.餐點id
@@ -877,8 +879,117 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                              訂單日期 = (a.訂單時間).Substring(0, 4) + "-" + (a.訂單時間).Substring(4, 2) + "-" + (a.訂單時間).Substring(6, 2),
                              type = (item.狀態).Trim(),
                          };
-            if (result != null) {
+            if (result != null)
+            {
                 return Ok(result);
+            }
+            return BadRequest();
+        }
+        /// <summary>
+        /// 
+        /// </summary>https://localhost:7150/tOrder_StoreAPI/storeTimeManger/2
+        /// <param name="id">店家ID</param>
+        /// <returns></returns>
+        public IActionResult storeTimeManger(int id)
+        {
+            var result = _myDBContext.T訂餐營業時間表s
+                .Where(a => a.店家id == id)
+                .GroupBy(a => a.時段早中晚全)
+                .Select(group => new
+                {
+                    時間表名稱 = group.Key,
+                    顯示 = group.First().顯示.Trim(),
+                    時間表 = group.ToList()
+                })
+                .ToList();
+
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return NotFound();
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id">店家ID</param>
+        /// <param name="name">修改的時段名稱</param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult storeTimeManger(int id, string name)
+        {
+            var result = _myDBContext.T訂餐營業時間表s.Where(a => a.店家id == id).ToList();
+            if (result != null)
+            {
+                //將店家營業時間初始化
+                foreach (var item in result)
+                {
+                    item.顯示 = "0";
+                }
+                var togaldata = result.Where(a => a.時段早中晚全.Trim() == name);
+                foreach (var data in togaldata)
+                {
+                    data.顯示 = "1";
+                }
+                try
+                {
+                    _myDBContext.SaveChanges(); // 儲存更改到資料庫
+                    return Ok(); // 返回成功回應
+                }
+                catch (Exception ex)
+                {
+                    // 可以記錄錯誤或根據需要進行其他處理
+                    return StatusCode(500, "內部服務器錯誤"); // 返回 500 Internal Server Error
+                }
+            }
+            return BadRequest();
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="vMtimeForm"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult storeTimeAdd(VMtimeForm vMtimeForm)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).FirstOrDefault()
+                );
+                return Json(new { isValid = false, errors = errors });
+            }
+            T訂餐營業時間表 t = new T訂餐營業時間表 {
+                店家id = Convert.ToInt32(vMtimeForm.ID),
+                星期 = vMtimeForm.weeklist.ToString(),
+                時段早中晚全 = vMtimeForm.titletime,
+                開始營業時間 = vMtimeForm.start,
+                結束營業時間 = vMtimeForm.end,
+                顯示 = vMtimeForm.timeShow,
+            };
+            try {
+                _myDBContext.T訂餐營業時間表s.Add(t);
+                _myDBContext.SaveChanges();
+                return Json(new { isValid = true });
+            } 
+            catch (Exception ex) 
+            {
+                return StatusCode(500, "內部服務器錯誤"); // 返回 500 Internal Server Error
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        public IActionResult storeTime(int id) {
+            var result = _myDBContext.T訂餐營業時間表s.Where(a => a.營業時間表id == id).FirstOrDefault();
+            if (result != null) {
+                _myDBContext.T訂餐營業時間表s.Remove(result);
+                _myDBContext.SaveChanges();
+                return Ok();
             }
             return BadRequest();
         }

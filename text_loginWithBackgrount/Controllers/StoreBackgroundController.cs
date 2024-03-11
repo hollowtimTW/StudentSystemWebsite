@@ -52,7 +52,7 @@ namespace text_loginWithBackgrount.Controllers
         /// 財務分析頁
         /// </summary>
         /// <returns></returns>
-        public IActionResult moneymanger()
+        public IActionResult timemanger()
         {
             ViewBag.type = "moneymanger";
             return View();
