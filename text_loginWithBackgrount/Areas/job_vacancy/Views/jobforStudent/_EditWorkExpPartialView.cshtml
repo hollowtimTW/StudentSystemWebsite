@@ -1,0 +1,167 @@
+﻿@model WorkExpViewModel
+<style>
+    <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet" / >
+
+</style>
+
+<form asp-action="AddNewWorkExp" id="workExpForm">
+    <!--模型驗證錯誤的摘要-->
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <!--隱藏工作經驗ID值-->
+    <input type="hidden" asp-for="WorkExpID" />
+    <!--隱藏學員ID值-->
+    <input type="hidden" asp-for="StudentID" />
+
+    <div class="row dialog container-fluid">
+        <button id="btnExpDelete" type="button" class="btn btn-delete mb-3">刪除</button>
+
+        <div class="form-group flex-container">
+            <label asp-for="CompanyName" class="control-label"></label>
+            <input asp-for="CompanyName" class="form-control" />
+            <span asp-validation-for="CompanyName" class="text-danger"></span>
+        </div>
+        <div class="form-group flex-container">
+            <label asp-for="JobTitle" class="control-label"></label>
+            <input asp-for="JobTitle" class="form-control" />
+            <span asp-validation-for="JobTitle" class="text-danger"></span>
+        </div>
+        <div class="form-group flex-container">
+            <div class="row">
+                <div class="col-md-6 form-group flex-container">
+                    <label asp-for="Start" class="control-label"></label>
+                    <select class="form-control form-control-scrollable" id="startYear">
+                        @foreach (var year in Model.AvailableYears)
+                        {
+                            var selected = Model.Start.StartsWith(year.ToString()) ? "selected" : "";
+                            <option value="@year" selected="@selected">@year</option>
+                        }
+                    </select>
+                    <select class="form-control" id="startMonth">
+                        @for (int month = 1; month <= 12; month++)
+                        {
+                            var monthStr = month.ToString().PadLeft(2, '0');
+                            var selected = Model.Start.EndsWith("/" + monthStr) ? "selected" : "";
+                            <option value="@monthStr" selected="@selected">@monthStr 月</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-6 form-group flex-container">
+                    <label asp-for="End" class="control-label"></label>
+                    <select class="form-control form-control-scrollable" id="endYear">
+                        @foreach (var year in Model.AvailableYears)
+                        {
+                            var selected = Model.End.StartsWith(year.ToString()) ? "selected" : "";
+                            <option value="@year" selected="@selected">@year</option>
+                        }
+                    </select>
+                    <select class="form-control" id="endMonth">
+                        @for (int month = 1; month <= 12; month++)
+                        {
+                            var monthEnd = month.ToString().PadLeft(2, '0');
+                            var selected = Model.End.EndsWith("/" + monthEnd) ? "selected" : "";
+                            <option value="@monthEnd" selected="@selected">@monthEnd 月</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="form-group flex-container col-6">
+            <label asp-for="Salary" class="control-label"></label>
+            <input asp-for="Salary" class="form-control"/>
+            <span asp-validation-for="Salary" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <div class="control-label mb-3">工作內容</div>
+            <textarea class="container-fluid" asp-for="JobContent"></textarea>
+            <div class="d-flex justify-content-end">
+                <div>字數：<span id="word-count">0</span> / <span style="color:#f85a40">500</span></div>
+            </div>
+            <span asp-validation-for="JobContent" class="text-danger"></span>
+        </div>
+        <div class="justify-content-end">
+            <input type="submit" class="btn btn-normal" id="btnSummitEditWorkExp" value="儲存修改" />
+            <button id="btnExpEditCancel" type="button" class="btn btn-cancel">取消</button>
+        </div>
+    </div>
+</form>
+<script>
+
+    $(document).ready(function () {
+
+        //取消編輯工作經驗
+        document.getElementById('btnExpEditCancel').addEventListener('click', async (event) => {
+
+            $("#workExp_switch_form").empty(); //清空partialview的內容
+            $('#expSelectArea').show();
+            
+        });
+
+        //提交編輯工作經驗表單
+        document.getElementById('btnSummitEditWorkExp').addEventListener('click', async (event) => {
+
+            event.preventDefault(); // 防止表單默認提交行為
+
+            const formData = new FormData(document.getElementById('workExpForm'));
+
+            formData.set('StudentID', @User?.FindFirst("StudentId")?.Value);
+
+            let startYearElement = document.getElementById("startYear");
+            let selectedStartYear = startYearElement.options[startYearElement.selectedIndex].value;
+            let startMonthElement = document.getElementById("startMonth");
+            let selectedStartMonth = startMonthElement.options[startMonthElement.selectedIndex].value;
+            const start = `${selectedStartYear}/${selectedStartMonth}`;
+
+            let endYearElement = document.getElementById("endYear");
+            let selectedEndYear = endYearElement.options[endYearElement.selectedIndex].value;
+            let endMonthElement = document.getElementById("endMonth");
+            let selectedEndMonth = endMonthElement.options[endMonthElement.selectedIndex].value;
+            const end = `${selectedEndYear}/${selectedEndMonth}`;
+
+            formData.set('Start', start);
+            formData.set('End', end);
+
+            for (const pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
+            //return;
+
+            const url = '/job_vacancy/jobforStudent/UpdateWorkExp';
+            const response = await fetch(url, {
+                body: formData,
+                method: 'POST'
+            });
+            const data = await response.json();
+            if (response.ok) {
+                if (data.success) {
+                    $("#workExp_switch_form").empty(); //清空partialview的內容
+                    callWorkExp();  //重新載入工作經驗資料列表
+                    //$('#expSelectArea').show();  //顯示選擇工作經驗區域
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '編輯失敗',
+                        text: data.message,
+                        customClass: {
+                            confirmButton: 'btn btn-normal',
+                        },
+                        confirmButtonColor: '#008374',
+                    });
+                }
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: '編輯失敗',
+                    text: data.message,
+                    customClass: {
+                        confirmButton: 'btn btn-normal',
+                    },
+                    confirmButtonColor: '#008374',
+                });
+            }
+
+        });
+    });
+
+
+    
+</script>

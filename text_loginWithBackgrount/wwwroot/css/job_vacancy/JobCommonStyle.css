@@ -42,6 +42,23 @@ input[type="checkbox"]:checked {
         border-color: #6c757d;
     }
 
+.btn-delete {
+    font-family: var(--font-primary);
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: 1px;
+    color: #fff;
+    background-color: rgb(205, 92, 92);
+    border-radius: 10px;
+    transition: 0.3s;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+    .btn-delete:hover {
+        background-color: rgba(205, 92, 92, 0.5);
+    }
+
     .btn-normal {
         font-family: var(--font-primary);
         font-weight: 600;
@@ -458,7 +475,16 @@ input[type="checkbox"]:checked {
         width: 860px;
     }
 
-
+#workExpForm textarea {
+    border: 0.5px solid var(--color-primary);
+    border-radius: 10px;
+    height: 250px;
+    padding: 10px;
+}
+.form-control-scrollable {
+    overflow-y: auto; /* 設置垂直滾動 */
+    max-height: 100px; /* 設置最大高度 */
+}
 
 /* ================== 履歷編輯 ================= */
 

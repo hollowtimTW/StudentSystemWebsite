@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Text;
+using text_loginWithBackgrount.Areas.job_vacancy.ViewModels;
 
 namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
 {
@@ -368,6 +369,242 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                 return originalPhoto;
             }
         }
+
+
+
+        // GET: job_vacancy/jobforStudent/GetMyWorkExp/5
+        [Route("/job_vacancy/jobforStudent/{Action=Index}/{studentID}")]
+        public async Task<IActionResult> GetMyWorkExp(int studentID)
+        {
+            var workData = await _context.T工作工作經驗s
+                            .Where(w => w.F學員Id == studentID)
+                            .ToListAsync();
+
+            var viewModelList = new List<WorkExpViewModel>();
+
+            foreach (var data in workData)
+            {
+                var viewModel = new WorkExpViewModel
+                {
+                    WorkExpID = data.FId,
+                    CompanyName = data.F公司名稱,
+                    JobTitle = data.F職務名稱,
+                    Start = data.F起始年月,
+                    End = data.F結束年月,
+                    Salary = data.F薪水待遇,
+                    JobContent = data.F工作內容
+
+                };
+                viewModelList.Add(viewModel);
+            }
+
+            return PartialView("_workExpPartial", viewModelList);
+        }
+
+        /// <summary>
+        /// 新增工作經驗1：返回填寫表單的視圖
+        /// </summary>
+        /// <returns></returns>
+        // GET: job_vacancy/jobforStudent/GetAddWorkExpView
+        [Route("/job_vacancy/jobforStudent/{Action=Index}/{studentID}")]
+        public async Task<IActionResult> GetAddWorkExpView(int studentID)
+        {
+            var student = await _context.T會員學生s
+                          .Where(s => s.學生id == studentID)
+                          .FirstOrDefaultAsync();
+
+            int currentYear = DateTime.Now.Year;
+            int startYear = currentYear - 18; // 預設起始年為18年前
+            if (student != null && student.生日.HasValue)
+            {
+                startYear = student.生日.Value.Year + 18;
+            }
+
+            // 設定工作經驗年份範圍
+            List<int> availableYears = new List<int>();
+            for (int year = startYear; year <= currentYear; year++)
+            {
+                availableYears.Add(year);
+            }
+
+            var viewModel = new WorkExpViewModel
+            {
+                AvailableYears = availableYears,
+            };
+
+            return PartialView("_CreateWorkExpPartialView", viewModel);
+        }
+
+
+        /// <summary>
+        /// 新增工作經驗2：將前端傳回的資料進行驗證，通過後存入資料庫。
+        /// </summary>
+        /// <param name="viewModel"></param>
+        // POST: job_vacancy/jobforStudent/AddNewWorkExp
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddNewWorkExp(
+            [Bind("StudentID, CompanyName, JobTitle, Start, End, Salary, JobContent")] WorkExpViewModel viewModel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    // 新增履歷資料
+                    var newWorkExp = new T工作工作經驗
+                    {
+                        F學員Id = viewModel.StudentID,
+                        F公司名稱 = viewModel.CompanyName,
+                        F職務名稱 = viewModel.JobTitle,
+                        F起始年月 = viewModel.Start,
+                        F結束年月 = viewModel.End,
+                        F薪水待遇 = viewModel.Salary,
+                        F工作內容 = viewModel.JobContent
+                    };
+
+                    // 將新的履歷添加到資料庫中
+                    _context.T工作工作經驗s.Add(newWorkExp);
+                    await _context.SaveChangesAsync();
+
+                    return Json(new { success = true, message = "新增成功" });
+
+                }
+                else
+                {
+                    string errorMessage = string.Join("；", ModelState.Values
+                                        .SelectMany(v => v.Errors)
+                                        .Select(e => e.ErrorMessage));
+                    return Json(new { success = false, message = errorMessage });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "發生異常：" + ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// 編輯工作經驗1：返回填寫表單的視圖
+        /// </summary>
+        /// <returns></returns>
+        // GET: job_vacancy/jobforStudent/GetEditWorkExpView
+        [Route("/job_vacancy/jobforStudent/{Action=Index}/{workExpID}")]
+        public async Task<IActionResult> GetEditWorkExpView(int workExpID)
+        {
+
+            try
+            {
+                var theWorkExp = await _context.T工作工作經驗s
+                                 .Where(w => w.FId == workExpID)
+                                 .FirstOrDefaultAsync();
+
+                if (theWorkExp != null)
+                {
+                    var studentID = theWorkExp.F學員Id;
+                    var student = await _context.T會員學生s
+                          .Where(s => s.學生id == studentID)
+                          .FirstOrDefaultAsync();
+
+                    int currentYear = DateTime.Now.Year;
+                    int startYear = currentYear - 18; // 預設起始年為18年前
+                    if (student != null && student.生日.HasValue)
+                    {
+                        startYear = student.生日.Value.Year + 18;
+                    }
+
+                    // 設定工作經驗年份範圍
+                    List<int> availableYears = new List<int>();
+                    for (int year = startYear; year <= currentYear; year++)
+                    {
+                        availableYears.Add(year);
+                    }
+
+
+                    var viewModel = new WorkExpViewModel
+                    {
+                        WorkExpID = workExpID,
+                        StudentID = studentID,
+                        CompanyName = theWorkExp.F公司名稱,
+                        JobTitle = theWorkExp.F職務名稱,
+                        Start = theWorkExp.F起始年月,
+                        End = theWorkExp.F結束年月,
+                        Salary = theWorkExp.F薪水待遇,
+                        JobContent = theWorkExp.F工作內容,
+                        AvailableYears = availableYears
+                    };
+
+                    return PartialView("_EditWorkExpPartialView", viewModel);
+                }
+                else
+                {
+                    return NotFound("查無此資料");
+                }
+            }
+            catch (Exception ex)
+            {
+                // 如果發生異常，返回問題詳細訊息
+                return Problem(detail: ex.Message + "異常");
+            }
+
+        }
+
+        /// <summary>
+        /// 編輯履歷2：更新資料庫的履歷資料。
+        /// </summary>
+        /// <param name="resumeID">履歷ID</param>
+        /// <param name="viewModel">包含更新資訊的履歷視圖模型</param>
+        // POST: job_vacancy/jobforStudent/UpdateResume/
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateWorkExp(
+            [Bind("WorkExpID, StudentID, CompanyName, JobTitle, Start, End, Salary, JobContent")] WorkExpViewModel viewModel)
+        {
+            try
+            {
+                var thisWorkWxp = await _context.T工作工作經驗s.FindAsync(viewModel.WorkExpID);
+                if (thisWorkWxp == null)
+                {
+                    return NotFound("無此工作經歷");
+                }
+
+                var theStudent = await _context.T會員學生s.FindAsync(thisWorkWxp.F學員Id);
+                if (theStudent == null)
+                {
+                    return NotFound("無此學生");
+                }
+
+                if (ModelState.IsValid)
+                {
+
+                    thisWorkWxp.FId = viewModel.WorkExpID;
+                    thisWorkWxp.F學員Id = viewModel.StudentID;
+                    thisWorkWxp.F公司名稱 = viewModel.CompanyName;
+                    thisWorkWxp.F職務名稱 = viewModel.JobTitle;
+                    thisWorkWxp.F起始年月 = viewModel.Start;
+                    thisWorkWxp.F結束年月 = viewModel.End;
+                    thisWorkWxp.F薪水待遇 = viewModel.Salary;
+                    thisWorkWxp.F工作內容 = viewModel.JobContent;
+
+                    _context.Update(thisWorkWxp);
+                    await _context.SaveChangesAsync();
+
+                    return Json(new { success = true, message = "修改成功" });
+                }
+                else
+                {
+                    string errorMessage = string.Join("；", ModelState.Values
+                                        .SelectMany(v => v.Errors)
+                                        .Select(e => e.ErrorMessage));
+                    return Json(new { success = false, message = errorMessage });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "發生異常：" + ex.Message });
+            }
+
+        }
+
     }
 }
 

@@ -221,7 +221,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
     <script>
 
-        //呼叫應徵信
+        //呼叫履歷資料，返回應徵信編輯頁
         function popup_apply(studentId) {
 
             const applyContext = $("#apply_context");
@@ -248,13 +248,10 @@
             event.preventDefault();  //停止預設行為
 
             const formData = new FormData(document.getElementById('formApply'));
-            //formData.set('resumeID', document.querySelector('input[name="resumes"]:checked')?.value);
-            //formData.set("JobID", document.getElementById('JobID').value);
-            //formData.set("applyLetter", document.getElementById('ApplyLetter').value);
 
-            for (const pair of formData.entries()) {
-                console.log(pair[0] + ': ' + pair[1]);
-            }
+            // for (const pair of formData.entries()) {
+            //     console.log(pair[0] + ': ' + pair[1]);
+            // }
             //return;
 
             const url = '/job_vacancy/job/ApplyLetter/';

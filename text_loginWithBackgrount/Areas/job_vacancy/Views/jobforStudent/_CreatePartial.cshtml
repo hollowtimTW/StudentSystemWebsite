@@ -163,15 +163,15 @@
                     </div>
                 </div>
 
-                <div id="expEditArea" style="display: none;">
+                <div id="expSelectArea" style="display: none;">
                     <div class="checkbox-list">
                         <input type="checkbox" id="workexp1" name="workexp1" value="option1">
                         <label for="workexp1">心心早餐店 2018/6 - 2019/12</label><br>
                         <input type="checkbox" id="workexp2" name="workexp2" value="option2">
                         <label for="workexp2">義全義大利餐館 2020/3 - 2022/5</label>
                     </div>
-                    <button id="btnExpEditConfirm" type="button" class="btn btn-normal">確定</button>
-                    <button id="btnExpEditCancel" type="button" class="btn btn-cancel">取消</button>
+                    <button id="btnExpSelectConfirm" type="button" class="btn btn-normal">確定</button>
+                    <button id="btnExpSelectCancel" type="button" class="btn btn-cancel">取消</button>
                 </div>
             </div>
 
@@ -327,19 +327,19 @@
 
         // 新增工作經驗（開啟編輯區）
         document.getElementById("btnExpAdd").addEventListener("click", function () {
-            document.getElementById("expEditArea").style.display = "block";
+            document.getElementById("expSelectArea").style.display = "block";
             document.getElementById("expListArea").style.display = "none";
             document.getElementById("btnExpAdd").style.display = "none";
         });
         // 確認工作經驗（關閉編輯區並顯示列表）
-        document.getElementById("btnExpEditConfirm").addEventListener("click", function () {
-            document.getElementById("expEditArea").style.display = "none";
+        document.getElementById("btnExpSelectConfirm").addEventListener("click", function () {
+            document.getElementById("expSelectArea").style.display = "none";
             document.getElementById("btnExpAdd").style.display = "block";
             document.getElementById("expListArea").style.display = "block";
         });
         // 取消工作經驗（關閉編輯區）
-        document.getElementById("btnExpEditCancel").addEventListener("click", function () {
-            document.getElementById("expEditArea").style.display = "none";
+        document.getElementById("btnExpSelectCancel").addEventListener("click", function () {
+            document.getElementById("expSelectArea").style.display = "none";
             document.getElementById("btnExpAdd").style.display = "block";
         });
 
