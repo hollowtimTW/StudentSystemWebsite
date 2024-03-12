@@ -1,6 +1,6 @@
 ﻿@model ResumeCreateViewModel
 <style>
-    <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet" / >
+    <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet"/>
 </style>
 <section class="Resume-Edit">
     <div class="container-fluid">
@@ -131,7 +131,7 @@
                     <span asp-validation-for="WorkExperience" class="text-danger"></span>
                 </div>
                 <div class="col-12">
-                    <button id="btnExpAdd" type="button" class="btn btn-normal" onclick="callWorkExp()">選擇或新增</button>
+                    <button id="btnExpAdd" type="button" class="btn btn-normal">選擇或新增</button>
                 </div>
                 <div class="col-12" id="workExp_context">
                     <!-- 學員工作經驗 _workExpPartial -->
@@ -258,15 +258,21 @@
             // 根據記錄的id重新設置勾選狀態
             $('.cbWorkExp').each(function () {
                 var itemId = $(this).attr('item-id');
-                $(this).prop('checked', selectedWorkExpIDs.includes(itemId));
-                console.log(itemId);
+                var isChecked = selectedWorkExpIDs.includes(itemId);
+                $(this).prop('checked', isChecked);
+
+                // 輸出到控制台
+                if (isChecked) {
+                    console.log('項目 ' + itemId + ' 已經被勾選');
+                }
             });
         }
     }
 
 
+
     //呼叫學員工作經驗資料（返回_workExpPartial）
-    function callWorkExp() {
+    function callWorkExp(restoreChecked = false) {
 
         const workExpContext = $("#workExp_context");
         $.ajax({
@@ -282,7 +288,19 @@
                 // 清空並設置內容
                 workExpContext.html(result);
 
-                restoreCheckedItems();
+                // 如果需要恢復勾選狀態，則調用 restoreCheckedItems() 函式
+                if (restoreChecked) {
+                    restoreCheckedItems();
+                }
+                else {
+                    var selectedIDs = GetSelectedWorkExpIDs();
+                    ShowWorkExpCards(selectedIDs);
+
+                    $('#expSelectArea').hide();
+                    $('#btnExpAdd').show();
+                    $('#expListArea').show();
+                    console.log("勾選!!");
+                }
 
             },
             error: function (error) {
@@ -298,7 +316,7 @@
 
         // ========= 載入資料時 =========
 
-        //宣告履歷工作經驗的ID列表
+        //宣告紀錄履歷工作經驗勾選情形的列表
         let selectedWorkExpIDs = [];
 
         // 處理希望薪資的選項
@@ -319,7 +337,6 @@
         //處理工作經驗
         if ('@Model.WorkExperience' === 'Y') {
             callWorkExp();
-
         }
 
 
@@ -344,6 +361,11 @@
 
 
         // ====================== 事件監聽器 ===========================
+
+        // 選擇或新增工作經驗
+        document.getElementById('btnExpAdd').addEventListener('click', function (event) {
+            callWorkExp(true);
+        });
 
         // 顯示圖片
         document.getElementById('Photo').addEventListener('change', function (event) {

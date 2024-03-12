@@ -1,6 +1,6 @@
 ﻿@model List<WorkExpViewModel>
 <style>
-    <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet" / >
+    <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet"/>
 </style>
 
 @* 工作經驗選擇區 *@
@@ -45,14 +45,6 @@
 
 <script>
 
-    //取消選取工作經驗
-    function removeWorkExpItem(itemId) {
-        console.log('itemId:' + itemId);
-        var index = selectedWorkExpIDs.indexOf(itemId);
-        if (index !== -1) {
-            selectedWorkExpIDs.splice(index, 1); // 從列表中移除該項目
-        }
-    }
 
     //新增工作經驗（_CreateWorkExpPartialView）
     function GetAddWorkExpView() {
@@ -109,15 +101,17 @@
                     selectedWorkExpIDs.push(itemId); // 勾選時記錄id
                 }
             });
+
+            //宣告編輯履歷的summit事件需要用到的
+            let resumeWorkIDForSummit = selectedWorkExpIDs;
+
             return selectedWorkExpIDs;
         }
 
 
-        function ShowWorkExpCards() {
+        function ShowWorkExpCards(selectedIDs) {
             // 清空 expListArea 中的內容
             $('#expListArea').empty();
-
-            var selectedIDs = GetSelectedWorkExpIDs();
 
             // 根據記錄的id顯示相應的資料
             selectedIDs.forEach(function (itemId) {
@@ -125,16 +119,16 @@
                 if (data[itemId]) {
                     var workitem = data[itemId];
                     $('#expListArea').append(
-                        `<div class="exp-item">
-                                    <div class="d-flex w-100 justify-content-between">
-                                        <h5>${workitem.jobTitle}</h5>
-                                        <button type="button" class="btn-close" onclick="removeWorkExpItem(${itemId})"></button>
-                                    </div>
-                                    <p class="mb-1">${workitem.companyName} ${workitem.start} - ${workitem.end}</p>
-                                    <p class="mt-2">
-                                        ${workitem.jobContent}
-                                    </p>
-                                </div>`);
+                        `<div class="exp-item" data-item-id="${itemId}">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5>${workitem.jobTitle}</h5>
+                                    <button type="button" class="btn-close"></button>
+                                </div>
+                                <p class="mb-1">${workitem.companyName} ${workitem.start} - ${workitem.end}</p>
+                                <p class="mt-2">
+                                    ${workitem.jobContent}
+                                </p>
+                            </div>`);
                 }
                 else {
                     $('#expListArea').append('<div>未找到相應的資料</div>');
@@ -142,10 +136,29 @@
             });
         }
 
+        //取消選取工作經驗
+        function removeWorkExpItem(itemId) {
+            console.log('itemId:' + itemId);
+            var index = selectedWorkExpIDs.indexOf(itemId);
+            if (index !== -1) {
+                selectedWorkExpIDs.splice(index, 1); // 從列表中移除該項目
+            }
+
+            ShowWorkExpCards(selectedWorkExpIDs);
+        }
+
+        //在工作經驗卡上的刪除鈕加上事件
+        $('#expListArea').on('click', '.btn-close', function () {
+            var itemId = $(this).closest('.exp-item').attr('data-item-id');
+            removeWorkExpItem(itemId);
+        });
+
+
         // 確認工作經驗（關閉編輯區並顯示列表）
         $('#btnExpSelectConfirm').click(function () {
 
-            ShowWorkExpCards();
+            var selectedIDs = GetSelectedWorkExpIDs();
+            ShowWorkExpCards(selectedIDs);
 
             $('#expSelectArea').hide();
             $('#btnExpAdd').show();
@@ -157,6 +170,9 @@
             $('#expSelectArea').hide();
             $('#btnExpAdd').show();
         });
+
+
+        
     });
 
 </script>

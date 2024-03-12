@@ -344,7 +344,8 @@
             cancelButtonColor: '#008374'
         }).then((result) => {
             if (result.isConfirmed) {
-                $('#edit_context').empty(); //清空partialview的內容
+                $('#edit_context').empty(); //清空 履歷編輯partialview 的內容
+                //$('#workExp_context').empty(); //清空 工作經驗partialview 的內容
                 document.getElementById('btnCloseEdit').click();
             } else {
                 // 使用者點擊了 "繼續編輯" 按鈕，不執行任何操作
