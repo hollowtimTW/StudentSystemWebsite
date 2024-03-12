@@ -12,6 +12,7 @@ namespace text_loginWithBackgrount.Areas.video_management.Controllers
         [Area("video_management")]
         public IActionResult Cart()
         {
+            string userId = User.Claims.FirstOrDefault(p=>p.Type=="StudentId")?.Value;
             return View();
         }
     }
