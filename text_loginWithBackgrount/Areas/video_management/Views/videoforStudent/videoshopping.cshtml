@@ -4,8 +4,8 @@
 @{
 }
 <section>
-  @*   <div class="my-2">
-        <form asp-action="Index" class="row row-cols-lg-auto g-3 align-items-center">
+    <div class="my-2 container">
+        <form asp-action="videoshopping" class="row row-cols-lg-auto g-3 align-items-center">
             <div class="col-12">
                 <label class="visually-hidden" for="genreId">Genres</label>
                 <select class="form-select" id="genreId" name="genreId">
@@ -30,7 +30,7 @@
                 <a href="/Home/Index" class="btn btn-dark">Reset</a>
             </div>
         </form>
-    </div> *@
+    </div>
     <div class="w-100 d-flex flex-wrap container">
         @if (Model == null)
         {
@@ -60,6 +60,15 @@
                     {
                         <p>Video not available</p>
                     }
+                    <div class="card-body">
+                        <h5 class="card-title">@video.FVideoTitle</h5>
+                        <p class="card-text">
+                        
+                            <b>Name: </b>@video.FVideoName <br />
+                            <b>Price: </b>@video.FPrice
+                        </p>
+                        <button type="button" onclick="add(@video.FVideoId)" class="btn btn-primary">Add to cart</button>
+                    </div>
                 </div>
             }
         }
@@ -70,8 +79,8 @@
 
     @section Scripts {
         <script>
-            async function add(bookId) {
-                var usernameEl = document.getElementById("username");
+        async function add(FVideoId) {
+                var usernameEl = document.getElementById("姓名");
                 if (usernameEl == null) {
                     window.location.href = "/Identity/Account/Login";
                     //var username=usernameEl.innerText;

@@ -1,6 +1,9 @@
 ﻿@{
     ViewData["Title"] = "教材影片";
 }
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+
 @section BreadcrumbsSection {
     <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
     <div class="breadcrumbs">
@@ -9,7 +12,7 @@
                 <div class="row d-flex justify-content-center">
                     <div class="col-lg-6 text-center">
                         <h2>@ViewData["Title"]</h2>
-                        <p>使用影片輔助學習，24小時不間斷!</p>
+                        <p>使用影片輔助學習，24小時不間斷!  </p>
                     </div>
                 </div>
             </div>
@@ -20,10 +23,14 @@
                 <ol>
                     <li><a asp-area="" asp-controller="Template" asp-action="Index">首頁</a></li>
                     <li>@ViewData["Title"]</li>
+                    <li>
+                        <button type="button" class="btn btn-outline-success">
+                            <a asp-area="video_management" asp-controller="videoforStudent" asp-action="videoshopping">影片商城</a>
+                        </button>
+                    </li>
+                    <li> @User.Identity?.Name </li>
                 </ol>
-                <button type="button" class="btn btn-outline-success">
-                    <a asp-area="video_management" asp-controller="videoforStudent" asp-action="videoshopping">影片商城</a>
-                </button>
+                
             </div>
         </nav>
     </div>
