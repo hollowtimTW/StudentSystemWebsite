@@ -20,17 +20,16 @@ namespace text_loginWithBackgrount.Areas.course_management.Controllers
         {
             _context = context;
         }
-     
 
         async public Task<IActionResult> Index(int? id)
         {
-            
+
             var classId = _context.T課程學生班級s
             .Where(t => t.學生id == id)
             .Select(t => t.班級id)
             .FirstOrDefault();
 
-           
+
             if (classId == null || classId == 0)
             {
                 ViewBag.state = false;
@@ -68,7 +67,7 @@ namespace text_loginWithBackgrount.Areas.course_management.Controllers
                 ViewBag.State = false;
                 ViewBag.Message = "都未安排上課時間";
                 return View();
-               
+
             }
 
             ViewBag.State = true;
@@ -217,6 +216,20 @@ namespace text_loginWithBackgrount.Areas.course_management.Controllers
             {
                 return true;
             }
+        }
+
+        //班級科目的id 
+        public IActionResult live(int? id)
+        {
+            ViewBag.classCourseId = id;
+            return View();
+        }
+
+        //班級科目的id 
+        public IActionResult whiteBoard(int? id)
+        {
+            ViewBag.classCourseId = id;
+            return View();
         }
 
         private bool T課程評分主表Exists(int id)

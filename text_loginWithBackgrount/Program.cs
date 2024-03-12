@@ -64,6 +64,7 @@ builder.Services.AddSession(options =>
 builder.Services.AddTransient<IEmailSender, Emailsender>();
 builder.Services.AddTransient<IHomeRepository, HomeRepository>();//胡洧銘新增的地方(03/07)
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR(); // 將 SignalR 服務添加到 DI 容器中
 
 
 // MongoDb
@@ -99,6 +100,9 @@ app.UseAuthorization();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapHub<NotificationHub>("/NotificationHub");
+    endpoints.MapHub<StreamHub>("/StreamHub");
+    endpoints.MapHub<WhiteboardHub>("/WhiteboardHub");
+
 });
 app.MapControllerRoute(
     name: "areas",

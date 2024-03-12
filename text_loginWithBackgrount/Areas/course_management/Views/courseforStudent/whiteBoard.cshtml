@@ -1,0 +1,561 @@
+﻿@{
+    ViewData["Title"] = "Simple Whiteboard";
+}
+@section Styles {
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+
+        #toolContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            margin-left: 15px;
+            height: 80vh;
+        }
+
+        canvas {
+            width: 75vw;
+            height: 65vh;
+            box-shadow: 0px 0px 3px 1px rgba(0,0,0,0.2);
+            background-color: white;
+            border-radius: 30px;
+        }
+
+
+
+        #toolToolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px;
+            background-color: rgba(211, 211, 211, 0.5);
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            margin: auto;
+            width: 70%;
+        }
+
+        #togglebar {
+            display: none;
+        }
+
+
+        .toolButton {
+            width: 35px;
+            height: 35px;
+            margin: 2px;
+            border-radius: 50%;
+            background-color: rgba(211, 211, 211, 0.5);
+            border: none;
+            box-shadow: 0px 0px 3px 1px rgba(0,0,0,0.3);
+            padding: 2px;
+            cursor: pointer;
+            position: relative;
+            justify-content: center;
+            align-items: center;
+        }
+
+            .toolButton i {
+                font-size: 25px;
+                color: gray;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+        #toggleDrawingButton:hover::after {
+            content: "Drawing\A";
+            white-space: pre;
+            display: block;
+            position: absolute;
+            top: -47px;
+            left: 30%;
+            transform: translateX(-50%);
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid lightgray;
+            background-color: white;
+            color: lightgray;
+        }
+
+        #toggleSelectButton:hover::after {
+            content: "Selecting\A";
+            white-space: pre;
+            display: block;
+            position: absolute;
+            top: -47px;
+            left: 30%;
+            transform: translateX(-50%);
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid lightgray;
+            background-color: white;
+            color: lightgray;
+        }
+
+        #hightlightButton:hover::after {
+            content: "hightLight Pen\A";
+            white-space: pre;
+            display: block;
+            position: absolute;
+            top: -47px;
+            left: 30%;
+            transform: translateX(-50%);
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid lightgray;
+            background-color: white;
+            color: lightgray;
+        }
+
+        #eraseButton:hover::after {
+            content: "eraser button\A";
+            white-space: pre;
+            display: block;
+            position: absolute;
+            top: -47px;
+            left: 30%;
+            transform: translateX(-50%);
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid lightgray;
+            background-color: white;
+            color: lightgray;
+        }
+
+        #clearButton:hover::after {
+            content: "clean all\A";
+            white-space: pre;
+            display: block;
+            position: absolute;
+            top: -47px;
+            left: 30%;
+            transform: translateX(-50%);
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid lightgray;
+            background-color: white;
+            color: lightgray;
+        }
+
+        .toolButton:active {
+            box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.3);
+            background-color: rgba(211, 211, 211, 0.8);
+        }
+
+        #joinStatefalse {
+            display: block;
+        }
+
+        #joinStatetrue {
+            display: none;
+        }
+    </style>
+}
+
+
+<div id="toolContainer" class="">
+    <div id="joinStatetrue">
+        <div id="togglebar">
+            <div id="shapeChoseToolbar">
+                <button id="toggleDrawingButton" class="toolButton" onclick="toggleMode('circle')">
+                    <i class='bx bx-circle'></i>
+                </button>
+
+                <button id="hightlightButton" class="toolButton" onclick="toggleMode('square')">
+                    <i class='bx bx-square'></i>
+                </button>
+
+                <button id="toggleSelectButton" class="toolButton" onclick="toggleMode('triangle')">
+                    <i class='bx bx-shape-triangle'></i>
+                </button>
+            </div>
+
+        </div>
+
+        <div id="toolToolbar">
+            <input type="hidden" id="modeToggle" value="draw">
+
+            <button id="toggleDrawingButton" class="toolButton" onclick="toggleMode('draw')">
+                <i class='bx bx-pencil'></i>
+            </button>
+
+            <button id="hightlightButton" class="toolButton" onclick="toggleMode('hightlight')">
+                <i class='bx bx-highlight'></i>
+            </button>
+
+            <button id="toggleSelectButton" class="toolButton" onclick="toggleMode('select')">
+                <i class='bx bx-selection'></i>
+            </button>
+
+            <button id="addshapeButton" class="toolButton" onclick="toggleShapeChoseToolbar()">
+                <i class='bx bxs-shapes'></i>
+            </button>
+
+            <button id="eraseButton" class="toolButton" onclick="toggleMode('eraser')">
+                <i class='bx bx-eraser'></i>
+            </button>
+
+            <button id="clearButton" class="toolButton" onclick="toggleMode('clear')">
+                <i class='bx bxs-trash'></i>
+            </button>
+        </div>
+
+        <canvas id="myCanvas" class="" resize></canvas>
+    </div>
+    <div class="text-center" id="joinStatefalse">
+        <h1>老師尚未開啟</h1>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.10/signalr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.15/paper-full.min.js"></script>
+    <script>
+        var connection;
+        var openState = false;
+        var start = 0;
+
+        window.onload = function () {
+            paper.install(window);
+            paper.setup('myCanvas');
+
+            initializeDrawingTools();
+            initializeSignalRConnection();
+        };
+
+        function initializeSignalRConnection() {
+            connection = new signalR.HubConnectionBuilder()
+                .withUrl("/whiteboardhub")
+                .build();
+
+            connection.start().then(function () {
+                console.log("Connected to Hub");
+                connection.invoke("checkGroup", '@ViewBag.classCourseId');
+
+            }).catch(function (err) {
+                return console.error(err.toString());
+            });
+
+
+
+            connection.on("ReceiveWhiteBoardConnect", function (message) {
+                sessionStorage.setItem('WhiteBoardconnectionId', message);
+                console.log(message);
+            });
+
+            connection.on("groupJoinState", function (message) {
+                var joinStatetrue = document.getElementById('joinStatetrue');
+                var joinStatefalse = document.getElementById('joinStatefalse');
+                alert(message);
+                if (message === "開啟") {
+                    joinStatetrue.style.display = 'block';
+                    joinStatefalse.style.display = 'none';
+                } else {
+                    joinStatetrue.style.display = 'none';
+                    joinStatefalse.style.display = 'block';
+                }
+            });
+
+            connection.on("ReceivePath", function (pathJson) {
+                console.log('Path JSON received:', pathJson);
+                var pathData = JSON.parse(pathJson);
+                var receivedPath = new Path();
+                receivedPath.importJSON(pathData);
+                paper.view.draw();
+                alert("drawing");
+            });
+
+        }
+
+        function initializeDrawingTools() {
+
+            //feature--切換選擇功能--
+            var Mode = "draw";
+            var selectedPath = null;
+            var path = null;
+            var toolDraw = new Tool();
+
+            function onFrame(event) {
+                var currentMode = document.getElementById('modeToggle').value;
+                switch (currentMode) {
+                    case 'draw':
+                        toolDraw.activate();
+                        break;
+                    case 'hightlight':
+                        toolHightlight.activate();
+                        break;
+                    case 'select':
+                        toolSelect.activate();
+                        break;
+                    case 'eraser':
+                        toolErase.activate();
+                        break;
+                    case 'clear':
+                        clearCanvas();
+                        break;
+                    case 'circle':
+                        toolCircle.activate();
+                        break;
+                    case 'square':
+                        toolSquare.activate();
+                        break;
+                    case 'triangle':
+                        toolTriangle.activate();
+                        break;
+
+                }
+                Mode = currentMode;
+
+            }
+
+            toolDraw.activate();
+
+
+            //event--繪畫監聽事件--
+
+            toolDraw.onMouseDown = function (event) {
+                if (Mode !== "draw") return;
+                path = new Path();
+                path.strokeColor = 'black';
+                path.add(event.point);
+            }
+
+            toolDraw.onMouseDrag = function (event) {
+                if (Mode !== "draw" || !path) return;
+                path.add(event.point);
+            }
+
+            toolDraw.onMouseUp = function (event) {
+                if (Mode !== "draw" || !path) return;
+                path.simplify();
+                var pathData = path.exportJSON({ asString: true });
+                if (openState) {
+                    connection.invoke("SendPath", pathData, '@ViewBag.classCourseId');
+
+                }
+            }
+
+            //event--螢光筆監聽事件--
+            var toolHightlight = new Tool();
+            var highlightColor = 'rgba(255, 255, 0, 0.5)';
+            var highlightWidth = 15;
+
+            toolHightlight.onMouseDown = function (event) {
+                if (Mode !== "hightlight") return;
+                path = new Path();
+                path.strokeColor = highlightColor;
+                path.strokeWidth = highlightWidth;
+                path.add(event.point);
+            }
+
+            toolHightlight.onMouseDrag = function (event) {
+                if (Mode !== "hightlight" || !path) return;
+                path.add(event.point);
+            }
+
+            toolHightlight.onMouseUp = function (event) {
+                if (Mode !== "hightlight" || !path) return;
+                path.simplify();
+            }
+
+            //event--選擇監聽事件--
+            var toolSelect = new Tool();
+            toolSelect.onMouseDown = function (event) {
+                if (Mode !== "select") return;
+                var hitResult = project.hitTest(event.point, { fill: true, stroke: true, segments: true, tolerance: 5 });
+                if (hitResult && hitResult.item) {
+                    selectedPath = hitResult.item;
+                    selectedPath.selected = true;
+                }
+            }
+
+            toolSelect.onMouseDrag = function (event) {
+                if (Mode !== "select" || !selectedPath) return;
+                selectedPath.position.x += event.delta.x;
+                selectedPath.position.y += event.delta.y;
+            }
+
+            toolSelect.onMouseUp = function (event) {
+                if (Mode !== "select" || !selectedPath) return;
+                if (selectedPath) {
+                    selectedPath.selected = false;
+                    selectedPath = null;
+                }
+            }
+
+            //event--橡皮擦監聽事件--
+            var toolErase = new Tool();
+            toolErase.onMouseDown = function (event) {
+                if (Mode !== "eraser") return;
+                path = new Path();
+                path.strokeColor = 'white';
+                path.strokeWidth = 10;
+                path.add(event.point);
+            }
+
+            toolErase.onMouseDrag = function (event) {
+                if (!path) return;
+                path.add(event.point);
+            }
+
+            toolErase.onMouseUp = function (event) {
+                if (path) {
+                    path.add(event.point);
+                    path.simplify();
+                    path = null;
+                }
+            }
+
+            //event --執行刪除函數--
+            function clearCanvas() {
+                project.activeLayer.removeChildren();
+                project.view.update();
+            }
+
+            //event--畫圓形監聽事件--
+            var toolCircle = new Tool();
+
+
+            toolCircle.onMouseDown = function (event) {
+                if (Mode !== "circle") return;
+                startingPoint = event.point;
+                path = new Path.Circle({
+                    center: event.point,
+                    radius: 0,
+                    strokeColor: 'black'
+                });
+            }
+
+            toolCircle.onMouseDrag = function (event) {
+                if (Mode !== "circle" || !path) return;
+                var radius = event.point.getDistance(startingPoint);
+                path.remove();
+                path = new Path.Circle({
+                    center: startingPoint,
+                    radius: radius,
+                    strokeColor: 'black'
+                });
+            }
+
+            toolCircle.onMouseUp = function (event) {
+                if (Mode !== "circle" || !path) return;
+                startingPoint = null;
+                path = null;
+            }
+
+            //event--畫方形監聽事件--
+            var toolSquare = new Tool();
+
+
+            toolSquare.onMouseDown = function (event) {
+                if (Mode !== "square") return;
+                startingPoint = event.point;
+                path = new Path.Rectangle({
+                    from: event.point,
+                    to: event.point,
+                    strokeColor: 'black'
+                });
+            }
+
+            toolSquare.onMouseDrag = function (event) {
+                if (Mode !== "square" || !path) return;
+                var radius = event.point.getDistance(startingPoint);
+                path.remove();
+                path = new Path.Rectangle({
+                    from: startingPoint,
+                    to: event.point,
+                    strokeColor: 'black'
+                });
+            }
+
+            toolSquare.onMouseUp = function (event) {
+                if (Mode !== "square" || !path) return;
+                startingPoint = null;
+                path = null;
+            }
+
+            //event--畫三角形監聽事件--
+            var toolTriangle = new Tool();
+
+
+            toolTriangle.onMouseDown = function (event) {
+                if (Mode !== "triangle") return;
+                startingPoint = event.point;
+                startingPoint = event.point;
+                path = new Path.RegularPolygon({
+                    center: event.point,
+                    sides: 3,
+                    radius: 50,
+                    strokeColor: 'black'
+                });
+            }
+
+            toolTriangle.onMouseDrag = function (event) {
+                if (Mode !== "triangle" || !path) return;
+                var radius = event.point.getDistance(startingPoint);
+                path.remove();
+                path = new Path.RegularPolygon({
+                    center: startingPoint,
+                    sides: 3,
+                    radius: event.point.subtract(startingPoint).length,
+                    strokeColor: 'black'
+                });
+            }
+
+            toolTriangle.onMouseUp = function (event) {
+                if (Mode !== "triangle" || !path) return;
+                startingPoint = null;
+                path = null;
+            }
+
+
+
+
+        };
+
+
+
+    </script>
+
+    <script>
+
+        function toggleMode(mode) {
+            var modeToggle = document.getElementById('modeToggle');
+            console.log(mode);
+            modeToggle.value = mode;
+        }
+
+        function toggleShapeChoseToolbar() {
+
+            var togglebar = document.getElementById('togglebar');
+            var shapeChoseToolbar = document.getElementById('shapeChoseToolbar');
+            var addshapeButton = document.getElementById('addshapeButton');
+
+            var buttonTop = addshapeButton.offsetTop - 60;
+            var buttonLeft = addshapeButton.offsetLeft - 40;
+            shapeChoseToolbar.style.position = 'absolute';
+            shapeChoseToolbar.style.left = buttonLeft + 'px';
+            shapeChoseToolbar.style.top = buttonTop + 'px';
+
+            if (togglebar.style.display == 'block') {
+                togglebar.style.display = 'none';
+            } else {
+                togglebar.style.display = 'block';
+
+            }
+        }
+
+
+    </script>
+
+
+
+
+}
+
+

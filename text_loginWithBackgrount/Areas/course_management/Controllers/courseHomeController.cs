@@ -82,10 +82,10 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
                 //已經開啟過
                 return Ok(new { data = true });
             }
-            
+
             else
             {
-          
+
                 //尚未開啟: 1.班級科目狀態改成7 2.撈班級科目的班級中所有學生 3.把所有學生對評分主表新增
 
                 t課程班級科目.狀態 = 7;
@@ -110,9 +110,9 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
                     _context.Add(t課程評分主表);
                     await _context.SaveChangesAsync();
 
-                   var FormId= t課程評分主表.評分主表id;
+                    var FormId = t課程評分主表.評分主表id;
 
-                    var Model=new RateModel();
+                    var Model = new RateModel();
                     foreach (var 分類 in Model.評分類別列表)
                     {
                         foreach (var 題目 in 分類.題目)
@@ -194,6 +194,21 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
             }).ToList();
 
             return View(notificationList);
+        }
+
+
+        //id 班級科目id
+        public IActionResult classFeature(int id)
+        {
+            ViewBag.classcourseId = id;
+            return View();
+        }
+
+        //id 班級科目id
+        public IActionResult whiteBoard(int id)
+        {
+            ViewBag.classCourseId = id;
+            return View();
         }
     }
 }

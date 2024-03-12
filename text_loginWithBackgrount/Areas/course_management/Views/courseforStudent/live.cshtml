@@ -1,0 +1,129 @@
+﻿@section Styles {
+
+    <style>
+        #remoteVideo {
+            width: 100%;
+            height: auto;
+            max-width: 800px;
+            max-height: 450px;
+            box-shadow: 0px 0px 3px 1px rgba(0,0,0,0.2);
+            background-color: white;
+            border-radius: 30px;
+            display: none;
+            margin: auto;
+        }
+
+        #waitingGif {
+            width: 100%;
+            height: auto;
+            max-width: 800px;
+            max-height: 450px;
+            box-shadow: 0px 0px 3px 1px rgba(0,0,0,0.2);
+            background-color: white;
+            border-radius: 30px;
+            display: block;
+            margin: auto;
+        }
+
+        #content {
+            padding: 10px;
+            width: 100%;
+            height: 100vh;
+        }
+
+        h3 {
+            margin-top: 5px;
+        }
+    </style>
+}
+
+<div id="content" class="text-center">
+    <h3>Screen Sharing</h3>
+    <img id="waitingGif" src="https://cdn.dribbble.com/users/1478651/screenshots/9683496/media/b921a805a76e70f0c36f0410310be009.gif">
+    <video id="remoteVideo" autoplay muted resize></video>
+
+</div>
+
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.10/signalr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.3.1/peerjs.min.js"></script>
+
+    <script>
+        let connection;
+        let groupName;
+
+        $(function () {
+            connection = new signalR.HubConnectionBuilder().withUrl("/StreamHub").build();
+
+            let peer;
+            let studentPeerId;
+
+            connection.start()
+                .then(function () {
+                    console.log("SignalR connection established.");
+                    peer = new Peer({
+                        config: {
+                            iceServers: [
+                                { urls: 'stun:stun.l.google.com:19302' },
+                                {
+                                    urls: "turns:global.relay.metered.ca:443?transport=tcp",
+                                    username: "73bbff3c8731ebccf9f03eae",
+                                    credential: "4Lc/Nvbuux92bsEG",
+                                },
+                            ]
+                        }
+                    });
+
+                    peer.on('open', function (id) {
+                        studentPeerId = id;
+                        console.log('Peer instance is ready with ID: ' + studentPeerId);
+                        return connection.invoke("checkGroup", '@ViewBag.classCourseId', studentPeerId);
+                    });
+
+                    peer.on('error', function (err) {
+                        console.error('Error in Peer instance: ', err);
+                    });
+
+                    peer.on('call', function (call) {
+                        console.log('Received a call.');
+                        call.answer();
+
+                        call.on('stream', function (remoteStream) {
+                            console.log('Received remote stream.');
+                            console.log(remoteStream);
+                            var remoteVideo = document.getElementById('remoteVideo');
+                            var waitingGif = document.getElementById('waitingGif');
+                            remoteVideo.srcObject = remoteStream;
+                            remoteVideo.style.display = 'block';
+                            waitingGif.style.display = 'none';
+                            remoteVideo.play().catch(error => console.error('Error playing video', error));
+
+                        });
+
+                        call.on('error', function (err) {
+                            console.error('Call error: ', err);
+                        });
+                    });
+
+                })
+                .catch(function (error) {
+                    console.error("Error during SignalR or Peer operations: ", error);
+                });
+
+            // Group join state feedback.
+            connection.on("groupJoinState", function (data) {
+                var obj = JSON.parse(data);
+                groupName = obj.groupName;
+                console.log(groupName);
+                console.log(obj.message);
+            });
+
+            connection.on("SendPeerIdToteacher", function (data) {
+                connection.invoke("SendPeerId", groupName, studentPeerId);
+            });
+
+
+        });
+    </script>
+}

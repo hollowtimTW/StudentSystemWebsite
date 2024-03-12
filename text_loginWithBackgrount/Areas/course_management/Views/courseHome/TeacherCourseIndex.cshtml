@@ -142,36 +142,6 @@
             transform: translateX(30px);
         }
 
-        .class-column {
-            width: 20%;
-        }
-
-        .subject-column {
-            width: 35%;
-        }
-
-        .feedback-column {
-            width: 15%;
-        }
-
-        .class-time-column {
-            width: 15%;
-        }
-
-        .members-column {
-            width: 15%;
-        }
-
-
-        .s-table {
-            border-collapse: collapse;
-            background-color: #C4E1E1;
-            font-weight: 700;
-            width: 100%;
-            margin: 10px;
-            border: 3px #cccccc solid;
-            text-align: center;
-        }
   </style>
 }
 
@@ -188,39 +158,37 @@
         <table class="table card-body">
         <thead>
             <tr>
-                <th hidden>班級ID</th>
-                <th class="class-column">班級</th>
-                <th class="subject-column">科目</th>
-                <th class="feedback-column">開啟回饋</th>
-                <th class="class-time-column">上課</th>
-                <th class="members-column">班級成員</th>
-            </tr>
+                <th>班級</th>
+                <th>科目</th>
+                <th>開啟回饋</th>
+                <th>螢幕分享</th>   
+                <th>白板</th>    
+            </tr
         </thead>
-        <tbody>
         @foreach (var item in ViewBag.Class)
         {
             <tr>
-                <td hidden>@item.班級科目.班級id</td>
-                <td class="coursename class-column">@item.班級.班級名稱</td>
-                <td class="teachername subject-column">@item.科目.科目名稱</td>
-                <td feedback-column>
-                    <button class="btn btn-info">
+                <td class="coursename">@item.班級.班級名稱</td>
+                <td class="teachername">@item.科目.科目名稱</td>
+                 <td> 
+                     <button class="btn btn-info">
                         <i class='bx bx-lock-open-alt' onclick="toggleStatus(@item.班級科目.班級科目id)"></i>
                      </button>
+                  
                 </td>
-                <td class="class-time-column">
-                    <a class="btn btn-info" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="popup(@item.班級.班級id)"> 
+                <td>    
+                     <a class="btn btn-info"  onclick="classFeature(@item.班級科目.班級科目id)"> 
                         <i class='bx bxs-school'></i>
                     </a>
                 </td>
-                <td class="members-column">
-                            <a class="btn btn-info showStd" style="background-color:#04848b" data-bs-toggle="modal" data-bs-target="#exampleModal1">
-                        <i class='bx bx-child'></i>
+                <td>    
+                     <a class="btn btn-info"  onclick="whiteBoard(@item.班級科目.班級科目id)"> 
+                        <i class='bx bx-chalkboard'></i>                    
                     </a>
                 </td>
             </tr>
         }
-        </tbody>
+       
     </table>
         
         @*老師上課的所有班級科目的課程*@        
@@ -230,48 +198,21 @@
 
         <!-- Modal -->
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-md">
-                <div class="modal-content" id="modal_content">
-                        <div class="modal-header d-flex justify-content-center align-items-center">
-                                <p class="fs-6 h-100 mb-0"  id="exampleModalLabel"></p>
-                                <p class="fs-6 h-100 mb-0"  id="exampleModalsubTitle"></p>
-                            <button type="button" id="closeBtn" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            </button>
-                        </div>
-
-                        <div class="modal-body overflow-hidden" id="switch_context">
-                            <img class="w-100" src="~/images/t課程科目/loading.gif" />
-                        </div>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- Member Modal -->
-        <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-md">
-                <div class="modal-content" id="modal_content" style="max-height:400px;">
+        <div class="modal-dialog modal-dialog-centered modal-md">
+            <div class="modal-content" id="modal_content">
                     <div class="modal-header d-flex justify-content-center align-items-center">
-                        <p class="fs-6 h-100 mb-0" id="exampleModalLabel"></p>
-                        <p class="fs-6 h-100 mb-0" id="exampleModalsubTitle"></p>
+                            <p class="fs-6 h-100 mb-0"  id="exampleModalLabel"></p>
+                            <p class="fs-6 h-100 mb-0"  id="exampleModalsubTitle"></p>
                         <button type="button" id="closeBtn" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         </button>
                     </div>
 
-                    <div class="modal-body overflow-hidden" id="switch_context" style="overflow-y:auto !important;">
-                        <table id="std-table" class="s-table table table-light table-striped table-bordered">
-                            <tbody>
- 
-                            </tbody>
-                        </table>
-
-
+                    <div class="modal-body overflow-hidden" id="switch_context">
+                    <img class="w-100" src="~/images/t課程科目/loading.gif" />
                     </div>
-                </div>
             </div>
         </div>
-
-
+    </div>
     </card>
 </div>
 
@@ -351,53 +292,15 @@
                     }
                 });
             }
-
-
-
-
-
-
-        $(document).ready(function () {
-
-            $(".showStd").on("click", function () {
-                var row = $(this).closest('tr');
-
-                var column1Value = row.find('td:eq(0)').text();
-                console.log(column1Value)
-                ff(column1Value)
-                
-            });
-            
-
-
-            function ff(id) {
-                $.ajax({
-                    type: 'get',
-                    url: '/api/chat/getallstd/' + id,
-                    success: function (data) {
-                        console.log(data);
-
-                        var tbody = $('#std-table tbody');
-                        tbody.empty();
-
-                        for (var i = 0; i < data.length; i++) {
-                            var row = '<tr>';
-                            row += '<td hidden>' + data[i].sId + '</td>';
-                            row += '<td>' + data[i].sName + '</td>';
-                            row += '<td><button id="btnedit" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#staticbackdrop"> 發送訊息 </ button ></td>';
-                            row += '</tr>';
-                            tbody.append(row);
-                        }
-                    },
-                    error: function (error) {
-                        console.error(error);
-                    }
-                });
-            }
-    
-
-        });
-
+        
+        function classFeature(id) { 
+            window.location.href = `/course_management/courseHome/classFeature/${id}`;               
+        
+        }
+        function whiteBoard(id){ 
+            window.location.href = `/course_management/courseHome/whiteBoard/${id}`;               
+        
+        }
     </script>
 
 }
