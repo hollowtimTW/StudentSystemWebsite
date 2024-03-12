@@ -25,6 +25,7 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
         {
             _context = context;
             _hostingEnvironment = hostingEnvironment;
+
         }
 
         // GET: course_management/T課程科目分類
