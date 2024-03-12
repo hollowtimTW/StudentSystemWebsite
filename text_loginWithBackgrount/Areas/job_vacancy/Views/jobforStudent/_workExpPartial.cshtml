@@ -1,0 +1,149 @@
+﻿@model List<WorkExpViewModel>
+<style>
+    <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet" / >
+</style>
+
+@* 工作經驗選擇區 *@
+<div id="expSelectArea">
+    <div class="checkbox-list">
+        @if (Model != null && Model.Any())
+        {
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                var viewModel = Model[i];
+                var checkboxId = "workexp" + viewModel.WorkExpID;
+
+                <div class="form-check">
+                    <input class="form-check-input cbWorkExp" type="checkbox" item-id="@i" id="@checkboxId" name="@checkboxId" value="option1">
+                    <label class="form-check-label" for="@checkboxId">@viewModel.CompanyName／@viewModel.JobTitle／@viewModel.Start ~ @viewModel.End</label>
+                    <a><i class="bi bi-pencil-fill" role="button" onclick="EditWorkExp(@viewModel.WorkExpID)"></i></a>
+                </div>
+            }
+        }
+        
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="addNewWorkExp" value="">
+            <label class="form-check-label" for="addNewWorkExp"><a type="button" onclick="GetAddWorkExpView()">新增工作經驗</a></label>
+        </div>
+            
+    </div>
+    <button id="btnExpSelectConfirm" type="button" class="btn btn-normal">確定</button>
+    <button id="btnExpSelectCancel" type="button" class="btn btn-cancel">取消</button>
+</div>
+
+<div class="workExpList" id="expListArea" style="display: none;">
+    @* 根據選擇項目，顯示工作經驗相應的資料 *@
+</div>
+
+
+<div id="workExp_switch_form">
+    @* 工作經驗新增或編輯區 *@
+</div>
+
+
+<script>
+
+    //取消選取工作經驗
+    function removeItem(itemId) {
+
+        var checkboxId = "workexp" + itemId;
+        $('#' + checkboxId).prop('checked', false);
+    }
+
+    //新增工作經驗（_CreateWorkExpPartialView）
+    function GetAddWorkExpView() {
+
+        const workExpForm = $("#workExp_switch_form");
+        $.ajax({
+            type: 'GET',
+            url: "/job_vacancy/jobforStudent/GetAddWorkExpView/" + studentID,
+            success: function (result) {
+                console.log('呼叫工作經驗新增表單 success');
+                workExpForm.html(result);
+
+                //隱藏選擇工作經驗區域
+                $('#expSelectArea').hide();
+            },
+            error: function (error) {
+                console.error('呼叫工作經驗新增表單 error', error);
+                workExpForm.html(`<div class="alert alert-danger" role="alert">請求失敗：${error.statusText}</div>`);
+            }
+        });
+    }
+
+    //編輯工作經驗
+    function EditWorkExp(workExpID){
+
+        const workExpForm = $("#workExp_switch_form");
+        $.ajax({
+            type: 'GET',
+            url: "/job_vacancy/jobforStudent/GetEditWorkExpView/" + workExpID,
+            success: function (result) {
+                console.log('呼叫工作經驗編輯表單 success');
+                workExpForm.html(result);
+
+                //隱藏選擇工作經驗區域
+                $('#expSelectArea').hide();
+            },
+            error: function (error) {
+                console.error('呼叫工作經驗編輯表單 error', error);
+                workExpForm.html(`<div class="alert alert-danger" role="alert">請求失敗：${error.statusText}</div>`);
+            }
+        });
+    }
+
+    $(document).ready(function () {
+
+        // 監聽複選框的變化事件
+        $('.cbWorkExp').change(function () {
+
+            // 清空 expListArea 中的內容
+            $('#expListArea').empty();
+
+            // 遍歷所有複選框，更新勾選狀態並記錄勾選的checkbox的id
+            selectedWorkExpIDs = [];
+            $('.cbWorkExp').each(function () {
+                var itemId = $(this).attr('item-id');
+                if ($(this).prop('checked')) {
+                    selectedWorkExpIDs.push(itemId); // 勾選時記錄id
+                }
+            });
+
+            // 根據記錄的id顯示相應的資料
+            selectedWorkExpIDs.forEach(function (itemId) {
+                var data = @Html.Raw(Json.Serialize(Model));
+                if (data[itemId]) {
+                    var workitem = data[itemId];
+                    $('#expListArea').append(
+                        `<div class="exp-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5>${workitem.jobTitle}</h5>
+                                <button type="button" class="btn-close" onclick="removeItem(${itemId})"></button>
+                            </div>
+                            <p class="mb-1">${workitem.companyName} ${workitem.start} - ${workitem.end}</p>
+                            <p class="mt-2">
+                                ${workitem.jobContent}
+                            </p>
+                        </div>`);
+                }
+                else {
+                    $('#expListArea').append('<div>未找到相應的資料</div>');
+                }
+            });
+        });
+
+        // 確認工作經驗（關閉編輯區並顯示列表）
+        $('#btnExpSelectConfirm').click(function () {
+            $('#expSelectArea').hide();
+            $('#btnExpAdd').show();
+            $('#expListArea').show();
+        });
+
+        // 取消工作經驗（關閉編輯區）
+        $('#btnExpSelectCancel').click(function () {
+            $('#expSelectArea').hide();
+            $('#btnExpAdd').show();
+        });
+    });
+
+</script>

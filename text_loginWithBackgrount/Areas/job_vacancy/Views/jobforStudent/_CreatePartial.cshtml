@@ -1,5 +1,370 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model ResumeCreateViewModel
+<style>
+    <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet"/>
+
+    .text-danger{
+        background-color:yellow;
+    }
+</style> 
+<section class="Resume-Edit">
+    <div class="container-fluid">
+        <form asp-action="Create" class="formResume" id="formCreate" enctype="multipart/form-data">
+            <!--模型驗證錯誤的摘要-->
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <!--隱藏學生ID值-->
+            <input type="hidden" asp-for="StudentID" />
+
+            <!-- 1-1.學生資料-->
+            <div class="row dialog container-fluid">
+                <div class="col-md-6">
+                    <div class="form-group flex-container">
+                        <label asp-for="ResumeTitle" class="control-label"></label>
+                        <input asp-for="ResumeTitle" class="form-control" />
+                        <span asp-validation-for="ResumeTitle" class="text-danger" aria-live="polite"></span>
+                    </div>
+                    <div class="form-group flex-container">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group flex-container">
+                        <label asp-for="Birth" class="control-label"></label>
+                        <input asp-for="Birth" type="date" class="form-control" value="@Model.Birth?.ToString("yyyy-MM-dd")" />
+                        <span asp-validation-for="Birth" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Gender" class="control-label col-md-3"></label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="Gender" id="gender1" value="男" @(Model.Gender == "男" ? "checked" : "")>
+                            <label class="form-check-label" for="gender1">男</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="Gender" id="gender2" value="女" @(Model.Gender == "女" ? "checked" : "")>
+                            <label class="form-check-label" for="gender2">女</label>
+                        </div>
+                        <span asp-validation-for="Gender" class="text-danger"></span>
+                    </div>
+                    <div class="form-group flex-container">
+                        <label asp-for="Phone" class="control-label"></label>
+                        <input asp-for="Phone" class="form-control" />
+                        <span asp-validation-for="Phone" class="text-danger"></span>
+                    </div>
+                    <div class="form-group flex-container">
+                        <label asp-for="Email" class="control-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex justify-content-center">
+                        @await Html.PartialAsync("_ShowPhotoPartial")
+                    </div>
+                    <input asp-for="Photo" type="file" id="Photo" class="form-control mt-2" accept="image/*" />
+                    <span asp-validation-for="Photo" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- 1-2.學歷-->
+            <div class="row dialog container-fluid">
+                <div class="col-md-6">
+                    <div class="form-group flex-container">
+                        <label asp-for="School" class="control-label"></label>
+                        <input asp-for="School" class="form-control" />
+                        <span asp-validation-for="School" class="text-danger"></span>
+                    </div>
+                    <div class="form-group flex-container">
+                        <label asp-for="Department" class="control-label"></label>
+                        <input asp-for="Department" class="form-control" />
+                        <span asp-validation-for="Department" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group flex-container">
+                        <label asp-for="Academic" class="control-label"></label>
+                        <select asp-for="Academic" class="form-control">
+                            <option value="">無</option>
+                            <option value="學士" selected="@(Model.Academic == "學士")">學士</option>
+                            <option value="副學士" selected="@(Model.Academic == "副學士")">副學士</option>
+                            <option value="碩士" selected="@(Model.Academic == "碩士")">碩士</option>
+                            <option value="博士" selected="@(Model.Academic == "博士")">博士</option>
+                        </select>
+                        <span asp-validation-for="Academic" class="text-danger"></span>
+                    </div>
+                    <div class="form-group row">
+                        <label asp-for="Graduated" class="control-label col-md-3"></label>
+                        <div class="col-md-8">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="Graduated" id="graduated1" value="畢業" @(Model.Graduated == "畢業" ? "checked" : "")>
+                                <label class="form-check-label" for="graduated1">畢業</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="Graduated" id="graduated2" value="肄業" @(Model.Graduated == "肄業" ? "checked" : "")>
+                                <label class="form-check-label" for="graduated2">肄業</label>
+                            </div>
+                            <span asp-validation-for="Graduated" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- 2.技能能力-->
+            <div class="row dialog container-fluid">
+                <div class="form-group">
+                    <label asp-for="Skill" class="control-label"></label>
+                    <textarea asp-for="Skill" class="form-control"></textarea>
+                    <span asp-validation-for="Skill" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Language" class="control-label"></label>
+                    <textarea asp-for="Language" class="form-control"></textarea>
+                    <span asp-validation-for="Language" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- 3.工作經驗-->
+            <div class="row dialog container-fluid">
+                <div class="form-group col-sm-auto">
+                    <label asp-for="WorkExperience" class="control-label"></label>
+                </div>
+                <div class="form-group form-check form-switch col-md-auto ms-auto">
+                    <input id="workExpCheck" class="form-check-input" type="checkbox">
+                    <label for="workExpCheck" class="form-check-label">沒有工作經驗</label>
+                </div>
+                <div class="col-12">
+                    <button id="btnExpAdd" type="button" class="btn btn-normal">新增</button>
+                </div>
+
+                <span asp-validation-for="WorkExperience" class="text-danger"></span>
+
+                <div class="workExpList" id="expListArea" style="display: none;">
+
+                    <div class="exp-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5>出餐人員</h5>
+                            <button type="button" class="btn-close"></button>
+                        </div>
+                        <p class="mb-1">2018/6 - 2019/12 / 新北市 永和區 / 兼職</p>
+                        <p class="mt-2">
+                            1. 將餐點送到客桌。<br />
+                            2. 清理桌面。
+                        </p>
+                    </div>
+                    <div class="exp-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5>出餐人員</h5>
+                            <button type="button" class="btn-close"></button>
+                        </div>
+                        <p class="mb-1">2018/6 - 2019/12 / 新北市 永和區 / 兼職</p>
+                        <p class="mt-2">
+                            1. 將餐點送到客桌。<br />
+                            2. 清理桌面。
+                        </p>
+                    </div>
+                </div>
+
+                <div id="expSelectArea" style="display: none;">
+                    <div class="checkbox-list">
+                        <input type="checkbox" id="workexp1" name="workexp1" value="option1">
+                        <label for="workexp1">心心早餐店 2018/6 - 2019/12</label><br>
+                        <input type="checkbox" id="workexp2" name="workexp2" value="option2">
+                        <label for="workexp2">義全義大利餐館 2020/3 - 2022/5</label>
+                    </div>
+                    <button id="btnExpSelectConfirm" type="button" class="btn btn-normal">確定</button>
+                    <button id="btnExpSelectCancel" type="button" class="btn btn-cancel">取消</button>
+                </div>
+            </div>
+
+            <!-- 4.求職條件-->
+            <div class="row dialog container-fluid">
+                <div class="form-group flex-container">
+                    <label asp-for="HopeJobTitle" class="control-label"></label>
+                    <input asp-for="HopeJobTitle" class="form-control" placeholder="盡量寫明確一點，如：前端工程師、網頁設計師" />
+                    <span asp-validation-for="HopeJobTitle" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="WorkType" class="control-label col-md-2"></label>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="WorkType" id="workType1" value="全職">
+                        <label class="form-check-label" for="workType1">全職</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="WorkType" id="workType2" value="兼職">
+                        <label class="form-check-label" for="workType2">兼職</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="WorkType" id="workType3" value="派遣">
+                        <label class="form-check-label" for="workType3">派遣</label>
+                    </div>
+                    <span asp-validation-for="WorkType" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="WorkTime" class="control-label col-md-2"></label>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="WorkTime" id="workTime1" value="日班">
+                        <label class="form-check-label" for="workTime1">日班</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="WorkTime" id="workTime2" value="晚班">
+                        <label class="form-check-label" for="workTime2">晚班</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="WorkTime" id="workTime3" value="假日班">
+                        <label class="form-check-label" for="workTime3">假日班</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="WorkTime" id="workTime4" value="大夜班">
+                        <label class="form-check-label" for="workTime4">大夜班</label>
+                    </div>
+                    <span asp-validation-for="WorkTime" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="WorkShift" class="control-label col-md-2"></label>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="WorkShift" id="workShiftCheck">
+                        <label class="form-check-label" for="workShiftCheck">可配合輪班</label>
+                    </div>
+                    <span asp-validation-for="WorkShift" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="HopeSalary" class="control-label col-md-2"></label>
+                    <div class="form-check form-check-inline">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="HopeSalary" id="hopeSalary1" value="面議">
+                            <label class="form-check-label" for="hopeSalary1">面議</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="HopeSalary" id="hopeSalary2" value="論件計酬">
+                            <label class="form-check-label" for="hopeSalary2">論件計酬</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="HopeSalary" id="hopeSalary3">
+                            <label class="form-check-label" for="hopeSalary3">自訂薪資</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-control" type="text" name="HopeSalary" id="salaryInput" style="visibility: hidden">
+                        </div>
+                    </div>
+                    <input asp-for="HopeSalary" class="form-control" hidden />
+                    <span asp-validation-for="HopeSalary" class="text-danger"></span>
+                </div>
+                <div class="form-group flex-container">
+                    <label asp-for="HopeLocation" class="control-label"></label>
+                    <input asp-for="HopeLocation" class="form-control" />
+                    <span asp-validation-for="HopeLocation" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- 5.自傳-->
+            <div class="row dialog container-fluid">
+                <div class="form-group">
+                    <label asp-for="Autobiography" class="control-label"></label>
+                    <div class="document-editor">
+                        <div class="document-editor__toolbar"></div>
+                        <div class="document-editor__editable-container">
+                            <div id="editor" name="Autobiography" class="document-editor__editable" placeholder="請在這裡填寫內容">
+                                <p>@Model.Autobiography</p>
+                            </div>
+                        </div>
+                    </div>
+                    <span asp-validation-for="Autobiography" class="text-danger"></span>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+@* <script src="~/js/job_vacancy/resume.js"></script> *@
+<script src="~/js/job_vacancy/ckeditor5/build/ckeditor.js"></script>
+<script>
+
+    $(document).ready(function () {
+        
+        // ========= 載入資料時 =========
+
+
+        // ========= CKEditor 相關 =========
+        // DecoupledEditor
+        // .create(document.querySelector('.document-editor__editable'), {
+        //     cloudServices: {
+        //         // A configuration of CKEditor Cloud Services.
+        //         // ...
+        //     }
+        // })
+        // .then(editor => {
+        //     const toolbarContainer = document.querySelector('.document-editor__toolbar');
+
+        //     toolbarContainer.appendChild(editor.ui.view.toolbar.element);
+
+        //     window.editor = editor;
+        // })
+        // .catch(err => {
+        //     console.error(err);
+        // });
+
+        // ====================== 事件監聽器 ===========================
+
+        // 顯示圖片
+        document.getElementById('Photo').addEventListener('change', function (event) {
+            var inputFile = event.target;
+            var img = document.getElementById('previewImage');
+            previewImage(inputFile, img);
+        });
+
+        // 當選擇"自訂薪資"時，顯示薪資輸入框
+        document.getElementById('hopeSalary3').addEventListener("change", function () {
+            if (this.checked) {
+                document.getElementById('salaryInput').style.visibility = "visible";
+            }
+        });
+
+        // 當選擇其他選項時，隱藏薪資輸入框
+        document.querySelectorAll('input[name="HopeSalary"]:not(#hopeSalary3)').forEach(function (radio) {
+            radio.addEventListener("change", function () {
+                document.getElementById('salaryInput').style.visibility = "hidden";
+            });
+        });
+
+        // 新增工作經驗（開啟編輯區）
+        document.getElementById("btnExpAdd").addEventListener("click", function () {
+            document.getElementById("expSelectArea").style.display = "block";
+            document.getElementById("expListArea").style.display = "none";
+            document.getElementById("btnExpAdd").style.display = "none";
+        });
+        // 確認工作經驗（關閉編輯區並顯示列表）
+        document.getElementById("btnExpSelectConfirm").addEventListener("click", function () {
+            document.getElementById("expSelectArea").style.display = "none";
+            document.getElementById("btnExpAdd").style.display = "block";
+            document.getElementById("expListArea").style.display = "block";
+        });
+        // 取消工作經驗（關閉編輯區）
+        document.getElementById("btnExpSelectCancel").addEventListener("click", function () {
+            document.getElementById("expSelectArea").style.display = "none";
+            document.getElementById("btnExpAdd").style.display = "block";
+        });
+
+    });
+
+    // ========= 照片預覽函式 =========
+    function previewImage(inputFile, img) {
+        if (inputFile.files && inputFile.files[0]) {
+            let allowType = "image.*";
+            // 檢查上傳的檔案類型是否符合允許的檔案類型
+            if (inputFile.files[0].type.match(allowType)) {
+                // 創建 FileReader 物件用於讀取檔案
+                let reader = new FileReader();
+                reader.onload = function (e) {
+                    $(img).attr('src', e.target.result); // 將 img 包裝在 $() 函數中
+                    $(img).attr('title', inputFile.files[0].name); // 將 img 包裝在 $() 函數中
+                    //$(".btn").prop('disabled', false);
+                };
+                // 開始讀取檔案內容，這會觸發上述的 reader.onload 事件
+                reader.readAsDataURL(inputFile.files[0]);
+            } else {
+                alert("不支援的檔案上傳格式！");
+                //$(".btn").prop('disabled', true);
+            }
+        }
+    }
+
+</script>

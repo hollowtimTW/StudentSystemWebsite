@@ -1,5 +1,7 @@
 ﻿using Class_system_Backstage_pj.Areas.job_vacancy.ViewModels;
 using Class_system_Backstage_pj.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -69,8 +71,13 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
 
         // GET: job_vacancy/job/JobDetails/5
         [Route("/job_vacancy/job/{Action=Index}/{jobID}")]
+        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles = "student")] //限定要登入學員帳號
         public async Task<IActionResult> JobDetails(int jobID)
         {
+            var user = HttpContext.User.Claims.ToList();
+            var loginID = Convert.ToInt32(user.Where(a => a.Type == "StudentId").First().Value);
+
+            ViewData["ApplyStudentID"] = loginID;
 
             try
             {
@@ -90,7 +97,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
 
                 var viewModel = new JobDetailViewModel
                 {
-
+                    JobID = jobID,
                     JobTitle = thisJob.F職務名稱,
                     UpdateTime = thisJob.F最後更新時間.HasValue ? thisJob.F最後更新時間.Value.ToString("yyyy/MM/dd HH:mm:ss") + "更新" : string.Empty,
                     JobContent = !string.IsNullOrEmpty(thisJob.F工作內容) ? thisJob.F工作內容.Replace("\\n", "\n") : "暫不提供",
@@ -119,6 +126,93 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                 return Json(new { success = false, message = "發生異常：" + ex.Message });
             }
 
+        }
+
+        /// <summary>
+        /// 應徵1：返回應徵信的視圖（含履歷清單）
+        /// </summary>
+        /// <param name="studentID"></param>
+        /// <param name="jobTitle"></param>
+        /// <returns></returns>
+        // GET: job_vacancy/job/GetResumeTitles
+        [Route("/job_vacancy/job/{Action=Index}")]
+        public async Task<IActionResult> GetResumeTitles([FromQuery] int studentID, [FromQuery] int jobID)
+        {
+
+            var studentName = await _context.T會員學生s
+                              .Where(s => s.學生id == studentID)
+                              .Select(s => s.姓名)
+                              .FirstOrDefaultAsync();
+
+            var resumeData = await _context.T工作履歷資料s
+                            .Where(r => r.F學員Id == studentID && r.F刪除狀態 == "0")
+                            .OrderByDescending(r => r.F最後更新時間)
+                            .Select(r => new { r.FId, r.F履歷名稱 })
+                            .ToListAsync();
+
+            var jobTitle = await _context.T工作職缺資料s
+                          .Where(j => j.FId == jobID)
+                          .Select(j => j.F職務名稱)
+                          .FirstOrDefaultAsync();
+            
+            var resumeTitles = resumeData.Select(r => r.F履歷名稱).ToList();
+            var resumeIDs = resumeData.Select(r => r.FId).ToList();
+
+            var viewModel = new ApplyViewModel
+            {
+                StudentID = studentID,
+                JobID = jobID,
+                JobTitle = jobTitle,
+                ResumeIDs = resumeIDs,
+                ResumeTitles = resumeTitles,
+                ApplyLetter = $"您好，我是{studentName}，希望能獲得面試的機會。"
+            };
+
+            return PartialView("_ApplyPartial", viewModel);
+        }
+
+        /// <summary>
+        /// 應徵2：送出應徵信
+        /// </summary>
+        /// <param name="viewModel"></param>
+        // POST: job_vacancy/job/ApplyLetter
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("/job_vacancy/job/{Action=Index}")]
+        public async Task<IActionResult> ApplyLetter(
+            [Bind("StudentID, JobID, ApplyLetter")] ApplyViewModel viewModel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var newData = new T工作應徵工作紀錄
+                    {
+                        F學員Id = viewModel.StudentID,
+                        F職缺Id = viewModel.JobID,
+                        F應徵信內容 = viewModel.ApplyLetter,
+                        F應徵時間 = DateTime.Now,
+                        F刪除狀態 = "0"
+                    };
+
+                    _context.T工作應徵工作紀錄s.Add(newData);
+                    await _context.SaveChangesAsync();
+
+                    return Json(new { success = true, message = "應徵成功" });
+
+                }
+                else
+                {
+                    string errorMessage = string.Join("；", ModelState.Values
+                                        .SelectMany(v => v.Errors)
+                                        .Select(e => e.ErrorMessage));
+                    return Json(new { success = false, message = errorMessage });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "發生異常：" + ex.Message });
+            }
         }
 
 

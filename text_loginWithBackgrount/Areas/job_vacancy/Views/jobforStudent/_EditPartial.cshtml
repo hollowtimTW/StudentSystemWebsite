@@ -7,6 +7,8 @@
         <form asp-action="Edit" class="formResume" id="formEdit" enctype="multipart/form-data">
             <!--模型驗證錯誤的摘要-->
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <!--隱藏學員ID值-->
+            <input type="hidden" asp-for="StudentID" />
             <!--隱藏履歷ID值-->
             <input type="hidden" asp-for="ResumeID" />
 
@@ -126,49 +128,16 @@
                 <div class="form-group form-check form-switch col-md-auto ms-auto">
                     <input id="workExpCheck" class="form-check-input" type="checkbox" @(Model.WorkExperience == "N" ? "checked" : "")>
                     <label for="workExpCheck" class="form-check-label">沒有工作經驗</label>
+                    <span asp-validation-for="WorkExperience" class="text-danger"></span>
                 </div>
                 <div class="col-12">
-                    <button id="btnExpAdd" type="button" class="btn btn-normal">新增</button>
+                    <button id="btnExpAdd" type="button" class="btn btn-normal" onclick="callWorkExp()">選擇或新增</button>
                 </div>
-
-                <span asp-validation-for="WorkExperience" class="text-danger"></span>
-
-                <div class="workExpList" id="expListArea" style="display: none;">
-
-                    <div class="exp-item">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5>出餐人員</h5>
-                            <button type="button" class="btn-close"></button>
-                        </div>
-                        <p class="mb-1">2018/6 - 2019/12 / 新北市 永和區 / 兼職</p>
-                        <p class="mt-2">
-                            1. 將餐點送到客桌。<br />
-                            2. 清理桌面。
-                        </p>
-                    </div>
-                    <div class="exp-item">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5>出餐人員</h5>
-                            <button type="button" class="btn-close"></button>
-                        </div>
-                        <p class="mb-1">2018/6 - 2019/12 / 新北市 永和區 / 兼職</p>
-                        <p class="mt-2">
-                            1. 將餐點送到客桌。<br />
-                            2. 清理桌面。
-                        </p>
-                    </div>
+                <div class="col-12" id="workExp_context">
+                    <!-- 學員工作經驗 _workExpPartial -->
                 </div>
+                
 
-                <div id="expEditArea" style="display: none;">
-                    <div class="checkbox-list">
-                        <input type="checkbox" id="workexp1" name="workexp1" value="option1">
-                        <label for="workexp1">心心早餐店 2018/6 - 2019/12</label><br>
-                        <input type="checkbox" id="workexp2" name="workexp2" value="option2">
-                        <label for="workexp2">義全義大利餐館 2020/3 - 2022/5</label>
-                    </div>
-                    <button id="btnExpEditConfirm" type="button" class="btn btn-normal">確定</button>
-                    <button id="btnExpEditCancel" type="button" class="btn btn-secondary">取消</button>
-                </div>
             </div>
 
             <!-- 4.求職條件-->
@@ -274,9 +243,6 @@
     </div>
 </section>
 
-
-
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 @* <script src="~/js/job_vacancy/resume.js"></script> *@
 @* <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script> *@
 @* <script src="~/js/job_vacancy/summernote-zh-tw.js"></script> *@
@@ -284,27 +250,54 @@
 
 <script>
 
-    // 初始化相關的變數
-    const resumeID = "@Model.ResumeID";
-    const hopeSalary = "@Html.Raw(Model.HopeSalary)".trim();
-    const autobiography = "@Model.Autobiography";
+    const selectedWorkExpIDs = [];
 
-    // 需要監聽的元素
-    const Photo = document.getElementById('Photo');
-    const salaryInput = document.getElementById('salaryInput');
+    // 恢復已選擇的工作經驗項目的勾選狀態
+    function restoreCheckedItems() {
+        if (typeof selectedWorkExpIDs !== 'undefined') {
+            // 根據記錄的id重新設置勾選狀態
+            $('.cbWorkExp').each(function () {
+                var itemId = $(this).attr('item-id');
+                $(this).prop('checked', selectedWorkExpIDs.includes(itemId));
+                console.log(itemId);
+            });
+        }
+    }
 
-    // 工作經驗編輯相關的變數
-    const btnExpAdd = document.getElementById("btnExpAdd");
-    const expEditArea = document.getElementById("expEditArea");
-    const btnExpEditConfirm = document.getElementById("btnExpEditConfirm");
-    const btnExpEditCancel = document.getElementById("btnExpEditCancel");
-    const expListArea = document.getElementById("expListArea");
+
+    //呼叫學員工作經驗資料（返回_workExpPartial）
+    function callWorkExp(){
+
+        const workExpContext = $("#workExp_context");
+        $.ajax({
+            type: 'GET',
+            url: '/job_vacancy/jobforStudent/GetMyWorkExp/' + @Model.StudentID,
+            success: function (result) {
+                console.log('呼叫工作經驗資料 success');
+
+                //隱藏「新增或選擇」按鈕
+                $('#btnExpAdd').hide();
+
+                // 清空並設置內容
+                workExpContext.html(result);
+
+                // 恢復已選擇的工作經驗項目的勾選狀態
+                restoreCheckedItems();
+            },
+            error: function (error) {
+                console.error('呼叫工作經驗資料 error', error);
+                // 顯示錯誤提示給用戶
+                workExpContext.html(`<div class="alert alert-danger" role="alert">請求失敗：${error.statusText}</div>`);
+            }
+        });
+    }
+
 
     $(document).ready(function () {
 
         // ========= 載入資料時 =========
         // 處理希望薪資的選項
-        switch (hopeSalary) {
+        switch ("@Html.Raw(Model.HopeSalary)".trim()) {
             case "面議":
                 document.getElementById('hopeSalary1').checked = true;
                 break;
@@ -317,6 +310,14 @@
                 salaryInput.style.visibility = "visible";
                 break;
         }
+
+        //處理工作經驗
+        if ('@Model.WorkExperience' === 'Y') {
+            loadResumeWorkExp();
+        }
+
+
+        function loadResumeWorkExp()
 
         // ========= CKEditor 相關 =========
         // DecoupledEditor
@@ -337,10 +338,11 @@
         //     console.error(err);
         // });
 
+
         // ====================== 事件監聽器 ===========================
 
         // 顯示圖片
-        Photo.addEventListener('change', function (event) {
+        document.getElementById('Photo').addEventListener('change', function (event) {
             var inputFile = event.target;
             var img = document.getElementById('previewImage');
             previewImage(inputFile, img);
@@ -349,35 +351,18 @@
         // 當選擇"自訂薪資"時，顯示薪資輸入框
         document.getElementById('hopeSalary3').addEventListener("change", function () {
             if (this.checked) {
-                salaryInput.style.visibility = "visible";
+                document.getElementById('salaryInput').style.visibility = "visible";
             }
         });
 
         // 當選擇其他選項時，隱藏薪資輸入框
-        const otherRadios = document.querySelectorAll('input[name="HopeSalary"]:not(#hopeSalary3)');
-        otherRadios.forEach(function (radio) {
+        document.querySelectorAll('input[name="HopeSalary"]:not(#hopeSalary3)').forEach(function (radio) {
             radio.addEventListener("change", function () {
-                salaryInput.style.visibility = "hidden";
+                document.getElementById('salaryInput').style.visibility = "hidden";
             });
         });
 
-        // 新增工作經驗（開啟編輯區）
-        btnExpAdd.addEventListener("click", function () {
-            expEditArea.style.display = "block";
-            expListArea.style.display = "none";
-            btnExpAdd.style.display = "none";
-        });
-        // 確認工作經驗（關閉編輯區並顯示列表）
-        btnExpEditConfirm.addEventListener("click", function () {
-            expEditArea.style.display = "none";
-            btnExpAdd.style.display = "block";
-            expListArea.style.display = "block";
-        });
-        // 取消工作經驗（關閉編輯區）
-        btnExpEditCancel.addEventListener("click", function () {
-            expEditArea.style.display = "none";
-            btnExpAdd.style.display = "block";
-        });
+        
 
     });
 

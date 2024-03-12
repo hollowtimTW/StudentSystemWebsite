@@ -4,6 +4,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.ViewModels
 {
     public class JobDetailViewModel
     {
+        public int JobID { get; set; }
 
         [Display(Name = "職務名稱")]
         public string? JobTitle { get; set; }

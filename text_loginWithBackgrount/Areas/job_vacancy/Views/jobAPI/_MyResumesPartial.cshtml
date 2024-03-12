@@ -1,7 +1,12 @@
 ﻿@model List<MyResumesViewModel>
 <style>
     <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet"/>
-</style> 
+    .swl-select{
+        width:70%;
+        border-radius: 8px;
+    }
+</style>
+
 <div id="tab1" class="tab-page active">
     <div class="container">
         <div class="row gy-4">
@@ -11,59 +16,29 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="resume-item position-relative">
                         <div>
-                            <button type="button" class="btn btn-close" data-bs-toggle="modal" data-bs-target="#deleteModal"></button>
+                            <button type="button" class="btn btn-close" onclick="deleteResume(@viewModel.ResumeID)"></button>
                         </div>
-                        <div class="icon">
-                            <i class="bi bi-file-earmark-person"></i>
-                        </div>
-                        <div>
-                            <h3>@viewModel.ResumeTitle</h3>
-                            <h6 class="card-subtitle mb-2 text-muted">@viewModel.LastUpdate</h6>
-                            <span>@viewModel.HopeJobTitle</span> <span>@viewModel.WorkType</span>
-                            @* <a asp-area="job_vacancy" asp-controller="jobforStudent" asp-action="EditResume" asp-route-resumeID="18" target="_blank" class="readmore stretched-link"></a> *@
-                            <a class="stretched-link" data-bs-toggle="modal" data-bs-target="#editModal" onclick="popup_edit(@viewModel.ResumeID)"></a>
+                        <div class="pointer-link" onclick="popup_edit(@viewModel.ResumeID)">
+                            <div class="icon">
+                                <i class="bi bi-file-earmark-person"></i>
+                            </div>
+                            <div>
+                                <h3>@viewModel.ResumeTitle</h3>
+                                <h6 class="card-subtitle mb-2 text-muted">@viewModel.LastUpdate?.ToString("yyyy/MM/dd HH:mm:ss")</h6>
+                                <span>@viewModel.HopeJobTitle</span> <span>@viewModel.WorkType</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             }
 
-            <div class="col-lg-4 col-md-6">
+            <div class="col-lg-4 col-md-6 pointer-link" onclick="popup_create()">
                 <div class="resume-item position-relative d-flex flex-column align-items-center create-resume">
                     <div class="icon">
                         <i class="bi bi-file-earmark-plus-fill"></i>
                     </div>
                     <h3>新增履歷</h3>
-                    <a asp-area="job_vacancy" asp-controller="jobforStudent" asp-action=""></a>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-            
-
-<!-- Modal 互動視窗：刪除履歷 -->
-<div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">確認刪除</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                確定要刪除嗎？
-            </div>
-            <select class="form-select" aria-label="Default select example" id="deleteReasonSelect" required>
-                <option value="" disabled selected hidden>請選擇刪除原因</option>
-                <option value="已找到工作">已找到工作</option>
-                <option value="求職需求變更">求職需求變更</option>
-                <option value="暫時無求職需求">暫時無求職需求</option>
-                <option value="不適合在本平台刊登">不適合在本平台刊登</option>
-                <option value="其他">其他</option>
-            </select>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" id="btnConfirmDelete">確定刪除</button>
             </div>
         </div>
     </div>
@@ -77,12 +52,12 @@
                 <h5 class="modal-title" id="createModalLabel">新增履歷</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="btnCloseCreate"></button>
             </div>
-            <div class="modal-body" id="resume_context">
+            <div class="modal-body" id="create_context">
                 <!-- 互動視窗內容 -->
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="btnCancelCreate">取消編輯</button>
-                <input type="submit" class="btn btn-submit" id="btnSummitCreate" value="儲存" />
+                <button type="button" class="btn btn-cancel" id="btnCancelCreate">取消編輯</button>
+                <input type="submit" class="btn btn-normal" id="btnSummitCreate" value="儲存" />
             </div>
         </div>
     </div>
@@ -97,40 +72,139 @@
                 <h5 class="modal-title" id="editModalLabel">編輯履歷</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="btnCloseEdit"></button>
             </div>
-            <div class="modal-body" id="resume_context">
+            <div class="modal-body" id="edit_context">
                 <!-- 互動視窗內容 -->
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="btnCancelEdit">取消編輯</button>
-                <input type="submit" class="btn btn-submit" id="btnSummit" value="儲存" />
+                <button type="button" class="btn btn-cancel" id="btnCancelEdit">取消編輯</button>
+                <input type="submit" class="btn btn-normal" id="btnSummitEdit" value="儲存" />
             </div>
         </div>
     </div>
 </div>
 
-<script>
-    @* 呼叫編輯視窗的內容 *@
-    function popup_edit(resumeId) {
+@* 驗證相關 - 不確定有沒有用 *@
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 
-        const switchContext = $("#resume_context");
-        const detailUrl = "/job_vacancy/jobforStudent/EditResume/" + resumeId;
+<script>
+
+
+    // 刪除履歷
+    function deleteResume(resumeId) {
+
+        Swal.fire({
+            title: "確認刪除履歷？",
+            icon: 'warning',
+            input: "select",
+            inputOptions: {
+                '已找到工作': "已找到工作",
+                '求職需求變更': "求職需求變更",
+                '暫時無求職需求': "暫時無求職需求",
+                '不適合在本平台刊登': "不適合在本平台刊登",
+                '其他': "其他"
+            },
+            inputPlaceholder: "請選擇刪除原因",
+            showCancelButton: true,
+            confirmButtonText: '確定',
+            cancelButtonText: '取消',
+            customClass: {
+                input: 'swl-select',
+                confirmButton: 'btn btn-normal',
+                cancelButton: 'btn btn-cancel'
+            },
+            confirmButtonColor: '#008374',
+            cancelButtonColor: '#6c757d',
+            inputValidator: (value) => {
+                return new Promise((resolve) => {
+                    if (value) {
+                        // 呼叫API
+                        $.ajax({
+                            url: "/job_vacancy/jobforStudent/Delete/",
+                            type: 'POST',
+                            data: {
+                                //注意！鍵名必須和後端的參數名相同！
+                                resumeID: resumeId,
+                                deleteReason: value
+                            },
+                            success: function (result) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '成功',
+                                    text: '刪除成功',
+                                    customClass: {
+                                        confirmButton: 'btn btn-normal',
+                                    },
+                                    confirmButtonColor: '#008374',
+                                });
+                                resolve();
+                                GetMyResumes();  //重新載入履歷資料
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                if (jqXHR.status == 404) {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: '失敗',
+                                        text: '未找到這份履歷',
+                                        customClass: {
+                                            confirmButton: 'btn btn-normal',
+                                        },
+                                        confirmButtonColor: '#008374',
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: '失敗',
+                                        text: '刪除失敗: ' + textStatus,
+                                        customClass: {
+                                            confirmButton: 'btn btn-normal',
+                                        },
+                                        confirmButtonColor: '#008374',
+                                    });
+                                }
+                                resolve();
+                            }
+                        });
+                    } else {
+                        resolve("請選擇刪除原因");
+                    }
+                });
+            }
+        });
+    };
+
+    @* 呼叫新增視窗的內容 *@
+    function popup_create() {
+
+        const createContext = $("#create_context");
+        const url = "/job_vacancy/jobforStudent/Create/" + studentID;
 
         $.ajax({
             type: 'GET',
-            url: detailUrl,
+            url: url,
             success: function (result) {
-                console.log('呼叫編輯視窗 success');
-                switchContext.html(result);
+                console.log('呼叫新增視窗 success' + studentID);
+
+                createContext.html(result);
+                $('#createModal').modal('show');
             },
             error: function (error) {
-                console.error('呼叫編輯視窗 error', error);
-                switchContext.html(`<div class="alert alert-danger" role="alert">請求失敗：${error.statusText}</div>`);
+                console.error('呼叫新增視窗 error', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: '失敗',
+                    text: '請求失敗：' + error.responseText,
+                    customClass: {
+                        confirmButton: 'btn btn-normal',
+                    },
+                    confirmButtonColor: '#008374',
+                });
             }
         });
     }
 
-    @* 取消編輯 *@
-    document.getElementById('btnCancelEdit').addEventListener('click', function () {
+    @* 取消新增 *@
+    document.getElementById('btnCancelCreate').addEventListener('click', function () {
         Swal.fire({
             title: '確認取消編輯',
             text: '取消編輯將不會儲存修改，確定要取消嗎？',
@@ -138,29 +212,28 @@
             showCancelButton: true,
             confirmButtonText: '確定取消',
             cancelButtonText: '繼續編輯',
+            customClass: {
+                confirmButton: 'btn btn-cancel',
+                cancelButton: 'btn btn-normal'
+            },
+            confirmButtonColor: '#6c757d',
+            cancelButtonColor: '#008374'
         }).then((result) => {
             if (result.isConfirmed) {
-                document.getElementById('btnCloseEdit').click();
-
-
+                $('#create_context').empty(); //清空partialview的內容
+                document.getElementById('btnCloseCreate').click();
             } else {
                 // 使用者點擊了 "繼續編輯" 按鈕，不執行任何操作
             }
         });
     });
 
-
-    @* 提交編輯表單 *@
-    btnSummit.addEventListener('click', async (event) => {
+    @* 提交新增表單 *@
+    document.getElementById('btnSummitCreate').addEventListener('click', async (event) => {
 
         event.preventDefault();  //停止預設行為
 
-        const formData = new FormData(document.getElementById('formEdit'));
-
-        //公開狀態
-        let checkbox = document.getElementById('resumeStatus');
-        let resumeStatusValue = checkbox.checked ? '公開' : '關閉';
-        formData.set('resumeStatus', resumeStatusValue);
+        const formData = new FormData(document.getElementById('formCreate'));
 
         //有無工作經驗
         checkbox = document.getElementById('workExpCheck');
@@ -188,26 +261,172 @@
         //const plain = autobiography.replace(regEx, "");
         formData.set('Autobiography', '自傳內容');
 
-
-        // for (const pair of formData.entries()) {
-        //     console.log(pair[0] + ', ' + pair[1]);
-        // }
-        //return;
-
-        const url = '/job_vacancy/Resume/UpdateResume/' + resumeID;
+        const url = '/job_vacancy/jobforStudent/CreateResume/';
         const response = await fetch(url, {
             body: formData,
             method: 'POST'
         });
         const data = await response.json();
         if (response.ok) {
-            if (data.redirectUrl) {
-                window.location.href = data.redirectUrl; // 重定向履歷管理首頁
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: '新增履歷成功',
+                    customClass: {
+                        confirmButton: 'btn btn-normal',
+                    },
+                    confirmButtonColor: '#008374',
+                });
+
+                $('#create_context').empty(); //清空partialview的內容
+                document.getElementById('btnCloseCreate').click();  //關閉modal
+                GetMyResumes();  //重新載入履歷資料
             } else {
-                alert(data.message);
+                Swal.fire({
+                    icon: 'error',
+                    title: '新增失敗',
+                    text: data.message,
+                    customClass: {
+                        confirmButton: 'btn btn-normal',
+                    },
+                    confirmButtonColor: '#008374',
+                });
             }
         } else {
-            alert(data.message);
+            Swal.fire({
+                icon: 'error',
+                title: '新增失敗',
+                text: data.message,
+                customClass: {
+                    confirmButton: 'btn btn-normal',
+                },
+                confirmButtonColor: '#008374',
+            });
+        }
+    });
+
+    @* 呼叫編輯視窗的內容 *@
+    function popup_edit(resumeId) {
+
+        const editContext = $("#edit_context");
+        const detailUrl = "/job_vacancy/jobforStudent/EditResume/" + resumeId;
+
+        $.ajax({
+            type: 'GET',
+            url: detailUrl,
+            success: function (result) {
+                console.log('呼叫編輯視窗 success');
+
+                editContext.html(result);
+                $('#editModal').modal('show');
+            },
+            error: function (error) {
+                console.error('呼叫編輯視窗 error', error);
+                editContext.html(`<div class="alert alert-danger" role="alert">請求失敗：${error.statusText}</div>`);
+            }
+        });
+    }
+
+    @* 取消編輯 *@
+    document.getElementById('btnCancelEdit').addEventListener('click', function () {
+        Swal.fire({
+            title: '確認取消編輯',
+            text: '取消編輯將不會儲存修改，確定要取消嗎？',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '確定取消',
+            cancelButtonText: '繼續編輯',
+            customClass: {
+                confirmButton: 'btn btn-cancel',
+                cancelButton: 'btn btn-normal'
+            },
+            confirmButtonColor: '#6c757d',
+            cancelButtonColor: '#008374'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#edit_context').empty(); //清空partialview的內容
+                document.getElementById('btnCloseEdit').click();
+            } else {
+                // 使用者點擊了 "繼續編輯" 按鈕，不執行任何操作
+            }
+        });
+    });
+
+
+    @* 提交編輯表單 *@
+    document.getElementById('btnSummitEdit').addEventListener('click', async (event) => {
+
+        event.preventDefault();  //停止預設行為
+
+        const formData = new FormData(document.getElementById('formEdit'));
+
+        //有無工作經驗
+        checkbox = document.getElementById('workExpCheck');
+        let workExpValue = checkbox.checked ? 'N' : 'Y';
+        formData.set('WorkExperience', workExpValue);
+
+        //輪班
+        checkbox = document.getElementById('workShiftCheck');
+        let workShiftValue = checkbox.checked ? 'Y' : 'N';
+        formData.set('WorkShift', workShiftValue);
+
+        //希望薪資
+        let selectedValue;
+        if (hopeSalary3.checked) {
+            selectedValue = document.getElementById('salaryInput').value;
+        }
+        else {
+            selectedValue = document.querySelector('input[name="HopeSalary"]:checked')?.value;
+        }
+        formData.set('HopeSalary', selectedValue);
+
+        //自傳
+        //const autobiography = $('#summernote').summernote('code');
+        //let regEx = /<[^>]*>/g;  //去除HTML標籤
+        //const plain = autobiography.replace(regEx, "");
+        formData.set('Autobiography', '自傳內容');
+
+        const url = '/job_vacancy/jobforStudent/UpdateResume/';
+        const response = await fetch(url, {
+            body: formData,
+            method: 'POST'
+        });
+        const data = await response.json();
+        if (response.ok) {
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: '修改履歷成功',
+                    customClass: {
+                        confirmButton: 'btn btn-normal',
+                    },
+                    confirmButtonColor: '#008374',
+                });
+
+                $('#edit_context').empty(); //清空partialview的內容
+                document.getElementById('btnCloseEdit').click();  //關閉modal
+                GetMyResumes();  //重新載入履歷資料
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: '修改失敗',
+                    text: data.message,
+                    customClass: {
+                        confirmButton: 'btn btn-normal',
+                    },
+                    confirmButtonColor: '#008374',
+                });
+            }
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: '修改失敗',
+                text: data.message,
+                customClass: {
+                    confirmButton: 'btn btn-normal',
+                },
+                confirmButtonColor: '#008374',
+            });
         }
     });
 </script>

@@ -15,7 +15,7 @@
                         <div class="col-lg-8 d-flex align-items-center">
                             <div class="text-start ps-4">
                                 <h5>@viewModel.JobTitle</h5>
-                                <h6 class="mb-3"><a asp-area="job_vacancy" asp-controller="Job" asp-action="CompanyDetails">@viewModel.CompanyName</a></h6>
+                                <h6 class="mb-3"><a href="/job_vacancy/Job/CompanyDetails/@viewModel.CompanyID" target="_blank">@viewModel.CompanyName</a></h6>
                                 <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> @jobLocation</span>
                                 <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> @viewModel.JobType</span>
                                 <span class="text-truncate me-0"><i class="bi bi-cash flex-shrink-0"></i> @viewModel.Salary</span>

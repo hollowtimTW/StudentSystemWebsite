@@ -9,19 +9,68 @@ input[type="checkbox"]:checked {
     background-color: var(--color-primary);
 }
 
+.pointer-link {
+    cursor: pointer;
+}
 
-.btn-normal {
+.btn-cancel {
     font-family: var(--font-primary);
     font-weight: 600;
     font-size: 16px;
     letter-spacing: 1px;
     color: #fff;
-    background-color: var(--color-primary);
+    background-color: #6c757d;
+    border-radius: 10px;
+    transition: 0.3s;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+    border: 2px solid #6c757d;
+}
+
+    .btn-cancel:hover {
+        background-color: rgba(92, 99, 106, 0.5);
+    }
+
+
+    .btn-cancel:active {
+        background-color: rgba(86, 94, 100, 0.5);
+        border-color: #51585e;
+
+    }
+
+    .btn-cancel:disabled {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+.btn-delete {
+    font-family: var(--font-primary);
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: 1px;
+    color: #fff;
+    background-color: rgb(205, 92, 92);
     border-radius: 10px;
     transition: 0.3s;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
     border: 2px solid rgba(255, 255, 255, 0.1);
 }
+
+    .btn-delete:hover {
+        background-color: rgba(205, 92, 92, 0.5);
+    }
+
+    .btn-normal {
+        font-family: var(--font-primary);
+        font-weight: 600;
+        font-size: 16px;
+        letter-spacing: 1px;
+        color: #fff;
+        background-color: var(--color-primary);
+        border-radius: 10px;
+        transition: 0.3s;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+    }
 
     .btn-normal:hover {
         background-color: rgba(0, 131, 116, 0.5);
@@ -335,6 +384,14 @@ input[type="checkbox"]:checked {
         box-shadow: none;
     }
 
+        .resume-item:hover .icon:before {
+            background: #00b6a1;
+        }
+
+        .resume-item:hover h3 {
+            border-color: var(--color-primary);
+        }
+
     .resume-item .btn-close {
         position: absolute;
         top: 20px;
@@ -401,19 +458,11 @@ input[type="checkbox"]:checked {
         margin-bottom: 0;
     }
 
-
-    .resume-item:hover .icon:before {
-        background: #00b6a1;
-    }
-
-    .resume-item:hover h3 {
-        border-color: var(--color-primary);
-    }
-
 .create-resume {
     border: 4px dotted Grey;
 }
 
+#createModal,
 #editModal {
     position: fixed;
     top: 50%;
@@ -421,11 +470,21 @@ input[type="checkbox"]:checked {
     transform: translate(-50%, -50%);
 }
 
+    #createModal .modal-content,
     #editModal .modal-content {
         width: 860px;
     }
 
-
+#workExpForm textarea {
+    border: 0.5px solid var(--color-primary);
+    border-radius: 10px;
+    height: 250px;
+    padding: 10px;
+}
+.form-control-scrollable {
+    overflow-y: auto; /* 設置垂直滾動 */
+    max-height: 100px; /* 設置最大高度 */
+}
 
 /* ================== 履歷編輯 ================= */
 
@@ -478,7 +537,7 @@ input[type="checkbox"]:checked {
         margin: 20px;
     }
 
-    .Resume-Edit .btn-secondary {
+    .Resume-Edit .btn-cancel {
         margin: 20px 10px;
     }
 

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Class_system_Backstage_pj.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Class_system_Backstage_pj.Areas.job_vacancy.ViewModels
 {
@@ -105,6 +106,10 @@ namespace Class_system_Backstage_pj.Areas.job_vacancy.ViewModels
 
         [Display(Name = "最後更新時間")]
         public DateTime? LastUpdate { get; set; }
+
+        public List<int>? ThisResumeWorkExpIDs { get; set; }
+
+        public List<T工作工作經驗>? StudentWorkExp { get; set; }
 
     }
 }

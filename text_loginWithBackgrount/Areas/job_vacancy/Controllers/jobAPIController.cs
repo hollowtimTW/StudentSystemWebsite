@@ -34,6 +34,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             {
                 var viewModel = new MyResumesViewModel
                 {
+                    StudentID = studentID,
                     ResumeID = data.FId,
                     ResumeTitle = data.F履歷名稱,
                     HopeJobTitle = data.F希望職稱,
@@ -153,30 +154,6 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             }
 
             return PartialView("_MyRecommendedJobsPartial", viewModelList);
-        }
-
-
-        // GET: job_vacancy/jobapi/GetResumeTitles
-        [Route("/job_vacancy/jobapi/{Action=Index}")]
-        public async Task<IActionResult> GetResumeTitles([FromQuery] int studentID, [FromQuery] string jobTitle)
-        {
-            var resumeData = await _studentContext.T工作履歷資料s
-                            .Where(r => r.F學員Id == studentID && r.F刪除狀態 == "0")
-                            .OrderByDescending(r => r.F最後更新時間)
-                            .Select(r => new { r.FId, r.F履歷名稱 })
-                            .ToListAsync();
-
-            var resumeTitles = resumeData.Select(r => r.F履歷名稱).ToList();
-            var resumeIDs = resumeData.Select(r => r.FId).ToList();
-
-            var viewModel = new ApplyViewModel
-            {
-                JobTitle = jobTitle,
-                ResumeIDs = resumeIDs,
-                ResumeTitles = resumeTitles
-            };
-
-            return PartialView("_ApplyPartial", viewModel);
         }
 
 
