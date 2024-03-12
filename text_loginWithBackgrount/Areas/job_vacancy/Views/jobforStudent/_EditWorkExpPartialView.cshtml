@@ -88,6 +88,73 @@
 
     $(document).ready(function () {
 
+        //刪除工作經驗
+        document.getElementById('btnExpDelete').addEventListener('click', async (event) => {
+            Swal.fire({
+                title: '確認刪除此工作經驗？',
+                text: '注意！將會自所有履歷中刪除！',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '確定刪除',
+                cancelButtonText: '取消',
+                customClass: {
+                    confirmButton: 'btn btn-normal',
+                    cancelButton: 'btn btn-cancel'
+                },
+                confirmButtonColor: '#008374',
+                cancelButtonColor: '#6c757d'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "/job_vacancy/jobforStudent/DeleteWorkExp/" + @Model.WorkExpID,
+                        type: 'POST',
+                        data: @Model.WorkExpID,
+                        success: function (result) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '成功',
+                                text: '刪除成功',
+                                customClass: {
+                                    confirmButton: 'btn btn-normal',
+                                },
+                                confirmButtonColor: '#008374',
+                            });
+                            
+                            $("#workExp_switch_form").empty(); //清空partialview的內容
+                            $('#expSelectArea').show();
+                            callWorkExp();  //重新載入工作經驗資料列表
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            if (jqXHR.status == 404) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: '失敗',
+                                    text: '未找到這筆資料',
+                                    customClass: {
+                                        confirmButton: 'btn btn-normal',
+                                    },
+                                    confirmButtonColor: '#008374',
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: '失敗',
+                                    text: '刪除失敗: ' + textStatus,
+                                    customClass: {
+                                        confirmButton: 'btn btn-normal',
+                                    },
+                                    confirmButtonColor: '#008374',
+                                });
+                            }
+                        }
+                    });
+
+                } else {
+                    // 使用者點擊了 "取消" 按鈕，不執行任何操作
+                }
+            });
+        });
+
         //取消編輯工作經驗
         document.getElementById('btnExpEditCancel').addEventListener('click', async (event) => {
 

@@ -553,7 +553,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         /// </summary>
         /// <param name="resumeID">履歷ID</param>
         /// <param name="viewModel">包含更新資訊的履歷視圖模型</param>
-        // POST: job_vacancy/jobforStudent/UpdateResume/
+        // POST: job_vacancy/jobforStudent/UpdateResume
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateWorkExp(
@@ -603,6 +603,44 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                 return Json(new { success = false, message = "發生異常：" + ex.Message });
             }
 
+        }
+
+        /// <summary>
+        /// 刪除工作經驗（硬刪除）
+        /// </summary>
+        // POST: job_vacancy/jobforStudent/DeleteWorkExp
+        [HttpPost]
+        [Route("/job_vacancy/jobforStudent/{Action=Index}/{workExpID}")]
+        public async Task<IActionResult> DeleteWorkExp(int workExpID)
+        {
+            try
+            {
+                var thisWorkExp = await _context.T工作工作經驗s.FindAsync(workExpID);
+
+                if (thisWorkExp == null)
+                {
+                    return NotFound("無這筆工作經驗資料");
+                }
+
+                var resumeWorkExp = _context.T工作履歷表工作經驗s
+                                    .Where(w => w.F工作經驗Id == workExpID)
+                                    .ToList();
+
+                foreach (var exp in resumeWorkExp)
+                {
+                    _context.T工作履歷表工作經驗s.Remove(exp);
+                }
+
+                _context.T工作工作經驗s.Remove(thisWorkExp);
+
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = "刪除成功" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "刪除失敗：" + ex.Message });
+            }
         }
 
     }
