@@ -1,5 +1,7 @@
 ﻿using Class_system_Backstage_pj.Areas.job_vacancy.ViewModels;
 using Class_system_Backstage_pj.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -69,8 +71,13 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
 
         // GET: job_vacancy/job/JobDetails/5
         [Route("/job_vacancy/job/{Action=Index}/{jobID}")]
+        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles = "student")] //限定要登入學員帳號
         public async Task<IActionResult> JobDetails(int jobID)
         {
+            var user = HttpContext.User.Claims.ToList();
+            var loginID = Convert.ToInt32(user.Where(a => a.Type == "StudentId").First().Value);
+
+            ViewData["ApplyStudentID"] = loginID;
 
             try
             {

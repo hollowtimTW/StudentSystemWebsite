@@ -250,6 +250,21 @@
 
 <script>
 
+    const selectedWorkExpIDs = [];
+
+    // 恢復已選擇的工作經驗項目的勾選狀態
+    function restoreCheckedItems() {
+        if (typeof selectedWorkExpIDs !== 'undefined') {
+            // 根據記錄的id重新設置勾選狀態
+            $('.cbWorkExp').each(function () {
+                var itemId = $(this).attr('item-id');
+                $(this).prop('checked', selectedWorkExpIDs.includes(itemId));
+                console.log(itemId);
+            });
+        }
+    }
+
+
     //呼叫學員工作經驗資料（返回_workExpPartial）
     function callWorkExp(){
 
@@ -265,6 +280,9 @@
 
                 // 清空並設置內容
                 workExpContext.html(result);
+
+                // 恢復已選擇的工作經驗項目的勾選狀態
+                restoreCheckedItems();
             },
             error: function (error) {
                 console.error('呼叫工作經驗資料 error', error);
@@ -273,6 +291,7 @@
             }
         });
     }
+
 
     $(document).ready(function () {
 
@@ -291,6 +310,14 @@
                 salaryInput.style.visibility = "visible";
                 break;
         }
+
+        //處理工作經驗
+        if ('@Model.WorkExperience' === 'Y') {
+            loadResumeWorkExp();
+        }
+
+
+        function loadResumeWorkExp()
 
         // ========= CKEditor 相關 =========
         // DecoupledEditor
