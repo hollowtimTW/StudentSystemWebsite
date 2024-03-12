@@ -184,7 +184,7 @@ namespace text_loginWithBackgrount.Controllers
 
             if (user == null || user.圖片 == null || user.圖片.Length == 0)
             {
-                return NotFound("null");
+                return Content("null");
             }
 
             string base64Image = Convert.ToBase64String(user.圖片);

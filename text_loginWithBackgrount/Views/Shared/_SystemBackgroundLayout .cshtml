@@ -154,10 +154,11 @@
                 url: url,
                 type: 'GET',
                 success: function (data) {
-                    if (data != null) {
+                    if (data != "null") {
                         $('#profileImage').attr('src', 'data:image/png;base64,' + data);
                     } else {
-                        $('#profileImage').attr('src', '~/images/user.jpg');
+                        var imagePath = '@Url.Content("~/images/user.jpg")';
+                        $('#profileImage').attr('src', imagePath);
                     }
                 },
                 error: function (xhr, status, error) {
