@@ -20,10 +20,13 @@
                 <ol>
                     <li><a asp-area="" asp-controller="Template" asp-action="Index">首頁</a></li>
                     <li>@ViewData["Title"]</li>
+                    <li>
+                        <button type="button" class="btn btn-outline-success">
+                            <a asp-area="video_management" asp-controller="videoforStudent" asp-action="videoshopping">影片商城</a>
+                        </button>
+                    </li>
                 </ol>
-                <button type="button" class="btn btn-outline-success">
-                    <a asp-area="video_management" asp-controller="videoforStudent" asp-action="videoshopping">影片商城</a>
-                </button>
+                
             </div>
         </nav>
     </div>
