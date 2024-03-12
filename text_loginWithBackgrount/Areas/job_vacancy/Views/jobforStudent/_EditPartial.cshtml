@@ -136,7 +136,7 @@
                 <div class="col-12" id="workExp_context">
                     <!-- 學員工作經驗 _workExpPartial -->
                 </div>
-                
+
 
             </div>
 
@@ -250,7 +250,7 @@
 
 <script>
 
-    const selectedWorkExpIDs = [];
+
 
     // 恢復已選擇的工作經驗項目的勾選狀態
     function restoreCheckedItems() {
@@ -266,12 +266,13 @@
 
 
     //呼叫學員工作經驗資料（返回_workExpPartial）
-    function callWorkExp(){
+    function callWorkExp() {
 
         const workExpContext = $("#workExp_context");
         $.ajax({
             type: 'GET',
-            url: '/job_vacancy/jobforStudent/GetMyWorkExp/' + @Model.StudentID,
+            url: '/job_vacancy/jobforStudent/GetMyWorkExp/',
+            data: { studentID: @Model.StudentID, resumeID: @Model.ResumeID},
             success: function (result) {
                 console.log('呼叫工作經驗資料 success');
 
@@ -281,8 +282,8 @@
                 // 清空並設置內容
                 workExpContext.html(result);
 
-                // 恢復已選擇的工作經驗項目的勾選狀態
                 restoreCheckedItems();
+
             },
             error: function (error) {
                 console.error('呼叫工作經驗資料 error', error);
@@ -296,6 +297,10 @@
     $(document).ready(function () {
 
         // ========= 載入資料時 =========
+
+        //宣告履歷工作經驗的ID列表
+        let selectedWorkExpIDs = [];
+
         // 處理希望薪資的選項
         switch ("@Html.Raw(Model.HopeSalary)".trim()) {
             case "面議":
@@ -313,11 +318,10 @@
 
         //處理工作經驗
         if ('@Model.WorkExperience' === 'Y') {
-            loadResumeWorkExp();
+            callWorkExp();
+
         }
 
-
-        function loadResumeWorkExp()
 
         // ========= CKEditor 相關 =========
         // DecoupledEditor
@@ -362,7 +366,7 @@
             });
         });
 
-        
+
 
     });
 
@@ -387,5 +391,5 @@
             }
         }
     }
-    
+
 </script>

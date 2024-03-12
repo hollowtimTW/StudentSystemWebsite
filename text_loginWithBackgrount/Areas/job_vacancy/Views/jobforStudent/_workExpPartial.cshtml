@@ -12,20 +12,22 @@
             {
                 var viewModel = Model[i];
                 var checkboxId = "workexp" + viewModel.WorkExpID;
+                var isChecked = viewModel.IsInResume ? "checked" : "";
 
                 <div class="form-check">
-                    <input class="form-check-input cbWorkExp" type="checkbox" item-id="@i" id="@checkboxId" name="@checkboxId" value="option1">
+                    <input class="form-check-input cbWorkExp" type="checkbox" item-id="@i" id="@checkboxId" name="@checkboxId" value="option1" @isChecked>
                     <label class="form-check-label" for="@checkboxId">@viewModel.CompanyName／@viewModel.JobTitle／@viewModel.Start ~ @viewModel.End</label>
                     <a><i class="bi bi-pencil-fill" role="button" onclick="EditWorkExp(@viewModel.WorkExpID)"></i></a>
                 </div>
             }
         }
-        
+
+
         <div class="form-check">
             <input class="form-check-input" type="checkbox" name="addNewWorkExp" value="">
-            <label class="form-check-label" for="addNewWorkExp"><a type="button" onclick="GetAddWorkExpView()">新增工作經驗</a></label>
+            <label class="form-check-label" for="addNewWorkExp"><a role="button" onclick="GetAddWorkExpView()">新增工作經驗</a></label>
         </div>
-            
+
     </div>
     <button id="btnExpSelectConfirm" type="button" class="btn btn-normal">確定</button>
     <button id="btnExpSelectCancel" type="button" class="btn btn-cancel">取消</button>
@@ -44,10 +46,12 @@
 <script>
 
     //取消選取工作經驗
-    function removeItem(itemId) {
-
-        var checkboxId = "workexp" + itemId;
-        $('#' + checkboxId).prop('checked', false);
+    function removeWorkExpItem(itemId) {
+        console.log('itemId:' + itemId);
+        var index = selectedWorkExpIDs.indexOf(itemId);
+        if (index !== -1) {
+            selectedWorkExpIDs.splice(index, 1); // 從列表中移除該項目
+        }
     }
 
     //新增工作經驗（_CreateWorkExpPartialView）
@@ -72,7 +76,7 @@
     }
 
     //編輯工作經驗
-    function EditWorkExp(workExpID){
+    function EditWorkExp(workExpID) {
 
         const workExpForm = $("#workExp_switch_form");
         $.ajax({
@@ -94,46 +98,55 @@
 
     $(document).ready(function () {
 
-        // 監聽複選框的變化事件
-        $('.cbWorkExp').change(function () {
 
-            // 清空 expListArea 中的內容
-            $('#expListArea').empty();
-
-            // 遍歷所有複選框，更新勾選狀態並記錄勾選的checkbox的id
+        //紀錄選取的工作經驗ID
+        function GetSelectedWorkExpIDs() {
             selectedWorkExpIDs = [];
+
             $('.cbWorkExp').each(function () {
                 var itemId = $(this).attr('item-id');
                 if ($(this).prop('checked')) {
                     selectedWorkExpIDs.push(itemId); // 勾選時記錄id
                 }
             });
+            return selectedWorkExpIDs;
+        }
+
+
+        function ShowWorkExpCards() {
+            // 清空 expListArea 中的內容
+            $('#expListArea').empty();
+
+            var selectedIDs = GetSelectedWorkExpIDs();
 
             // 根據記錄的id顯示相應的資料
-            selectedWorkExpIDs.forEach(function (itemId) {
+            selectedIDs.forEach(function (itemId) {
                 var data = @Html.Raw(Json.Serialize(Model));
                 if (data[itemId]) {
                     var workitem = data[itemId];
                     $('#expListArea').append(
                         `<div class="exp-item">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5>${workitem.jobTitle}</h5>
-                                <button type="button" class="btn-close" onclick="removeItem(${itemId})"></button>
-                            </div>
-                            <p class="mb-1">${workitem.companyName} ${workitem.start} - ${workitem.end}</p>
-                            <p class="mt-2">
-                                ${workitem.jobContent}
-                            </p>
-                        </div>`);
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5>${workitem.jobTitle}</h5>
+                                        <button type="button" class="btn-close" onclick="removeWorkExpItem(${itemId})"></button>
+                                    </div>
+                                    <p class="mb-1">${workitem.companyName} ${workitem.start} - ${workitem.end}</p>
+                                    <p class="mt-2">
+                                        ${workitem.jobContent}
+                                    </p>
+                                </div>`);
                 }
                 else {
                     $('#expListArea').append('<div>未找到相應的資料</div>');
                 }
             });
-        });
+        }
 
         // 確認工作經驗（關閉編輯區並顯示列表）
         $('#btnExpSelectConfirm').click(function () {
+
+            ShowWorkExpCards();
+
             $('#expSelectArea').hide();
             $('#btnExpAdd').show();
             $('#expListArea').show();

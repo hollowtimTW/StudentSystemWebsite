@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Text;
 using text_loginWithBackgrount.Areas.job_vacancy.ViewModels;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
 {
@@ -372,9 +373,9 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
 
 
 
-        // GET: job_vacancy/jobforStudent/GetMyWorkExp/5
-        [Route("/job_vacancy/jobforStudent/{Action=Index}/{studentID}")]
-        public async Task<IActionResult> GetMyWorkExp(int studentID)
+        // GET: job_vacancy/jobforStudent/GetMyWorkExp
+        [Route("/job_vacancy/jobforStudent/{Action=Index}")]
+        public async Task<IActionResult> GetMyWorkExp(int studentID, int? resumeID = null)
         {
             var workData = await _context.T工作工作經驗s
                             .Where(w => w.F學員Id == studentID)
@@ -384,6 +385,16 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
 
             foreach (var data in workData)
             {
+                var isInResume = false; // 預設為 false
+
+                // 如果提供了 resumeID，則檢查是否存在對應的工作經驗
+                if (resumeID != null)
+                {
+                    // 查詢履歷表中是否存在與當前工作經驗相關聯的記錄
+                    isInResume = _context.T工作履歷表工作經驗s.Any(r => r.F工作經驗Id == data.FId && r.F履歷Id == resumeID);
+                }
+
+
                 var viewModel = new WorkExpViewModel
                 {
                     WorkExpID = data.FId,
@@ -392,7 +403,8 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                     Start = data.F起始年月,
                     End = data.F結束年月,
                     Salary = data.F薪水待遇,
-                    JobContent = data.F工作內容
+                    JobContent = data.F工作內容,
+                    IsInResume = isInResume
 
                 };
                 viewModelList.Add(viewModel);

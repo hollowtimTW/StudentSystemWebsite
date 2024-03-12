@@ -8,6 +8,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.ViewModels
         public int StudentID { get; set; }
         public List<int>? AvailableYears { get; set; }
 
+        public bool IsInResume { get; set; }
 
         [Display(Name = "公司名稱")]
         public string? CompanyName { get; set; }
