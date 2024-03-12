@@ -5,25 +5,25 @@ using System.Collections.Generic;
 
 namespace Class_system_Backstage_pj.Models;
 
-public partial class T訂餐訂單詳細資訊表
+public partial class T訂餐購物車
 {
-    public int 訂單詳細表id { get; set; }
+    public int 購物車id { get; set; }
 
-    public int 訂單id { get; set; }
+    public int 學員id { get; set; }
 
-    public int 店家id { get; set; }
+    public int? 店家id { get; set; }
 
-    public int 餐點id { get; set; }
+    public int? 餐點id { get; set; }
 
-    public int? 餐點數量 { get; set; }
-
-    public decimal? 金額小記 { get; set; }
+    public int? 數量 { get; set; }
 
     public string 狀態 { get; set; }
 
-    public virtual T訂餐店家資料表 店家 { get; set; }
+    public decimal? 金額小記 { get; set; }
 
-    public virtual T訂餐訂單資訊表 訂單 { get; set; }
+    public virtual T會員學生 學員 { get; set; }
+
+    public virtual T訂餐店家資料表 店家 { get; set; }
 
     public virtual T訂餐餐點資訊表 餐點 { get; set; }
 }

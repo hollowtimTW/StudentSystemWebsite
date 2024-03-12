@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
-using text_loginWithBackgrount.Areas.question_bank.ViewModels;
+
 
 
 namespace Class_system_Backstage_pj.Areas.student_management.Controllers

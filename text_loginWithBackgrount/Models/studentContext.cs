@@ -13,6 +13,22 @@ public partial class studentContext : DbContext
     {
     }
 
+    public virtual DbSet<TChatContent> TChatContents { get; set; }
+
+    public virtual DbSet<TChatDate> TChatDates { get; set; }
+
+    public virtual DbSet<TChatRoom> TChatRooms { get; set; }
+
+    public virtual DbSet<TChatStdRoom> TChatStdRooms { get; set; }
+
+    public virtual DbSet<TQuizPaper> TQuizPapers { get; set; }
+
+    public virtual DbSet<TQuizQuestion> TQuizQuestions { get; set; }
+
+    public virtual DbSet<TQuizQuiz> TQuizQuizzes { get; set; }
+
+    public virtual DbSet<TQuizRecord> TQuizRecords { get; set; }
+
     public virtual DbSet<T公告分類> T公告分類s { get; set; }
 
     public virtual DbSet<T公告本體> T公告本體s { get; set; }
@@ -77,6 +93,8 @@ public partial class studentContext : DbContext
 
     public virtual DbSet<T訂餐評論表> T訂餐評論表s { get; set; }
 
+    public virtual DbSet<T訂餐購物車> T訂餐購物車s { get; set; }
+
     public virtual DbSet<T訂餐餐點資訊表> T訂餐餐點資訊表s { get; set; }
 
     public virtual DbSet<T討論子版> T討論子版s { get; set; }
@@ -113,6 +131,200 @@ public partial class studentContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<TChatContent>(entity =>
+        {
+            entity.HasKey(e => e.FContentId);
+
+            entity.ToTable("tChat_Content");
+
+            entity.Property(e => e.FContentId).HasColumnName("fContentID");
+            entity.Property(e => e.FContent).HasColumnName("fContent");
+            entity.Property(e => e.FDateId).HasColumnName("fDateID");
+            entity.Property(e => e.FOther).HasColumnName("fOther");
+            entity.Property(e => e.FRole).HasColumnName("fRole");
+            entity.Property(e => e.FRoomId).HasColumnName("fRoomID");
+            entity.Property(e => e.FSendId).HasColumnName("fSendID");
+            entity.Property(e => e.FSendTime)
+                .HasColumnType("datetime")
+                .HasColumnName("fSendTime");
+            entity.Property(e => e.FType).HasColumnName("fType");
+
+            entity.HasOne(d => d.FDate).WithMany(p => p.TChatContents)
+                .HasForeignKey(d => d.FDateId)
+                .HasConstraintName("FK_tChat_Content_tCHat_Date");
+
+            entity.HasOne(d => d.FSend).WithMany(p => p.TChatContents)
+                .HasForeignKey(d => d.FSendId)
+                .HasConstraintName("FK_tChat_Content_t會員_老師");
+        });
+
+        modelBuilder.Entity<TChatDate>(entity =>
+        {
+            entity.HasKey(e => e.FDateId);
+
+            entity.ToTable("tCHat_Date");
+
+            entity.Property(e => e.FDateId).HasColumnName("fDateID");
+            entity.Property(e => e.FDate)
+                .HasColumnType("date")
+                .HasColumnName("fDate");
+        });
+
+        modelBuilder.Entity<TChatRoom>(entity =>
+        {
+            entity.HasKey(e => e.FRoomId);
+
+            entity.ToTable("tChat_Room");
+
+            entity.Property(e => e.FRoomId).HasColumnName("fRoomID");
+            entity.Property(e => e.FAuthority).HasColumnName("fAuthority");
+            entity.Property(e => e.FCreatTime)
+                .HasColumnType("datetime")
+                .HasColumnName("fCreatTime");
+            entity.Property(e => e.FGroup)
+                .HasMaxLength(8)
+                .HasColumnName("fGroup");
+            entity.Property(e => e.FHidden).HasColumnName("fHidden");
+            entity.Property(e => e.FOpenTime)
+                .HasColumnType("datetime")
+                .HasColumnName("fOpenTime");
+            entity.Property(e => e.FRoomCode)
+                .HasMaxLength(6)
+                .HasColumnName("fRoomCode");
+            entity.Property(e => e.FRoomImage).HasColumnName("fRoomImage");
+            entity.Property(e => e.FRoomName)
+                .HasMaxLength(50)
+                .HasColumnName("fRoomName");
+            entity.Property(e => e.FTeacherId).HasColumnName("fTeacherID");
+
+            entity.HasOne(d => d.FTeacher).WithMany(p => p.TChatRooms)
+                .HasForeignKey(d => d.FTeacherId)
+                .HasConstraintName("FK_tChat_Room_t會員_老師");
+        });
+
+        modelBuilder.Entity<TChatStdRoom>(entity =>
+        {
+            entity.HasKey(e => e.FId);
+
+            entity.ToTable("tChat_StdRoom");
+
+            entity.Property(e => e.FId).HasColumnName("fID");
+            entity.Property(e => e.FRoomId).HasColumnName("fRoomID");
+            entity.Property(e => e.FState).HasColumnName("fState");
+            entity.Property(e => e.FStudentId).HasColumnName("fStudentID");
+
+            entity.HasOne(d => d.FRoom).WithMany(p => p.TChatStdRooms)
+                .HasForeignKey(d => d.FRoomId)
+                .HasConstraintName("FK_tChat_StdRoom_tChat_Room");
+        });
+
+        modelBuilder.Entity<TQuizPaper>(entity =>
+        {
+            entity.HasKey(e => e.FId);
+
+            entity.ToTable("tQuiz_Paper");
+
+            entity.Property(e => e.FId).HasColumnName("fId");
+            entity.Property(e => e.FNum).HasColumnName("fNum");
+            entity.Property(e => e.FQuestionId).HasColumnName("fQuestionId");
+            entity.Property(e => e.FQuizId).HasColumnName("fQuizId");
+
+            entity.HasOne(d => d.FQuestion).WithMany(p => p.TQuizPapers)
+                .HasForeignKey(d => d.FQuestionId)
+                .HasConstraintName("FK_tQuiz_Paper_tQuiz_Question");
+
+            entity.HasOne(d => d.FQuiz).WithMany(p => p.TQuizPapers)
+                .HasForeignKey(d => d.FQuizId)
+                .HasConstraintName("FK_tQuiz_Paper_tQuiz_quiz");
+        });
+
+        modelBuilder.Entity<TQuizQuestion>(entity =>
+        {
+            entity.HasKey(e => e.FQuestionId).HasName("PK_fQuiz_Question");
+
+            entity.ToTable("tQuiz_Question");
+
+            entity.Property(e => e.FQuestionId).HasColumnName("fQuestionId");
+            entity.Property(e => e.FAnswer).HasColumnName("fAnswer");
+            entity.Property(e => e.FImages).HasColumnName("fImages");
+            entity.Property(e => e.FOptions).HasColumnName("fOptions");
+            entity.Property(e => e.FQuestion).HasColumnName("fQuestion");
+            entity.Property(e => e.FScore).HasColumnName("fScore");
+            entity.Property(e => e.FType).HasColumnName("fType");
+        });
+
+        modelBuilder.Entity<TQuizQuiz>(entity =>
+        {
+            entity.HasKey(e => e.FQuizId).HasName("PK_tQuiz_quiz");
+
+            entity.ToTable("tQuiz_Quiz");
+
+            entity.Property(e => e.FQuizId)
+                .ValueGeneratedNever()
+                .HasColumnName("fQuizId");
+            entity.Property(e => e.FClosed).HasColumnName("fClosed");
+            entity.Property(e => e.FEndTime)
+                .HasColumnType("datetime")
+                .HasColumnName("fEndTime");
+            entity.Property(e => e.FLimitTime).HasColumnName("fLimitTime");
+            entity.Property(e => e.FNote).HasColumnName("fNote");
+            entity.Property(e => e.FNumQs).HasColumnName("fNumQs");
+            entity.Property(e => e.FPublic).HasColumnName("fPublic");
+            entity.Property(e => e.FQcode)
+                .HasMaxLength(6)
+                .HasColumnName("fQCode");
+            entity.Property(e => e.FQname)
+                .HasMaxLength(50)
+                .HasColumnName("fQName");
+            entity.Property(e => e.FStartTime)
+                .HasColumnType("datetime")
+                .HasColumnName("fStartTime");
+            entity.Property(e => e.FSubjectId).HasColumnName("fSubjectId");
+            entity.Property(e => e.FTeacherId).HasColumnName("fTeacherId");
+            entity.Property(e => e.FTotalScore).HasColumnName("fTotalScore");
+
+            entity.HasOne(d => d.FSubject).WithMany(p => p.TQuizQuizzes)
+                .HasForeignKey(d => d.FSubjectId)
+                .HasConstraintName("FK_tQuiz_quiz_t課程_科目");
+
+            entity.HasOne(d => d.FTeacher).WithMany(p => p.TQuizQuizzes)
+                .HasForeignKey(d => d.FTeacherId)
+                .HasConstraintName("FK_tQuiz_quiz_t會員_老師");
+        });
+
+        modelBuilder.Entity<TQuizRecord>(entity =>
+        {
+            entity.HasKey(e => e.FId);
+
+            entity.ToTable("tQuiz_Record");
+
+            entity.Property(e => e.FId).HasColumnName("fId");
+            entity.Property(e => e.FFinishTime)
+                .HasColumnType("datetime")
+                .HasColumnName("fFinishTime");
+            entity.Property(e => e.FGroup)
+                .HasMaxLength(8)
+                .HasColumnName("fGroup");
+            entity.Property(e => e.FQuizId).HasColumnName("fQuizId");
+            entity.Property(e => e.FRecord).HasColumnName("fRecord");
+            entity.Property(e => e.FResult).HasColumnName("fResult");
+            entity.Property(e => e.FScored).HasColumnName("fScored");
+            entity.Property(e => e.FStartTime)
+                .HasColumnType("datetime")
+                .HasColumnName("fStartTime");
+            entity.Property(e => e.FState).HasColumnName("fState");
+            entity.Property(e => e.FStudentId).HasColumnName("fStudentId");
+
+            entity.HasOne(d => d.FQuiz).WithMany(p => p.TQuizRecords)
+                .HasForeignKey(d => d.FQuizId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tQuiz_Record_tQuiz_quiz");
+
+            entity.HasOne(d => d.FStudent).WithMany(p => p.TQuizRecords)
+                .HasForeignKey(d => d.FStudentId)
+                .HasConstraintName("FK_tQuiz_Record_t會員_學生");
+        });
+
         modelBuilder.Entity<T公告分類>(entity =>
         {
             entity.HasKey(e => e.分類id).HasName("PK_t分類");
@@ -709,13 +921,10 @@ public partial class studentContext : DbContext
                 .HasMaxLength(50);
             entity.Property(e => e.學位).HasMaxLength(50);
             entity.Property(e => e.學校).HasMaxLength(50);
-            entity.Property(e => e.密碼)
-                .IsRequired()
-                .HasMaxLength(50);
+            entity.Property(e => e.密碼).HasMaxLength(50);
             entity.Property(e => e.性別).HasMaxLength(50);
             entity.Property(e => e.手機).HasMaxLength(50);
             entity.Property(e => e.狀態)
-                .IsRequired()
                 .HasMaxLength(1)
                 .IsUnicode(false)
                 .HasDefaultValueSql("((0))")
@@ -724,9 +933,7 @@ public partial class studentContext : DbContext
             entity.Property(e => e.畢肄).HasMaxLength(50);
             entity.Property(e => e.科系).HasMaxLength(50);
             entity.Property(e => e.註冊日期).HasColumnType("datetime");
-            entity.Property(e => e.身分證字號)
-                .IsRequired()
-                .HasMaxLength(50);
+            entity.Property(e => e.身分證字號).HasMaxLength(50);
             entity.Property(e => e.鎖定)
                 .HasMaxLength(1)
                 .IsUnicode(false)
@@ -779,13 +986,10 @@ public partial class studentContext : DbContext
                 .HasMaxLength(50);
             entity.Property(e => e.學位).HasMaxLength(50);
             entity.Property(e => e.學校).HasMaxLength(50);
-            entity.Property(e => e.密碼)
-                .IsRequired()
-                .HasMaxLength(50);
+            entity.Property(e => e.密碼).HasMaxLength(50);
             entity.Property(e => e.性別).HasMaxLength(50);
             entity.Property(e => e.手機).HasMaxLength(50);
             entity.Property(e => e.狀態)
-                .IsRequired()
                 .HasMaxLength(1)
                 .IsUnicode(false)
                 .HasDefaultValueSql("('0')")
@@ -794,9 +998,7 @@ public partial class studentContext : DbContext
             entity.Property(e => e.畢肄).HasMaxLength(50);
             entity.Property(e => e.科系).HasMaxLength(50);
             entity.Property(e => e.註冊日期).HasColumnType("datetime");
-            entity.Property(e => e.身分證字號)
-                .IsRequired()
-                .HasMaxLength(50);
+            entity.Property(e => e.身分證字號).HasMaxLength(50);
             entity.Property(e => e.鎖定)
                 .HasMaxLength(1)
                 .IsUnicode(false)
@@ -961,7 +1163,9 @@ public partial class studentContext : DbContext
 
             entity.Property(e => e.訂單詳細表id).HasColumnName("訂單詳細表ID");
             entity.Property(e => e.店家id).HasColumnName("店家ID");
-            entity.Property(e => e.狀態).HasMaxLength(10).IsFixedLength();
+            entity.Property(e => e.狀態)
+                .HasMaxLength(10)
+                .IsFixedLength();
             entity.Property(e => e.訂單id).HasColumnName("訂單ID");
             entity.Property(e => e.金額小記).HasColumnType("money");
             entity.Property(e => e.餐點id).HasColumnName("餐點ID");
@@ -1025,6 +1229,35 @@ public partial class studentContext : DbContext
                 .HasConstraintName("FK_t訂餐_評論表_t訂單資訊表");
         });
 
+        modelBuilder.Entity<T訂餐購物車>(entity =>
+        {
+            entity.HasKey(e => e.購物車id);
+
+            entity.ToTable("t訂餐_購物車");
+
+            entity.Property(e => e.購物車id).HasColumnName("購物車ID");
+            entity.Property(e => e.學員id).HasColumnName("學員ID");
+            entity.Property(e => e.店家id).HasColumnName("店家ID");
+            entity.Property(e => e.狀態)
+                .HasMaxLength(10)
+                .IsFixedLength();
+            entity.Property(e => e.金額小記).HasColumnType("money");
+            entity.Property(e => e.餐點id).HasColumnName("餐點ID");
+
+            entity.HasOne(d => d.學員).WithMany(p => p.T訂餐購物車s)
+                .HasForeignKey(d => d.學員id)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_t訂餐_購物車_t會員_學生");
+
+            entity.HasOne(d => d.店家).WithMany(p => p.T訂餐購物車s)
+                .HasForeignKey(d => d.店家id)
+                .HasConstraintName("FK_t訂餐_購物車_t訂餐_店家資料表");
+
+            entity.HasOne(d => d.餐點).WithMany(p => p.T訂餐購物車s)
+                .HasForeignKey(d => d.餐點id)
+                .HasConstraintName("FK_t訂餐_購物車_t訂餐_餐點資訊表");
+        });
+
         modelBuilder.Entity<T訂餐餐點資訊表>(entity =>
         {
             entity.HasKey(e => e.餐點id);
@@ -1032,12 +1265,13 @@ public partial class studentContext : DbContext
             entity.ToTable("t訂餐_餐點資訊表");
 
             entity.Property(e => e.餐點id).HasColumnName("餐點ID");
-            entity.Property(e => e.上架).HasMaxLength(10).IsFixedLength();
+            entity.Property(e => e.上架)
+                .HasMaxLength(10)
+                .IsFixedLength();
             entity.Property(e => e.店家id).HasColumnName("店家ID");
             entity.Property(e => e.餐點名稱).HasMaxLength(50);
             entity.Property(e => e.餐點定價).HasColumnType("money");
             entity.Property(e => e.餐點描述).HasMaxLength(50);
-            entity.Property(e => e.餐點照片).HasMaxLength(50);
 
             entity.HasOne(d => d.店家).WithMany(p => p.T訂餐餐點資訊表s)
                 .HasForeignKey(d => d.店家id)
@@ -1181,7 +1415,7 @@ public partial class studentContext : DbContext
             entity.HasOne(d => d.學生).WithMany(p => p.T課程學生班級s)
                 .HasForeignKey(d => d.學生id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_t課程_學生班級_t會員_學生");
+                .HasConstraintName("FK_t課程_學生班級_t會員_學生1");
 
             entity.HasOne(d => d.班級).WithMany(p => p.T課程學生班級s)
                 .HasForeignKey(d => d.班級id)
@@ -1347,10 +1581,6 @@ public partial class studentContext : DbContext
             entity.Property(e => e.結束時間).HasColumnType("datetime");
             entity.Property(e => e.課堂摘要).HasMaxLength(200);
             entity.Property(e => e.開始時間).HasColumnType("datetime");
-
-            entity.HasOne(d => d.值日生).WithMany(p => p.T課程課程s)
-                .HasForeignKey(d => d.值日生id)
-                .HasConstraintName("FK_t課程_課程_t會員_學生");
 
             entity.HasOne(d => d.班級科目).WithMany(p => p.T課程課程s)
                 .HasForeignKey(d => d.班級科目id)

@@ -21,7 +21,5 @@ public partial class T課程課程
 
     public int 狀態 { get; set; }
 
-    public virtual T會員學生 值日生 { get; set; }
-
     public virtual T課程班級科目 班級科目 { get; set; }
 }

@@ -27,9 +27,9 @@ public partial class T會員老師
 
     public DateTime? 生日 { get; set; }
 
-    public DateTime 註冊日期 { get; set; }
+    public DateTime? 註冊日期 { get; set; }
 
-    public DateTime 修改日期 { get; set; }
+    public DateTime? 修改日期 { get; set; }
 
     public string 狀態 { get; set; }
 
@@ -48,6 +48,12 @@ public partial class T會員老師
     public string Salt { get; set; }
 
     public string Token { get; set; }
+
+    public virtual ICollection<TChatContent> TChatContents { get; set; } = new List<TChatContent>();
+
+    public virtual ICollection<TChatRoom> TChatRooms { get; set; } = new List<TChatRoom>();
+
+    public virtual ICollection<TQuizQuiz> TQuizQuizzes { get; set; } = new List<TQuizQuiz>();
 
     public virtual ICollection<T公告本體> T公告本體s { get; set; } = new List<T公告本體>();
 

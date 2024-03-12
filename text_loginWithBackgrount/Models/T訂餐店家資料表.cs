@@ -31,5 +31,7 @@ public partial class T訂餐店家資料表
 
     public virtual ICollection<T訂餐訂單詳細資訊表> T訂餐訂單詳細資訊表s { get; set; } = new List<T訂餐訂單詳細資訊表>();
 
+    public virtual ICollection<T訂餐購物車> T訂餐購物車s { get; set; } = new List<T訂餐購物車>();
+
     public virtual ICollection<T訂餐餐點資訊表> T訂餐餐點資訊表s { get; set; } = new List<T訂餐餐點資訊表>();
 }

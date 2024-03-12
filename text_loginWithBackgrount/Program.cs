@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using text_loginWithBackgrount.Areas.video_management.Repositories;
-using text_loginWithBackgrount.Areas.question_bank.Mongodb;
 using text_loginWithBackgrount.Data;
 using text_loginWithBackgrount.Areas.course_management.Hubs;
 
@@ -22,7 +21,7 @@ builder.Services.AddControllers(); //向DI容器註冊控制器所需的服務
 builder.Services.AddSignalR(); // 將 SignalR 服務添加到 DI 容器中
 
 builder.Services.AddDbContext<studentContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("StudentDB")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Azure")));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -68,9 +67,6 @@ builder.Services.AddSignalR(); // 將 SignalR 服務添加到 DI 容器中
 builder.Services.AddDistributedMemoryCache(); // 將 _cashe 服務添加到 DI 容器中
 
 
-// MongoDb
-builder.Services.Configure<MongoDbCollectionSettings>(
-    builder.Configuration.GetSection("MongoDb"));
 
 var app = builder.Build();
 
@@ -98,13 +94,11 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapHub<NotificationHub>("/NotificationHub");
-    endpoints.MapHub<StreamHub>("/StreamHub");
-    endpoints.MapHub<WhiteboardHub>("/WhiteboardHub");
 
-});
+app.MapHub<NotificationHub>("/NotificationHub");
+app.MapHub<StreamHub>("/StreamHub");
+app.MapHub<WhiteboardHub>("/WhiteboardHub");
+
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");

@@ -44,7 +44,7 @@ namespace text_loginWithBackgrount.ViewModels
 
         public string? 畢肄 { get; set; }
 
-        public DateTime 修改日期 { get; set; }
+        public DateTime? 修改日期 { get; set; }
 
     }
 }

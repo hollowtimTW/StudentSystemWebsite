@@ -18,9 +18,12 @@ public partial class T訂餐餐點資訊表
     public decimal? 餐點定價 { get; set; }
 
     public string 餐點照片 { get; set; }
+
     public string 上架 { get; set; }
 
     public virtual ICollection<T訂餐訂單詳細資訊表> T訂餐訂單詳細資訊表s { get; set; } = new List<T訂餐訂單詳細資訊表>();
+
+    public virtual ICollection<T訂餐購物車> T訂餐購物車s { get; set; } = new List<T訂餐購物車>();
 
     public virtual T訂餐店家資料表 店家 { get; set; }
 }
