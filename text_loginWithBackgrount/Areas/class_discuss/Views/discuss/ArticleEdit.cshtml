@@ -26,21 +26,37 @@
         </nav>
     </div>
 }
-<section id="blog" class="blog">
-    <div id="editorwidth">
-        <div id="editor">123444456</div>
+<section id="contact" class="contact">
+    <div class="container" data-aos="fade-up">
+
+        <div class="row gx-lg-0 gy-4">
+            <!-- 表單區 -->
+                <form action="forms/contact.php" method="post" role="form" class="php-email-form">
+                    <div class="row"><!-- 標籤 -->
+                        <div class="col-md-6 form-group">
+                            <input type="text" name="name" class="form-control" id="name" placeholder="標籤" required>
+                        </div>
+                    </div>
+                    <div class="form-group mt-3"><!-- 標題 -->
+                        <input type="text" class="form-control" name="subject" id="subject" placeholder="文章標題" required>
+                    </div>
+                <div class="form-group mt-3" id="editor" ui="">
+                    <textarea class="form-control" rows="7" placeholder="文章內容" required></textarea>
+                    </div>
+                    <div class="my-3">
+                        <div class="loading">Loading</div>
+                        <div class="error-message"></div>
+                        <div class="sent-message">Your message has been sent. Thank you!</div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit">取消編輯</button>
+                        <button type="submit">編輯完成</button>
+                    </div>
+                </form>
+        </div>
     </div>
-    <button id="saveBtn">保存</button>
-</section>
-@section Styles{
-    <style>
-        #editorwidth{
-            margin:auto;
-            width:1000px;
-            
-        }
-    </style>
-}
+</section><!-- End Contact Section -->
+
 @section Scripts{
     <script>
         ClassicEditor
@@ -48,17 +64,5 @@
             .catch(error => {
                 console.error(error);
             });
-        $(document).ready(function () {
-            $('#saveBtn').click(function () {
-                var editorContent = $('#editor').text(); // 获取编辑器内容
-                $.ajax({
-                    url: '/saveData',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({ content: editorContent })
-                });
-                //這裡要切換頁面 還沒打
-            });
-        });
     </script>
 }
