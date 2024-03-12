@@ -149,28 +149,15 @@
         <div class="column is-6-wide">
             <div class="ts-box is-top-indicated is-light">
                 <div class="ts-content is-dense">
-                    <div class="ts-header is-heavy is-big is-center-aligned">評論完整分析</div>
+                    <div class="ts-header is-heavy is-big is-center-aligned text-dark">評論完整分析</div>
                 </div>
                 <div class="ts-divider"></div>
-                <div class="ts-content">
-                    <div class="ts-text is-bold is-large">整體評價優良比</div>
-                    <div class="ts-progress is-small has-top-spaced-small">
-                        <div class="bar" style="width: 100%">
-                            <div class="text">64 GB</div>
-                        </div>
+                <div class="ts-content" id="comment_Analysis">
+
+                    <div class="ts-notice is-negative" id="errormessage">
+                        <div class="ts-text is-center-aligned">訂單數量不足</div>
                     </div>
-                    <div class="ts-text is-bold has-top-spaced-small is-large">評分最高菜單:<span class="ts-text is-negative">xxx</span></div>
-                    <div class="ts-progress is-small has-top-spaced-small">
-                        <div class="bar" style="width: 80%">
-                            <div class="text">4 GB</div>
-                        </div>
-                    </div>
-                    <div class="ts-text is-bold has-top-spaced-small is-large">評分最低菜單:<span class="ts-text is-negative">xxx</span></div>
-                    <div class="ts-progress is-small has-top-spaced-small">
-                        <div class="bar" style="width: 30%">
-                            <div class="text">30%</div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -182,7 +169,8 @@
 
     <script>
         let year = 2024;
-        const storeID = @User?.FindFirst("teacherID")?.Value
+        const storeID = @User?.FindFirst("teacherID")?.Value //店家ID
+            //更換年分調整長柄圖
             $(".dropdown-menu").on("click", ".year", function () {
                 year = $(this).data("id");
                 barchart_monthly_revenue();
@@ -245,6 +233,64 @@
             const data = await request.json();
             update(data)
         };
+        //載入菜單餐點意見回饋
+        async function Comment_Analysis() {
+            $.ajax({
+                url: `@Url.Content("~/tOrder_StoreAPI/ReviewExcellentRatio/")?id=${storeID}`,
+                success: (data) => {
+                    $('#errormessage').hide();
+                    const datalist = 
+                    `
+                               <div class="m-3">
+                                <div class="ts-text is-bold is-large text-dark">評價優良比</div>
+                                <div class="ts-progress is-small has-top-spaced-small">
+                                        <div class="bar" style="width: ${data.總訂單評價優良比}%">
+                                        <div class="text">${data.總訂單評價優良比}%</div>
+                                    </div>
+                                </div>
+                                <div class="ts-text is-description has-top-spaced-small">
+                                    四星以上佔全部總訂單的比例
+                                </div>
+                            </div>
+                            <div class="m-3">
+                                <div class="ts-text is-bold has-top-spaced-small is-large ts-wrap is-relaxed">
+                                    <div>評分最高菜單:&nbsp;<span class="ts-text is-negative">${data.最熱門菜單}</span></div>
+                                    <span class="ts-text">平均評價<span class="ts-text is-mark">${data.熱門菜單平均評價}星</span></span>
+                                </div>
+                                <div class="ts-progress is-small has-top-spaced-small">
+                                        <div class="bar" style="width: ${data.熱門佔總訂單的比率}%">
+                                        <div class="text">${data.熱門佔總訂單的比率}%</div>
+                                    </div>
+                                </div>
+                                <div class="ts-text is-description has-top-spaced-small">
+                                    該餐點佔全部總訂單比
+                                </div>
+                            </div>
+
+                            <div class="m-3">
+                                <div class="ts-text is-bold has-top-spaced-small is-large ts-wrap is-relaxed">
+                                    <div>評分最低菜單:&nbsp;<span class="ts-text is-negative">${data.最冷門菜單}</span></div>
+                                    <span class="ts-text">平均評價<span class="ts-text is-mark">${data.冷門平均評價}星</span></span>
+                                </div>
+                                <div class="ts-progress is-small has-top-spaced-small">
+                                        <div class="bar" style="width: ${data.冷門菜單總訂單的比率}%">
+                                        <div class="text">${data.冷門菜單總訂單的比率}%</div>
+                                    </div>
+                                </div>
+                                <div class="ts-text is-description has-top-spaced-small">
+                                    該餐點佔全部總訂單比
+                                </div>
+                            </div>
+                    `;
+                    $('#comment_Analysis').html(datalist);
+                },
+                error: (xhr, status, error) => {
+                    // 處理Ajax請求失敗的情況
+                    $('#errormessage').show();
+                    console.error('Ajax request failed:', status, error);
+                }
+            })
+        }
         //執行指定店家評論分析，圓餅圖資料顯示function
         async function pieComment_withstore(id) {
             const url = `@Url.Content("~/tOrder_StoreAPI/pieComment_withstore")?id=${id}`
@@ -260,17 +306,17 @@
                     const datalist = data.map((a, index) => {
                         const { 餐點名稱, 銷售數量 } = a
                         return (`
-                                    <li class="completed">
-                                      <div class="task-title">
-                                         <p class="fs-3">${index + 1} .</p>
-                                         <p>${餐點名稱}</p>
-                                      </div>
-                                      <div class="ts-statistic">
-                                        <div class="value">${銷售數量}</div>
-                                         <div class="unit is-light">次</div>
-                                        </div>
-                                    </li>
-                                    `)
+                                                                    <li class="completed">
+                                                                      <div class="task-title">
+                                                                         <p class="fs-3">${index + 1} .</p>
+                                                                         <p>${餐點名稱}</p>
+                                                                      </div>
+                                                                      <div class="ts-statistic">
+                                                                        <div class="value">${銷售數量}</div>
+                                                                         <div class="unit is-light">次</div>
+                                                                        </div>
+                                                                    </li>
+                                                                    `)
                     })
                     $('#topfivemenu').html(datalist);
                 },
@@ -284,6 +330,7 @@
             barchart_monthly_revenue();
             pieComment_withstore(storeID);
             topmenu();
+            Comment_Analysis();
         })()
     </script>
 }

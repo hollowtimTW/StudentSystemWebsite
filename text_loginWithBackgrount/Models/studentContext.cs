@@ -943,6 +943,9 @@ public partial class studentContext : DbContext
             entity.Property(e => e.開始營業時間)
                 .HasMaxLength(10)
                 .IsUnicode(false);
+            entity.Property(e => e.顯示)
+                .HasMaxLength(10)
+                .IsFixedLength();
 
             entity.HasOne(d => d.店家).WithMany(p => p.T訂餐營業時間表s)
                 .HasForeignKey(d => d.店家id)
@@ -958,6 +961,7 @@ public partial class studentContext : DbContext
 
             entity.Property(e => e.訂單詳細表id).HasColumnName("訂單詳細表ID");
             entity.Property(e => e.店家id).HasColumnName("店家ID");
+            entity.Property(e => e.狀態).HasMaxLength(10).IsFixedLength();
             entity.Property(e => e.訂單id).HasColumnName("訂單ID");
             entity.Property(e => e.金額小記).HasColumnType("money");
             entity.Property(e => e.餐點id).HasColumnName("餐點ID");
@@ -1028,6 +1032,7 @@ public partial class studentContext : DbContext
             entity.ToTable("t訂餐_餐點資訊表");
 
             entity.Property(e => e.餐點id).HasColumnName("餐點ID");
+            entity.Property(e => e.上架).HasMaxLength(10).IsFixedLength();
             entity.Property(e => e.店家id).HasColumnName("店家ID");
             entity.Property(e => e.餐點名稱).HasMaxLength(50);
             entity.Property(e => e.餐點定價).HasColumnType("money");

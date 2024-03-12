@@ -1,0 +1,668 @@
+﻿@section Styles {
+    <style>
+        #time-range p {
+            font-family: "Arial", sans-serif;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .ui-slider-horizontal {
+            height: 8px;
+            background: #D7D7D7;
+            border: 1px solid #BABABA;
+            box-shadow: 0 1px 0 #FFF, 0 1px 0 #CFCFCF inset;
+            clear: both;
+            margin: 8px 0;
+            -webkit-border-radius: 6px;
+            -moz-border-radius: 6px;
+            -ms-border-radius: 6px;
+            -o-border-radius: 6px;
+            border-radius: 6px;
+        }
+
+        .ui-slider {
+            position: relative;
+            text-align: left;
+        }
+
+        .ui-slider-horizontal .ui-slider-range {
+            top: -1px;
+            height: 100%;
+        }
+
+        .ui-slider .ui-slider-range {
+            position: absolute;
+            z-index: 1;
+            height: 8px;
+            font-size: .7em;
+            display: block;
+            border: 1px solid #5BA8E1;
+            box-shadow: 0 1px 0 #AAD6F6 inset;
+            -moz-border-radius: 6px;
+            -webkit-border-radius: 6px;
+            -khtml-border-radius: 6px;
+            border-radius: 6px;
+            background: #81B8F3;
+            background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgi…pZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
+            background-size: 100%;
+            background-image: -webkit-gradient(linear, 50% 0, 50% 100%, color-stop(0%, #A0D4F5), color-stop(100%, #81B8F3));
+            background-image: -webkit-linear-gradient(top, #A0D4F5, #81B8F3);
+            background-image: -moz-linear-gradient(top, #A0D4F5, #81B8F3);
+            background-image: -o-linear-gradient(top, #A0D4F5, #81B8F3);
+            background-image: linear-gradient(top, #A0D4F5, #81B8F3);
+        }
+
+        .ui-slider .ui-slider-handle {
+            border-radius: 50%;
+            background: #F9FBFA;
+            background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgi…pZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
+            background-size: 100%;
+            background-image: -webkit-gradient(linear, 50% 0, 50% 100%, color-stop(0%, #C7CED6), color-stop(100%, #F9FBFA));
+            background-image: -webkit-linear-gradient(top, #C7CED6, #F9FBFA);
+            background-image: -moz-linear-gradient(top, #C7CED6, #F9FBFA);
+            background-image: -o-linear-gradient(top, #C7CED6, #F9FBFA);
+            background-image: linear-gradient(top, #C7CED6, #F9FBFA);
+            width: 22px;
+            height: 22px;
+            -webkit-box-shadow: 0 2px 3px -1px rgba(0, 0, 0, 0.6), 0 -1px 0 1px rgba(0, 0, 0, 0.15) inset, 0 1px 0 1px rgba(255, 255, 255, 0.9) inset;
+            -moz-box-shadow: 0 2px 3px -1px rgba(0, 0, 0, 0.6), 0 -1px 0 1px rgba(0, 0, 0, 0.15) inset, 0 1px 0 1px rgba(255, 255, 255, 0.9) inset;
+            box-shadow: 0 2px 3px -1px rgba(0, 0, 0, 0.6), 0 -1px 0 1px rgba(0, 0, 0, 0.15) inset, 0 1px 0 1px rgba(255, 255, 255, 0.9) inset;
+            -webkit-transition: box-shadow .3s;
+            -moz-transition: box-shadow .3s;
+            -o-transition: box-shadow .3s;
+            transition: box-shadow .3s;
+        }
+
+        .ui-slider .ui-slider-handle {
+            position: absolute;
+            z-index: 2;
+            width: 22px;
+            height: 22px;
+            cursor: default;
+            border: none;
+            cursor: pointer;
+        }
+
+            .ui-slider .ui-slider-handle:after {
+                content: "";
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                top: 50%;
+                margin-top: -4px;
+                left: 50%;
+                margin-left: -4px;
+                background: #30A2D2;
+                -webkit-box-shadow: 0 1px 1px 1px rgba(22, 73, 163, 0.7) inset, 0 1px 0 0 #FFF;
+                -moz-box-shadow: 0 1px 1px 1px rgba(22, 73, 163, 0.7) inset, 0 1px 0 0 white;
+                box-shadow: 0 1px 1px 1px rgba(22, 73, 163, 0.7) inset, 0 1px 0 0 #FFF;
+            }
+
+        .ui-slider-horizontal .ui-slider-handle {
+            top: -.5em;
+            margin-left: -.6em;
+        }
+
+        .ui-slider a:focus {
+            outline: none;
+        }
+
+        #slider-range {
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        #time-range {
+            width: 100%;
+        }
+
+        .btn-check:checked + .btn-outline-primary {
+            background-color: red; /* 修改背景颜色 */
+            border-color: red; /* 修改边框颜色 */
+            color: #fff; /* 修改文本颜色 */
+        }
+    </style>
+}
+<div class="is-light">
+    <div class="ts-content is-tertiary is-vertically-padded is-rounded">
+        <div class="ts-container is-very-narrow has-vertically-spaced">
+            <div class="ts-header is-big is-massive">營業時間管理</div>
+            <div class="ts-text is-secondary">點選修改後就能新增與編輯營業時間，你能針對不同星期做編輯</div>
+        </div>
+    </div>
+</div>
+<button class="ts-button is-start-icon is-large m-2 is-light" id="subDisplayShow">
+    <span class="ts-icon is-check-icon"></span>
+    儲存時段變更
+</button>
+<button class="ts-button is-end-icon is-secondary is-large m-2" id="addtimeforAll">
+    新增時段區間
+    <span class="ts-icon is-plus-icon"></span>
+</button>
+@* 標題結束 *@
+<div class="bottom-data ts-grid" id="timeTag">
+    <div class="orders">
+        <div class="header">
+            <label class="ts-checkbox is-large is-light">
+                <input type="checkbox" checked />
+            </label>
+            <h3>平日時段</h3>
+            <button class="ts-button is-light">新增</button>
+            <button class="ts-button is-light is-disabled">儲存</button>
+        </div>
+        <div id="timelist">
+        </div>
+    </div>
+    <!-- End of Reminders-->
+</div>
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">新增時段名稱群組</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="timeForm">
+                    <div class="header is-light">
+                        <label for="時段名稱">時段名稱:</label>
+                        <input type="text" name="titletime" id="titletime" />
+                        <span class="ts-text is-negative" id="titletimeError"></span>
+                    </div>
+                    <div id="timelist">
+                        <div class="card text-center m-3">
+                            <div class="card-header">
+                                <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                                    <input type="checkbox" class="btn-check btn-check01" id="btncheck11" autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="btncheck11">星期一</label>
+
+                                    <input type="checkbox" class="btn-check btn-check01" id="btncheck12" autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="btncheck12">星期二</label>
+
+                                    <input type="checkbox" class="btn-check btn-check01" id="btncheck13" autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="btncheck13">星期三</label>
+
+                                    <input type="checkbox" class="btn-check btn-check01" id="btncheck14" autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="btncheck14">星期四</label>
+
+                                    <input type="checkbox" class="btn-check btn-check01" id="btncheck15" autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="btncheck15">星期五</label>
+
+                                    <input type="checkbox" class="btn-check btn-check01" id="btncheck16" autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="btncheck16">星期六</label>
+
+                                    <input type="checkbox" class="btn-check btn-check01" id="btncheck17" autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="btncheck17">星期日</label>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="time-range">
+                                    <div class="sliders_step1">
+                                        <div id="slider-range2" class="m-3"></div>
+                                    </div>
+                                    <div class="ts-wrap">
+                                        <h4 class="slider-time3 text-secondary" id="startTime">09:00</h4>
+                                        <p>~</p>
+                                        <h4 class="slider-time4 text-secondary" id="endTime">17:00</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="text" style="display:none" name="timeShow" id="timeShow">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="subTimeBtn">確認送出</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script>
+        const storeID = @User?.FindFirst("teacherID")?.Value;
+        //測試程式
+        $("#slider-range2").slider({
+            range: true,
+            min: 0,
+            max: 1440,
+            step: 30,
+            values: [540, 1020],
+            slide: function (e, ui) {
+                var hours1 = Math.floor(ui.values[0] / 60);
+                var minutes1 = ui.values[0] - (hours1 * 60);
+
+                if (hours1.length == 1) hours1 = '0' + hours1;
+                if (minutes1.length == 1) minutes1 = '0' + minutes1;
+                if (minutes1 == 0) minutes1 = '00';
+                if (hours1 >= 12) {
+                    if (hours1 == 12) {
+                        hours1 = hours1;
+                        minutes1 = minutes1 + " PM";
+                    } else {
+                        hours1 = hours1 - 12;
+                        minutes1 = minutes1 + " PM";
+                    }
+                } else {
+                    hours1 = hours1;
+                    minutes1 = minutes1 + " AM";
+                }
+                if (hours1 == 0) {
+                    hours1 = 12;
+                    minutes1 = minutes1;
+                }
+
+                $('.slider-time3').html(hours1 + ':' + minutes1);
+
+                var hours2 = Math.floor(ui.values[1] / 60);
+                var minutes2 = ui.values[1] - (hours2 * 60);
+
+                if (hours2.length == 1) hours2 = '0' + hours2;
+                if (minutes2.length == 1) minutes2 = '0' + minutes2;
+                if (minutes2 == 0) minutes2 = '00';
+                if (hours2 >= 12) {
+                    if (hours2 == 12) {
+                        hours2 = hours2;
+                        minutes2 = minutes2 + " PM";
+                    } else if (hours2 == 24) {
+                        hours2 = 11;
+                        minutes2 = "59 PM";
+                    } else {
+                        hours2 = hours2 - 12;
+                        minutes2 = minutes2 + " PM";
+                    }
+                } else {
+                    hours2 = hours2;
+                    minutes2 = minutes2 + " AM";
+                }
+
+                $('.slider-time4').html(hours2 + ':' + minutes2);
+            }
+        });
+        //換算12小時成24小時制
+        function convertTo24Hour(time12h) {
+            const [time, modifier] = time12h.split(' ');
+
+            let [hours, minutes] = time.split(':');
+
+            if (hours === '12') {
+                hours = '00';
+            }
+
+            if (modifier === 'PM') {
+                hours = parseInt(hours, 10) + 12;
+            }
+
+            return `${hours}:${minutes}`;
+        }
+        //送出存取顯示變更
+        $("#subDisplayShow").click(() => {
+            var selectedValue = document.querySelector('input[name="選擇"]:checked').value;
+            $.ajax({
+                url: `@Url.Content("~/tOrder_StoreAPI/storeTimeManger")?id=${storeID}&name=${selectedValue}`,
+                method: 'POST',
+                success: () => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '時段顯示完成儲存',
+                        text: '完成修改',
+                    }).then(() => {
+                        timelist();
+                    })
+                },
+                error: () => { console.log('失敗') }
+            })
+        })
+        //新增一個時段，顯示視窗
+        $('#addtimeforAll').click(() => {
+            $('#timeShow').val("0");
+            $('#staticBackdrop').modal('show');
+        })
+        //設置表單初始化
+        $('#staticBackdrop').on('hidden.bs.modal', function (e) {
+            $('.btn-check01').each(function () {
+                if ($(this).prop('checked')) {
+                    $(this).prop('checked', false);
+                }
+                $("#slider-range2").slider({
+                    range: true,
+                    min: 0,
+                    max: 1440,
+                    step: 30,
+                    values: [540, 1020],
+                    slide: function (e, ui) {
+                        var hours1 = Math.floor(ui.values[0] / 60);
+                        var minutes1 = ui.values[0] - (hours1 * 60);
+
+                        if (hours1.length == 1) hours1 = '0' + hours1;
+                        if (minutes1.length == 1) minutes1 = '0' + minutes1;
+                        if (minutes1 == 0) minutes1 = '00';
+                        if (hours1 >= 12) {
+                            if (hours1 == 12) {
+                                hours1 = hours1;
+                                minutes1 = minutes1 + " PM";
+                            } else {
+                                hours1 = hours1 - 12;
+                                minutes1 = minutes1 + " PM";
+                            }
+                        } else {
+                            hours1 = hours1;
+                            minutes1 = minutes1 + " AM";
+                        }
+                        if (hours1 == 0) {
+                            hours1 = 12;
+                            minutes1 = minutes1;
+                        }
+
+                        $('.slider-time3').html(hours1 + ':' + minutes1);
+
+                        var hours2 = Math.floor(ui.values[1] / 60);
+                        var minutes2 = ui.values[1] - (hours2 * 60);
+
+                        if (hours2.length == 1) hours2 = '0' + hours2;
+                        if (minutes2.length == 1) minutes2 = '0' + minutes2;
+                        if (minutes2 == 0) minutes2 = '00';
+                        if (hours2 >= 12) {
+                            if (hours2 == 12) {
+                                hours2 = hours2;
+                                minutes2 = minutes2 + " PM";
+                            } else if (hours2 == 24) {
+                                hours2 = 11;
+                                minutes2 = "59 PM";
+                            } else {
+                                hours2 = hours2 - 12;
+                                minutes2 = minutes2 + " PM";
+                            }
+                        } else {
+                            hours2 = hours2;
+                            minutes2 = minutes2 + " AM";
+                        }
+
+                        $('.slider-time4').html(hours2 + ':' + minutes2);
+                    }
+                });
+                $('#timeForm')[0].reset();
+                $('.slider-time3').text("09:00");
+                $('.slider-time4').text("17:00");
+                $('#titletimeError').text('');
+                $('#timeShow').val('');
+                $('#titletime').prop('disabled', false);
+            })
+        })
+        //將表單送出
+        $('#subTimeBtn').click(() => {
+            let arry = ""; //抓取選取到的星期
+            const startime = convertTo24Hour($('#startTime').text());
+            const endtime = convertTo24Hour($('#endTime').text());
+            $('.btn-check01').each(function () {
+                if ($(this).prop('checked')) {
+                    var labelText = $(this).next('label').text(); // 獲取被選取按鈕的標籤文字
+                    arry += labelText + ",";
+                }
+            })
+            if (arry.endsWith(',')) {
+                arry = arry.slice(0, -1);
+            }
+            let formData = new FormData($('#timeForm')[0]);
+            formData.append('weeklist', arry);
+            formData.append('start', startime);
+            formData.append('end', endtime);
+            formData.append('ID', storeID);
+            $.ajax({
+                url: '@Url.Content("~/tOrder_StoreAPI/storeTimeAdd")',
+                method: 'post',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: (datas) => {
+                    if (!datas.isValid) {
+                         $('#titletimeError').text(datas.errors.titletime);
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '新增時段完成',
+                            text: '資料新增完成',
+                        }).then(() => {
+                            $('#staticBackdrop').modal('hide');
+                            timelist();
+                        })
+                    }
+                },
+                error: () => {
+                    console.log('失敗');
+                }
+            })
+        })
+        //載入畫面的日期與時段狀態
+        const timelist = () => {
+            $.ajax({
+                url: `@Url.Content("~/tOrder_StoreAPI/storeTimeManger")?id=${storeID}`,
+                success: (datas) => {
+                    let sliderCount = 0;
+                    const datalist = datas.map(a => {
+                        const chick = a.顯示.trim() == "1" ? "checked" : "";
+                        const timelist = a.時間表.map(b => {
+                            const daytime = b.星期.split(',');
+                            let buttonsChecked = []; // 存储应该被选中的按钮
+                            daytime.forEach(day => {
+                                if (day !== "") { // 确保星期不为空
+                                    switch (day.trim()) { // 使用 trim() 方法去除空格并比较星期
+                                        case "星期一":
+                                            buttonsChecked.push("#btncheck1");
+                                            break;
+                                        case "星期二":
+                                            buttonsChecked.push("#btncheck2");
+                                            break;
+                                        case "星期三":
+                                            buttonsChecked.push("#btncheck3");
+                                            break;
+                                        case "星期四":
+                                            buttonsChecked.push("#btncheck4");
+                                            break;
+                                        case "星期五":
+                                            buttonsChecked.push("#btncheck5");
+                                            break;
+                                        case "星期六":
+                                            buttonsChecked.push("#btncheck6");
+                                            break;
+                                        case "星期日":
+                                            buttonsChecked.push("#btncheck7");
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }
+                            });
+                            const sliderId = `slider-range-${sliderCount++}`;
+                            return `<div class="card text-center m-3">
+                                        <div class="card-header">
+                                            <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                                                <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off" disabled ${buttonsChecked.includes("#btncheck1") ? "checked" : ""}>
+                                                <label class="btn btn-outline-primary" for="btncheck1">星期一</label>
+
+                                                <input type="checkbox" class="btn-check" id="btncheck2" autocomplete="off" disabled ${buttonsChecked.includes("#btncheck2") ? "checked" : ""}>
+                                                <label class="btn btn-outline-primary" for="btncheck2">星期二</label>
+
+                                                <input type="checkbox" class="btn-check" id="btncheck3" autocomplete="off" disabled ${buttonsChecked.includes("#btncheck3") ? "checked" : ""}>
+                                                <label class="btn btn-outline-primary" for="btncheck3">星期三</label>
+
+                                                <input type="checkbox" class="btn-check" id="btncheck4" autocomplete="off" disabled ${buttonsChecked.includes("#btncheck4") ? "checked" : ""}>
+                                                <label class="btn btn-outline-primary" for="btncheck4">星期四</label>
+
+                                                <input type="checkbox" class="btn-check" id="btncheck5" autocomplete="off" disabled ${buttonsChecked.includes("#btncheck5") ? "checked" : ""}>
+                                                <label class="btn btn-outline-primary" for="btncheck5">星期五</label>
+
+                                                <input type="checkbox" class="btn-check" id="btncheck6" autocomplete="off" disabled ${buttonsChecked.includes("#btncheck6") ? "checked" : ""}>
+                                                <label class="btn btn-outline-primary" for="btncheck6">星期六</label>
+
+                                                <input type="checkbox" class="btn-check" id="btncheck7" autocomplete="off" disabled ${buttonsChecked.includes("#btncheck7") ? "checked" : ""}>
+                                                <label class="btn btn-outline-primary" for="btncheck7">星期日</label>
+                                            </div>
+                                        </div>
+                                        <div class="position-absolute top-0 end-0">
+                                           <button type="button" class="btn-close" aria-label="Close" data-id=${b.營業時間表id}></button>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="time-range">
+                                                <div class="sliders_step1">
+                                                <div id="${sliderId}" class="m-3"></div>
+                                                </div>
+                                                <div class="ts-wrap">
+                                                    <h4 class="slider-time text-secondary">${b.開始營業時間}</h4>
+                                                    <p>~</p>
+                                                    <h4 class="slider-time2 text-secondary">${b.結束營業時間}</h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>`;
+                        }).join(''); // 將 timelist 組合成字串
+
+                        return `
+                                 <div class="orders column is-4-wide">
+                                     <div class="header">
+                                        <label class="ts-checkbox is-large is-light">
+                                        <input type="radio" name="選擇" value="${a.時間表名稱}" ${chick}/>
+                                         </label>
+                                     <h3>${a.時間表名稱}</h3>
+                                     <button class="ts-button is-light" data-title="${a.時間表名稱}" data-show="${a.顯示}">新增時段</button>
+                                     </div>
+                                    <div id="timelist">
+                                        ${timelist}
+                                    </div>
+                                </div>
+                                        `;
+                    }).join(''); // 將 datalist 組合成字串
+                    $('#timeTag').html(datalist); // 將 datalist 插入到 #timeTag 中
+                    function convertTimeToMinutes(time) {
+                        const [hour, minute] = time.split(":").map(Number);
+                        return hour * 60 + minute;
+                    }
+                    let sliderCountNew = 0;
+                    datas.forEach((group, index) => {
+                        group.時間表.forEach(item => {
+                            const sliderId = `#slider-range-${sliderCountNew++}`; // 获取当前 slider-range 的 ID
+                            const startMinutes = convertTimeToMinutes(item.開始營業時間);
+                            const endMinutes = convertTimeToMinutes(item.結束營業時間);
+                            $(sliderId).slider({
+                                range: true,
+                                min: 0,
+                                max: 1440,
+                                step: 30,
+                                values: [startMinutes, endMinutes],
+                                slide: function (e, ui) {
+                                    var hours1 = Math.floor(ui.values[0] / 60);
+                                    var minutes1 = ui.values[0] - (hours1 * 60);
+
+                                    if (hours1.length == 1) hours1 = '0' + hours1;
+                                    if (minutes1.length == 1) minutes1 = '0' + minutes1;
+                                    if (minutes1 == 0) minutes1 = '00';
+                                    if (hours1 >= 12) {
+                                        if (hours1 == 12) {
+                                            hours1 = hours1;
+                                            minutes1 = minutes1 + " PM";
+                                        } else {
+                                            hours1 = hours1 - 12;
+                                            minutes1 = minutes1 + " PM";
+                                        }
+                                    } else {
+                                        hours1 = hours1;
+                                        minutes1 = minutes1 + " AM";
+                                    }
+                                    if (hours1 == 0) {
+                                        hours1 = 12;
+                                        minutes1 = minutes1;
+                                    }
+
+                                    $('.slider-time3').html(hours1 + ':' + minutes1);
+
+                                    var hours2 = Math.floor(ui.values[1] / 60);
+                                    var minutes2 = ui.values[1] - (hours2 * 60);
+
+                                    if (hours2.length == 1) hours2 = '0' + hours2;
+                                    if (minutes2.length == 1) minutes2 = '0' + minutes2;
+                                    if (minutes2 == 0) minutes2 = '00';
+                                    if (hours2 >= 12) {
+                                        if (hours2 == 12) {
+                                            hours2 = hours2;
+                                            minutes2 = minutes2 + " PM";
+                                        } else if (hours2 == 24) {
+                                            hours2 = 11;
+                                            minutes2 = "59 PM";
+                                        } else {
+                                            hours2 = hours2 - 12;
+                                            minutes2 = minutes2 + " PM";
+                                        }
+                                    } else {
+                                        hours2 = hours2;
+                                        minutes2 = minutes2 + " AM";
+                                    }
+
+                                    $('.slider-time4').html(hours2 + ':' + minutes2);
+                                }
+                            });
+                            $(sliderId).slider("disable");
+                        })
+                    })
+                },
+                error: () => {
+                    console.log("錯誤問題");
+                }
+            })
+        }
+        //點選叉叉提醒刪除時段
+        $(document).on('click', '.position-absolute button.btn-close', function () {
+            var timeID = $(this).data('id');
+            Swal.fire({
+                title: "時段變更修改",
+                text: "確定要刪除該時段",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "確認刪除"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // 用户点击了确认按钮，执行 AJAX 请求
+                    $.ajax({
+                        url: `@Url.Content("~/tOrder_StoreAPI/storeTime")?id=${timeID}`,
+                        method: 'Delete',
+                        success: () => {
+                            Swal.fire({
+                                title: "完成",
+                                text: "時段已完成變更",
+                                icon: "success"
+                            }).then(() => {
+                                timelist();
+                            });
+                        }
+                    });
+                }
+            });
+        });
+        //
+        $(document).on('click', '.header button.ts-button', function () {
+            var timeTitle = $(this).data('title');
+            var timeShow = $(this).data('show');
+            console.log(timeTitle);
+            //$('#titletime').prop('disabled', true);
+            $('#titletime').val(timeTitle);
+            $('#timeShow').val(timeShow);
+            $('#staticBackdrop').modal('show');
+        });
+        $(window).resize(function () {
+            if ($(window).width() <= 2200) { // 如果窗口宽度小于等于600px
+                $('#timeTag').removeClass('ts-grid'); // 移除类名
+            } else {
+                $('#timeTag').addClass('ts-grid'); // 添加类名
+            }
+        });
+        (() => {
+            timelist();
+        })()
+    </script>
+}

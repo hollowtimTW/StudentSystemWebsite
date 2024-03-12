@@ -18,6 +18,7 @@ public partial class T訂餐訂單詳細資訊表
     public int? 餐點數量 { get; set; }
 
     public decimal? 金額小記 { get; set; }
+    public string 狀態 { get; set; }
 
     public virtual T訂餐店家資料表 店家 { get; set; }
 

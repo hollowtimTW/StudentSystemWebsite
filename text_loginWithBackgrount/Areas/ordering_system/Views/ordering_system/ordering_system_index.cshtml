@@ -376,7 +376,7 @@
             const datacount = await requestcount.json();
             $('#order_count').text(datacount.historyorder);
             //載入總營業額
-            $('#turnover').text(datacount.turnover);
+            $('#turnover').text(datacount.turnover.toLocaleString());
             //顯示平均平台評價分數
             $('#totalevaluate').text(datacount.evaluate+ "/5");
             //載入最上方第一家店家菜單

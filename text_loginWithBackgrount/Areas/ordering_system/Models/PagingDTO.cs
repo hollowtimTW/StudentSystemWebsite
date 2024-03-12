@@ -8,5 +8,6 @@ namespace Class_system_Backstage_pj.Areas.ordering_system.Models
         public List<T訂餐店家資料表> spotImagesSpots { get; set; }
         public List<orderdeatialViewModel> spotOrderdeatial { get; set; }
 
+        public List<T訂餐餐點資訊表> spotMeauList { get; set; }
     }
 }
