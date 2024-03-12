@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "新增文章";
+}
+@section BreadcrumbsSection {
+    <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
+    <div class="breadcrumbs">
+        <div class="page-header d-flex align-items-center" style="background-image: url('');">
+            <div class="container position-relative">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-lg-6 text-center">
+                        <h2>@ViewData["Title"]</h2>
+                        <p>來場同儕間的激烈溝通吧！</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav>
+            <div class="container d-flex justify-content-between align-items-center">
+                <!-- 導覽列項目設置，請根據目前網頁的深度增減 -->
+                <ol>
+                    <li><a asp-area="" asp-controller="Template" asp-action="Index">首頁</a></li>
+                    <li><a asp-area="class_discuss" asp-controller="discuss" asp-action="Index">學生論壇</a></li>
+                    <li>@ViewData["Title"]</li>
+                </ol>
+            </div>
+        </nav>
+    </div>
+}
+<section id="contact" class="contact">
+    <div class="container" data-aos="fade-up">
+
+        <div class="row gx-lg-0 gy-4">
+            <!-- 表單區 -->
+                <form action="forms/contact.php" method="post" role="form" class="php-email-form">
+                    <div class="row"><!-- 標籤 -->
+                        <div class="col-md-6 form-group">
+                            <input type="text" name="name" class="form-control" id="name" placeholder="標籤" required>
+                        </div>
+                    </div>
+                    <div class="form-group mt-3"><!-- 標題 -->
+                        <input type="text" class="form-control" name="subject" id="subject" placeholder="文章標題" required>
+                    </div>
+                <div class="form-group mt-3" id="editor" ui="">
+                    <textarea class="form-control" rows="7" placeholder="文章內容" required></textarea>
+                    </div>
+                    <div class="my-3">
+                        <div class="loading">Loading</div>
+                        <div class="error-message"></div>
+                        <div class="sent-message">Your message has been sent. Thank you!</div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit">取消編輯</button>
+                        <button type="submit">編輯完成</button>
+                    </div>
+                </form>
+        </div>
+    </div>
+</section><!-- End Contact Section -->
+
+@section Scripts{
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor'))
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+}
