@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
+using text_loginWithBackgrount.Areas.question_bank.ViewModels;
 
 
 namespace Class_system_Backstage_pj.Areas.student_management.Controllers
@@ -87,7 +88,7 @@ namespace Class_system_Backstage_pj.Areas.student_management.Controllers
 
             if (!ModelState.IsValid)
             {
-                ViewBag.ErrorMessage = "註冊失敗，請檢查您的輸入。";
+                TempData["ErrorMessage"] = "註冊失敗，請檢查您的輸入。";
                 return View(memberRegisterinfo);
             }
 
@@ -173,52 +174,90 @@ namespace Class_system_Backstage_pj.Areas.student_management.Controllers
         public IActionResult GetStudentEditPartialView(int id)
         {
 
-            var member = _studentContext.T會員學生s.Find(id);
+            var student = _studentContext.T會員學生s.Find(id);
+            MemberEditViewModel memberEditViewModel = new MemberEditViewModel
+            {
+                學生id = student.學生id,
+                姓名 = student.姓名,
+                性別 = student.性別,
+                身分證字號 = student.身分證字號,
+                信箱 = student.信箱,
+                手機 = student.手機,
+                地址 = student.地址,
+                生日 = student.生日,
+                學校 = student.學校,
+                科系 = student.科系,
+                學位 = student.學位,
+                畢肄 = student.畢肄,
+                鎖定 = student.鎖定
+
+            };
             //只給_StudentPartialView的話
             //只會去這邊找/Areas/student_management/Views/Member/_StudentPartialView
-            return PartialView("~/Areas/student_management/Views/PartialView/_StudentPartialView.cshtml", member);
+            return PartialView("~/Areas/student_management/Views/PartialView/_StudentPartialView.cshtml", memberEditViewModel);
         }
 
         // PUT: api/Member/5
         [HttpPost]
-        public IActionResult UpdateStudent(int id, T會員學生 updatedMember)
+        public IActionResult EditStudent(MemberEditViewModel editMember)
         {
+            if (!ModelState.IsValid)
+            {
+                TempData["memberMessage"] = "修改失敗，請檢查項目數值";
+                return RedirectToAction(nameof(GetAllStudent));
+            }
 
-            var existingMember = _studentContext.T會員學生s.Find(id);
-            if (existingMember == null)
+
+            var user = _studentContext.T會員學生s.Find(editMember.學生id);
+            if (user == null)
             {
                 return NotFound();
             }
-            else {
-                existingMember.姓名 = updatedMember.姓名;
-                existingMember.性別 = updatedMember.性別;
-                existingMember.身分證字號 = updatedMember.身分證字號;
-                existingMember.信箱 = updatedMember.信箱;
-                existingMember.手機 = updatedMember.手機;
-                existingMember.地址 = updatedMember.地址;
-                existingMember.圖片 = updatedMember.圖片;
-                existingMember.生日 = updatedMember.生日;
-                existingMember.修改日期 = DateTime.Now;
-                //existingMember.狀態 = updatedMember.狀態;
-                //existingMember.鎖定 = updatedMember.鎖定;
-                existingMember.學校 = updatedMember.學校;
-                existingMember.科系 = updatedMember.科系;
-                existingMember.學位 = updatedMember.學位;
-                existingMember.畢肄 = updatedMember.畢肄;
-            }
-
-
-            try
-            {
-                _studentContext.Update(existingMember);
-                _studentContext.SaveChanges();
-            }
-            catch (Exception ex) 
+            else
             {
 
+                try
+                {
+                    byte[]? _filebyte = null;
+                    if (editMember.圖片 != null && editMember.圖片.Length > 0)
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            // 將圖片數據讀取到內存流中
+                            editMember.圖片.CopyTo(memoryStream);
+                            // 將內存流中的數據轉換為 byte 陣列
+                            _filebyte = memoryStream.ToArray();
+                        }
+                    }
+
+                    user.姓名 = editMember.姓名;
+                    user.性別 = editMember.性別;
+                    user.身分證字號 = editMember.身分證字號;
+                    user.信箱 = editMember.信箱;
+                    user.手機 = editMember.手機;
+                    user.地址 = editMember.地址;
+                    user.圖片 = _filebyte;
+                    user.生日 = editMember.生日;
+                    user.修改日期 = DateTime.Now;
+                    //existingMember.狀態 = updatedMember.狀態;
+                    user.鎖定 = editMember.鎖定;
+                    user.學校 = editMember.學校;
+                    user.科系 = editMember.科系;
+                    user.學位 = editMember.學位;
+                    user.畢肄 = editMember.畢肄;
+
+                    _studentContext.Update(user);
+                    _studentContext.SaveChanges();
+                    TempData["memberMessage"] = "修改成功";
+                    return RedirectToAction(nameof(GetAllStudent));
+
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest();
+                }
             }
 
-            return Ok();
         }
 
 

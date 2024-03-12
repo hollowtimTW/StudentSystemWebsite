@@ -1,11 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace text_loginWithBackgrount.ViewModels
+namespace Class_system_Backstage_pj.Areas.student_management.ViewModels
 {
-    public class MemberViewModel
+    public class MemberEditViewModel
     {
+        public int 學生id { get; set; }
+
         [Required(ErrorMessage = "姓名欄位未填寫")]
-        [StringLength(10, MinimumLength = 3, ErrorMessage = "姓名長度不正確")]
+        [StringLength(8, MinimumLength = 3, ErrorMessage = "姓名長度不正確")]
         public string? 姓名 { get; set; }
 
         [Required(ErrorMessage = "性別欄位為空")]
@@ -24,14 +26,6 @@ namespace text_loginWithBackgrount.ViewModels
 
         public string? 地址 { get; set; }
 
-        [StringLength(16, MinimumLength = 4, ErrorMessage = "密碼長度不正確")]
-        [Required(ErrorMessage = "密碼欄位未填寫")]
-        public string? 密碼 { get; set; }
-
-        [StringLength(16, MinimumLength = 4, ErrorMessage = "密碼長度不正確")]
-        [Compare("密碼", ErrorMessage = "密碼與確認密碼不相符")]
-        public string? 密碼驗證 { get; set; }
-
         public IFormFile? 圖片 { get; set; }
 
         public DateTime? 生日 { get; set; }
@@ -44,7 +38,7 @@ namespace text_loginWithBackgrount.ViewModels
 
         public string? 畢肄 { get; set; }
 
-        public DateTime 修改日期 { get; set; }
+        public string? 鎖定 { get; set; }
 
     }
 }

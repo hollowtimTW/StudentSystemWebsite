@@ -57,9 +57,9 @@
         </ul>
         <ul class="side-menu">
 
-            <!--老師 我的課程dashboard-->  
+            <!--老師 我的課程dashboard-->
             <li><a asp-area="course_management" asp-controller="courseHome" asp-action="TeacherCourseIndex" asp-route-id="@User?.Claims.FirstOrDefault(c => c.Type == "teacherID").Value"><i class='bx bxs-chalkboard'></i>我的課程</a></li>
-       
+
             <li>
                 <a asp-area="" asp-controller="Login" asp-action="logout">
                     <i class='bx bx-log-out-circle'></i>
@@ -94,23 +94,19 @@
 
             </a>
             <!-- 通知訊息 -->
-
             <!-- 使用者頭像 -->
             @if (authenticateResult.Succeeded)
             {
                 @if (authenticateResult.Principal.IsInRole("teacher"))
                 {
-                    <a href="#" class="profile1">
+                    <a href="#" id="profile_login">
                         <img src="~/images/user.jpg" id="profileImage" style="width: 50px; height: 50px; border-radius: 50%;" />
                     </a>
-                    <script>
-                        loadProfileImage();
-                    </script>
                 }
             }
             else
             {
-                <a href="#" class="profile2">
+                <a href="#" id="profile_nologin">
                     <img src="~/images/user.jpg" />
                 </a>
             }
@@ -142,15 +138,27 @@
     @* <script src="~/js/index.js" asp-append-version="true"></script> *@
     <script src="~/Backstage/index.min.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-        <script>    
-
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 检查是否存在profile_login元素
+            var profileLoginElement = document.getElementById('profile_login');
+            if (profileLoginElement) {
+                // 如果存在profile_login元素，则调用loadProfileImage函数
+                loadProfileImage();
+            }
+        });
         function loadProfileImage() {
             var teacherId = '@User?.FindFirst("TeacherId")?.Value';
+            var url = '/Login/GetTeacherImage?teacherId=' + teacherId;
             $.ajax({
-                url: '/Login/GetTeacherImage/' + teacherId,
+                url: url,
                 type: 'GET',
                 success: function (data) {
-                    $('#profileImage').attr('src', 'data:image/png;base64,' + data);
+                    if (data != null) {
+                        $('#profileImage').attr('src', 'data:image/png;base64,' + data);
+                    } else {
+                        $('#profileImage').attr('src', '~/images/user.jpg');
+                    }
                 },
                 error: function (xhr, status, error) {
                     console.log('錯誤：' + error);

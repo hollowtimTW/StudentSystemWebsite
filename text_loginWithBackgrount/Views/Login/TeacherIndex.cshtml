@@ -22,46 +22,13 @@
             <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
             </div>
             <span>或使用您的信箱進行申請</span> *@
-            @*            <form asp-action="Privacy">
-
-            <input type="text" placeholder="姓名" name="name">
-            <input type="email" placeholder="信箱" name="email">
-            <input type="password" placeholder="密碼" name="password">
-            <input type="password" placeholder="密碼確認" name="confirm_password">
-            <select class="form-control" name="gender">
-            <option value="男">男</option>
-            <option value="女">女</option>
-            </select>
-            <input type="text" placeholder="身分證字號" name="id_number">
-            <input type="tel" placeholder="手機" name="phone">
-            <input type="text" placeholder="地址" name="address">
-            <input type="file" name="image" accept="image/*">
-            <input type="date" name="birthday">
-            <input type="text" placeholder="學校" name="school">
-            <input type="text" placeholder="科系" name="department">
-            <select class="form-control" name="degree">
-            <option value="">----請選擇最高學位----</option>
-            <option value="國小">國小</option>
-            <option value="國中">國中</option>
-            <option value="高中">高中</option>
-            <option value="大學">大學</option>
-            <option value="碩士">碩士</option>
-            <option value="博士">博士</option>
-            </select>
-            <select type="text" name="graduation">
-            <option value="">----請選擇畢肄業狀態----</option>
-            <option value="畢業">畢業</option>
-            <option value="肄業">肄業</option>
-            </select>
-            <button>申請</button>
-            </form> *@
             <form asp-controller="Login" asp-action="TeacherRegister" role="form" id="TeacherRegister">
                 <div class="row">
-                    <div class="col-md-8 form-group mt-3">
+                    <div class="col-md-12 form-group mt-3">
                         <input asp-for="姓名" class="form-control" placeholder="姓名" id="name">
                         <span asp-validation-for="姓名" class="text-danger"></span>
                     </div>
-                    <div class="col-md-4 form-group mt-3">
+                    <div class="col-md-12 form-group mt-3">
                         <select asp-for="性別" class="form-control" id="gender" required>
                             <option value="">請選擇性別</option>
                             <option value="男">男</option>

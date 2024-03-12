@@ -180,17 +180,37 @@ namespace text_loginWithBackgrount.Controllers
 
         public IActionResult GetTeacherImage(int teacherId)
         {
-            //var user = _dbStudentSystemContext.T會員老師s.SingleOrDefault(a => a.老師id == teacherId);
-            var user = _dbStudentSystemContext.T會員學生s.SingleOrDefault(a => a.學生id == 5);//應急
+            var user = _dbStudentSystemContext.T會員老師s.SingleOrDefault(a => a.老師id == teacherId);
 
             if (user == null || user.圖片 == null || user.圖片.Length == 0)
             {
-                return NotFound("沒有圖片");
+                return NotFound("null");
             }
 
             string base64Image = Convert.ToBase64String(user.圖片);
             return Content(base64Image);
         }
+
+        /// <summary>
+        /// 老師忘記密碼頁
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult TeacherForgetPassword()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// 老師重設密碼頁
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult TeacherResetPassword()
+        {
+            return View();
+        }
+
+
+
 
         //------------------------學生---------------------------
 
@@ -286,11 +306,19 @@ namespace text_loginWithBackgrount.Controllers
         /// 學生確認重複email
         /// </summary>
         /// <returns></returns>        
-        public bool CheckEmailAvailability(string email)
+        public bool CheckEmailAvailability(string email, string originalEmail = null)
         {
-            var user = _dbStudentSystemContext.T會員學生s.FirstOrDefault(a => a.信箱 == email);
-            return (user != null);
+            if (originalEmail == null)
+            {
+                var user = _dbStudentSystemContext.T會員學生s.FirstOrDefault(a => a.信箱 == email);
+                return (user != null);
+            }
+            else {
+                var user = _dbStudentSystemContext.T會員學生s.FirstOrDefault(a => a.信箱 == email && a.信箱 != originalEmail);
+                return (user != null);
+            }
         }
+
 
 
         /// <summary>
@@ -404,8 +432,6 @@ namespace text_loginWithBackgrount.Controllers
                 {
                     return BadRequest(new { errorMessage = "發送驗證信失敗！" });
                 }
-
-
             }
         }
 

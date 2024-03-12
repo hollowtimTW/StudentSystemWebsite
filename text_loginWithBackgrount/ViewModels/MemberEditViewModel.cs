@@ -2,7 +2,7 @@
 
 namespace text_loginWithBackgrount.ViewModels
 {
-    public class MemberViewModel
+    public class MemberEditViewModel
     {
         [Required(ErrorMessage = "姓名欄位未填寫")]
         [StringLength(10, MinimumLength = 3, ErrorMessage = "姓名長度不正確")]
@@ -44,7 +44,6 @@ namespace text_loginWithBackgrount.ViewModels
 
         public string? 畢肄 { get; set; }
 
-        public DateTime 修改日期 { get; set; }
 
     }
 }
