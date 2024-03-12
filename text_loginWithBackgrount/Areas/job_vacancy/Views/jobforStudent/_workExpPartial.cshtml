@@ -15,7 +15,7 @@
                 var isChecked = viewModel.IsInResume ? "checked" : "";
 
                 <div class="form-check">
-                    <input class="form-check-input cbWorkExp" type="checkbox" item-id="@i" id="@checkboxId" name="@checkboxId" value="option1" @isChecked>
+                    <input class="form-check-input cbWorkExp" type="checkbox" id="@checkboxId" item-id="@i" workExp-id="@viewModel.WorkExpID" @isChecked>
                     <label class="form-check-label" for="@checkboxId">@viewModel.CompanyName／@viewModel.JobTitle／@viewModel.Start ~ @viewModel.End</label>
                     <a><i class="bi bi-pencil-fill" role="button" onclick="EditWorkExp(@viewModel.WorkExpID)"></i></a>
                 </div>
@@ -91,19 +91,32 @@
     $(document).ready(function () {
 
 
-        //紀錄選取的工作經驗ID
+        //紀錄選取的工作經驗
         function GetSelectedWorkExpIDs() {
+
             selectedWorkExpIDs = [];
+            resumeWorkIDForSummit = [];
 
             $('.cbWorkExp').each(function () {
+
+                //工作經驗選項編號
                 var itemId = $(this).attr('item-id');
+
+                //工作經驗ID
+                var workExpId = $(this).attr('workExp-id');
+
                 if ($(this).prop('checked')) {
-                    selectedWorkExpIDs.push(itemId); // 勾選時記錄id
+                    selectedWorkExpIDs.push(itemId);
+                    resumeWorkIDForSummit.push(workExpId);
                 }
             });
 
-            //宣告編輯履歷的summit事件需要用到的
-            let resumeWorkIDForSummit = selectedWorkExpIDs;
+            //宣告編輯履歷的summit事件需要用到的工作經驗ID集合
+            var resumeWorkIDForSummitAsInt = window.resumeWorkIDForSummit.map(function(id) {
+                return parseInt(id);
+            });
+
+            window.resumeWorkIDForSummit = resumeWorkIDForSummitAsInt;
 
             return selectedWorkExpIDs;
         }

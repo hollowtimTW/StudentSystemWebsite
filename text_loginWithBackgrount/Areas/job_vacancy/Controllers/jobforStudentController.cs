@@ -228,18 +228,17 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         /// <summary>
         /// 編輯履歷2：更新資料庫的履歷資料。
         /// </summary>
-        /// <param name="resumeID">履歷ID</param>
         /// <param name="viewModel">包含更新資訊的履歷視圖模型</param>
         // POST: job_vacancy/jobforStudent/UpdateResume/
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateResume(int resumeID,
-            [Bind("ResumeID, Name, Birth, Photo, Gender, Phone, Email, School, Department, Academic, Graduated, ResumeTitle, HopeJobTitle, HopeSalary, HopeLocation, Skill, Language, WorkExperience, WorkType, WorkTime, WorkShift, Autobiography")] ResumeCreateViewModel viewModel)
+        public async Task<IActionResult> UpdateResume([Bind("ResumeID, Name, Birth, Photo, Gender, Phone, Email, School, Department, Academic, Graduated, ResumeTitle, HopeJobTitle, HopeSalary, HopeLocation, Skill, Language, WorkExperience, WorkType, WorkTime, WorkShift, Autobiography, ThisResumeWorkExpIDs")] ResumeCreateViewModel viewModel)
         {
+            
             try
             {
-                var thisResume = await _context.T工作履歷資料s.FindAsync(resumeID);
-                if (thisResume == null || resumeID != viewModel.ResumeID)
+                var thisResume = await _context.T工作履歷資料s.FindAsync(viewModel.ResumeID);
+                if (thisResume == null)
                 {
                     return NotFound("無此履歷");
                 }
@@ -249,6 +248,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                 {
                     return NotFound("無此學生");
                 }
+                
 
                 if (ModelState.IsValid)
                 {
@@ -283,6 +283,28 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                     thisResume.F希望工作地點 = viewModel.HopeLocation;
                     thisResume.F自傳 = viewModel.Autobiography;
                     thisResume.F最後更新時間 = DateTime.Now;
+
+
+                    //更新履歷表工作經驗資料
+                    var resumeWorkExpIDs = viewModel.ThisResumeWorkExpIDs;
+                    if (resumeWorkExpIDs != null && resumeWorkExpIDs.Any())
+                    {
+                        //刪除舊資料
+                        var oldData = _context.T工作履歷表工作經驗s.Where(w => w.F履歷Id == viewModel.ResumeID);
+                        _context.T工作履歷表工作經驗s.RemoveRange(oldData);
+
+                        //新增
+                        for (int i = 0; i < resumeWorkExpIDs.Count; i++)
+                        {
+                            T工作履歷表工作經驗 resumeWorkExp = new T工作履歷表工作經驗
+                            {
+                                F履歷Id = viewModel.ResumeID,
+                                F工作經驗Id = resumeWorkExpIDs[i]
+                            };
+
+                            _context.T工作履歷表工作經驗s.Add(resumeWorkExp);
+                        }
+                    }
 
                     _context.Update(thisResume);
                     await _context.SaveChangesAsync();

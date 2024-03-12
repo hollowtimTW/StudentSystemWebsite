@@ -366,6 +366,11 @@
         let workExpValue = checkbox.checked ? 'N' : 'Y';
         formData.set('WorkExperience', workExpValue);
 
+        //履歷表工作經驗
+        resumeWorkIDForSummit.forEach(id => {
+            formData.append('ThisResumeWorkExpIDs', id);
+        });
+
         //輪班
         checkbox = document.getElementById('workShiftCheck');
         let workShiftValue = checkbox.checked ? 'Y' : 'N';
@@ -386,6 +391,11 @@
         //let regEx = /<[^>]*>/g;  //去除HTML標籤
         //const plain = autobiography.replace(regEx, "");
         formData.set('Autobiography', '自傳內容');
+
+        // for (const pair of formData.entries()) {
+        //     console.log(pair[0] + ': ' + pair[1]);
+        // }
+        // return;
 
         const url = '/job_vacancy/jobforStudent/UpdateResume/';
         const response = await fetch(url, {
