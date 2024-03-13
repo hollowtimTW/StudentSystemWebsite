@@ -1,0 +1,289 @@
+﻿@section Styles {
+    <!-- 核心：Tocas UI -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocas/4.2.5/tocas.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocas/4.2.5/tocas.min.js"></script>
+
+    <!-- 字體：Noto Sans TC -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+    <style>
+        h2.text-start::after {
+            content: none; /* 将内容设置为 'none'，即空字符串 */
+        }
+
+        .portfolio-wrap {
+            position: relative;
+            overflow: hidden;
+        }
+
+            .portfolio-wrap img {
+                width: 100%;
+                height: auto;
+                transition: transform 0.3s ease;
+            }
+
+            .portfolio-wrap:hover img {
+                transform: scale(1.05); /* 鼠标悬停时放大图像 */
+            }
+    </style>
+}
+<div class="is-light">
+    <div class="ts-content is-vertically-padded is-tertiary">
+        <div class="ts-container">
+            @* 上頭標籤區 *@
+            <div class="ts-box is-light">
+                <div class="ts-app-layout is-horizontal">
+                    <div class="cell is-fluid">
+                        <div class="ts-content">
+                            <div class="input-group mb-3 ts-input is-circular">
+                                <input type="text" class="form-control" placeholder="搜尋........." aria-label="Recipient's username" aria-describedby="button-addon2" id="searchKeyWord">
+                                <button class="ts-button is-icon" onclick="search()">
+                                    <span class="ts-icon is-magnifying-glass-icon"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="ts-content ts-wrap">
+                            <button class="ts-button is-start-labeled-icon">
+                                <span class="ts-icon is-check-to-slot-icon"></span>
+                                我的最愛
+                            </button>
+                            <button class="ts-button is-start-icon">
+                                <span class="ts-icon is-plus-icon"></span>
+                                購物車
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ts-wrap is-center-aligned mt-3">
+                <div class="column is-3-wide">
+                    <button class="ts-button is-circular is-outlined is-start-icon">
+                        <span class="ts-icon is-cart-plus-icon"></span>
+                        評分最高
+                    </button>
+                </div>
+                <div class="column is-3-wide">
+                    <button class="ts-button is-circular is-outlined is-start-icon">
+                        <span class="ts-icon is-cart-plus-icon"></span>
+                        評分
+                    </button>
+                </div>
+                <div class="column is-3-wide">
+                    <button class="ts-button is-circular is-outlined is-start-icon">
+                        <span class="ts-icon is-cart-plus-icon"></span>
+                        價格
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>@* 上面頭部 *@
+</div>
+<div style="background-color:#ffff;">
+    <section id="testimonials" class="testimonials p-0">
+        <div class="container" data-aos="fade-up">
+
+            <div class="section-header p-0">
+                <h2 class="text-start p-0 m-0 mt-5">熱門餐廳</h2>
+            </div>
+
+            <div class="slides-3 swiper" data-aos="fade-up" data-aos-delay="100">
+                <div class="swiper-wrapper" id="cardiv">
+
+                    <!-- 輪播卡片1 -->
+                    <div class="swiper-slide">
+                        <div class="testimonial-wrap">
+                            <div class="testimonial-item">
+                                <div class="d-flex align-items-center">
+                                    <img src="~/images/t訂餐/店家照片/jai西門.jpg" class="testimonial-img flex-shrink-0 img-fluid" alt="" />
+                                    <div>
+                                        <h3>JAI宅 西門店</h3>
+                                        <h4>美式&nbsp;</h4>
+                                        <div class="stars">
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p>
+                                    <i class="bi bi-quote quote-icon-left"></i>
+                                    最適合情侶約會，家庭聚會、朋友聚會的餐廳，就需要居酒屋的氣氛來帶動，今天要來分享台北必吃居酒屋推薦，一系列日本料理與酒精創造出的完美交響曲
+                                    <i class="bi bi-quote quote-icon-right"></i>
+                                </p>
+                            </div>
+                        </div>
+                    </div><!-- End testimonial item -->
+
+                </div>
+                <!-- 分頁指示器（小圓點） --><!-- 分頁指示器的數量如何生成待研究（swiper-bundle.min.js.map） -->
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+    </section><!-- End Testimonials Section -->
+    <hr />
+    <section id="portfolio" class="portfolio">
+        <div class="container" data-aos="fade-up">
+
+            <div class="section-header p-0">
+                <h2 class="text-start m-0">全部餐廳</h2>
+            </div>
+
+            <div class="portfolio-isotope" data-portfolio-filter="*" data-portfolio-layout="masonry" data-portfolio-sort="original-order" data-aos="fade-up" data-aos-delay="100">
+
+                <!-- 放入商家口味標籤分類 -->
+                <div>
+                    <ul class="portfolio-flters pb-5" id="stylelist">
+                        <!-- 口味標籤類 -->
+                    </ul><!-- End Portfolio Filters -->
+                </div>
+
+                <!-- 簡單型圖文卡片（共有12張，分為4類） -->
+                <div class="row gy-4 portfolio-container" id="storeCard">
+                    <!-- 注意最後一個class，自訂名稱需對應到上方的分頁標題過濾器 --> <!-- 基礎class="col-xl-4 col-md-6 portfolio-item" -->
+                    <div class="col-xl-4 col-md-6 portfolio-item filter-美式 filter-日式">
+                        <div class="portfolio-wrap">
+                            <!-- 圖片連結 -->
+                            <!-- 點進商家圖片連結 -->
+                            <a href="#" data-gallery="portfolio-gallery-app" class="glightbox">
+                                <img src="~/images/t訂餐/店家照片/jai西門.jpg" class="img-fluid" alt="" />
+                                </a>
+                            <div class="portfolio-info">
+                                <!-- 小標題連結 -->
+                                <h4 class="m-0">
+                                    <!-- 點進商家連結 -->
+                                    <a href="portfolio-details.html" title="More Details">海大王朋友飯店</a>
+                                </h4>
+                                <span class="ts-text is-secondary">02-2371-7666</span>
+                                <div class="ts-segment is-secondary is-light">
+                                    最適合情侶約會，家庭聚會、朋友聚會的餐廳，就需要居酒屋的氣氛來帶動，今天要來分享台北必吃居酒屋推薦，一系列日本料理與酒精創造出的完美交響曲
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- End Portfolio Item -->
+                </div><!-- End Portfolio Container -->
+
+            </div>
+
+        </div>
+    </section><!-- End Portfolio Section -->
+</div>
+@section Scripts {
+    <script>
+        const studentID = @User?.FindFirst("StudentId")?.Value;
+        let FavoriteStorelist = [];
+        (async () => {
+            const datas = await $.ajax({
+                url: `@Url.Content("~/api/StudentOrderAPI/favoriteStorelist")?id=${studentID}`,
+            });
+            datas.map(a => { 
+                FavoriteStorelist.push(a) 
+            });
+            //呼叫熱門店家
+            $.ajax({
+                url: '@Url.Content("~/tOrder_StoreAPI/bestStoreTop5")',
+                success: (data) => {
+                    const htmldata = data.map(a => {
+                        const { 店家名稱, 店家介紹, 店家圖片, 訂單總額, 評價星數, 風味列表 } = a;
+                        var starsHTML = '<i class="bi bi-star-fill"></i>'.repeat(評價星數);
+                        const 風味列表html = 風味列表.map(b => `${b}&nbsp;`).join('');
+                        return (` <div class="swiper-slide">
+                                            <div class="testimonial-wrap">
+                                                <div class="testimonial-item">
+                                                    <div class="d-flex align-items-center">
+                                                        <img src="${店家圖片}" class="testimonial-img flex-shrink-0 img-fluid" alt="${店家名稱}" />
+                                                        <div>
+                                                            <h3>${店家名稱}</h3>
+                                                                ${風味列表html}
+                                                            <div class="stars">
+                                                               ${starsHTML}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <p class="m-0">
+                                                        <i class="bi bi-quote quote-icon-left"></i>
+                                                        <h4>${店家介紹}</h4>
+                                                        <i class="bi bi-quote quote-icon-right"></i>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>`);
+                    })
+                    $('#cardiv').html(htmldata);
+                    /* console.log(data) */
+                },
+                error: () => { console.log('Api錯誤') }
+            })
+            //列出口味標籤列
+            $.ajax({
+                url: `@Url.Content("~/tOrder_StoreAPI/storeStyle")`,
+                success: (datas) => {
+                    const daralist = datas.map((a,index) => {
+                        return `<li data-filter=".filter-${a}">${a}</li>`;
+                    })
+                    // $('#stylelist').html(daralist);
+                    var newElement = '<li data-filter="*" class="filter-active">All</li>';
+                    $('#stylelist').prepend(newElement + daralist.join(''));
+                },
+                error: () => {
+                    console.log('api呼叫失效')
+                }
+            })
+            //呼叫全部店家
+            $.ajax({
+                url: `@Url.Content("~/tOrder_StoreAPI/storeInformation")`,
+                success: (datas) => {
+                    const datalist = datas.map(a => {
+                        const { 店家id, 電話, 餐廳照片, 店家名稱, 餐廳介紹, 風味列表 } = a;
+                        const tag = 風味列表.map(b => `filter-${b}`).join(' ');
+                        const isFavorite = FavoriteStorelist.includes(店家id);
+                        const heartIconClass = isFavorite ?  '': 'is-regular';
+                        return (`
+                             <div class="col-xl-4 col-md-6 portfolio-item ${tag}">
+                                <div class="portfolio-wrap">
+
+                                    <a href="#" data-gallery="portfolio-gallery-app" class="glightbox">
+                                        <img src="${餐廳照片}" class="img-fluid" alt="${店家名稱}" />
+                                        </a>
+                                    <div class="portfolio-info">
+
+                                        <h4>
+                                            <a href="#" title="詳細商品">${店家名稱}</a>
+                                           <span class="ts-icon ${heartIconClass} is-heart-icon" data-id="${店家id}"></span>
+                                        </h4>
+                                        <span class="ts-text is-secondary">
+                                        ${電話}
+                                        </span>
+                                        <div class="ts-segment is-secondary is-light">
+                                            ${餐廳介紹}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- End Portfolio Item -->
+                        `);
+                    })
+                    $('#storeCard').html(datalist);
+                },
+                error: () => {
+                    console.log("api傳送問題")
+                }
+            })
+        })();
+        $(document).on('click', 'span.is-heart-icon', function () {
+            storeID = $(this).data('id');
+            $(this).removeClass('is-regular');
+            $.ajax({
+                url: `@Url.Content("~/api/StudentOrderAPI/FavoriteStore")?id=${studentID}&storeID=${storeID}`,
+                method:'POST',
+                success: () => {
+                    console.log('成功')
+                },
+                error: () => {console.log('api載入中') }
+            })
+        });
+    </script>
+}

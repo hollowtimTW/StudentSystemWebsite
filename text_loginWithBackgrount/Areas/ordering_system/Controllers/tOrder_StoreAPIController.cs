@@ -39,7 +39,13 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                     a.電話,
                     餐廳照片 = a.餐廳照片 ?? "/images/user.jpg",
                     a.店家名稱,
-                    a.電子信箱
+                    a.電子信箱,
+                    a.餐廳介紹,
+                    風味列表 = (from tagItem in _myDBContext.T訂餐店家資料表s
+                            join tagE in _myDBContext.T訂餐店家風味表s on tagItem.店家id equals tagE.店家id
+                            join tagF in _myDBContext.T訂餐口味總表s on tagE.口味id equals tagF.口味id
+                            where tagItem.店家名稱 == a.店家名稱
+                            select tagF.風味名稱).ToList()
                 });
             return Json(result);
         }
@@ -693,6 +699,10 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
         {
             int ID = model.menuID != 0 ? model.menuID : 0;
             var fileLocation = "";
+            if (string.IsNullOrWhiteSpace(model.餐點售價.ToString()))
+            {
+                ModelState.AddModelError("餐點售價", "餐點售價不可空白");
+            }
             if (!ModelState.IsValid)
             {
                 var errors = ModelState.ToDictionary(

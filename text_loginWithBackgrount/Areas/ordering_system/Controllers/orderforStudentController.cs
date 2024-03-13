@@ -15,5 +15,10 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
         {
             return View();
         }
+        public IActionResult Studentrestaurant() 
+        {
+            ViewData["Title"] = "學生餐廳";
+            return View();
+        }
     }
 }

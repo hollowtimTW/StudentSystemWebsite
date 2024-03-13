@@ -2,8 +2,10 @@
 using Class_system_Backstage_pj.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections;
 using System.Linq;
+using System.Security.Cryptography;
 using text_loginWithBackgrount.Areas.ordering_system.Models.forStudentDTO;
 
 namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
@@ -17,6 +19,11 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
         {
             _myDBContext = studentContext;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="_search"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult totalOrder([FromBody] StoreShow _search)
         {
@@ -62,6 +69,53 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             sportsPagingDTO.TotalPages = totalpage;
             sportsPagingDTO.spotImagesSpots = spots.ToList();
             return Ok(sportsPagingDTO);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id">學員ID</param>
+        /// <param name="storeID">店家ID</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("favoriteStore")]
+        public async Task<IActionResult> FavoriteStore(int id, int storeID)
+        {
+            var result = await _myDBContext.T訂餐學員最愛商家表s
+                .FirstOrDefaultAsync(a => a.學員id == id && a.店家id == storeID);
+
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                T訂餐學員最愛商家表 newStore = new T訂餐學員最愛商家表
+                {
+                    學員id = id,
+                    店家id = storeID
+                };
+                _myDBContext.T訂餐學員最愛商家表s.Add(newStore);
+                await _myDBContext.SaveChangesAsync();
+            }
+            return Ok();
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id">學員ID</param>
+        /// <returns></returns>https://localhost:7150/api/StudentOrderAPI/FavoriteStore01?id=7
+        [HttpGet]
+        [Route("favoriteStorelist")]
+        public IActionResult FavoriteStore(int id) 
+        {
+            
+            var result = from item in _myDBContext.T訂餐學員最愛商家表s
+                         join a in _myDBContext.T訂餐店家資料表s on item.店家id equals a.店家id
+                         where item.學員id == id
+                         select item.店家id;
+            return Ok(result);
+
+
         }
     }
 }
