@@ -2,6 +2,9 @@
 using Class_system_Backstage_pj.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
 using System;
 using text_loginWithBackgrount.Areas.job_vacancy.DTO;
 using text_loginWithBackgrount.Areas.job_vacancy.ViewModels;
@@ -16,6 +19,75 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         public jobAPIController(studentContext studentContext)
         {
             _studentContext = studentContext;
+
+            // 設置 QuestPDF 的授權類型為社區版
+            QuestPDF.Settings.License = LicenseType.Community;
+        }
+
+        // GET: job_vacancy/jobapi/ExportToPDF
+        [Route("/job_vacancy/jobapi/{Action=Index}")]
+        public IActionResult ExportToPDF()
+        {
+            var document = Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Size(PageSizes.A4);
+                    page.Margin(2, Unit.Centimetre);
+                    page.PageColor(Colors.White);
+                    page.DefaultTextStyle(x => x
+                            .FontSize(20) // 設定預設字體大小
+                            .FontFamily("微軟正黑體")); // 設定預設字體
+
+                    page.Header()
+                        .Text("Hello PDF!")
+                        .SemiBold().FontSize(36).FontColor(Colors.Blue.Medium);
+
+                    page.Content()
+                        .PaddingVertical(1, Unit.Centimetre)
+                        .Column(x =>
+                        {
+                            x.Spacing(20);
+
+                            x.Item().Text("文字文字");
+                            x.Item().Image(Placeholders.Image(200, 100)); // 自動產生柔和漸變圖片
+                        });
+
+                    page.Footer()
+                        .AlignCenter()
+                        .Text(x =>
+                        {
+                            x.Span("第");
+                            x.CurrentPageNumber();
+                            x.Span("頁");
+                        });
+                });
+            });
+
+            // 將 PDF 內容保存到記憶體中
+            MemoryStream memoryStream = new MemoryStream();
+            document.GeneratePdf(memoryStream);
+            memoryStream.Position = 0;
+
+            // 確保 exportfile 子資料夾存在
+            string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "exportfile");
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            // 構建文件保存路徑
+            string fileName = "test.pdf";
+            string filePath = Path.Combine(folderPath, fileName);
+
+            // 將 PDF 內容保存到文件中
+            using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                memoryStream.WriteTo(fileStream);
+            }
+
+            // 返回文件作為下載連結
+            return File(memoryStream.ToArray(), "application/pdf", fileName);
         }
 
         // GET: job_vacancy/jobapi/GetResumeTitles/5
