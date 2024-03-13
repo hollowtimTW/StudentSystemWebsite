@@ -257,7 +257,7 @@
         if (typeof selectedWorkExpIDs !== 'undefined') {
             // 根據記錄的id重新設置勾選狀態
             $('.cbWorkExp').each(function () {
-                var itemId = $(this).attr('item-id');
+                var itemId = $(this).attr('workExp-id');
                 var isChecked = selectedWorkExpIDs.includes(itemId);
                 $(this).prop('checked', isChecked);
 
@@ -307,7 +307,7 @@
         // ========= 載入資料時 =========
 
         //宣告紀錄履歷工作經驗勾選情形的列表
-        let selectedWorkExpIDs = [];
+        let selectedWorkExpIDs = [@Html.Raw(string.Join(",", Model.ThisResumeWorkExpIDs))];
 
         // 處理希望薪資的選項
         switch ("@Html.Raw(Model.HopeSalary)".trim()) {

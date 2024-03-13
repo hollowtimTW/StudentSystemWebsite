@@ -15,7 +15,7 @@
                 var isChecked = viewModel.IsInResume ? "checked" : "";
 
                 <div class="form-check">
-                    <input class="form-check-input cbWorkExp" type="checkbox" id="@checkboxId" item-id="@i" workExp-id="@viewModel.WorkExpID" @isChecked>
+                    <input class="form-check-input cbWorkExp" type="checkbox" id="@checkboxId" workExp-id="@viewModel.WorkExpID" @isChecked>
                     <label class="form-check-label" for="@checkboxId">@viewModel.CompanyName／@viewModel.JobTitle／@viewModel.Start ~ @viewModel.End</label>
                     <a><i class="bi bi-pencil-fill" role="button" onclick="EditWorkExp(@viewModel.WorkExpID)"></i></a>
                 </div>
@@ -95,28 +95,21 @@
         function GetSelectedWorkExpIDs() {
 
             selectedWorkExpIDs = [];
-            resumeWorkIDForSummit = [];
 
             $('.cbWorkExp').each(function () {
-
-                //工作經驗選項編號
-                var itemId = $(this).attr('item-id');
 
                 //工作經驗ID
                 var workExpId = $(this).attr('workExp-id');
 
                 if ($(this).prop('checked')) {
-                    selectedWorkExpIDs.push(itemId);
-                    resumeWorkIDForSummit.push(workExpId);
+                    selectedWorkExpIDs.push(workExpId);
                 }
             });
 
             //宣告編輯履歷的summit事件需要用到的工作經驗ID集合
-            var resumeWorkIDForSummitAsInt = window.resumeWorkIDForSummit.map(function(id) {
+            window.resumeWorkIDForSummit = selectedWorkExpIDs.map(function(id) {
                 return parseInt(id);
             });
-
-            window.resumeWorkIDForSummit = resumeWorkIDForSummitAsInt;
 
             return selectedWorkExpIDs;
         }
@@ -126,33 +119,43 @@
             // 清空 expListArea 中的內容
             $('#expListArea').empty();
 
-            // 根據記錄的id顯示相應的資料
-            selectedIDs.forEach(function (itemId) {
-                var data = @Html.Raw(Json.Serialize(Model));
-                if (data[itemId]) {
-                    var workitem = data[itemId];
+            // 將 Model 序列化為 JSON 字符串並轉換為 JavaScript 對象
+            var workData = @Html.Raw(Json.Serialize(Model));
+
+            // 將工作經驗項目轉換為以 workExpID 為鍵的對象
+            var workDataObject = {};
+            workData.forEach(item => {
+                workDataObject[item.workExpID] = item;
+            });
+
+            // 遍歷 selectedIDs，並根據 workExpID 查找對應的工作經驗項目
+            selectedIDs.forEach(function (id) {
+                var workitem = workDataObject[id];
+                if (workitem) {
+                    // 將工作經驗項目顯示在畫面上
                     $('#expListArea').append(
-                        `<div class="exp-item" data-item-id="${itemId}">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h5>${workitem.jobTitle}</h5>
-                                    <button type="button" class="btn-close"></button>
-                                </div>
-                                <p class="mb-1">${workitem.companyName} ${workitem.start} - ${workitem.end}</p>
-                                <p class="mt-2">
-                                    ${workitem.jobContent}
-                                </p>
-                            </div>`);
-                }
-                else {
+                        `<div class="exp-item" workExp-id="${id}">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5>${workitem.jobTitle}</h5>
+                                <button type="button" class="btn-close"></button>
+                            </div>
+                            <p class="mb-1">${workitem.companyName} ${workitem.start} - ${workitem.end}</p>
+                            <p class="mt-2">
+                                ${workitem.jobContent}
+                            </p>
+                        </div>`
+                    );
+                } else {
                     $('#expListArea').append('<div>未找到相應的資料</div>');
                 }
             });
         }
 
+
         //取消選取工作經驗
-        function removeWorkExpItem(itemId) {
-            console.log('itemId:' + itemId);
-            var index = selectedWorkExpIDs.indexOf(itemId);
+        function removeWorkExpItem(workExpID) {
+
+            var index = selectedWorkExpIDs.indexOf(workExpID);
             if (index !== -1) {
                 selectedWorkExpIDs.splice(index, 1); // 從列表中移除該項目
             }
@@ -162,8 +165,8 @@
 
         //在工作經驗卡上的刪除鈕加上事件
         $('#expListArea').on('click', '.btn-close', function () {
-            var itemId = $(this).closest('.exp-item').attr('data-item-id');
-            removeWorkExpItem(itemId);
+            var workExpID = $(this).closest('.exp-item').attr('workExp-id');
+            removeWorkExpItem(workExpID);
         });
 
 

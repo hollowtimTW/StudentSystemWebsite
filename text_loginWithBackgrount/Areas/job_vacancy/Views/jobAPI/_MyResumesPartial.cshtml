@@ -240,6 +240,11 @@
         let workExpValue = checkbox.checked ? 'N' : 'Y';
         formData.set('WorkExperience', workExpValue);
 
+        //履歷表工作經驗（resumeWorkIDForSummit為全域變數）
+        resumeWorkIDForSummit.forEach(id => {
+            formData.append('ThisResumeWorkExpIDs', id);
+        });
+
         //輪班
         checkbox = document.getElementById('workShiftCheck');
         let workShiftValue = checkbox.checked ? 'Y' : 'N';
@@ -366,7 +371,7 @@
         let workExpValue = checkbox.checked ? 'N' : 'Y';
         formData.set('WorkExperience', workExpValue);
 
-        //履歷表工作經驗
+        //履歷表工作經驗（resumeWorkIDForSummit為全域變數）
         resumeWorkIDForSummit.forEach(id => {
             formData.append('ThisResumeWorkExpIDs', id);
         });
