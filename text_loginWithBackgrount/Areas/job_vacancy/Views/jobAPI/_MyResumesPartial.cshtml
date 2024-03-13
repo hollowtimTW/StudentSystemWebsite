@@ -86,11 +86,9 @@
 @* 驗證相關 - 不確定有沒有用 *@
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-
 <script>
 
-
-    // 刪除履歷
+    // ==== 刪除履歷 ====
     function deleteResume(resumeId) {
 
         Swal.fire({
@@ -173,7 +171,7 @@
         });
     };
 
-    @* 呼叫新增視窗的內容 *@
+    // ==== 呼叫新增視窗的內容 ====
     function popup_create() {
 
         const createContext = $("#create_context");
@@ -203,7 +201,7 @@
         });
     }
 
-    @* 取消新增 *@
+    // ==== 取消新增 ====
     document.getElementById('btnCancelCreate').addEventListener('click', function () {
         Swal.fire({
             title: '確認取消編輯',
@@ -228,7 +226,7 @@
         });
     });
 
-    @* 提交新增表單 *@
+    // ==== 提交新增表單 ====
     document.getElementById('btnSummitCreate').addEventListener('click', async (event) => {
 
         event.preventDefault();  //停止預設行為
@@ -310,7 +308,7 @@
         }
     });
 
-    @* 呼叫編輯視窗的內容 *@
+    // ==== 呼叫編輯視窗的內容 ====
     function popup_edit(resumeId) {
 
         const editContext = $("#edit_context");
@@ -332,7 +330,7 @@
         });
     }
 
-    @* 取消編輯 *@
+    // ==== 取消編輯 ====
     document.getElementById('btnCancelEdit').addEventListener('click', function () {
         Swal.fire({
             title: '確認取消編輯',
@@ -350,7 +348,6 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#edit_context').empty(); //清空 履歷編輯partialview 的內容
-                //$('#workExp_context').empty(); //清空 工作經驗partialview 的內容
                 document.getElementById('btnCloseEdit').click();
             } else {
                 // 使用者點擊了 "繼續編輯" 按鈕，不執行任何操作
@@ -358,8 +355,7 @@
         });
     });
 
-
-    @* 提交編輯表單 *@
+    // ==== 提交編輯表單 ====
     document.getElementById('btnSummitEdit').addEventListener('click', async (event) => {
 
         event.preventDefault();  //停止預設行為

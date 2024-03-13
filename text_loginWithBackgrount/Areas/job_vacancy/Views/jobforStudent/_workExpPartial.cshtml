@@ -34,12 +34,12 @@
 </div>
 
 <div class="workExpList" id="expListArea" style="display: none;">
-    @* 根據選擇項目，顯示工作經驗相應的資料 *@
+    @* 根據選擇項目，顯示工作經驗卡片 *@
 </div>
 
 
 <div id="workExp_switch_form">
-    @* 工作經驗新增或編輯區 *@
+    @* 工作經驗新增或編輯表單 *@
 </div>
 
 
@@ -170,11 +170,17 @@
         });
 
 
-        // 確認工作經驗（關閉編輯區並顯示列表）
+        // 確認選擇工作經驗（關閉編輯區並顯示卡片）
         $('#btnExpSelectConfirm').click(function () {
 
             var selectedIDs = GetSelectedWorkExpIDs();
-            ShowWorkExpCards(selectedIDs);
+
+            if (selectedIDs.length === 0) {
+                $('#workExpCheck').prop('checked', true);
+            } else {
+                $('#workExpCheck').prop('checked', false);
+                ShowWorkExpCards(selectedIDs);
+            }
 
             $('#expSelectArea').hide();
             $('#btnExpAdd').show();
@@ -186,9 +192,6 @@
             $('#expSelectArea').hide();
             $('#btnExpAdd').show();
         });
-
-
-        
     });
 
 </script>

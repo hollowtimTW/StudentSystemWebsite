@@ -555,9 +555,7 @@ input[type="checkbox"]:checked {
     }
 
 .workExpList {
-    /*background-color:antiquewhite;*/
     padding: 0;
-    border: 1px solid rgba(0, 131, 116, 0.2);
     border-radius: 6px;
     box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.06);
 }
@@ -565,7 +563,6 @@ input[type="checkbox"]:checked {
     .workExpList .exp-item {
         margin: 0;
         padding: 25px 20px 5px 30px;
-        /*background-color: aquamarine;*/
         border-top: 1px solid rgba(0, 131, 116, 0.2);
     }
 

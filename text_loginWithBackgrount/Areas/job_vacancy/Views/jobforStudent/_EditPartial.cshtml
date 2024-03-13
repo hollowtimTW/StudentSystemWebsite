@@ -1,6 +1,7 @@
 ﻿@model ResumeCreateViewModel
 <style>
     <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet"/>
+
 </style>
 <section class="Resume-Edit">
     <div class="container-fluid">
@@ -136,8 +137,6 @@
                 <div class="col-12" id="workExp_context">
                     <!-- 學員工作經驗 _workExpPartial -->
                 </div>
-
-
             </div>
 
             <!-- 4.求職條件-->
@@ -247,14 +246,12 @@
 @* <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script> *@
 @* <script src="~/js/job_vacancy/summernote-zh-tw.js"></script> *@
 @* <script src="~/js/job_vacancy/ckeditor5/build/ckeditor.js"></script> *@
-
 <script>
 
-
-
-    // 恢復已選擇的工作經驗項目的勾選狀態
+    //恢復已選擇的工作經驗項目的勾選狀態
     function restoreCheckedItems() {
         if (typeof selectedWorkExpIDs !== 'undefined') {
+
             // 根據記錄的id重新設置勾選狀態
             $('.cbWorkExp').each(function () {
                 var itemId = $(this).attr('workExp-id');
@@ -268,8 +265,6 @@
             });
         }
     }
-
-
 
     //呼叫學員工作經驗資料（返回_workExpPartial）
     function callWorkExp(restoreChecked = false) {
@@ -301,16 +296,38 @@
         });
     }
 
+    //照片預覽函式
+    function previewImage(inputFile, img) {
+        if (inputFile.files && inputFile.files[0]) {
+            let allowType = "image.*";
+            // 檢查上傳的檔案類型是否符合允許的檔案類型
+            if (inputFile.files[0].type.match(allowType)) {
+                // 創建 FileReader 物件用於讀取檔案
+                let reader = new FileReader();
+                reader.onload = function (e) {
+                    $(img).attr('src', e.target.result); // 將 img 包裝在 $() 函數中
+                    $(img).attr('title', inputFile.files[0].name); // 將 img 包裝在 $() 函數中
+                    //$(".btn").prop('disabled', false);
+                };
+                // 開始讀取檔案內容，這會觸發上述的 reader.onload 事件
+                reader.readAsDataURL(inputFile.files[0]);
+            } else {
+                alert("不支援的檔案上傳格式！");
+                //$(".btn").prop('disabled', true);
+            }
+        }
+    }
 
     $(document).ready(function () {
 
         // ========= 載入資料時 =========
 
-        //宣告紀錄履歷工作經驗勾選情形的列表
-        let selectedWorkExpIDs = [@Html.Raw(string.Join(",", Model.ThisResumeWorkExpIDs))];
+        // 宣告紀錄履歷工作經驗勾選情形的列表
+        let selectedWorkExpIDs = [];
 
         // 處理希望薪資的選項
-        switch ("@Html.Raw(Model.HopeSalary)".trim()) {
+        const hopeSalary = "@Html.Raw(Model.HopeSalary)".trim();
+        switch (hopeSalary) {
             case "面議":
                 document.getElementById('hopeSalary1').checked = true;
                 break;
@@ -319,42 +336,39 @@
                 break;
             default:
                 document.getElementById('hopeSalary3').checked = true;
-                salaryInput.value = hopeSalary;
-                salaryInput.style.visibility = "visible";
+                document.getElementById('salaryInput').value = hopeSalary;
+                document.getElementById('salaryInput').style.visibility = "visible";
                 break;
         }
 
-        //處理工作經驗
+        // 處理工作經驗的匯入
         if ('@Model.WorkExperience' === 'Y') {
             callWorkExp();
         }
 
-
-        // ========= CKEditor 相關 =========
-        // DecoupledEditor
-        // .create(document.querySelector('.document-editor__editable'), {
-        //     cloudServices: {
-        //         // A configuration of CKEditor Cloud Services.
-        //         // ...
-        //     }
-        // })
-        // .then(editor => {
-        //     const toolbarContainer = document.querySelector('.document-editor__toolbar');
-
-        //     toolbarContainer.appendChild(editor.ui.view.toolbar.element);
-
-        //     window.editor = editor;
-        // })
-        // .catch(err => {
-        //     console.error(err);
-        // });
-
-
         // ====================== 事件監聽器 ===========================
+
+
+        //有無工作經驗
+        document.getElementById('workExpCheck').addEventListener('change', function (event) {
+            if (event.target.checked) {
+                selectedWorkExpIDs = []; //清空所有選擇的工作經驗（暫時無用）
+
+                $('#expListArea').hide();
+                $('#expSelectArea').hide();
+                $('#btnExpAdd').show();
+            }
+        });
 
         // 選擇或新增工作經驗
         document.getElementById('btnExpAdd').addEventListener('click', function (event) {
-            callWorkExp(true);
+
+            var workExpCheck = document.getElementById('workExpCheck');
+            if (workExpCheck.checked) {
+                callWorkExp(true);
+            } else {
+                callWorkExp();
+            }
         });
 
         // 顯示圖片
@@ -378,30 +392,7 @@
             });
         });
 
-
-
     });
 
-    // ========= 照片預覽函式 =========
-    function previewImage(inputFile, img) {
-        if (inputFile.files && inputFile.files[0]) {
-            let allowType = "image.*";
-            // 檢查上傳的檔案類型是否符合允許的檔案類型
-            if (inputFile.files[0].type.match(allowType)) {
-                // 創建 FileReader 物件用於讀取檔案
-                let reader = new FileReader();
-                reader.onload = function (e) {
-                    $(img).attr('src', e.target.result); // 將 img 包裝在 $() 函數中
-                    $(img).attr('title', inputFile.files[0].name); // 將 img 包裝在 $() 函數中
-                    //$(".btn").prop('disabled', false);
-                };
-                // 開始讀取檔案內容，這會觸發上述的 reader.onload 事件
-                reader.readAsDataURL(inputFile.files[0]);
-            } else {
-                alert("不支援的檔案上傳格式！");
-                //$(".btn").prop('disabled', true);
-            }
-        }
-    }
 
 </script>

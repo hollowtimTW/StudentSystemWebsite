@@ -89,7 +89,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateResume(
-            [Bind("StudentID, Name, Birth, Photo, Gender, Phone, Email, School, Academic, Department, Graduated, ResumeTitle, HopeJobTitle, HopeSalary, HopeLocation, Skill, Language, WorkExperience, WorkType, WorkTime, WorkShift, Autobiography")] ResumeCreateViewModel viewModel)
+            [Bind("StudentID, Name, Birth, Photo, Gender, Phone, Email, School, Academic, Department, Graduated, ResumeTitle, HopeJobTitle, HopeSalary, HopeLocation, Skill, Language, WorkExperience, WorkType, WorkTime, WorkShift, Autobiography, ThisResumeWorkExpIDs")] ResumeCreateViewModel viewModel)
         {
             try
             {
@@ -139,9 +139,24 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                         F刪除狀態 = "0",
                         F刪除或關閉原因 = "0"
                     };
-
-                    // 將新的履歷添加到資料庫中
                     _context.T工作履歷資料s.Add(newResume);
+
+                    //新增履歷表工作經驗資料
+                    var resumeWorkExpIDs = viewModel.ThisResumeWorkExpIDs;
+                    if (resumeWorkExpIDs != null && resumeWorkExpIDs.Any())
+                    {
+                        for (int i = 0; i < resumeWorkExpIDs.Count; i++)
+                        {
+                            T工作履歷表工作經驗 resumeWorkExp = new T工作履歷表工作經驗
+                            {
+                                F履歷Id = viewModel.ResumeID,
+                                F工作經驗Id = resumeWorkExpIDs[i]
+                            };
+
+                            _context.T工作履歷表工作經驗s.Add(resumeWorkExp);
+                        }
+                    }
+
                     await _context.SaveChangesAsync();
 
                     return Json(new { success = true, message = "新增成功" });
