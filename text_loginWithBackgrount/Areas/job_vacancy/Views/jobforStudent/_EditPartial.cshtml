@@ -223,29 +223,17 @@
             <div class="row dialog container-fluid">
                 <div class="form-group">
                     <label asp-for="Autobiography" class="control-label"></label>
-                    @* <div id="summernote" name="Autobiography"></div> *@
-                    <div id="editor" name="Autobiography" placeholder="請在這裡填寫內容"></div>
-                    <span asp-validation-for="Autobiography" class="text-danger"></span>
-
                     <div class="document-editor">
-                        <div class="document-editor__toolbar"></div>
-                        <div class="document-editor__editable-container">
-                            <div class="document-editor__editable">
-                                <p>@Model.Autobiography</p>
-                            </div>
+                        <div id="AutobiographyEditor" name="Autobiography" placeholder="請在這裡填寫內容">
                         </div>
                     </div>
-
+                    <span asp-validation-for="Autobiography" class="text-danger"></span>
                 </div>
             </div>
         </form>
     </div>
 </section>
 
-@* <script src="~/js/job_vacancy/resume.js"></script> *@
-@* <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script> *@
-@* <script src="~/js/job_vacancy/summernote-zh-tw.js"></script> *@
-@* <script src="~/js/job_vacancy/ckeditor5/build/ckeditor.js"></script> *@
 <script>
 
     //恢復已選擇的工作經驗項目的勾選狀態
@@ -345,6 +333,34 @@
         if ('@Model.WorkExperience' === 'Y') {
             callWorkExp();
         }
+
+        // ========= CKEditor 相關 =========
+        ClassicEditor
+        .create( document.querySelector('#AutobiographyEditor'), {
+            toolbar: {
+                items: [
+                    'heading',
+                    '|', 'bold', 'italic',
+                    '|', 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
+                    '|', 'bulletedList', 'numberedList', 'outdent', 'indent',
+                    '|', 'undo', 'redo',
+                    '-',
+                    'link', 'insertImage', 'insertTable', 'mediaEmbed', 'blockQuote',
+                ],
+                shouldNotGroupWhenFull: true
+            },
+        } )
+        .then(editor => {
+            //賦予編輯器實例給變數
+            update_editor = editor;
+
+            // 設置初始內容
+            let autobiographyContent = '@Html.Raw(Model.Autobiography)';
+            update_editor.setData(autobiographyContent);
+        })
+        .catch( error => {
+            console.error('There was an error initializing the editor', error);
+        } );
 
         // ====================== 事件監聽器 ===========================
 

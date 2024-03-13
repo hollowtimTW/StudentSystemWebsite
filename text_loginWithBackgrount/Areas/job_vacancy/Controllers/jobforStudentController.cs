@@ -140,6 +140,8 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                         F刪除或關閉原因 = "0"
                     };
                     _context.T工作履歷資料s.Add(newResume);
+                    await _context.SaveChangesAsync();
+
 
                     //新增履歷表工作經驗資料
                     var resumeWorkExpIDs = viewModel.ThisResumeWorkExpIDs;
@@ -149,14 +151,13 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                         {
                             T工作履歷表工作經驗 resumeWorkExp = new T工作履歷表工作經驗
                             {
-                                F履歷Id = viewModel.ResumeID,
+                                F履歷Id = newResume.FId,
                                 F工作經驗Id = resumeWorkExpIDs[i]
                             };
 
                             _context.T工作履歷表工作經驗s.Add(resumeWorkExp);
                         }
                     }
-
                     await _context.SaveChangesAsync();
 
                     return Json(new { success = true, message = "新增成功" });
@@ -372,41 +373,6 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             }
         }
 
-        /// <summary>
-        /// 根據學生編號顯示照片。
-        /// </summary>
-        /// <param name="studentID">學生ID</param>
-        // GET: job_vacancy/jobforStudent/ShowPhoto/5
-        public async Task<FileResult> ShowPhoto(int studentID)
-        {
-            var student = await _context.T會員學生s.FindAsync(studentID);
-            byte[]? pic = student?.圖片;
-            return File(pic, "image/jpeg");
-        }
-
-        /// <summary>
-        /// 從上傳的圖片檔案中讀取圖片資料。
-        /// 如果沒有提供新的圖片，則保留原始圖片資料；
-        /// 如果沒有原始圖片資料且未提供新的圖片，則返回空值。
-        /// </summary>
-        /// <param name="photoFile">上傳的圖片檔案</param>
-        /// <param name="originalPhoto">原始圖片資料</param>
-        private async Task<byte[]?> ReadUploadImage(IFormFile? photoFile, byte[]? originalPhoto)
-        {
-            if (photoFile != null && photoFile.Length > 0)
-            {
-                using (var memoryStream = new MemoryStream())
-                {
-                    await photoFile.CopyToAsync(memoryStream);
-                    return memoryStream.ToArray();
-                }
-            }
-            else
-            {
-                // 如果沒有上傳新的圖片且沒有原始圖片資料，則返回空值
-                return originalPhoto;
-            }
-        }
 
 
 
@@ -689,6 +655,66 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { success = false, message = "刪除失敗：" + ex.Message });
+            }
+        }
+
+
+        /// <summary>
+        /// 根據學生編號顯示照片。
+        /// </summary>
+        /// <param name="studentID">學生ID</param>
+        // GET: job_vacancy/jobforStudent/ShowPhoto/5
+        public async Task<FileResult> ShowPhoto(int studentID)
+        {
+            var student = await _context.T會員學生s.FindAsync(studentID);
+            byte[]? pic = student?.圖片;
+            return File(pic, "image/jpeg");
+        }
+
+        /// <summary>
+        /// 從上傳的圖片檔案中讀取圖片資料。
+        /// 如果沒有提供新的圖片，則保留原始圖片資料；
+        /// 如果沒有原始圖片資料且未提供新的圖片，則返回空值。
+        /// </summary>
+        /// <param name="photoFile">上傳的圖片檔案</param>
+        /// <param name="originalPhoto">原始圖片資料</param>
+        private async Task<byte[]?> ReadUploadImage(IFormFile? photoFile, byte[]? originalPhoto)
+        {
+            if (photoFile != null && photoFile.Length > 0)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await photoFile.CopyToAsync(memoryStream);
+                    return memoryStream.ToArray();
+                }
+            }
+            else
+            {
+                return originalPhoto;
+            }
+        }
+
+        [HttpPost]
+        [Route("/job_vacancy/jobforStudent/{Action=Index}")]
+        // POST: job_vacancy/jobforStudent/UploadImage
+        public async Task<IActionResult> UploadImage(IFormFile photoFile)
+        {
+            if (photoFile != null && photoFile.Length > 0)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await photoFile.CopyToAsync(memoryStream);
+                    var imageData = memoryStream.ToArray();
+
+                    // 在這裡可以將 imageData 保存到伺服器上的特定位置
+                    // 然後返回包含圖片 URL 的 JSON 物件
+                    var imageUrl = "YourImageServerUrl/" + photoFile.FileName; // 這裡假設圖片保存在伺服器上的 /images 目錄下
+                    return Ok(new { imageUrl });
+                }
+            }
+            else
+            {
+                return BadRequest("No file uploaded.");
             }
         }
 

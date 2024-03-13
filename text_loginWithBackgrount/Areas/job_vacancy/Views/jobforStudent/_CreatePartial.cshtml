@@ -2,6 +2,9 @@
 <style>
     <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet"/>
 
+    
+
+
 </style>
 <section class="Resume-Edit">
     <div class="container-fluid">
@@ -222,11 +225,7 @@
                 <div class="form-group">
                     <label asp-for="Autobiography" class="control-label"></label>
                     <div class="document-editor">
-                        <div class="document-editor__toolbar"></div>
-                        <div class="document-editor__editable-container">
-                            <div id="editor" name="Autobiography" class="document-editor__editable" placeholder="請在這裡填寫內容">
-                                <p>@Model.Autobiography</p>
-                            </div>
+                        <div id="AutobiographyEditor" name="Autobiography" placeholder="請在這裡填寫內容">
                         </div>
                     </div>
                     <span asp-validation-for="Autobiography" class="text-danger"></span>
@@ -236,8 +235,7 @@
     </div>
 </section>
 
-@* <script src="~/js/job_vacancy/resume.js"></script> *@
-@* <script src="~/js/job_vacancy/ckeditor5/build/ckeditor.js"></script> *@
+
 <script>
 
     //恢復已選擇的工作經驗項目的勾選狀態
@@ -315,28 +313,49 @@
         //宣告紀錄履歷工作經驗勾選情形的列表
         let selectedWorkExpIDs = [];
 
+        
+
         // ========= CKEditor 相關 =========
-        // DecoupledEditor
-        // .create(document.querySelector('.document-editor__editable'), {
-        //     cloudServices: {
-        //         // A configuration of CKEditor Cloud Services.
-        //         // ...
-        //     }
-        // })
-        // .then(editor => {
-        //     const toolbarContainer = document.querySelector('.document-editor__toolbar');
+        ClassicEditor
+        .create( document.querySelector('#AutobiographyEditor'), {
+            toolbar: {
+                items: [
+                    'heading',
+                    '|', 'bold', 'italic',
+                    '|', 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
+                    '|', 'bulletedList', 'numberedList', 'outdent', 'indent',
+                    '|', 'undo', 'redo',
+                    '-',
+                    'link', 'insertImage', 'insertTable', 'mediaEmbed', 'blockQuote',
+                ],
+                shouldNotGroupWhenFull: true
+            },
+            simpleUpload: {
+                // 上傳圖片的URL地址。
+                uploadUrl: '/job_vacancy/jobforStudent/UploadImage',
 
-        //     toolbarContainer.appendChild(editor.ui.view.toolbar.element);
+                // 啟用 XMLHttpRequest.withCredentials 屬性。
+                withCredentials: true,
 
-        //     window.editor = editor;
-        // })
-        // .catch(err => {
-        //     console.error(err);
-        // });
+                // 發送到上傳服務器的 XMLHttpRequest 的標頭。
+                headers: {
+                    'X-CSRF-TOKEN': 'CSRF-Token',
+                    Authorization: 'Bearer <JSON Web Token>'
+                }
+            }
+        } )
+        .then(editor => {
+            create_editor = editor;
+            create_editor.setData('<p>請輸入自傳內容。</p>'); // 設置初始內容
+        })
+        .catch( error => {
+            console.error('There was an error initializing the editor', error);
+        } );
+
 
         // ====================== 事件監聽器 ===========================
 
-        //有無工作經驗
+        // 有無工作經驗
         document.getElementById('workExpCheck').addEventListener('change', function (event) {
             if (event.target.checked) {
 

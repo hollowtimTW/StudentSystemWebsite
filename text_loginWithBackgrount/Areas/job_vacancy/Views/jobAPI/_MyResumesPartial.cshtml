@@ -86,7 +86,12 @@
 @* 驗證相關 - 不確定有沒有用 *@
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
 <script>
+
+    //宣告編輯器
+    let update_editor;
+    let create_editor;
 
     // ==== 刪除履歷 ====
     function deleteResume(resumeId) {
@@ -262,7 +267,8 @@
         //const autobiography = $('#summernote').summernote('code');
         //let regEx = /<[^>]*>/g;  //去除HTML標籤
         //const plain = autobiography.replace(regEx, "");
-        formData.set('Autobiography', '自傳內容');
+        const autobiography = create_editor.getData();
+        formData.set('Autobiography', autobiography);
 
         const url = '/job_vacancy/jobforStudent/CreateResume/';
         const response = await fetch(url, {
@@ -388,10 +394,10 @@
         formData.set('HopeSalary', selectedValue);
 
         //自傳
-        //const autobiography = $('#summernote').summernote('code');
         //let regEx = /<[^>]*>/g;  //去除HTML標籤
         //const plain = autobiography.replace(regEx, "");
-        formData.set('Autobiography', '自傳內容');
+        const autobiography = update_editor.getData();
+        formData.set('Autobiography', autobiography);
 
         // for (const pair of formData.entries()) {
         //     console.log(pair[0] + ': ' + pair[1]);
