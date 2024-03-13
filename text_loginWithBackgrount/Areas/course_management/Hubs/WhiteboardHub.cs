@@ -117,7 +117,16 @@ namespace text_loginWithBackgrount.Areas.course_management.Hubs
 
         }
 
+        public async Task ClearCanvas(string classCourseId)
+        {
+            var groupName = await _cache.GetStringAsync(classCourseId);
+            if (groupName != null)
+            {
 
+                await Clients.Group(groupName).SendAsync("ReceiveClearCanvas");
+            }
+
+        }
 
 
 

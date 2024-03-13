@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Simple Whiteboard";
+    ViewData["Title"] = "Student Whiteboard";
 }
 @section Styles {
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
@@ -13,15 +13,15 @@
             margin-top: 20px;
             margin-bottom: 20px;
             margin-left: 15px;
-            height: 80vh;
         }
 
-        canvas {
-            width: 75vw;
-            height: 65vh;
+
+        #myCanvas {
             box-shadow: 0px 0px 3px 1px rgba(0,0,0,0.2);
             background-color: white;
             border-radius: 30px;
+            width: 800px !important;
+            height: 600px !important;
         }
 
 
@@ -35,7 +35,7 @@
             box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
             border-radius: 15px;
             margin: auto;
-            width: 70%;
+            width: 750px;
         }
 
         #togglebar {
@@ -156,6 +156,7 @@
     </style>
 }
 
+<h2>@ViewData["Title"]</h2>
 
 <div id="toolContainer" class="">
     <div id="joinStatetrue">
@@ -204,10 +205,10 @@
             </button>
         </div>
 
-        <canvas id="myCanvas" class="" resize></canvas>
+        <canvas id="myCanvas" width="800" height="600" style="width: 400px; height: 300px;"></canvas>
     </div>
     <div class="text-center" id="joinStatefalse">
-        <h1>老師尚未開啟</h1>
+        <h1 class="h-100">老師尚未開啟</h1>
     </div>
 </div>
 
@@ -226,6 +227,19 @@
 
             initializeDrawingTools();
             initializeSignalRConnection();
+
+            //check 老端端的狀況
+
+            var checkInterval = setInterval(function () {
+                connection.invoke("checkGroup", '@ViewBag.classCourseId')
+                    .then(function () {
+                        console.log("Checking open state...");
+                    })
+                    .catch(function (err) {
+                        return console.error(err.toString());
+                    });
+            }, 5000);
+
         };
 
         function initializeSignalRConnection() {
@@ -251,25 +265,56 @@
             connection.on("groupJoinState", function (message) {
                 var joinStatetrue = document.getElementById('joinStatetrue');
                 var joinStatefalse = document.getElementById('joinStatefalse');
-                alert(message);
+                console.log(message);
                 if (message === "開啟") {
                     joinStatetrue.style.display = 'block';
                     joinStatefalse.style.display = 'none';
+                    openState = true;
                 } else {
                     joinStatetrue.style.display = 'none';
                     joinStatefalse.style.display = 'block';
+                    openState = false;
                 }
             });
 
             connection.on("ReceivePath", function (pathJson) {
                 console.log('Path JSON received:', pathJson);
                 var pathData = JSON.parse(pathJson);
-                var receivedPath = new Path();
-                receivedPath.importJSON(pathData);
+
+                var layerId = pathData.layer || 'defaultLayer';  
+                var layer = findOrCreateLayerById(layerId);
+                layer.activate();
+
+                var existingPath = project.getItem({
+                    class: Path,
+                    match: function (item) {
+                        return item.data.id === pathData.data.id;
+                    }
+                });
+
+                if (existingPath) {
+                    existingPath.importJSON(pathData);
+                    console.log("Path updated");
+                } else {
+                    var receivedPath = new Path();
+                    receivedPath.importJSON(pathData);
+                    console.log("New path created");
+                }
+
                 paper.view.draw();
-                alert("drawing");
             });
 
+            function findOrCreateLayerById(layerId) {
+                var layer = project.layers.find(l => l.data.id === layerId);
+                if (!layer) {
+                    layer = new Layer({ data: { id: layerId } });
+                }
+                return layer;
+            }
+            connection.on("ReceiveClearCanvas", function () {
+                project.activeLayer.removeChildren();
+                project.view.update();
+            })
         }
 
         function initializeDrawingTools() {
@@ -280,7 +325,7 @@
             var path = null;
             var toolDraw = new Tool();
 
-            function onFrame(event) {
+            paper.view.onFrame = function (event) {
                 var currentMode = document.getElementById('modeToggle').value;
                 switch (currentMode) {
                     case 'draw':
@@ -313,7 +358,10 @@
 
             }
 
+
             toolDraw.activate();
+
+            
 
 
             //event--繪畫監聽事件--
@@ -323,6 +371,7 @@
                 path = new Path();
                 path.strokeColor = 'black';
                 path.add(event.point);
+                path.data.id = generatePathId();
             }
 
             toolDraw.onMouseDrag = function (event) {
@@ -334,9 +383,10 @@
                 if (Mode !== "draw" || !path) return;
                 path.simplify();
                 var pathData = path.exportJSON({ asString: true });
+                console.log(openState);
                 if (openState) {
-                    connection.invoke("SendPath", pathData, '@ViewBag.classCourseId');
-
+                    
+                    exportAndShareCanvas();
                 }
             }
 
@@ -351,6 +401,8 @@
                 path.strokeColor = highlightColor;
                 path.strokeWidth = highlightWidth;
                 path.add(event.point);
+                path.data.id = generatePathId();
+
             }
 
             toolHightlight.onMouseDrag = function (event) {
@@ -361,6 +413,10 @@
             toolHightlight.onMouseUp = function (event) {
                 if (Mode !== "hightlight" || !path) return;
                 path.simplify();
+                var pathData = path.exportJSON({ asString: true });
+                if (openState) {
+                    exportAndShareCanvas();
+                }
             }
 
             //event--選擇監聽事件--
@@ -386,6 +442,11 @@
                     selectedPath.selected = false;
                     selectedPath = null;
                 }
+                var pathData = path.exportJSON({ asString: true });
+                if (openState) {
+                    exportAndShareCanvas();
+                }
+
             }
 
             //event--橡皮擦監聽事件--
@@ -396,6 +457,8 @@
                 path.strokeColor = 'white';
                 path.strokeWidth = 10;
                 path.add(event.point);
+                path.data.id = generatePathId();
+
             }
 
             toolErase.onMouseDrag = function (event) {
@@ -409,12 +472,22 @@
                     path.simplify();
                     path = null;
                 }
+                var pathData = path.exportJSON({ asString: true });
+                if (openState) {
+                    connection.invoke("SendPath", pathData, '@ViewBag.classCourseId');
+
+                }
             }
 
             //event --執行刪除函數--
             function clearCanvas() {
                 project.activeLayer.removeChildren();
                 project.view.update();
+                var pathData = path.exportJSON({ asString: true });
+                if (openState) {
+                    exportAndShareCanvas();
+
+                }
             }
 
             //event--畫圓形監聽事件--
@@ -429,6 +502,8 @@
                     radius: 0,
                     strokeColor: 'black'
                 });
+                path.data.id = generatePathId();
+
             }
 
             toolCircle.onMouseDrag = function (event) {
@@ -446,6 +521,11 @@
                 if (Mode !== "circle" || !path) return;
                 startingPoint = null;
                 path = null;
+                var pathData = path.exportJSON({ asString: true });
+                if (openState) {
+                    connection.invoke("SendPath", pathData, '@ViewBag.classCourseId');
+
+                }
             }
 
             //event--畫方形監聽事件--
@@ -460,6 +540,8 @@
                     to: event.point,
                     strokeColor: 'black'
                 });
+                path.data.id = generatePathId();
+
             }
 
             toolSquare.onMouseDrag = function (event) {
@@ -477,6 +559,11 @@
                 if (Mode !== "square" || !path) return;
                 startingPoint = null;
                 path = null;
+                var pathData = path.exportJSON({ asString: true });
+                if (openState) {
+                    exportAndShareCanvas();
+
+                }
             }
 
             //event--畫三角形監聽事件--
@@ -493,6 +580,8 @@
                     radius: 50,
                     strokeColor: 'black'
                 });
+                path.data.id = generatePathId();
+
             }
 
             toolTriangle.onMouseDrag = function (event) {
@@ -511,14 +600,31 @@
                 if (Mode !== "triangle" || !path) return;
                 startingPoint = null;
                 path = null;
+                var pathData = path.exportJSON({ asString: true });
+                if (openState) {
+                    exportAndShareCanvas();
+
+                }
             }
+
 
 
 
 
         };
 
+        function generatePathId() {
+            var date = new Date();
+            var timestamp = date.getTime();
+            var randomCounter = Math.floor(Math.random() * 100) + 1;
+            return `path-${Math.floor(timestamp / 1000)}-${randomCounter++}`;
+        }
 
+        function exportAndShareCanvas() {
+            var canvasData = paper.project.exportJSON();
+            connection.invoke("SendPath", canvasData, '@ViewBag.classCourseId');
+            console.log("1");
+        }
 
     </script>
 
