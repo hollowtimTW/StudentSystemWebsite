@@ -67,7 +67,7 @@ namespace text_loginWithBackgrount.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> TeacherRegister(MemberViewModel memberRegisterinfo)
+        public async Task<IActionResult> TeacherRegister(MemberViewModelWithPwd memberRegisterinfo)
         {
             if (!ModelState.IsValid)
             {
@@ -239,7 +239,7 @@ namespace text_loginWithBackgrount.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> StudentRegister(MemberViewModel memberRegisterinfo)
+        public async Task<IActionResult> StudentRegister(MemberViewModelWithPwd memberRegisterinfo)
         {
             if (!ModelState.IsValid)
             {
