@@ -1,14 +1,13 @@
 ﻿using Class_system_Backstage_pj.Models;
+using MailKit.Security;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MimeKit;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using System.Net;
-using System.Net.Mail;
-using System.Text;
 using text_loginWithBackgrount.Areas.job_vacancy.DTO;
 using text_loginWithBackgrount.Areas.job_vacancy.ViewModels;
 using text_loginWithBackgrount.Controllers;
@@ -204,6 +203,18 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                         return Json(new { success = false, message = "找不到指定的學生" });
                     }
 
+                    var theJob = await _context.T工作職缺資料s.FindAsync(viewModel.JobID);
+                    if (theJob == null)
+                    {
+                        return Json(new { success = false, message = "找不到指定的職缺" });
+                    }
+
+                    var theCompany = await _context.T工作公司資料s.Where(data => data.FId == theJob.F公司Id).FirstOrDefaultAsync();
+                    if (theCompany == null)
+                    {
+                        return Json(new { success = false, message = "找不到指定的公司" });
+                    }
+
                     var thisResumeWorkExp = await (
                         from workExp in _context.T工作工作經驗s
                         join resumeWorkExp in _context.T工作履歷表工作經驗s
@@ -226,7 +237,17 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                     //var pdfFilePath = SavePdf(pdfData);
 
                     // 將 PDF 文件作為附件寄出
-                    SendEmail(pdfData);
+                    string recipientName = theCompany.F公司名稱;
+                    string recipientEmail = theCompany.F聯絡人Email;
+                    string subject = $"【自動發送】Rasengan 人才培訓服務系統應徵信 - {theStudent.姓名} - {theJob.F職務名稱}";
+                    string letterBody = $"尊敬的 {recipientName} 負責人，您好，\r\n\r\n" +
+                                        $"本封郵件由 Rasengan 人才培訓服務系統自動發送，特此通知貴公司收到一份新的應徵信。\r\n\r\n" +
+                                        $"應徵內容如下：\r\n{viewModel.ApplyLetter}\r\n\r\n" +
+                                        $"如果對求職者有興趣，請直接與他/她聯絡，謝謝。\r\n\r\n";
+
+                    bool sendSuccess = SendEmail(recipientName, recipientEmail, subject, letterBody, pdfData);
+                    if (!sendSuccess)
+                        return Json(new { success = false, message = "應徵信寄送失敗，請稍後再試或洽系統管理者。" });
 
                     var applyRecord = new T工作應徵工作紀錄
                     {
@@ -255,11 +276,6 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             {
                 return Json(new { success = false, message = "發生異常：" + ex.Message });
             }
-        }
-
-        private void SendEmail(byte[] pdfData)
-        {
-            throw new NotImplementedException();
         }
 
         private byte[] GeneratePdf(ResumeDataDTO resumeData)
@@ -343,6 +359,8 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
 
 
             return document.GeneratePdf();
+
+            //return folderPath;
         }
 
         private string SavePdf(byte[] pdfData)
@@ -350,32 +368,69 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             throw new NotImplementedException();
         }
 
-        public void SendEmail(string senderEmail, string senderName, string recipientEmail, string recipientName, string subject, string body)
+        public bool SendEmail(string recipientEmail, string recipientName, string subject, string body, byte[] pdfData)
         {
+
+            string senderName = "Rasengen人才培訓服務系統";
+            string senderEmail = "saiunkoku2008@gmail.com";
+            //Environment.GetEnvironmentVariable("SMTP_PASSWORD");
+            string senderPassword = "ubad armd qien kvvo";        //安全性考量
+            string smtpServer = "smtp.gmail.com";
+            int smtpPort = 587;
+
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress(senderName, senderEmail));
-            message.To.Add(new MailboxAddress(recipientName, recipientEmail));
+            message.To.Add(new MailboxAddress(recipientName, senderEmail));
             message.Subject = subject;
 
-            var builder = new BodyBuilder();
-            builder.TextBody = body;
-            message.Body = builder.ToMessageBody();
-
-            Environment.GetEnvironmentVariable("SMTP_PASSWORD");
-
-            string GoogleID = "saiunkoku208@gmail.com";    //平台信箱
-            string TempPwd = "ubad armd qien kvvo";        //安全性考量
-            string ReceiveMail = "";  //自動抓 txtReceive.Text
-
-            string SmtpServer = "smtp.gmail.com";
-            int SmtpPort = 587;
-
-            using (SmtpClient client = new SmtpClient(SmtpServer, SmtpPort))
+            // 創建一個 MimePart 來表示 PDF 附件
+            var attachment = new MimePart("application", "pdf")
             {
-                client.EnableSsl = true;
-                client.Credentials = new NetworkCredential(GoogleID, TempPwd);
-                //client.Send(message);
+                Content = new MimeContent(new MemoryStream(pdfData)),
+                ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
+                ContentTransferEncoding = ContentEncoding.Base64,
+                FileName = subject + ".pdf"
+            };
+
+            // 測試用：用桌面的 txt 檔作為附件
+            //string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            //string txtFilePath = Path.Combine(desktopPath, "text.txt");
+            //byte[] txtData = System.IO.File.ReadAllBytes(txtFilePath);
+            //var attachment = new MimePart("text", "plain")
+            //{
+            //    Content = new MimeContent(new MemoryStream(txtData)),
+            //    ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
+            //    ContentTransferEncoding = ContentEncoding.Base64,
+            //    FileName = "text.txt"
+            //};
+
+
+
+            // 創建郵件主體
+            var multipart = new Multipart("mixed");
+            multipart.Add(new TextPart("plain") { Text = body }); // 添加郵件的文本內容
+            multipart.Add(attachment); // 添加PDF附件
+
+            // 將郵件主體設置為郵件的內容
+            message.Body = multipart;
+
+            try
+            {
+                using (var client = new MailKit.Net.Smtp.SmtpClient())
+                {
+                    client.Timeout = 60000; // 設置連接超時時間為 60 秒
+                    client.Connect(smtpServer, smtpPort, SecureSocketOptions.StartTls);
+                    client.Authenticate(senderEmail, senderPassword);
+                    client.Send(message);
+                    client.Disconnect(true);
+                }
+                return true; // 寄信成功
             }
+            catch
+            {
+                return false; // 寄信失敗
+            }
+
         }
 
         public IActionResult ResumePreview()
