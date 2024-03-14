@@ -9,7 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IO;
 using text_loginWithBackgrount.Areas.ordering_system.Models;
+using text_loginWithBackgrount.Areas.ordering_system.Models.forStudentDTO;
 using TEXTpie_chart.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
@@ -540,6 +542,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                                          group new { item, b, a, c, d, e, f } by c into g
                                          select new
                                          {
+                                             店家id = g.Key.店家id,
                                              店家名稱 = g.Key.店家名稱,
                                              店家介紹 = g.Key.餐廳介紹,
                                              店家圖片 = g.Key.餐廳照片 ?? "/images/user.jpg",
@@ -982,8 +985,8 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                 _myDBContext.T訂餐營業時間表s.Add(t);
                 _myDBContext.SaveChanges();
                 return Json(new { isValid = true });
-            } 
-            catch (Exception ex) 
+            }
+            catch (Exception ex)
             {
                 return StatusCode(500, "內部服務器錯誤"); // 返回 500 Internal Server Error
             }
@@ -1003,6 +1006,125 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             }
             return BadRequest();
         }
-        // https://localhost:7150/tOrder_StoreAPI/bestStoreTop5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult text(int id)
+        {
+            var storemeal = _myDBContext.T訂餐餐點資訊表s.Where(a => a.店家id == id && a.上架.Trim() == "1").ToList();
+            var timeOpen = _myDBContext.T訂餐營業時間表s.Where(a => a.店家id == id && a.顯示.Trim() == "1").ToList();
+            var taglist = _myDBContext.T訂餐店家資料表s
+                .Where(tagItem => tagItem.店家id == id)
+                .SelectMany(tagItem => _myDBContext.T訂餐店家風味表s
+                    .Where(tagE => tagE.店家id == tagItem.店家id)
+                    .Select(tagE => tagE.口味id))
+                .ToList();
+
+            var fridentStore = _myDBContext.T訂餐店家資料表s
+                .Where(item => taglist.Contains(item.店家id))
+                .Select(item => new CminStore{ 
+                    店家ID = item.店家id, 
+                    店家名稱 = item.店家名稱 })
+                .ToList();
+
+
+
+            var store = _myDBContext.T訂餐店家資料表s.Where(a => a.店家id == id).Select(b => new VMstore
+            {
+                店家id = b.店家id,
+                店家名稱 = b.店家名稱,
+                地址 = b.地址,
+                餐廳照片 = b.餐廳照片 ?? "/images/user.jpg",
+                餐點列表= storemeal,
+                營業時間表= timeOpen,
+                相關店家= fridentStore
+            }).FirstOrDefault();
+            return Ok(store);
+            // https://localhost:7150/tOrder_StoreAPI/bestStoreTop5
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public IActionResult shoppingCar(int id) 
+        {
+            var query = (from item in _myDBContext.T訂餐購物車s
+                         join a in _myDBContext.T訂餐餐點資訊表s on item.餐點id equals a.餐點id
+                         where item.學員id == id && item.狀態.Trim() == "0"
+                         select new {
+                             購物車ID=item.購物車id,
+                             餐點圖片=a.餐點照片,
+                             餐點數量= item.數量,
+                             餐點名稱=a.餐點名稱,
+                             餐點ID=item.餐點id,
+                             小計=Convert.ToInt32(item.數量*a.餐點定價),
+                         }).ToList();
+            int 總額 = query.Sum(item => item.小計);
+            int 項目 = query.Count();
+            var result = new {
+                待購物清單 = query,
+                總額= 總額,
+                筆數= 項目
+            };
+            if (query != null) {
+
+                return Ok(result);
+            }
+            return BadRequest();
+            
+        }
+        /// <summary>
+        /// 如果該學員購物車中待結帳裡有，該餐點修改其數量，沒有的話新增該餐點至購物車中
+        /// </summary>
+        /// <param name="id">學員ID</param>
+        /// <param name="menuID">餐點ID</param>
+        /// <param name="count">餐點數量</param>
+        /// <returns></returns>
+        public IActionResult ModifyshoppingCar(int id,int menuID,int count) 
+        {
+            var result = _myDBContext.T訂餐購物車s.Where(a => a.學員id == id && a.狀態 == "0" && a.餐點id == menuID).FirstOrDefault();
+            if (result != null)
+            {
+                result.數量 = count;
+                _myDBContext.SaveChanges();
+                return Ok();
+            }
+            else {
+                var storeID = _myDBContext.T訂餐餐點資訊表s.Where(a => a.餐點id == menuID).Select(b => b.店家id).FirstOrDefault();
+                var price= _myDBContext.T訂餐餐點資訊表s.Where(a=>a.餐點id== menuID).Select(a=>a.餐點定價).FirstOrDefault();
+                T訂餐購物車 newcart = new T訂餐購物車 {
+                    學員id = id,
+                    店家id=storeID,
+                    餐點id= menuID,
+                    數量= count,
+                    狀態="0",
+                    金額小記= (price* count),
+                };
+                _myDBContext.T訂餐購物車s.Add(newcart);
+                _myDBContext.SaveChanges();
+                return Ok();
+            }
+        }
+        /// <summary>
+        /// 查找購物車中是否有已存在餐點的將其刪除
+        /// </summary>
+        /// <param name="id">學員ID</param>
+        /// <param name="menuID">餐點ID</param>
+        /// <returns></returns>
+        [HttpDelete]
+        public IActionResult removeShoppingCar(int id,int menuID) {
+            var result = _myDBContext.T訂餐購物車s.Where(a => a.學員id == id && a.餐點id == menuID && a.狀態 == "0").FirstOrDefault();
+            if(result != null) {
+                _myDBContext.T訂餐購物車s.Remove(result);
+                _myDBContext.SaveChanges(); 
+                return Ok();
+            }
+            return BadRequest();
+        }
+        //https://localhost:7150/tOrder_StoreAPI/shoppingCar/7
     }
 }

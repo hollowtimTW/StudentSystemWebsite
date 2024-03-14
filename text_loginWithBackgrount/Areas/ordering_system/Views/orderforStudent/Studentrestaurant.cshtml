@@ -26,8 +26,14 @@
             .portfolio-wrap:hover img {
                 transform: scale(1.05); /* 鼠标悬停时放大图像 */
             }
+
+        #main {
+            background-color: #ffff;
+            min-height: 1500px;
+        }
     </style>
 }
+
 <div class="is-light">
     <div class="ts-content is-vertically-padded is-tertiary">
         <div class="ts-container">
@@ -46,12 +52,12 @@
                     </div>
                     <div class="cell">
                         <div class="ts-content ts-wrap">
-                            <button class="ts-button is-start-labeled-icon">
-                                <span class="ts-icon is-check-to-slot-icon"></span>
+                            <button class="ts-button is-start-labeled-icon" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling" id="btnfavorite">
+                                <span class="ts-icon is-heart-icon"></span>
                                 我的最愛
                             </button>
-                            <button class="ts-button is-start-icon">
-                                <span class="ts-icon is-plus-icon"></span>
+                            <button class="ts-button is-start-icon" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrollingCar" aria-controls="offcanvasScrollingCar" id="btncart">
+                                <span class="ts-icon is-cart-plus-icon"></span>
                                 購物車
                             </button>
                         </div>
@@ -81,7 +87,7 @@
         </div>
     </div>@* 上面頭部 *@
 </div>
-<div style="background-color:#ffff;">
+<div style="background-color:#ffff">
     <section id="testimonials" class="testimonials p-0">
         <div class="container" data-aos="fade-up">
 
@@ -143,7 +149,7 @@
                 </div>
 
                 <!-- 簡單型圖文卡片（共有12張，分為4類） -->
-                <div class="row gy-4 portfolio-container" id="storeCard">
+                <div class="row gy-4 portfolio-container" id="storeCard" style="height:auto">
                     <!-- 注意最後一個class，自訂名稱需對應到上方的分頁標題過濾器 --> <!-- 基礎class="col-xl-4 col-md-6 portfolio-item" -->
                     <div class="col-xl-4 col-md-6 portfolio-item filter-美式 filter-日式">
                         <div class="portfolio-wrap">
@@ -151,7 +157,7 @@
                             <!-- 點進商家圖片連結 -->
                             <a href="#" data-gallery="portfolio-gallery-app" class="glightbox">
                                 <img src="~/images/t訂餐/店家照片/jai西門.jpg" class="img-fluid" alt="" />
-                                </a>
+                            </a>
                             <div class="portfolio-info">
                                 <!-- 小標題連結 -->
                                 <h4 class="m-0">
@@ -168,40 +174,162 @@
                 </div><!-- End Portfolio Container -->
 
             </div>
-
         </div>
     </section><!-- End Portfolio Section -->
+    @* 我的最愛 *@
+    <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+        <div class="ts-app-topbar">
+            <div class="start">
+                <div class="item is-text">我的最愛餐廳</div>
+            </div>
+            <div class="end">
+                <a class="item">
+                    <span class="ts-close"></span>
+                </a>
+            </div>
+        </div>
+        <hr />
+        <div class="offcanvas-body" id="favoriteStore">
+
+            <div class="ts-box is-horizontal is-light mt-3">
+                <div class="ts-image is-covered">
+                    <img src="~/images/t訂餐/店家照片/43d98cfe-5cb9-48b7-a37a-8136d529b6d5_images.png" style="width: 90px; height: 100%;" />
+                </div>
+                <div class="ts-content">
+                    <div class="ts-header">
+                        海大王朋友飯店
+                    </div>
+                    <p>美式 日式 義式</p>
+                </div>
+                <div class="ts-content is-end-aligned">
+                    <div class="ts-header">
+                        <button class="ts-button is-icon is-negative is-outlined is-circular">
+                            <span class="ts-icon is-minus-icon"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ts-box is-horizontal is-light mt-3">
+                <div class="ts-image is-covered">
+                    <img src="~/images/t訂餐/店家照片/43d98cfe-5cb9-48b7-a37a-8136d529b6d5_images.png" style="width: 90px; height: 100%;" />
+                </div>
+                <div class="ts-content">
+                    <div class="ts-header">
+                        海大王朋友飯店
+                    </div>
+                    <p>美式 日式 義式</p>
+                </div>
+                <div class="ts-content is-end-aligned">
+                    <div class="ts-header">
+                        <button class="ts-button is-icon is-negative is-outlined is-circular">
+                            <span class="ts-icon is-minus-icon"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    @* 購物車 *@
+    <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrollingCar" aria-labelledby="offcanvasScrollingLabel">
+        <div class="ts-app-topbar">
+            <div class="start">
+                <div class="ts-header is-big">購物車</div>
+            </div>
+            <div class="end">
+                <button type="button" class="text-reset btn-close btn-close-white" id="closebtn"></button>
+            </div>
+        </div>
+        @* 購物車內容 *@
+        <div class="offcanvas-body">
+            <div class="container">
+                <div class="ts-grid is-stacked">
+                    <div class="column is-2-wide">
+                        <div class="ts-app-topbar" style="background-color: transparent;color: black;">
+                            <div class="start">
+                                <div class="ts-header is-big"><span id="Shoppingcount">0</span>項商品</div>
+                            </div>
+                            <div class="end">
+                                <span class="ts-text is-heavy is-big">總計: <span class="ts-text is-editable" id="Shoppingtotail">$ 0</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-3-wide" id="ShoppingList">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer>
+            <div class="ts-wrap is-vertical is-light">
+                <div class="ts-segment">
+                    <button class="ts-button is-fluid is-large">前往結帳</button>
+                </div>
+                <div class="ts-segment">
+                    <button class="ts-button is-fluid is-large" id="close02">新增商品</button>
+                </div>
+            </div>
+        </footer>
+    </div>
 </div>
 @section Scripts {
     <script>
         const studentID = @User?.FindFirst("StudentId")?.Value;
         let FavoriteStorelist = [];
         (async () => {
-            const datas = await $.ajax({
-                url: `@Url.Content("~/api/StudentOrderAPI/favoriteStorelist")?id=${studentID}`,
-            });
-            datas.map(a => { 
-                FavoriteStorelist.push(a) 
-            });
-            //呼叫熱門店家
-            $.ajax({
-                url: '@Url.Content("~/tOrder_StoreAPI/bestStoreTop5")',
-                success: (data) => {
-                    const htmldata = data.map(a => {
-                        const { 店家名稱, 店家介紹, 店家圖片, 訂單總額, 評價星數, 風味列表 } = a;
-                        var starsHTML = '<i class="bi bi-star-fill"></i>'.repeat(評價星數);
-                        const 風味列表html = 風味列表.map(b => `${b}&nbsp;`).join('');
-                        return (` <div class="swiper-slide">
+            try {
+                // 呼叫API获取数据
+                const [favoriteStorelist, bestStoreTop5, storeStyle, storeInformation] = await Promise.all([
+                    $.ajax({ url: `@Url.Content("~/api/StudentOrderAPI/favoriteStorelist")?id=${studentID}` }),
+                    $.ajax({ url: '@Url.Content("~/tOrder_StoreAPI/bestStoreTop5")' }),
+                    $.ajax({ url: `@Url.Content("~/tOrder_StoreAPI/storeStyle")` }),
+                    $.ajax({ url: `@Url.Content("~/tOrder_StoreAPI/storeInformation")` })
+                ]);
+                // 处理收藏店家列表
+                favoriteStorelist.店家列表.map(a => { FavoriteStorelist.push(a) })
+                // 处理全部店家数据
+                const datalist = storeInformation.map(({ 店家id, 電話, 餐廳照片, 店家名稱, 餐廳介紹, 風味列表 }) => {
+                    const tag = 風味列表.map(b => `filter-${b}`).join(' ');
+                    const isFavorite = FavoriteStorelist.includes(店家id);
+                    const heartIconClass = isFavorite ? '' : 'is-regular';
+                    return (`
+                                                <div class="col-xl-4 col-md-6 portfolio-item ${tag}">
+                                                    <div class="portfolio-wrap">
+                                                        <a href="/ordering_system/orderforStudent/StoreMeanu/${店家id}" data-gallery="portfolio-gallery-app" class="glightbox">
+                                                            <img src="${餐廳照片}" class="img-fluid" alt="${店家名稱}" />
+                                                        </a>
+                                                        <div class="portfolio-info">
+                                                            <h4>
+                                                                <a href="/ordering_system/orderforStudent/StoreMeanu/${店家id}" title="詳細商品">${店家名稱}</a>
+                                                                <span class="ts-icon ${heartIconClass} is-heart-icon" data-id="${店家id}"></span>
+                                                            </h4>
+                                                            <span class="ts-text is-secondary">${電話}</span>
+                                                            <div class="ts-segment is-secondary is-light">${餐廳介紹}</div>
+                                                        </div>
+                                                    </div>
+                                                </div><!-- End Portfolio Item -->
+                                            `);
+                });
+                $('#storeCard').html(datalist);
+                // 处理热门店家数据
+                const htmldata = bestStoreTop5.map(({ 店家名稱, 店家介紹, 店家圖片, 評價星數, 風味列表, 店家id }) => {
+                    const starsHTML = '<i class="bi bi-star-fill"></i>'.repeat(評價星數);
+                    const 風味列表html = 風味列表.map(b => `${b}&nbsp;`).join('');
+                    return (`
+                                        <div class="swiper-slide">
                                             <div class="testimonial-wrap">
                                                 <div class="testimonial-item">
                                                     <div class="d-flex align-items-center">
-                                                        <img src="${店家圖片}" class="testimonial-img flex-shrink-0 img-fluid" alt="${店家名稱}" />
+                                                        <a href="/ordering_system/orderforStudent/StoreMeanu/${店家id}">
+                                                           <img src="${店家圖片}" class="testimonial-img flex-shrink-0 img-fluid" alt="${店家名稱}" />
+                                                        </a>
                                                         <div>
+                                                          <a href="/ordering_system/orderforStudent/StoreMeanu/${店家id}">
                                                             <h3>${店家名稱}</h3>
-                                                                ${風味列表html}
-                                                            <div class="stars">
-                                                               ${starsHTML}
-                                                            </div>
+                                                          </a>
+                                                            ${風味列表html}
+                                                            <div class="stars">${starsHTML}</div>
                                                         </div>
                                                     </div>
                                                     <p class="m-0">
@@ -211,79 +339,193 @@
                                                     </p>
                                                 </div>
                                             </div>
-                                        </div>`);
-                    })
-                    $('#cardiv').html(htmldata);
-                    /* console.log(data) */
-                },
-                error: () => { console.log('Api錯誤') }
-            })
-            //列出口味標籤列
-            $.ajax({
-                url: `@Url.Content("~/tOrder_StoreAPI/storeStyle")`,
-                success: (datas) => {
-                    const daralist = datas.map((a,index) => {
-                        return `<li data-filter=".filter-${a}">${a}</li>`;
-                    })
-                    // $('#stylelist').html(daralist);
-                    var newElement = '<li data-filter="*" class="filter-active">All</li>';
-                    $('#stylelist').prepend(newElement + daralist.join(''));
-                },
-                error: () => {
-                    console.log('api呼叫失效')
-                }
-            })
-            //呼叫全部店家
-            $.ajax({
-                url: `@Url.Content("~/tOrder_StoreAPI/storeInformation")`,
-                success: (datas) => {
-                    const datalist = datas.map(a => {
-                        const { 店家id, 電話, 餐廳照片, 店家名稱, 餐廳介紹, 風味列表 } = a;
-                        const tag = 風味列表.map(b => `filter-${b}`).join(' ');
-                        const isFavorite = FavoriteStorelist.includes(店家id);
-                        const heartIconClass = isFavorite ?  '': 'is-regular';
-                        return (`
-                             <div class="col-xl-4 col-md-6 portfolio-item ${tag}">
-                                <div class="portfolio-wrap">
-
-                                    <a href="#" data-gallery="portfolio-gallery-app" class="glightbox">
-                                        <img src="${餐廳照片}" class="img-fluid" alt="${店家名稱}" />
-                                        </a>
-                                    <div class="portfolio-info">
-
-                                        <h4>
-                                            <a href="#" title="詳細商品">${店家名稱}</a>
-                                           <span class="ts-icon ${heartIconClass} is-heart-icon" data-id="${店家id}"></span>
-                                        </h4>
-                                        <span class="ts-text is-secondary">
-                                        ${電話}
-                                        </span>
-                                        <div class="ts-segment is-secondary is-light">
-                                            ${餐廳介紹}
                                         </div>
-                                    </div>
-                                </div>
-                            </div><!-- End Portfolio Item -->
-                        `);
-                    })
-                    $('#storeCard').html(datalist);
-                },
-                error: () => {
-                    console.log("api傳送問題")
-                }
-            })
+                                    `);
+                });
+                $('#cardiv').html(htmldata);
+
+                // 处理口味标签列
+                const daralist = storeStyle.map((a, index) => `<li data-filter=".filter-${a}">${a}</li>`);
+                const newElement = '<li data-filter="*" class="filter-active">All</li>';
+                $('#stylelist').prepend(newElement + daralist.join(''));
+                favoriteStore();
+                shoppingCart();
+            }
+            catch (error) {
+                console.error('An error occurred:', error);
+            }
         })();
+        //點擊愛心將店家加入最愛
         $(document).on('click', 'span.is-heart-icon', function () {
             storeID = $(this).data('id');
             $(this).removeClass('is-regular');
             $.ajax({
                 url: `@Url.Content("~/api/StudentOrderAPI/FavoriteStore")?id=${studentID}&storeID=${storeID}`,
-                method:'POST',
+                method: 'POST',
                 success: () => {
-                    console.log('成功')
+                    favoriteStore();
                 },
-                error: () => {console.log('api載入中') }
+                error: () => { console.log('api載入中') }
             })
         });
+        //點選關閉側邊最愛商店
+        $(document).on('click', 'span.ts-close', function () {
+            //$('#offcanvasScrolling').offcanvas('hide');
+            $('#btnfavorite').click();
+        })
+        //輸入學生最愛店家列表
+        const favoriteStore = () => {
+            $.ajax({
+                url: `@Url.Content("~/api/StudentOrderAPI/favoriteStorelist")?id=${studentID}`,
+                success: (datas) => {
+                    const dataslist = datas.店家資料.map(a => {
+                        const { 店家名稱, 店家圖片, 風味列表, 店家ID } = a;
+                        const tagname = 風味列表.map(b => b).join(',');
+                        return (`
+                              <div class="ts-box is-horizontal is-light mt-3">
+                                <div class="ts-image is-covered">
+                               <a href="/ordering_system/orderforStudent/StoreMeanu/${店家ID}">
+                                    <img src="${店家圖片}" style="width: 90px; height: 100%;" />
+                               </a>
+                                </div>
+                                <div class="ts-content">
+                                    <a href="/ordering_system/orderforStudent/StoreMeanu/${店家ID}">
+                                            <div class="ts-header">
+                                            ${店家名稱}
+                                            </div>
+                                    </a>
+                                <p>${tagname}</p>
+                                </div>
+                                <div class="ts-content is-end-aligned">
+                                   <div class="ts-header is-end-aligned">
+                                                <button class="ts-button is-icon is-negative is-outlined is-circular" onclick="delete01(${店家ID})">
+                                            <span class="ts-icon is-minus-icon"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                                `);
+                    });
+                    $('#favoriteStore').html(dataslist);
+                },
+                error: () => { console.log("錯誤問題") }
+            })
+        }
+        //刪除學生最愛店家列表
+        function delete01 (ID){
+            $.ajax({
+                url: `@Url.Content("~/api/StudentOrderAPI/favoriteStoredelete")?id=${studentID}&storeID=${ID}`,
+                method: 'Delete',
+                success: () => {
+                    favoriteStore();
+                    const plusIcon = $('.ts-icon.is-heart-icon[data-id="' + ID + '"]');
+                    plusIcon.addClass('is-regular');
+                },
+                error: () => {console.log("失敗") }
+            })
+        }
+        //載入學員是否已經有購物車
+        const shoppingCart = () => {
+            $.ajax({
+                url: `@Url.Content("~/tOrder_StoreAPI/shoppingCar")?id=${studentID}`,
+                success: (datas) => {
+                    if (datas.待購物清單.length == 0) {
+                        $('#Shoppingcount').text(0);
+                        $('#Shoppingtotail').text(0);
+                        const nulllist = ` <div class="ts-blankslate is-light">
+                                        <span class="ts-icon is-cart-shopping-icon"></span>
+                                        <div class="header" style="background-color:#ffff">購物車是空的</div>
+                                        <div class="description">請購買些商品之後再回來查看</div>
+                                        <div class="action">
+                                            <button class="ts-button" id="close01">瀏覽商品</button>
+                                        </div>
+                                    </div>`;
+                        $('#ShoppingList').html(nulllist);
+                        $('#close01').click(() => {
+                            close();
+                        })
+                    }
+                    else {
+                        $('#Shoppingcount').text(datas.筆數);
+                        $('#Shoppingtotail').text(datas.總額);
+                        const datalist = datas.待購物清單.map(a => {
+                            const { 購物車ID, 餐點圖片, 餐點數量, 餐點名稱, 小計, 餐點ID } = a;
+                            return (`
+                                              <div class="ts-box is-horizontal is-light mt-3">
+                                                <div class="ts-image is-covered">
+                                                <img src="${餐點圖片}" style="width: 90px; height: 100%;" />
+                                                </div>
+                                                <div class="ts-content">
+                                                    <div class="ts-header">
+                                                        ${餐點名稱}
+                                                    </div>
+                                                    <p>小計:<span>$${小計}</span></p>
+                                                </div>
+                                                <div class="ts-content is-end-aligned" style="max-width:130px">
+                                                    <div class="ts-header">
+                                                        <p>數量</p>
+                                                        <div class="ts-input is-circular">
+                                                          <input type="number" value="${餐點數量}" data-id="${餐點ID}" min="0" max="100">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        `);
+                        })
+                        $('#ShoppingList').html(datalist);
+                    }
+                    $('input[type="number"][data-id]').on('change', function () {
+                        // 在這裡處理 input 值的變化
+                        var newValue = $(this).val();
+                        var 餐點 = $(this).data('id');
+                        if (newValue != 0) {
+                            $.ajax({
+                                url: `@Url.Content("~/tOrder_StoreAPI/ModifyshoppingCar")?id=${studentID}&menuID=${餐點}&count=${newValue}`,
+                                success: () => {
+                                    const textshow = $('#text-' + 餐點);
+                                    textshow.text(newValue);
+                                    shoppingCart();
+                                },
+                                error: () => {
+                                    console.log('api傳送失敗')
+                                }
+                            })
+                        }
+                        else {
+                            const minusIcon = $('.ts-icon.is-minus-icon[data-id="' + 餐點 + '"]');
+                            minusIcon.click();
+                            $.ajax({
+                                url: `@Url.Content("~/tOrder_StoreAPI/removeShoppingCar")?id=${studentID}&menuID=${餐點}`,
+                                method: 'Delete',
+                                success: () => {
+                                    shoppingCart();
+                                },
+                                error: () => {
+                                    console.log('api問題回報')
+                                }
+                            })
+                        }
+                    });
+                },
+                error: (xhr, status, error) => {
+                    if (xhr.status == 404) {
+                        console.log("目前沒有購物車，寫預設圖片")
+                    } else {
+                        console.log('Error:', error);
+                    }
+                }
+            })
+        }
+        //關閉購物車
+        $('#closebtn').click(() => {
+            close();
+        })
+        $('#close02').click(() => {
+            close();
+        })
+        //關閉購物車function
+        const close = () => {
+            $('#btncart').click();
+        }
     </script>
 }
