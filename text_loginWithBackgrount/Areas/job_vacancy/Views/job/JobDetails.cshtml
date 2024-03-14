@@ -297,31 +297,6 @@
             }
         });
 
-
-        function exportToPdf() {
-            // 調用後端的 ExportToPDF 方法
-            fetch("/job_vacancy/jobapi/ExportToPDF")
-                .then(response => {
-                    // 檢查 HTTP 響應狀態碼
-                    if (!response.ok) {
-                        throw new Error("Network response was not ok");
-                    }
-                    return response.blob(); // 解析為二進制數據
-                })
-                .then(blob => {
-                    // 創建下載連結
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement("a");
-                    a.href = url;
-                    a.download = "exported.pdf";
-                    document.body.appendChild(a);
-                    a.click(); // 模擬點擊下載連結
-                    window.URL.revokeObjectURL(url); // 釋放 URL 對象
-                })
-                .catch(error => console.error("There was a problem with the fetch operation:", error));
-        }
-
-
         // const textarea = document.querySelector('textarea');
         // const wordCount = document.getElementById('word-count');
         // wordCount.textContent = textarea.value.length;

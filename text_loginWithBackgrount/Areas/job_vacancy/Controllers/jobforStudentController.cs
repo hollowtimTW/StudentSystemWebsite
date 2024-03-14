@@ -1,11 +1,13 @@
-﻿using Class_system_Backstage_pj.Areas.job_vacancy.ViewModels;
+﻿using Azure;
+using Azure.AI.TextAnalytics;
+using Class_system_Backstage_pj.Areas.job_vacancy.ViewModels;
 using Class_system_Backstage_pj.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using System.Text;
+using System.Text.RegularExpressions;
 using text_loginWithBackgrount.Areas.job_vacancy.ViewModels;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -265,9 +267,45 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                     return NotFound("無此學生");
                 }
                 
-
                 if (ModelState.IsValid)
                 {
+                    // 進行關鍵字提取
+                    // 將表單資料轉換為 JSON 物件
+                    string plainTextContent = Regex.Replace(viewModel.Autobiography, "<.*?>", System.String.Empty);
+                    var jsonData = new
+                    {
+                        姓名 = viewModel.Name,
+                        性別 = viewModel.Gender,
+                        生日 = viewModel.Birth.Value.ToString("yyyy/MM/dd"),
+                        學校 = viewModel.School,
+                        學位 = viewModel.Academic,
+                        科系 = viewModel.Department,
+                        專長技能 = viewModel.Skill,
+                        語文能力 = viewModel.Language,
+                        工作性質 = viewModel.WorkType,
+                        工作時段 = viewModel.WorkTime,
+                        配合輪班 = viewModel.WorkShift,
+                        希望職稱 = viewModel.HopeJobTitle,
+                        希望薪水待遇 = viewModel.HopeSalary,
+                        希望工作地點 = viewModel.HopeLocation,
+                        自傳 = plainTextContent
+                    };
+
+                    // 將 JSON 物件序列化為 JSON 字串
+                    var jsonString = JsonConvert.SerializeObject(jsonData);
+
+                    //關鍵字擷取服務
+                    AzureKeyCredential credentials = new AzureKeyCredential("b8c172267f6b4d8399ca5953a265126e");
+                    Uri endpoint = new Uri("https://analysisrecommendation.cognitiveservices.azure.com/");
+
+                    TextAnalyticsClient client = new TextAnalyticsClient(endpoint, credentials);
+                    Response<KeyPhraseCollection> response = client.ExtractKeyPhrases(jsonString);
+                    KeyPhraseCollection resumeKeyPhrases = response.Value;
+
+                    //將集合結合為字串
+                    string resumeKeyString = string.Join(", ", resumeKeyPhrases);
+
+
                     //更新學生資料
                     var originalPhoto = theStudent.圖片;
                     byte[]? photoData = await ReadUploadImage(Request.Form.Files["Photo"], originalPhoto);
@@ -299,7 +337,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                     thisResume.F希望工作地點 = viewModel.HopeLocation;
                     thisResume.F自傳 = viewModel.Autobiography;
                     thisResume.F最後更新時間 = DateTime.Now;
-
+                    thisResume.F關鍵字 = resumeKeyString;
 
                     //更新履歷表工作經驗資料
                     var resumeWorkExpIDs = viewModel.ThisResumeWorkExpIDs;

@@ -72,9 +72,11 @@ input[type="checkbox"]:checked {
         border: 2px solid rgba(255, 255, 255, 0.1);
     }
 
-    .btn-normal:hover {
-        background-color: rgba(0, 131, 116, 0.5);
-    }
+        .btn-normal:hover {
+            color: #fff;
+            background-color: rgba(0, 131, 116, 0.5);
+            border: 2px solid var(--color-primary);
+        }
 
     .btn-hollow {
         font-family: var(--font-primary);
@@ -89,10 +91,10 @@ input[type="checkbox"]:checked {
         border: 2px solid var(--color-primary);
     }
 
-    .btn-hollow:hover {
-        background-color: var(--color-primary);
-        color: #fff;
-    }
+        .btn-hollow:hover {
+            background-color: rgba(0, 131, 116, 0.5);
+            color: #fff;
+        }
 
 .btn-preview {
     font-family: var(--font-primary);
@@ -110,6 +112,8 @@ input[type="checkbox"]:checked {
     .btn-preview:hover {
         background-color: rgba(232, 211, 74, 0.5);
     }
+
+
 
 .modal-footer a {
     color: #fff;
@@ -134,6 +138,7 @@ input[type="checkbox"]:checked {
 .btn-like.active {
     background-color: var(--color-primary);
     color: #fff;
+    border: 2px solid var(--color-primary);
 }
 
 
