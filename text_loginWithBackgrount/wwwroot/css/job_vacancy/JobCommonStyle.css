@@ -581,7 +581,7 @@ input[type="checkbox"]:checked {
     /* 工具欄 */
     .document-editor .ck-toolbar {
         /* 確保工具欄容器始終在可編輯區域上方。 */
-        z-index: 20;
+        z-index: 999;
         /* 創建工具欄浮動在可編輯區域上的假象。 */
         box-shadow: 0 0 5px hsla(0, 0%, 0%, .2);
         border-bottom: 1px solid lightgrey;

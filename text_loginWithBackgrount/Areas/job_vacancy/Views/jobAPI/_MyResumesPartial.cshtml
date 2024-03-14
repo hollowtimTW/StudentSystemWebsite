@@ -93,6 +93,32 @@
     let update_editor;
     let create_editor;
 
+    
+    function destroyEditorCreate() {
+        if (create_editor) {
+            create_editor.destroy()
+                .then(() => {
+                    console.log('create_editor was destroyed');
+                    create_editor = null;
+                })
+                .catch(error => {
+                    console.error('Error destroying create_editor:', error);
+                });
+        }
+    }
+    function destroyEditorEdit() {
+        if (update_editor) {
+            update_editor.destroy()
+                .then(() => {
+                    console.log('update_editor was destroyed');
+                    update_editor = null;
+                })
+                .catch(error => {
+                    console.error('Error destroying update_editor:', error);
+                });
+        }
+    }
+
     // ==== 刪除履歷 ====
     function deleteResume(resumeId) {
 
@@ -223,6 +249,7 @@
             cancelButtonColor: '#008374'
         }).then((result) => {
             if (result.isConfirmed) {
+                destroyEditorCreate();
                 $('#create_context').empty(); //清空partialview的內容
                 document.getElementById('btnCloseCreate').click();
             } else {
@@ -287,6 +314,7 @@
                     confirmButtonColor: '#008374',
                 });
 
+                destroyEditorCreate();
                 $('#create_context').empty(); //清空partialview的內容
                 document.getElementById('btnCloseCreate').click();  //關閉modal
                 GetMyResumes();  //重新載入履歷資料
@@ -353,6 +381,7 @@
             cancelButtonColor: '#008374'
         }).then((result) => {
             if (result.isConfirmed) {
+                destroyEditorEdit();
                 $('#edit_context').empty(); //清空 履歷編輯partialview 的內容
                 document.getElementById('btnCloseEdit').click();
             } else {
@@ -420,7 +449,7 @@
                     },
                     confirmButtonColor: '#008374',
                 });
-
+                destroyEditorEdit();
                 $('#edit_context').empty(); //清空partialview的內容
                 document.getElementById('btnCloseEdit').click();  //關閉modal
                 GetMyResumes();  //重新載入履歷資料

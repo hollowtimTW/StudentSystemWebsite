@@ -344,8 +344,7 @@
                     '|', 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
                     '|', 'bulletedList', 'numberedList', 'outdent', 'indent',
                     '|', 'undo', 'redo',
-                    '-',
-                    'link', 'insertImage', 'insertTable', 'mediaEmbed', 'blockQuote',
+                    '|', 'link', 'insertImage', 'insertTable', 'mediaEmbed', 'blockQuote',
                 ],
                 shouldNotGroupWhenFull: true
             },
@@ -361,6 +360,8 @@
         .catch( error => {
             console.error('There was an error initializing the editor', error);
         } );
+
+        
 
         // ====================== 事件監聽器 ===========================
 
