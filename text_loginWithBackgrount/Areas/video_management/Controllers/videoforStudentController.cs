@@ -46,25 +46,25 @@ namespace text_loginWithBackgrount.Areas.video_management.Controllers
             return View(videoModel);
 
         }
-        public async Task<IActionResult> Index(string sTerm = "", int genreId = 0)
-        {
+        //public async Task<IActionResult> Index(string sTerm = "", int genreId = 0)
+        //{
             
             
-                IEnumerable<T影片Video> videos = await _homeRepository.GetVideos(sTerm, genreId);
-                IEnumerable<T影片Genre> genres = await _homeRepository.Genres();
+        //        IEnumerable<T影片Video> videos = await _homeRepository.GetVideos(sTerm, genreId);
+        //        IEnumerable<T影片Genre> genres = await _homeRepository.Genres();
 
-                VideoDisPlay videoModel = new VideoDisPlay
-                {
-                    Videos = videos,
-                    Genres = genres,
-                    STerm = sTerm,
-                    GenreId = genreId
-                };
+        //        VideoDisPlay videoModel = new VideoDisPlay
+        //        {
+        //            Videos = videos,
+        //            Genres = genres,
+        //            STerm = sTerm,
+        //            GenreId = genreId
+        //        };
 
-                return View(videoModel);
+        //        return View(videoModel);
             
        
-        }
+        //}
 
 
     }

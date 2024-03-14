@@ -1,0 +1,107 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model T影片ShoppingCart
+@{
+}
+<div style="width:90%;margin:auto" class="mt-2">
+    @if (Model != null && Model.T影片CartDetails != null && Model.T影片CartDetails.Count > 0)
+    {
+        <h5>My Cart</h5>
+
+        <table class="table table-striped" id="videoTable">
+            <tr>
+                <th>名字</th>
+                <th>Video</th>
+                <th>分類</th>
+                <th>單價</th>
+                <th>總價</th>
+                <th>更改筆數</th>
+            </tr>
+            @foreach (var item in Model.T影片CartDetails)
+            {
+                <tr>
+                    <td>@item.FVideo.FVideoName</td>
+                    <td>
+                        @if (string.IsNullOrEmpty(item.FVideo.FVideoName))
+                        {
+                            <video src="/video/no video.png" style="width:80px;height:100px" />
+                        }
+                        else
+                        {
+                            <video controls style="width: 16rem; height:16rem">
+                                @{
+                                    var videoPath = $"~/video/{item.FVideo.FVideoName}.mp4";
+                                    Console.WriteLine($"Generated Video Path: {videoPath}");
+                                }
+                                <source src="@Url.Content(videoPath)" type="video/mp4" style="width:80px;height:100px">
+                            </video>
+                            
+                        }
+                    </td>
+                    <td>@item.FVideo.Genre.GenreName</td>
+                    <td>@item.FVideo.FPrice X @item.Quantity</td>
+                    <td>@(item.FVideo.FPrice * item.Quantity)</td>
+                    <td>
+                        <a class="btn btn-info add-btn" data-videoId=@item.FVideoId>+</a>
+
+                        <a class="btn btn-info" href="/video_management/cart/removeitem/@item.FVideoId">-</a>
+                    </td>
+                </tr>
+            }
+        </table>
+
+        <div class="my-2">
+            <h5>Total(INR): </h5>
+            @(Model.T影片CartDetails.Select(item => item.FVideo.FPrice * item.Quantity).Sum())
+        </div>
+
+        <div class="my-2">
+            <a class="btn btn-primary" href="/Cart/Checkout">Checkout</a>
+        </div>
+
+    }
+    else
+    {
+        <h5>Cart is empty</h5>
+    }
+</div>
+
+
+@section Scripts{
+    <script>
+
+        $("#videoTable").on('click', '.add-btn', function () {
+            const videoId = $(this).attr('data-videoId');
+
+            try {
+                var response =  fetch(`/video_management/Cart/AddItem/${videoId}`);
+                if (response.ok) {
+                    var result =  response.json();
+                }
+            }
+            catch (err) {
+                console.log(err);
+            }
+        })
+
+
+     
+
+            // try {
+            //     var response = await fetch(`/video_management/Cart/AddItem/${FVideoId}`);
+            //     if (response.ok) {
+            //         var result = await response.json();
+            //         var cartCountEl = document.getElementById("cartCount");
+            //         cartCountEl.innerHTML = result;
+            //         window.location.href = "#cartCount";
+            //     }
+            // }
+            // catch (err) {
+            //     console.log(err);
+            // }
+
+        
+  
+    </script>
+}

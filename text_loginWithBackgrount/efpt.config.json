@@ -1,0 +1,274 @@
+﻿{
+   "CodeGenerationMode": 3,
+   "ContextClassName": "studentContext",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": "Models",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "Class_system_Backstage_pj",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 2,
+   "SelectedToBeGenerated": 0,
+   "T4TemplatePath": null,
+   "Tables": [
+      {
+         "Name": "[dbo].[t工作_工作經驗]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t工作_公司資料]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t工作_推薦職缺]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t工作_履歷表工作經驗]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t工作_履歷資料]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t工作_儲存工作紀錄]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t工作_應徵工作紀錄]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t工作_職缺資料]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t公告_分類]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t公告_本體]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t訂餐_口味總表]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t訂餐_店家風味表]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t訂餐_店家資料表]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t訂餐_訂單詳細資訊表]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t訂餐_訂單資訊表]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t訂餐_評論表]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t訂餐_學員口味表]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t訂餐_學員最愛商家表]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t訂餐_餐點資訊表]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t訂餐_營業時間表]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t訂餐_購物車]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t討論_子版]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t討論_文章]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t討論_文章點讚]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t討論_看板]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t討論_留言]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t討論_留言點讚]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t會員_出勤]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t會員_老師]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t會員_老師登入紀錄]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t會員_學生]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t會員_學生登入紀錄]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t影片_問題單表]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t影片_CartDetail]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t影片_Genre]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t影片_Order]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t影片_OrderDEtail]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t影片_OrderStatus]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t影片_ShoppingCart]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t影片_Video]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t課程_老師科目]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t課程_科目]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t課程_科目分類]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t課程_班級]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t課程_班級科目]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t課程_通知表]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t課程_評分]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t課程_評分主表]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t課程_課程]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[t課程_學生班級]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tChat_Content]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tCHat_Date]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tChat_Room]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tChat_StdRoom]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tQuiz_Paper]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tQuiz_Question]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tQuiz_Quiz]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tQuiz_Record]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": "laptop-u927up5g.dbStudentSystem.dbo",
+   "UncountableWords": null,
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDateOnlyTimeOnly": false,
+   "UseDbContextSplitting": false,
+   "UseDecimalDataAnnotationForSprocResult": true,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": true,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UsePrefixNavigationNaming": false,
+   "UseSchemaFolders": false,
+   "UseSchemaNamespaces": false,
+   "UseSpatial": false,
+   "UseT4": false
+}

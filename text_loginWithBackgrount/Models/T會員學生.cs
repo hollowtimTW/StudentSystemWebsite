@@ -27,9 +27,9 @@ public partial class T會員學生
 
     public DateTime? 生日 { get; set; }
 
-    public DateTime 註冊日期 { get; set; }
+    public DateTime? 註冊日期 { get; set; }
 
-    public DateTime 修改日期 { get; set; }
+    public DateTime? 修改日期 { get; set; }
 
     public string 狀態 { get; set; }
 
@@ -48,6 +48,8 @@ public partial class T會員學生
     public string Salt { get; set; }
 
     public string Token { get; set; }
+
+    public virtual ICollection<TQuizRecord> TQuizRecords { get; set; } = new List<TQuizRecord>();
 
     public virtual ICollection<T工作儲存工作紀錄> T工作儲存工作紀錄s { get; set; } = new List<T工作儲存工作紀錄>();
 
@@ -75,6 +77,8 @@ public partial class T會員學生
 
     public virtual ICollection<T訂餐訂單資訊表> T訂餐訂單資訊表s { get; set; } = new List<T訂餐訂單資訊表>();
 
+    public virtual ICollection<T訂餐購物車> T訂餐購物車s { get; set; } = new List<T訂餐購物車>();
+
     public virtual ICollection<T討論文章> T討論文章s { get; set; } = new List<T討論文章>();
 
     public virtual ICollection<T討論文章點讚> T討論文章點讚s { get; set; } = new List<T討論文章點讚>();
@@ -86,6 +90,4 @@ public partial class T會員學生
     public virtual ICollection<T課程學生班級> T課程學生班級s { get; set; } = new List<T課程學生班級>();
 
     public virtual ICollection<T課程評分主表> T課程評分主表s { get; set; } = new List<T課程評分主表>();
-
-    public virtual ICollection<T課程課程> T課程課程s { get; set; } = new List<T課程課程>();
 }

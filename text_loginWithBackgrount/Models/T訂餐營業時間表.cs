@@ -19,5 +19,7 @@ public partial class T訂餐營業時間表
 
     public string 結束營業時間 { get; set; }
 
+    public string 顯示 { get; set; }
+
     public virtual T訂餐店家資料表 店家 { get; set; }
 }

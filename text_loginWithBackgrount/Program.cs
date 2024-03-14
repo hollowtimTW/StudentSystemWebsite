@@ -22,7 +22,7 @@ builder.Services.AddControllers(); //向DI容器註冊控制器所需的服務
 builder.Services.AddSignalR(); // 將 SignalR 服務添加到 DI 容器中
 
 builder.Services.AddDbContext<studentContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Azure")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("StudentDB")));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -63,6 +63,7 @@ builder.Services.AddSession(options =>
 });
 builder.Services.AddTransient<IEmailSender, Emailsender>();
 builder.Services.AddTransient<IHomeRepository, HomeRepository>();//胡洧銘新增的地方(03/07)
+builder.Services.AddTransient<ICartRepository, CartRepository>();
 builder.Services.AddControllersWithViews();
 
 

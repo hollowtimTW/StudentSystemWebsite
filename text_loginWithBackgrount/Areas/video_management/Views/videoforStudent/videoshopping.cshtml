@@ -1,7 +1,53 @@
-﻿@using text_loginWithBackgrount.Areas.video_management.DTO
+﻿
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@using text_loginWithBackgrount.Areas.video_management.DTO
+
+@{
+    // 驗證用戶身份，但不引發任何挑戰
+    var authenticateResult = await Context.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+}
 
 @model VideoDisPlay
 @{
+}
+
+@section BreadcrumbsSection {
+    <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
+    <div class="breadcrumbs">
+        <div class="page-header d-flex align-items-center" style="background-image: url('');">
+            <div class="container position-relative">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-lg-6 text-center">
+                        <h2>@ViewData["Title"]</h2>
+                        <p>
+                            學員專區是專為學員提供的服務平台。在這裡，您可以：讓您可以一站式完成所有學務相關事宜。
+                        </p>
+                        <p>學員專區是您學習生活的最佳伴侶。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav>
+            <div class="container">
+                <!-- 導覽列項目設置，請根據目前網頁的深度增減 -->
+                <ol>
+                    <li><a asp-area="" asp-controller="Template" asp-action="Index">首頁</a></li>
+                    <li><a asp-area="video_management" asp-controller="videoforStudentController" asp-action="Index">教材影片</a></li>
+                    <li>
+                        Hello <span id="username">@authenticateResult.Principal.Identity.Name</span>!
+                       @*  @authenticateResult.Principal.Identity.Name *@
+                </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/video_management/Cart/GetUserCart">
+                            <span id="cartCount" class="badge text-bg-info">0</span>
+                            <i class="bi bi-cart text-black"></i>
+                        </a>
+                    </li>
+            </ol>
+            </div>
+        </nav>
+    </div>
 }
 <section>
     <div class="my-2 container">
@@ -47,7 +93,7 @@
                 <div class="card mx-2 mb-4" style="width: 16rem;">
                     @if (video != null && !string.IsNullOrEmpty(video.FVideoName))
                     {//這裡要改東西
-                        <video controls>
+                        <video controls style="width: 16rem; height:16rem">
                             @{
                                 var videoPath = $"~/video/{video.FVideoName}.mp4";
                                 Console.WriteLine($"Generated Video Path: {videoPath}");
@@ -73,6 +119,7 @@
             }
         }
     </div>
+   
 
 
     </section>
@@ -80,17 +127,18 @@
     @section Scripts {
         <script>
         async function add(FVideoId) {
-                var usernameEl = document.getElementById("姓名");
+           
+            var usernameEl = document.getElementById("username");
                 if (usernameEl == null) {
-                    window.location.href = "/Identity/Account/Login";
+                window.location.href = "/Login/StudentRegister";
                     //var username=usernameEl.innerText;
                     //  if(username.length<1){
                     //      window.location.href="/Identity/Account/Login";
                     //  }
                 }
                 try {
-                    var response = await fetch(`/Cart/AddItem?bookId=${bookId}`);
-                    if (response.status == 200) {
+                var response = await fetch(`/video_management/Cart/AddItem/${FVideoId}`);
+                    if (response.ok) {
                         var result = await response.json();
                         var cartCountEl = document.getElementById("cartCount");
                         cartCountEl.innerHTML = result;
@@ -100,7 +148,30 @@
                 catch (err) {
                     console.log(err);
                 }
+
+
+     
+          
+
+
+
+
             }
+        loadCartCount();
+        async function loadCartCount() {
+            try {
+                var response = await fetch(`/video_management/Cart/GetTotalItemInCart`);
+                console.log(response)
+                if (response.status == 200) {
+                    var result = await response.json();
+                    var cartCountEl = document.getElementById("cartCount");
+                    cartCountEl.innerHTML = result;
+                }
+            }
+            catch (err) {
+                console.log(err);
+            }
+        }
         </script>
     }
 

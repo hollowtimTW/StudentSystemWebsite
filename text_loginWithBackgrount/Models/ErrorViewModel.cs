@@ -1,4 +1,5 @@
 namespace Class_system_Backstage_pj.Models
+
 {
     public class ErrorViewModel
     {
