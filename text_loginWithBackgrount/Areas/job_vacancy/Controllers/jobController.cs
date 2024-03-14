@@ -1,12 +1,15 @@
-﻿using Class_system_Backstage_pj.Areas.job_vacancy.ViewModels;
-using Class_system_Backstage_pj.Models;
+﻿using Class_system_Backstage_pj.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.ComponentModel.Design;
-using System.Data.Common;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
+using System.Net;
+using System.Net.Mail;
+using System.Text;
+using text_loginWithBackgrount.Areas.job_vacancy.DTO;
 using text_loginWithBackgrount.Areas.job_vacancy.ViewModels;
 using text_loginWithBackgrount.Controllers;
 
@@ -25,6 +28,9 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         {
             _logger = logger;
             _context = context;
+
+            // 設置 QuestPDF 的授權類型為社區版
+            QuestPDF.Settings.License = LicenseType.Community;
         }
 
 
@@ -180,13 +186,49 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         [ValidateAntiForgeryToken]
         [Route("/job_vacancy/job/{Action=Index}")]
         public async Task<IActionResult> ApplyLetter(
-            [Bind("StudentID, JobID, ApplyLetter")] ApplyViewModel viewModel)
+            [Bind("StudentID, JobID, ResumeID, ApplyLetter")] ApplyViewModel viewModel)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var newData = new T工作應徵工作紀錄
+                    var thisResume = await _context.T工作履歷資料s.FindAsync(viewModel.ResumeID);
+                    if (thisResume == null)
+                    {
+                        return Json(new { success = false, message = "找不到指定的履歷" });
+                    }
+
+                    var theStudent = await _context.T會員學生s.FindAsync(viewModel.StudentID);
+                    if (theStudent == null)
+                    {
+                        return Json(new { success = false, message = "找不到指定的學生" });
+                    }
+
+                    var thisResumeWorkExp = await (
+                        from workExp in _context.T工作工作經驗s
+                        join resumeWorkExp in _context.T工作履歷表工作經驗s
+                            on workExp.FId equals resumeWorkExp.FId
+                        where resumeWorkExp.F履歷Id == viewModel.ResumeID
+                        select workExp
+                    ).ToListAsync();
+
+                    var resumeData = new ResumeDataDTO
+                    {
+                        Resume = thisResume,
+                        Student = theStudent,
+                        WorkExperience = thisResumeWorkExp
+                    };
+
+                    // 使用 QuestPDF 生成 PDF 文件
+                    var pdfData = GeneratePdf(resumeData);
+
+                    // 將 PDF 文件保存到暫時資料夾
+                    //var pdfFilePath = SavePdf(pdfData);
+
+                    // 將 PDF 文件作為附件寄出
+                    SendEmail(pdfData);
+
+                    var applyRecord = new T工作應徵工作紀錄
                     {
                         F學員Id = viewModel.StudentID,
                         F職缺Id = viewModel.JobID,
@@ -195,7 +237,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                         F刪除狀態 = "0"
                     };
 
-                    _context.T工作應徵工作紀錄s.Add(newData);
+                    _context.T工作應徵工作紀錄s.Add(applyRecord);
                     await _context.SaveChangesAsync();
 
                     return Json(new { success = true, message = "應徵成功" });
@@ -215,6 +257,126 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             }
         }
 
+        private void SendEmail(byte[] pdfData)
+        {
+            throw new NotImplementedException();
+        }
+
+        private byte[] GeneratePdf(ResumeDataDTO resumeData)
+        {
+            var document = Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Size(PageSizes.A4);
+                    page.Margin(2, Unit.Centimetre);
+                    page.PageColor(Colors.White);
+                    page.DefaultTextStyle(x => x
+                            .FontSize(20) // 設定預設字體大小
+                            .FontFamily("微軟正黑體")); // 設定預設字體
+
+                    page.Header()
+                        .Text(resumeData?.Resume?.F履歷名稱)
+                        .SemiBold().FontSize(36).FontColor(Colors.Black);
+
+                    page.Content()
+                        .PaddingVertical(1, Unit.Centimetre)
+                        .Column(x =>
+                        {
+                            x.Spacing(20);
+
+                            x.Item().Text($"姓名　{resumeData?.Student?.姓名} {resumeData?.Student?.性別}");
+                            x.Item().Text(resumeData?.Student?.生日.ToString());
+                            x.Item().Text($"連絡電話　{resumeData?.Student?.手機}");
+                            x.Item().Text($"聯絡信箱　{resumeData?.Student?.信箱}");
+
+                            x.Item().Text($"學歷　{resumeData?.Student?.學校} {resumeData?.Student?.學位}  {resumeData?.Student?.科系}  {resumeData?.Student?.畢肄}");
+                            x.Item().Text("專長技能");
+                            x.Item().Text(resumeData?.Resume?.F專長技能);
+                            x.Item().Text("語文能力");
+                            x.Item().Text(resumeData?.Resume?.F語文能力);
+
+                            x.Item().Text($"工作經驗　{resumeData?.Resume?.F有無工作經驗}");
+
+
+                            x.Item().Text($"希望職稱　{resumeData?.Resume?.F希望職稱}");
+                            x.Item().Text($"工作性質　{resumeData?.Resume?.F工作性質}");
+                            x.Item().Text($"工作時段　{resumeData?.Resume?.F工作時段}");
+                            x.Item().Text($"配合輪班　{resumeData?.Resume?.F配合輪班}");
+                            x.Item().Text($"希望薪水待遇　{resumeData?.Resume?.F希望薪水待遇}");
+                            x.Item().Text($"希望工作地點　{resumeData?.Resume?.F希望工作地點}");
+
+                            x.Item().Text("自傳");
+                            x.Item().Text(resumeData?.Resume?.F自傳);
+                        });
+
+                    page.Footer()
+                        .BorderBottom(25)
+                        .BorderColor("#008374");
+                });
+            });
+
+            // 將 PDF 內容保存到記憶體中
+            MemoryStream memoryStream = new MemoryStream();
+            document.GeneratePdf(memoryStream);
+            memoryStream.Position = 0;
+
+            // 確保資料夾存在
+            string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "export_file");
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            // 構建文件保存路徑
+            string fileName = "test.pdf";
+            string filePath = Path.Combine(folderPath, fileName);
+
+            // 將 PDF 內容保存到文件中
+            using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                memoryStream.WriteTo(fileStream);
+            }
+
+            // 返回文件作為下載連結
+            //return File(memoryStream.ToArray(), "application/pdf", fileName);
+
+
+            return document.GeneratePdf();
+        }
+
+        private string SavePdf(byte[] pdfData)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SendEmail(string senderEmail, string senderName, string recipientEmail, string recipientName, string subject, string body)
+        {
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress(senderName, senderEmail));
+            message.To.Add(new MailboxAddress(recipientName, recipientEmail));
+            message.Subject = subject;
+
+            var builder = new BodyBuilder();
+            builder.TextBody = body;
+            message.Body = builder.ToMessageBody();
+
+            Environment.GetEnvironmentVariable("SMTP_PASSWORD");
+
+            string GoogleID = "saiunkoku208@gmail.com";    //平台信箱
+            string TempPwd = "ubad armd qien kvvo";        //安全性考量
+            string ReceiveMail = "";  //自動抓 txtReceive.Text
+
+            string SmtpServer = "smtp.gmail.com";
+            int SmtpPort = 587;
+
+            using (SmtpClient client = new SmtpClient(SmtpServer, SmtpPort))
+            {
+                client.EnableSsl = true;
+                client.Credentials = new NetworkCredential(GoogleID, TempPwd);
+                //client.Send(message);
+            }
+        }
 
         public IActionResult ResumePreview()
         {

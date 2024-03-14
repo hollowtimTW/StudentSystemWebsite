@@ -25,7 +25,7 @@
                     var isChecked = i == 0 ? "checked" : ""; //預設第一個生成的radio為選取狀態
 
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="resumes" id="resume@(resumeId)" value="@resumeId" @isChecked>
+                        <input class="form-check-input" type="radio" name="ResumeID" id="resume@(resumeId)" value="@resumeId" @isChecked>
                         <label class="form-check-label" for="resume@(resumeId)">@resumeTitle</label>
                     </div>
                 }

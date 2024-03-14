@@ -568,7 +568,7 @@ input[type="checkbox"]:checked {
 
 
 
-/* CKEditor的相關樣式，待研究*/
+/* CKEditor的相關樣式 */
 
 
 .document-editor {
@@ -596,7 +596,7 @@ input[type="checkbox"]:checked {
                 background-color: #888; /* 分隔線顏色 */
             }
 
-            /* 設置工具項目的寬度 */
+            /* 設置工具項目 */
             .document-editor .ck-toolbar .ck-toolbar__items .ck-dropdown,
             .document-editor .ck-toolbar .ck-toolbar__items .ck-button {
                 margin-right:0px;

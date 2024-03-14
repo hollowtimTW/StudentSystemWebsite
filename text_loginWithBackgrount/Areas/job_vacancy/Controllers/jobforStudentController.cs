@@ -693,31 +693,6 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                 return originalPhoto;
             }
         }
-
-        [HttpPost]
-        [Route("/job_vacancy/jobforStudent/{Action=Index}")]
-        // POST: job_vacancy/jobforStudent/UploadImage
-        public async Task<IActionResult> UploadImage(IFormFile photoFile)
-        {
-            if (photoFile != null && photoFile.Length > 0)
-            {
-                using (var memoryStream = new MemoryStream())
-                {
-                    await photoFile.CopyToAsync(memoryStream);
-                    var imageData = memoryStream.ToArray();
-
-                    // 在這裡可以將 imageData 保存到伺服器上的特定位置
-                    // 然後返回包含圖片 URL 的 JSON 物件
-                    var imageUrl = "YourImageServerUrl/" + photoFile.FileName; // 這裡假設圖片保存在伺服器上的 /images 目錄下
-                    return Ok(new { imageUrl });
-                }
-            }
-            else
-            {
-                return BadRequest("No file uploaded.");
-            }
-        }
-
     }
 }
 

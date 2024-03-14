@@ -69,8 +69,8 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             document.GeneratePdf(memoryStream);
             memoryStream.Position = 0;
 
-            // 確保 exportfile 子資料夾存在
-            string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "exportfile");
+            // 確保資料夾存在
+            string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "export_file");
             if (!Directory.Exists(folderPath))
             {
                 Directory.CreateDirectory(folderPath);

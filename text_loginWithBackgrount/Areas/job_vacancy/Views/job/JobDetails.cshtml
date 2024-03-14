@@ -248,9 +248,9 @@
 
             const formData = new FormData(document.getElementById('formApply'));
 
-            // for (const pair of formData.entries()) {
-            //     console.log(pair[0] + ': ' + pair[1]);
-            // }
+            for (const pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
             //return;
 
             const url = '/job_vacancy/job/ApplyLetter/';
@@ -259,12 +259,7 @@
                 method: 'POST'
             });
 
-            console.log('AAA')
-
             const data = await response.json();
-
-            console.log('data:' + data)
-
             if (response.ok) {
                 if (data.success) {
                     Swal.fire({
