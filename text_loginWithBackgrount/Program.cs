@@ -21,13 +21,14 @@ builder.Services.AddControllers(); //向DI容器註冊控制器所需的服務
 builder.Services.AddSignalR(); // 將 SignalR 服務添加到 DI 容器中
 
 builder.Services.AddDbContext<studentContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Azure")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("StudentDB")));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
+builder.Services.AddHttpClient();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

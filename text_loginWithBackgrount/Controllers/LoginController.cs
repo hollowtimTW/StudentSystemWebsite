@@ -17,6 +17,9 @@ using text_loginWithBackgrount.Data.Encryptor;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Mail;
 using System.Net;
+using System.Text.Json.Nodes;
+using Amazon.Runtime;
+using MongoDB.Driver.Core.WireProtocol.Messages;
 
 namespace text_loginWithBackgrount.Controllers
 {
@@ -25,10 +28,13 @@ namespace text_loginWithBackgrount.Controllers
     {
         private readonly studentContext _dbStudentSystemContext;
         private readonly IConfiguration _configuration;
-        public LoginController(studentContext dbStudentSystemContext, IConfiguration configuration)
+        private readonly IHttpClientFactory _httpClientFactory;
+
+        public LoginController(studentContext dbStudentSystemContext, IConfiguration configuration, IHttpClientFactory httpClientFactory)
         {
             _dbStudentSystemContext = dbStudentSystemContext;
             _configuration = configuration;
+            _httpClientFactory = httpClientFactory;
         }
 
         /// <summary>
@@ -313,7 +319,8 @@ namespace text_loginWithBackgrount.Controllers
                 var user = _dbStudentSystemContext.T會員學生s.FirstOrDefault(a => a.信箱 == email);
                 return (user != null);
             }
-            else {
+            else
+            {
                 var user = _dbStudentSystemContext.T會員學生s.FirstOrDefault(a => a.信箱 == email && a.信箱 != originalEmail);
                 return (user != null);
             }
@@ -329,10 +336,6 @@ namespace text_loginWithBackgrount.Controllers
         [HttpPost]
         public IActionResult StudentIndex(LoginPost value)
         {
-            //var user = (from a in _dbStudentSystemContext.T會員學生s
-            //            where a.信箱 == value.Account && a.密碼 == value.Password
-            //            select a).FirstOrDefault();
-
             var user = _dbStudentSystemContext.T會員學生s.SingleOrDefault(a => a.信箱 == value.Account);
 
             if (user == null || !VerifyPassword(user.密碼, user.Salt, value.Password))
@@ -341,18 +344,32 @@ namespace text_loginWithBackgrount.Controllers
             }
             else
             {
-                var claims = new List<Claim>
+                try
                 {
-                   new Claim(ClaimTypes.Name, user.姓名),
-                   new Claim("FullName", user.姓名),
-                   new Claim("StudentId", user.學生id.ToString()),
-                   new Claim(ClaimTypes.Role,"student")
-                };
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-                return Ok(new { successMessage = "註冊成功！" });
+                    SetStudentCookie(user.姓名, user.學生id.ToString());
+                    return Ok(new { successMessage = "註冊成功！" });
+
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { errorMessage = "註冊失敗！" });
+                }
             }
         }
+
+
+        private void SetStudentCookie(string name, string id)
+        {
+            var claims = new List<Claim>{
+                new Claim(ClaimTypes.Name, name),
+                new Claim("FullName", name),
+                new Claim("StudentId", id),
+                new Claim(ClaimTypes.Role, "student")
+                };
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity)).Wait();
+        }
+
 
 
         public IActionResult StudentForgetPassword()
@@ -442,7 +459,8 @@ namespace text_loginWithBackgrount.Controllers
         [HttpGet]
         public IActionResult StudentResetPassword(string token) //StudentTokenConrtol(string token)
         {
-            if (token == null) {
+            if (token == null)
+            {
                 return View();
             }
 
@@ -512,7 +530,7 @@ namespace text_loginWithBackgrount.Controllers
                 _dbStudentSystemContext.SaveChanges();
 
                 return Ok();
-            }            
+            }
         }
 
 
@@ -537,6 +555,121 @@ namespace text_loginWithBackgrount.Controllers
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Template");
         }
+
+
+
+        //------------------------------google登入相關---------------------------
+
+        public IActionResult GoogleLogin()
+        {
+            //client_id是去申請專案時會給
+            //redirect_uri要去google後台設定，所以自己要用要去自行申請專案再進裡面設定
+            //state是隨便設
+            //scope是要取得什麼資料，要其他資料要去自己加
+            string oauth = "https://accounts.google.com/o/oauth2/v2/auth?" +
+            "client_id=250169282765-209ru0b3dnietpdmu9qfmq7ngrunaioc.apps.googleusercontent.com" +
+            "&redirect_uri=https://localhost:7150/Login/GoogleCallback" +
+            "&state=12345abcde" +
+            "&response_type=code" +
+            "&scope=openid%20https://www.googleapis.com/auth/userinfo.profile%20https://www.googleapis.com/auth/userinfo.email";
+            return Redirect(oauth);
+        }
+
+        public async Task<IActionResult> GoogleCallback()
+        {
+            if (!this.Request.Query.TryGetValue("code", out var code))
+            {
+                return this.StatusCode(400);
+            }
+
+            var tokens = await this.ExchangeAccessToken(code);
+            string accessToken = tokens.Item1;
+            string idToken = tokens.Item2;
+            string email = tokens.Item3;
+            string name = tokens.Item4;
+            if (accessToken == null)
+            {
+                return this.StatusCode(400);
+            }
+
+            //理論上應該要對token做一些處理....
+
+
+            var user = _dbStudentSystemContext.T會員學生s.SingleOrDefault(a => a.信箱 == email);
+            if (user == null)
+            {//註冊
+                ViewBag["RegiestName"] = "123";
+                ViewBag["RegiestEmail"] = "45456";
+                return RedirectToAction(nameof(StudentRegister));
+            }
+            else
+            {//登入
+                SetStudentCookie(user.姓名, user.學生id.ToString());
+                return RedirectToAction("/Template/Index");
+            }
+        }
+
+        private async Task<(string, string, string, string)> ExchangeAccessToken(string code)
+        {
+            var client = _httpClientFactory.CreateClient();
+
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://oauth2.googleapis.com/token");
+
+            request.Content = new FormUrlEncodedContent(
+                new Dictionary<string, string>
+                {
+                    ["grant_type"] = "authorization_code",
+                    ["code"] = code,
+                    ["redirect_uri"] = "https://localhost:7150/Login/GoogleCallback",
+                    ["client_id"] = "250169282765-209ru0b3dnietpdmu9qfmq7ngrunaioc.apps.googleusercontent.com",
+                    ["client_secret"] = "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"
+                });
+
+            var response = await client.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return (null, null, null, null);
+            }
+            var content = await response.Content.ReadAsStringAsync();
+
+            var result = JsonNode.Parse(content);
+
+            string accessToken = result["access_token"].GetValue<string>();
+            string idToken = result["id_token"].GetValue<string>();
+
+            //取得accessToken再丟回去一次拿其他資料
+            var userInfoRequest = new HttpRequestMessage(
+                HttpMethod.Get,
+                "https://www.googleapis.com/oauth2/v3/userinfo"
+                );
+            userInfoRequest.Headers.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+
+            var userInfoResponse = await client.SendAsync(userInfoRequest);
+
+            if (!userInfoResponse.IsSuccessStatusCode)
+            {
+                return (null, null, null, null);
+            }
+
+            var userInfoContent = await userInfoResponse.Content.ReadAsStringAsync();
+            var userInfo = JsonNode.Parse(userInfoContent);
+            string email = userInfo["email"].GetValue<string>();
+            string name = userInfo["name"].GetValue<string>();
+
+            return (accessToken, idToken, email, name);
+        }
+
+
+
+
+
+
+
+
+
+
 
 
         /// <summary>

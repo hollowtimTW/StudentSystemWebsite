@@ -242,3 +242,12 @@
         });
     </script>
 }
+
+@if (ViewBag["RegiestName"] != null)
+{
+
+    <script>
+        $('#name').val(ViewBag["RegiestName"]);
+        $('#email').val(ViewBag["RegiestName"]);
+    </script>
+}
