@@ -271,6 +271,8 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                 {
                     // 進行關鍵字提取
                     // 將表單資料轉換為 JSON 物件
+
+                    //去除履歷資料的 HTML 標籤
                     string plainTextContent = Regex.Replace(viewModel.Autobiography, "<.*?>", System.String.Empty);
                     var jsonData = new
                     {
