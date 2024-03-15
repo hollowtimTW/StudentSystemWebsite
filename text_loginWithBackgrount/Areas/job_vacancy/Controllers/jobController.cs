@@ -79,6 +79,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles = "student")] //限定要登入學員帳號
         public async Task<IActionResult> JobDetails(int jobID)
         {
+            //獲取登入學生的ID
             var user = HttpContext.User.Claims.ToList();
             var loginID = Convert.ToInt32(user.Where(a => a.Type == "StudentId").First().Value);
 

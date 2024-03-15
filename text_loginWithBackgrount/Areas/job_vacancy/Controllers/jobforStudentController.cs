@@ -26,11 +26,17 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         public jobforStudentController(studentContext context)
         {
             _context = context;
-
         }
 
         public IActionResult Index()
         {
+
+            //獲取登入學生的ID
+            var user = HttpContext.User.Claims.ToList();
+            var loginID = Convert.ToInt32(user.Where(a => a.Type == "StudentId").First().Value);
+
+            RecommandSystem(loginID);
+
             return View();
         }
 
@@ -276,20 +282,16 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                     string plainTextContent = Regex.Replace(viewModel.Autobiography, "<.*?>", System.String.Empty);
                     var jsonData = new
                     {
-                        姓名 = viewModel.Name,
-                        性別 = viewModel.Gender,
-                        生日 = viewModel.Birth.Value.ToString("yyyy/MM/dd"),
-                        學校 = viewModel.School,
-                        學位 = viewModel.Academic,
+                        //學位 = viewModel.Academic,
                         科系 = viewModel.Department,
                         專長技能 = viewModel.Skill,
                         語文能力 = viewModel.Language,
-                        工作性質 = viewModel.WorkType,
-                        工作時段 = viewModel.WorkTime,
-                        配合輪班 = viewModel.WorkShift,
-                        希望職稱 = viewModel.HopeJobTitle,
-                        希望薪水待遇 = viewModel.HopeSalary,
-                        希望工作地點 = viewModel.HopeLocation,
+                        //工作性質 = viewModel.WorkType,
+                        //工作時段 = viewModel.WorkTime,
+                        //配合輪班 = viewModel.WorkShift,
+                        //希望職稱 = viewModel.HopeJobTitle,
+                        //希望薪水待遇 = viewModel.HopeSalary,
+                        //希望工作地點 = viewModel.HopeLocation,
                         自傳 = plainTextContent
                     };
 
@@ -732,6 +734,266 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             {
                 return originalPhoto;
             }
+        }
+
+
+        /// <summary>
+        /// 推薦系統
+        /// </summary>
+        /// <returns></returns>
+        public void RecommandSystem(int studentID)
+        {
+            // 建立字典，用於存儲職缺ID和對應的總體相似度
+            Dictionary<int, double> jobSimilarityMap = new Dictionary<int, double>();
+
+            // 提取最新一份履歷資料中的對應欄位
+            var resumeData = _context.T工作履歷資料s
+                .Where(r => r.F學員Id == studentID && r.F刪除狀態 == "0")
+                .Include(r => r.F學員)
+                .OrderByDescending(r => r.F最後更新時間)
+                .Select(r => new {
+                    resumeID = r.FId,
+                    學位 = r.F學員.學位,
+                    科系 = r.F學員.科系,
+                    專長技能 = r.F專長技能,
+                    語文能力 = r.F語文能力,
+                    工作性質 = r.F工作性質,
+                    工作時段 = r.F工作時段,
+                    希望職稱 = r.F希望職稱,
+                    希望薪水待遇 = r.F希望薪水待遇,
+                    希望工作地點 = r.F希望工作地點,
+                    自傳 = r.F自傳,
+                    關鍵字 = r.F關鍵字
+                })
+                .FirstOrDefault();
+
+            // 提取所有職缺資料中的對應欄位
+            var allJobData = _context.T工作職缺資料s
+                .Where(j => j.F刪除狀態 == "0" && j.F職缺狀態 == "公開")
+                .Include(j => j.F公司)
+                .Select(j => new {
+                    jobID = j.FId,
+                    學歷要求 = j.F學歷要求,
+                    其他條件 = j.F其他條件,
+                    工作技能 = j.F工作技能,
+                    工作內容 = j.F工作內容,
+                    語文條件 = j.F語文條件,
+                    工作性質 = j.F工作性質,
+                    工作時段 = j.F工作時段,
+                    職務名稱 = j.F職務名稱,
+                    薪水待遇 = j.F薪水待遇,
+                    工作地點 = j.F工作地點,
+                    公司簡介 = j.F公司.F公司簡介,
+                    關鍵字 = j.F關鍵字
+                })
+                .ToList();
+
+            int number = 1;
+            // 計算每個欄位之間的相似度並判斷是否匹配
+            foreach (var job in allJobData)
+            {
+                double overallSimilarity = 0.0;
+
+                // 計算工作性質相似度
+                double 工作性質Similarity = (resumeData.工作性質 == job.工作性質) ? 1.0 : 0.0;
+                overallSimilarity += 工作性質Similarity;
+
+                // 計算工作時段相似度
+                double 工作時段Similarity = CalculateSimilarity(resumeData.工作時段 ?? "", job.工作時段 ?? "");
+                overallSimilarity += 工作時段Similarity;
+
+                // 計算職務名稱相似度
+                double 職務名稱Similarity = CalculateSimilarity(resumeData.希望職稱 ?? "", job.職務名稱 ?? "");
+                overallSimilarity += 職務名稱Similarity;
+
+                // 計算工作地點相似度
+                double 工作地點Similarity = CalculateSimilarity(resumeData.希望工作地點 ?? "", job.工作地點 ?? "");
+                overallSimilarity += 工作地點Similarity;
+
+
+                // 計算關鍵字相似度
+                var theJobKeywords = job.關鍵字?.Split(',')?.ToList() ?? new List<string>();
+                var resumeKeyword = resumeData.關鍵字?.Split(',')?.ToList() ?? new List<string>();
+
+                // 建立詞彙表，將履歷關鍵字和這份職缺關鍵字合併成一個集合
+                HashSet<string> vocabulary = new HashSet<string>(resumeKeyword.Concat(theJobKeywords));
+
+                double keywordSimilarity = 0.0;
+
+                // 遍歷每個履歷關鍵字
+                foreach (var keyword in resumeKeyword)
+                {
+                    // 使用當前的履歷關鍵字建立文檔向量
+                    double[] resumeVector = CreateDocumentVector(new List<string> { keyword }, vocabulary);
+
+                    // 使用當前的職缺關鍵字建立文檔向量
+                    double[] jobVector = CreateDocumentVector(theJobKeywords, vocabulary);
+
+                    // 計算當前履歷和職缺的相似度
+                    double similarity = CalculateCosineSimilarity(resumeVector, jobVector);
+
+                    keywordSimilarity += similarity;
+                }
+
+                // 將關鍵字相似度添加到總體相似度中
+                overallSimilarity += keywordSimilarity;
+
+                // 將總體相似度存入字典中
+                jobSimilarityMap.Add(job.jobID, overallSimilarity);
+
+                number++;
+            }
+
+            // 根據相似度排序
+            var sortedJobs = jobSimilarityMap.OrderByDescending(kv => kv.Value);
+
+            // 取前五個職缺的ID和對應的 overallSimilarity
+            var topFiveJobs = sortedJobs.Take(5).Select(kv => new { JobID = kv.Key, Similarity = kv.Value }).ToList();
+
+            // 格式化相似度到小數點後兩位
+            var formattedTopFiveJobs = topFiveJobs.Select(j => new { JobID = j.JobID, Similarity = Math.Round(j.Similarity, 2) });
+
+            //更新推薦職缺驗資料
+            if (formattedTopFiveJobs != null && formattedTopFiveJobs.Any())
+            {
+                //刪除舊資料
+                var oldData = _context.T工作推薦職缺s.Where(d => d.F學員Id == studentID);
+                _context.T工作推薦職缺s.RemoveRange(oldData);
+
+                //新增
+                foreach (var item in formattedTopFiveJobs)
+                {
+                    T工作推薦職缺 recommendRecord = new T工作推薦職缺
+                    {
+                        F學員Id = studentID,
+                        F職缺Id = item.JobID,
+                        F推薦程度 = item.Similarity.ToString(),
+                    };
+
+                    _context.T工作推薦職缺s.Add(recommendRecord);
+                }
+            }
+
+            _context.SaveChanges();
+        }
+
+        public double CalculateSimilarity(string str1, string str2)
+        {
+            // 假設這裡使用 Levenshtein 距離作為相似度計算方法
+            int distance = LevenshteinDistance(str1, str2);
+            int maxLength = Math.Max(str1.Length, str2.Length);
+            return 1 - (double)distance / maxLength;
+        }
+
+        public int LevenshteinDistance(string str1, string str2)
+        {
+            int[,] dp = new int[str1.Length + 1, str2.Length + 1];
+            for (int i = 0; i <= str1.Length; i++)
+            {
+                dp[i, 0] = i;
+            }
+            for (int j = 0; j <= str2.Length; j++)
+            {
+                dp[0, j] = j;
+            }
+            for (int i = 1; i <= str1.Length; i++)
+            {
+                for (int j = 1; j <= str2.Length; j++)
+                {
+                    int cost = str1[i - 1] == str2[j - 1] ? 0 : 1;
+                    dp[i, j] = Math.Min(Math.Min(dp[i - 1, j] + 1, dp[i, j - 1] + 1), dp[i - 1, j - 1] + cost);
+                }
+            }
+            return dp[str1.Length, str2.Length];
+        }
+
+
+        /// <summary>
+        /// 推薦系統--關鍵字（目前沒用）
+        /// </summary>
+        /// <returns></returns>
+        [Route("/job_vacancy/jobforStudent/{Action=Index}/{studentID}")]
+        public IActionResult RecommandSystemByKeyword(int studentID = 17)
+        {
+            //建立結果列表
+            var result = new List<string>();
+
+            var theReusmesAllKeywords = _context.T工作履歷資料s
+                                        .Where(r => r.F學員Id == studentID && r.F刪除狀態 == "0")
+                                        .Select(r => r.F關鍵字 ?? "")
+                                        .ToList() // 將查詢結果檢索到記憶體中（可能導致性能問題）
+                                        .SelectMany(k => k.Split(',')) // 進行處理
+                                        .Distinct()
+                                        .ToList();
+
+            var allJobKeywords = _context.T工作職缺資料s
+                                 .Where(j => j.F刪除狀態 == "0" && j.F職缺狀態 == "公開")
+                                 .Select(j => j.F關鍵字)
+                                 .ToList();
+
+            // 遍歷每個職缺關鍵字清單
+            foreach (var jobKeywords in allJobKeywords)
+            {
+                var theJobKeywords = jobKeywords.Split(',').ToList();
+
+                // 建立詞彙表，將履歷關鍵字和這份職缺關鍵字合併成一個集合
+                HashSet<string> vocabulary = new HashSet<string>(theReusmesAllKeywords.Concat(theJobKeywords));
+
+                // 遍歷每個履歷關鍵字
+                foreach (var resumeKeyword in theReusmesAllKeywords)
+                {
+                    // 使用當前的履歷關鍵字建立文檔向量
+                    double[] resumeVector = CreateDocumentVector(new List<string> { resumeKeyword }, vocabulary);
+
+                    // 使用當前的職缺關鍵字建立文檔向量
+                    double[] jobVector = CreateDocumentVector(theJobKeywords, vocabulary);
+
+                    // 計算當前履歷和職缺的相似度
+                    double similarity = CalculateCosineSimilarity(resumeVector, jobVector);
+
+                    // 將相似度計算結果添加到結果列表
+                    result.Add($"履歷關鍵字：{resumeKeyword}，職缺關鍵字：{string.Join(",", jobKeywords)}，相似度：{similarity}");
+                }
+            }
+
+            // 返回相似度計算結果列表
+            return Ok(result);
+        }
+
+        // 建立文檔向量的方法
+        public static double[] CreateDocumentVector(List<string> keywords, HashSet<string> vocabulary)
+        {
+            double[] vector = new double[vocabulary.Count];
+            foreach (string keyword in keywords)
+            {
+                int index = Array.IndexOf(vector, 0); // 找到向量中第一個空位
+                vector[index] = keywords.Count(kw => kw == keyword); // 計算該關鍵字在文檔中出現的次數，作為向量的元素值
+            }
+            return vector;
+        }
+
+        // 計算餘弦相似度的方法
+        public static double CalculateCosineSimilarity(double[] vector1, double[] vector2)
+        {
+            double dotProduct = DotProduct(vector1, vector2);
+            double magnitude1 = Math.Sqrt(DotProduct(vector1, vector1));
+            double magnitude2 = Math.Sqrt(DotProduct(vector2, vector2));
+            if (magnitude1 == 0 || magnitude2 == 0)
+            {
+                return 0; // 避免除以0
+            }
+            return dotProduct / (magnitude1 * magnitude2);
+        }
+
+        // 計算兩個向量的內積的方法
+        public static double DotProduct(double[] vector1, double[] vector2)
+        {
+            double result = 0;
+            for (int i = 0; i < vector1.Length; i++)
+            {
+                result += vector1[i] * vector2[i];
+            }
+            return result;
         }
     }
 }

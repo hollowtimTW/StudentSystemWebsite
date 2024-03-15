@@ -1,11 +1,9 @@
-﻿using Class_system_Backstage_pj.Areas.job_vacancy.ViewModels;
-using Class_system_Backstage_pj.Models;
+﻿using Class_system_Backstage_pj.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using System;
 using text_loginWithBackgrount.Areas.job_vacancy.DTO;
 using text_loginWithBackgrount.Areas.job_vacancy.ViewModels;
 
@@ -351,6 +349,8 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         }
 
 
+
+        
 
     }
 }

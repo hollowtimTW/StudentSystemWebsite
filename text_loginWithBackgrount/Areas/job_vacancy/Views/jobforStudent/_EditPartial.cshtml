@@ -351,7 +351,7 @@
         } )
         .then(editor => {
             //賦予編輯器實例給變數
-            update_editor = editor;
+            window.update_editor = editor;
 
             // 設置初始內容
             let autobiographyContent = '@Html.Raw(Model.Autobiography)';

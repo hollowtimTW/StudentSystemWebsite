@@ -39,22 +39,20 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers.Backstage
                         .Include(data => data.F公司)
                         .ToListAsync();
 
-
             foreach (var item in all)
             {
                 //創建匿名類型
                 var jsonData = new
                 {
-                    公司名稱 = item.F公司.F公司名稱,
                     公司簡介 = item.F公司.F公司簡介,
-                    職務名稱 = item.F職務名稱,
-                    薪水待遇 = item.F薪水待遇,
-                    工作性質 = item.F工作性質,
-                    工作地點 = item.F工作地點,
-                    工作時段 = item.F工作時段,
-                    輪班需求 = item.F輪班需求,
+                    //職務名稱 = item.F職務名稱,
+                    //薪水待遇 = item.F薪水待遇,
+                    //工作性質 = item.F工作性質,
+                    //工作地點 = item.F工作地點,
+                    //工作時段 = item.F工作時段,
+                    //輪班需求 = item.F輪班需求,
                     工作內容 = item.F工作內容,
-                    學歷要求 = item.F學歷要求,
+                    //學歷要求 = item.F學歷要求,
                     語文條件 = item.F語文條件,
                     工作技能 = item.F工作技能,
                     其他條件 = item.F其他條件

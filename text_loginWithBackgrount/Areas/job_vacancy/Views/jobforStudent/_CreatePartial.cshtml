@@ -344,7 +344,7 @@
             }
         } )
         .then(editor => {
-            create_editor = editor;
+            window.create_editor = editor;
             create_editor.setData('<p>請輸入自傳內容。</p>'); // 設置初始內容
         })
         .catch( error => {
