@@ -598,14 +598,15 @@ namespace text_loginWithBackgrount.Controllers
             var user = _dbStudentSystemContext.T會員學生s.SingleOrDefault(a => a.信箱 == email);
             if (user == null)
             {//註冊
-                ViewBag["RegiestName"] = "123";
-                ViewBag["RegiestEmail"] = "45456";
+
+                TempData["RegiestName"] = name;
+                TempData["RegiestEmail"] = email;
                 return RedirectToAction(nameof(StudentRegister));
             }
             else
             {//登入
                 SetStudentCookie(user.姓名, user.學生id.ToString());
-                return RedirectToAction("/Template/Index");
+                return RedirectToAction("Index", "Template");
             }
         }
 
@@ -660,13 +661,6 @@ namespace text_loginWithBackgrount.Controllers
 
             return (accessToken, idToken, email, name);
         }
-
-
-
-
-
-
-
 
 
 

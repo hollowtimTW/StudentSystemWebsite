@@ -82,11 +82,6 @@
                     <div class="form-group mt-3">
                         <input type="password" class="form-control" name="Password" id="Password" placeholder="請輸入密碼" value="1234567@@" required>
                     </div>
-                    <div class="my-3">
-                        <div class="loading">Loading</div>
-                        <div class="error-message">帳號密碼錯誤</div>
-                        <div class="sent-message">完成登入</div>
-                    </div>
                     <div class="text-center">
                         <button type="submit" id="btn_login">登入</button>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -95,6 +90,12 @@
                             <a asp-controller="Login" asp-action="StudentForgetPassword" class="fs-6 fw" style="align-self: flex-end;">忘記密碼</a>
                         </div>
                     </div>
+                    <div class="my-3">
+                        <div class="loading">Loading</div>
+                        <div class="error-message">帳號密碼錯誤</div>
+                        <div class="sent-message">完成登入</div>
+                    </div>
+
                 </form>
             </div><!-- End Contact Form -->
         </div>
