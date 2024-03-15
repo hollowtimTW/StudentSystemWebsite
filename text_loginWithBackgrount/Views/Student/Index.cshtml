@@ -6,6 +6,15 @@
 @* @User?.FindFirst("StudentId")?.Value 這能抓到使用者的PK *@
 @model text_loginWithBackgrount.ViewModels.MemberViewModel
 
+<!-- 生日選擇套件 不用可移除-->
+<!-- Flatpickr -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<!-- 包含中文語言文件 -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/zh.js"></script>
+
+
+
 @section BreadcrumbsSection {
     <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
     <div class="breadcrumbs">
@@ -248,7 +257,11 @@
         });
 
 
-
+        flatpickr("#birthday", {
+            dateFormat: "Y-m-d", // 日期格式
+            enableTime: false, // 禁用時間
+            locale: "zh"
+        });
 
 
     </script>
