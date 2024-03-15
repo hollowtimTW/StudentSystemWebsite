@@ -1,0 +1,64 @@
+﻿@model Class_system_Backstage_pj.Models.T討論文章
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>T討論文章</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="文章id" />
+            <div class="form-group">
+                <label asp-for="學生id" class="control-label"></label>
+                <select asp-for="學生id" class="form-control" asp-items="ViewBag.學生id"></select>
+                <span asp-validation-for="學生id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="內容" class="control-label"></label>
+                <input asp-for="內容" class="form-control" />
+                <span asp-validation-for="內容" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="時間" class="control-label"></label>
+                <input asp-for="時間" class="form-control" />
+                <span asp-validation-for="時間" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="觀看數" class="control-label"></label>
+                <input asp-for="觀看數" class="form-control" />
+                <span asp-validation-for="觀看數" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="標題" class="control-label"></label>
+                <input asp-for="標題" class="form-control" />
+                <span asp-validation-for="標題" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="子版id" class="control-label"></label>
+                <select asp-for="子版id" class="form-control" asp-items="ViewBag.子版id"></select>
+                <span asp-validation-for="子版id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="看板id" class="control-label"></label>
+                <select asp-for="看板id" class="form-control" asp-items="ViewBag.看板id"></select>
+                <span asp-validation-for="看板id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

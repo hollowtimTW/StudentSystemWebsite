@@ -1,9 +1,15 @@
 ﻿using Class_system_Backstage_pj.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
 
 namespace text_loginWithBackgrount.Areas.class_discuss.Controllers
 {
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     [Area("class_discuss")]
     public class discussController : Controller
     {
@@ -16,32 +22,170 @@ namespace text_loginWithBackgrount.Areas.class_discuss.Controllers
         /// <summary>
         /// 訪客能看到的基本分頁
         /// </summary>
-        public IActionResult Index()
+        public IActionResult Index()//選看板
         {
             return View();
         }
 
-        public IActionResult Articles(int board_id)
+        public IActionResult Articles(int subid)//文章列表
         {
-            T討論看板? ID = _DBContext.T討論看板s.FirstOrDefault(a => a.看板id == board_id);
-            ViewBag.Name = ID.名稱;
-            ViewBag.Id = board_id;
+            T討論看板? ID = _DBContext.T討論看板s.FirstOrDefault(a => a.看板id == subid);
+            ViewBag.subName = ID.名稱;
+            ViewBag.subId = subid;
             return View();
         }
 
-        public IActionResult ArticleDetails()
+        public IActionResult ArticleDetails(int subid,int artid)//選擇文章 顯示內容
         {
+            T討論看板? ID = _DBContext.T討論看板s.FirstOrDefault(a => a.看板id == subid);
+            T討論文章? art = _DBContext.T討論文章s.FirstOrDefault(a => a.文章id == artid);
+            ViewBag.subName = ID.名稱;
+            ViewBag.subId = subid;
+            ViewBag.artName = art.標題;
+            ViewBag.artId = artid;
+            ViewBag.writerId = art.學生id;
+            ViewBag.userId = GetUserId();
             return View();
         }
 
-        public IActionResult ArticleEdit()
+        public IActionResult ArticleCreate(int subid)//新增文章畫面
         {
+            T討論看板? ID = _DBContext.T討論看板s.FirstOrDefault(a => a.看板id == subid);
+            ViewBag.subName = ID.名稱;
+            ViewBag.subId = subid;
+
+            var sub = _DBContext.T討論子版s.Where(s => s.看板id == subid).ToList();
+            ViewData["子版id"] = new SelectList(sub, "子版id", "名稱");
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ArticleCreate(int subid, T討論文章 article)//新增文章功能
+        {
+            if (ModelState.IsValid)
+            {
+                article.看板id = subid;
+                article.時間 = DateTime.Now.ToShortDateString().ToString();
+                article.學生id = GetUserId();
+                _DBContext.Add(article);
+                await _DBContext.SaveChangesAsync();
+                return RedirectToAction("Articles", new { subid = subid });
+            }
+            var sub = _DBContext.T討論子版s.Where(s => s.看板id == subid).ToList();
+            ViewData["子版id"] = new SelectList(sub, "子版id", "名稱");
+            return View(article);
+        }
+
+        public async Task<IActionResult> ArticleEdit(int? subid ,int? artid)//修改文章畫面
+        {
+            if (artid == null || _DBContext.T討論文章s == null)
+            {
+                return NotFound();
+            }
+
+            var article = await _DBContext.T討論文章s.FindAsync(artid);
+            if (article == null)
+            {
+                return NotFound();
+            }
+
+            T討論看板? ID = _DBContext.T討論看板s.FirstOrDefault(a => a.看板id == subid);
+            ViewBag.subName = ID.名稱;
+            ViewBag.subId = subid;
+            ViewBag.artId = artid;
+
+            var sub = _DBContext.T討論子版s.Where(s => s.看板id == subid).ToList();
+            ViewData["子版id"] = new SelectList(sub, "子版id", "名稱", article.子版id);
+            return View(article);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ArticleEdit(int subid, int artid, T討論文章 article)//修改文章功能
+        {
+            if (artid != article.文章id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _DBContext.Update(article);
+                    await _DBContext.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!articleExists(article.文章id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("ArticleDetails", new { subid = subid , artid = artid});
+            }
+            var sub = _DBContext.T討論子版s.Where(s => s.看板id == subid).ToList();
+            ViewData["子版id"] = new SelectList(sub, "子版id", "名稱", article.子版id);
+            return View(article);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ArticleDelete(int subid, int artid, T討論文章 article)//軟刪除文章功能
+        {
+            if (artid != article.文章id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    article.刪除 = "1";
+                    _DBContext.Update(article);
+                    await _DBContext.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!articleExists(article.文章id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Articles", new { subid = subid });
+            }
+            var sub = _DBContext.T討論子版s.Where(s => s.看板id == subid).ToList();
+            ViewData["子版id"] = new SelectList(sub, "子版id", "名稱", article.子版id);
+            return View(article);
         }
 
         public IActionResult Announcement()
         {
             return View();
+        }
+
+        private int GetUserId()
+        {
+            var studentId = User.FindFirst("StudentId")?.Value;
+            int userId;
+            int.TryParse(studentId, out userId);
+            Console.WriteLine(studentId);
+            return userId;
+        }
+
+        private bool articleExists(int id)
+        {
+            return (_DBContext.T討論文章s?.Any(e => e.文章id == id)).GetValueOrDefault();
         }
     }
 }

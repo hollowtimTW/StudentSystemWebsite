@@ -5,7 +5,7 @@
             <div class="container position-relative">
                 <div class="row d-flex justify-content-center">
                     <div class="col-lg-6 text-center">
-                        <h2>@ViewBag.Name</h2>
+                        <h2>@ViewBag.subName</h2>
                         <p>來場同儕間的激烈溝通吧！</p>
                     </div>
                 </div>
@@ -17,9 +17,9 @@
                 <ol>
                     <li><a asp-area="" asp-controller="Template" asp-action="Index">首頁</a></li>
                     <li><a asp-area="class_discuss" asp-controller="discuss" asp-action="Index">學生論壇</a></li>
-                    <li>@ViewBag.Name</li>
+                    <li>@ViewBag.subName</li>
                 </ol>
-                <a href="/class_discuss/discuss/ArticleEdit" class="btn btn-entrance">
+                <a href="~/class_discuss/discuss/ArticleCreate?subid=@ViewBag.subId" class="btn btn-entrance">
                     新增文章
                 </a>
             </div>
@@ -128,33 +128,27 @@
 @section Scripts{
     <script>
         (async () => {
-            const subId = @ViewBag.Id;
+            const subId = @ViewBag.subId;
             const url = `@Url.Content("~/WebApi/artcard")?id=${subId}`;
-            console.log(url);
             const request = await fetch(url);
-            console.log(request);
             const data = await request.json();
-            console.log(data);
+            const defaultImage = '/images/t論壇/預設頭像.png';
             const datalist = data.map(a => `            
             <div class="col-xl-4 col-md-6">
                         <article>
-
-                            <div class="post-img">
-                                <img src="images/t課程科目類別/默認圖片.jpg" alt="" class="img-fluid">
-                            </div>
-
-                            <p class="post-category">${a.s分類}</p>
+                            <p class="post-category">${a.分類}</p>
 
                             <h2 class="title">
-                           <a href="/class_discuss/discuss/ArticleDetails">${a.s標題}</a>
+                     <a href="/class_discuss/discuss/ArticleDetails?subid=${@ViewBag.subId}&artid=${a.文章id}">
+                             ${truncateString(a.標題, 18)}</a>
                             </h2>
 
                             <div class="d-flex align-items-center">
-                  <img src="images/t課程科目類別/默認圖片.jpg" alt="" class="img-fluid post-author-img flex-shrink-0">
+                  <img src="${a.頭像 ? 'data:image/jpeg;base64,' + a.頭像 : defaultImage}" alt="" class="img-fluid post-author-img flex-shrink-0">
                                 <div class="post-meta">
-                                    <p class="post-author-list">${a.s作者}</p>
+                                    <p class="post-author-list">${a.作者}</p>
                                     <p class="post-date">
-                                        <time datetime="2022-01-01">${a.s日期}</time>
+                                        <time datetime="2022-01-01">${a.日期}</time>
                                     </p>
                                 </div>
                             </div>
@@ -164,5 +158,19 @@
         `);
             $('#article').html(datalist);
         })();
+
+        function truncateString(str, maxLength) {
+            let length = 0;
+            let truncated = '';
+            for (let char of str) {
+                // 如果是中文字符，长度加2；否则加1
+                length += char.charCodeAt(0) > 255 ? 2 : 1;
+                if (length > maxLength - 3) { // 减去省略号的长度
+                    break;
+                }
+                truncated += char;
+            }
+            return truncated + '...';
+        }
     </script>
 }
