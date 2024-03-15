@@ -27,6 +27,11 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             ViewData["Title"] = "學生餐廳";
             return View();
         }
+        public IActionResult CreateOrder()
+        {
+            ViewData["Title"] = "訂單成立";
+            return View();
+        }
         public IActionResult StoreMeanu(int id) 
         {
             ViewData["Title"] = "店家點餐";
@@ -79,7 +84,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
         /// <returns></returns>
         public List<VMstoreStudentOrder> chickstoreOrder(int id, int storeID)
         {
-            var result = _myDBContext.T訂餐購物車s.Where(a => a.學員id == id && a.店家id == storeID).Select(a => new VMstoreStudentOrder { 餐點ID = a.餐點id, 數量 = a.數量 }).ToList();
+            var result = _myDBContext.T訂餐購物車s.Where(a => a.學員id == id && a.店家id == storeID&&a.狀態=="0").Select(a => new VMstoreStudentOrder { 餐點ID = a.餐點id, 數量 = a.數量 }).ToList();
             return result;
         }
     }

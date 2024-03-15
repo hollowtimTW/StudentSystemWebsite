@@ -180,7 +180,7 @@
     <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
         <div class="ts-app-topbar">
             <div class="start">
-                <div class="item is-text">我的最愛餐廳</div>
+                <div class="ts-header is-big">我的最愛餐廳</div>
             </div>
             <div class="end">
                 <a class="item">
@@ -264,7 +264,7 @@
         <footer>
             <div class="ts-wrap is-vertical is-light">
                 <div class="ts-segment">
-                    <button class="ts-button is-fluid is-large">前往結帳</button>
+                    <a asp-area="ordering_system" asp-controller="orderforStudent" asp-action="CreateOrder" class="ts-button is-fluid is-large">前往結帳</a>
                 </div>
                 <div class="ts-segment">
                     <button class="ts-button is-fluid is-large" id="close02">新增商品</button>
@@ -378,10 +378,19 @@
             $.ajax({
                 url: `@Url.Content("~/api/StudentOrderAPI/favoriteStorelist")?id=${studentID}`,
                 success: (datas) => {
-                    const dataslist = datas.店家資料.map(a => {
-                        const { 店家名稱, 店家圖片, 風味列表, 店家ID } = a;
-                        const tagname = 風味列表.map(b => b).join(',');
-                        return (`
+                    if (datas.店家資料.length == 0) {
+                        const nullLove = `            <div class="ts-blankslate is-light">
+                        <span class="ts-icon is-heart-icon"></span>
+                        <div class="header" style="background-color:#ffff">目前還沒有加入最愛</div>
+                        <div class="description">快去看看找你最愛的店家吧</div>
+                    </div>`
+                        $('#favoriteStore').html(nullLove);
+                    }
+                    else {
+                        const dataslist = datas.店家資料.map(a => {
+                            const { 店家名稱, 店家圖片, 風味列表, 店家ID } = a;
+                            const tagname = 風味列表.map(b => b).join(',');
+                            return (`
                               <div class="ts-box is-horizontal is-light mt-3">
                                 <div class="ts-image is-covered">
                                <a href="/ordering_system/orderforStudent/StoreMeanu/${店家ID}">
@@ -405,8 +414,9 @@
                                 </div>
                             </div>
                                 `);
-                    });
-                    $('#favoriteStore').html(dataslist);
+                        });
+                        $('#favoriteStore').html(dataslist);
+                    }
                 },
                 error: () => { console.log("錯誤問題") }
             })

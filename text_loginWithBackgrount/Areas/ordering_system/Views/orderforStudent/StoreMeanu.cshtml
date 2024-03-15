@@ -35,7 +35,7 @@
 
         #main {
             background-color: #ffff;
-            min-height: 1500px;
+            min-height: 1243.05px;
         }
 
         .ts-container {
@@ -308,7 +308,7 @@
     <footer>
         <div class="ts-wrap is-vertical is-light">
             <div class="ts-segment">
-                <button class="ts-button is-fluid is-large">前往結帳</button>
+                <a asp-area="ordering_system" asp-controller="orderforStudent" asp-action="CreateOrder" class="ts-button is-fluid is-large">前往結帳</a>
             </div>
             <div class="ts-segment">
                 <button class="ts-button is-fluid is-large" id="close02">新增商品</button>
@@ -326,6 +326,7 @@
             favoriteStore();
             shoppingCart();
         });
+        //餐點按鈕新增
         function toggleText(id, callback) {
             const textshow = $('#text-' + id);
             let count = textshow.text();
@@ -348,6 +349,7 @@
                 }
             }
         }
+        //餐點按鈕減少
         function miusText(id, callback, removeMenu) {
             const textshow = $('#text-' + id);
             let count = parseInt(textshow.text());
@@ -428,39 +430,50 @@
             $.ajax({
                 url: `@Url.Content("~/api/StudentOrderAPI/favoriteStorelist")?id=${studentID}`,
                 success: (datas) => {
-                    const dataslist = datas.店家資料.map(a => {
-                        const { 店家名稱, 店家圖片, 風味列表, 店家ID } = a;
-                        const tagname = 風味列表.map(b => b).join(',');
-                        return (`
-                                              <div class="ts-box is-horizontal is-light mt-3">
-                                                <div class="ts-image is-covered">
-                                               <a href="/ordering_system/orderforStudent/StoreMeanu/${店家ID}">
-                                                    <img src="${店家圖片}" style="width: 90px; height: 100%;" />
-                                               </a>
-                                                </div>
-                                                <div class="ts-content">
-                                                    <a href="/ordering_system/orderforStudent/StoreMeanu/${店家ID}">
-                                                            <div class="ts-header">
-                                                            ${店家名稱}
-                                                            </div>
-                                                    </a>
-                                                <p>${tagname}</p>
-                                                </div>
-                                                <div class="ts-content is-end-aligned">
-                                                   <div class="ts-header is-end-aligned">
-                                                                <button class="ts-button is-icon is-negative is-outlined is-circular" onclick="delete01(${店家ID})">
-                                                            <span class="ts-icon is-minus-icon"></span>
-                                                        </button>
+                    if (datas.店家資料.length == 0) {
+                        const nullLove = `            <div class="ts-blankslate is-light">
+                                <span class="ts-icon is-heart-icon"></span>
+                                <div class="header" style="background-color:#ffff">目前還沒有加入最愛</div>
+                                <div class="description">快去看看找你最愛的店家吧</div>
+                            </div>`
+                        $('#favoriteStore').html(nullLove);
+                    }
+                    else {
+                        const dataslist = datas.店家資料.map(a => {
+                            const { 店家名稱, 店家圖片, 風味列表, 店家ID } = a;
+                            const tagname = 風味列表.map(b => b).join(',');
+                            return (`
+                                      <div class="ts-box is-horizontal is-light mt-3">
+                                        <div class="ts-image is-covered">
+                                       <a href="/ordering_system/orderforStudent/StoreMeanu/${店家ID}">
+                                            <img src="${店家圖片}" style="width: 90px; height: 100%;" />
+                                       </a>
+                                        </div>
+                                        <div class="ts-content">
+                                            <a href="/ordering_system/orderforStudent/StoreMeanu/${店家ID}">
+                                                    <div class="ts-header">
+                                                    ${店家名稱}
                                                     </div>
-                                                </div>
+                                            </a>
+                                        <p>${tagname}</p>
+                                        </div>
+                                        <div class="ts-content is-end-aligned">
+                                           <div class="ts-header is-end-aligned">
+                                                        <button class="ts-button is-icon is-negative is-outlined is-circular" onclick="delete01(${店家ID})">
+                                                    <span class="ts-icon is-minus-icon"></span>
+                                                </button>
                                             </div>
-                                                `);
-                    });
-                    $('#favoriteStore').html(dataslist);
+                                        </div>
+                                    </div>
+                                        `);
+                        });
+                        $('#favoriteStore').html(dataslist);
+                    }
                 },
                 error: () => { console.log("錯誤問題") }
             })
         }
+        ////////////////////關閉相關//////////////////////////
         //關閉購物車
         $('#closebtn').click(() => {
             close();
@@ -472,6 +485,7 @@
         const close = () => {
             $('#btncart').click();
         }
+        /////////////////////關閉結束///////////////////////////
         //載入學員是否已經有購物車
         const shoppingCart = () => {
             $.ajax({
