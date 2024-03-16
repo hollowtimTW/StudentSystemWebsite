@@ -16,7 +16,8 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="resume-item position-relative">
                         <div>
-                            <button type="button" class="btn btn-close" onclick="deleteResume(@viewModel.ResumeID)"></button>
+                            <button type="button" class="btn btn-circle btn-float1" onclick="deleteResume(@viewModel.ResumeID)"><i class="bi bi-x-lg"></i></button>
+                            <button type="button" class="btn btn-circle btn-float2" onclick="exportResume(@viewModel.ResumeID)"><i class="bi bi-filetype-pdf"></i></button>
                         </div>
                         <div class="pointer-link" onclick="popup_edit(@viewModel.ResumeID)">
                             <div class="icon">
@@ -89,35 +90,66 @@
 
 <script>
 
-    //宣告編輯器
-    //let update_editor;
-    //let create_editor;
+    // ==== 匯出履歷 ====
+    function exportResume(resumeId) {
+        Swal.fire({
+            title: '是否將此履歷匯出為PDF檔？',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: '確定',
+            cancelButtonText: '取消',
+            customClass: {
+                confirmButton: 'btn btn-normal',
+                cancelButton: 'btn btn-cancel'
+            },
+            confirmButtonColor: '#008374',
+            cancelButtonColor: '#6c757d'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/job_vacancy/jobapi/ExportToPDF/" + resumeId,
+                    type: 'GET',
+                    success: function (result) {
+                        if (result.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '匯出成功',
+                                text: result.message,
+                                customClass: {
+                                    confirmButton: 'btn btn-normal',
+                                },
+                                confirmButtonColor: '#008374',
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '匯出失敗',
+                                text: result.message,
+                                customClass: {
+                                    confirmButton: 'btn btn-normal',
+                                },
+                                confirmButtonColor: '#008374',
+                            });
+                        }
+                    },
+                    error: function (result) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '匯出失敗',
+                            text: result.message,
+                            customClass: {
+                                confirmButton: 'btn btn-normal',
+                            },
+                            confirmButtonColor: '#008374',
+                        });
+                    }
+                });
+            } else {
+                // 不執行任何操作
+            }
+        });
+    };
 
-    
-    function destroyEditorCreate() {
-        if (create_editor) {
-            create_editor.destroy()
-                .then(() => {
-                    console.log('create_editor was destroyed');
-                    create_editor = null;
-                })
-                .catch(error => {
-                    console.error('Error destroying create_editor:', error);
-                });
-        }
-    }
-    function destroyEditorEdit() {
-        if (update_editor) {
-            update_editor.destroy()
-                .then(() => {
-                    console.log('update_editor was destroyed');
-                    update_editor = null;
-                })
-                .catch(error => {
-                    console.error('Error destroying update_editor:', error);
-                });
-        }
-    }
 
     // ==== 刪除履歷 ====
     function deleteResume(resumeId) {
@@ -249,7 +281,6 @@
             cancelButtonColor: '#008374'
         }).then((result) => {
             if (result.isConfirmed) {
-                destroyEditorCreate();
                 $('#create_context').empty(); //清空partialview的內容
                 document.getElementById('btnCloseCreate').click();
             } else {
@@ -290,13 +321,6 @@
         }
         formData.set('HopeSalary', selectedValue);
 
-        //自傳
-        //const autobiography = $('#summernote').summernote('code');
-        //let regEx = /<[^>]*>/g;  //去除HTML標籤
-        //const plain = autobiography.replace(regEx, "");
-        const autobiography = create_editor.getData();
-        formData.set('Autobiography', autobiography);
-
         const url = '/job_vacancy/jobforStudent/CreateResume/';
         const response = await fetch(url, {
             body: formData,
@@ -314,7 +338,6 @@
                     confirmButtonColor: '#008374',
                 });
 
-                destroyEditorCreate();
                 $('#create_context').empty(); //清空partialview的內容
                 document.getElementById('btnCloseCreate').click();  //關閉modal
                 GetMyResumes();  //重新載入履歷資料
@@ -381,7 +404,6 @@
             cancelButtonColor: '#008374'
         }).then((result) => {
             if (result.isConfirmed) {
-                destroyEditorEdit();
                 $('#edit_context').empty(); //清空 履歷編輯partialview 的內容
                 document.getElementById('btnCloseEdit').click();
             } else {
@@ -422,12 +444,6 @@
         }
         formData.set('HopeSalary', selectedValue);
 
-        //自傳
-        //let regEx = /<[^>]*>/g;  //去除HTML標籤
-        //const plain = autobiography.replace(regEx, "");
-        const autobiography = update_editor.getData();
-        formData.set('Autobiography', autobiography);
-
         // for (const pair of formData.entries()) {
         //     console.log(pair[0] + ': ' + pair[1]);
         // }
@@ -449,7 +465,7 @@
                     },
                     confirmButtonColor: '#008374',
                 });
-                destroyEditorEdit();
+
                 $('#edit_context').empty(); //清空partialview的內容
                 document.getElementById('btnCloseEdit').click();  //關閉modal
                 GetMyResumes();  //重新載入履歷資料

@@ -1,9 +1,12 @@
 ﻿using Class_system_Backstage_pj.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using QuestPDF.Drawing;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using SkiaSharp;
 using text_loginWithBackgrount.Areas.job_vacancy.DTO;
 using text_loginWithBackgrount.Areas.job_vacancy.ViewModels;
 
@@ -13,79 +16,164 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
     public class jobAPIController : Controller
     {
         private readonly studentContext _studentContext;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public jobAPIController(studentContext studentContext)
+        public jobAPIController(studentContext studentContext, IWebHostEnvironment hostingEnvironment)
         {
             _studentContext = studentContext;
+            _hostingEnvironment = hostingEnvironment;
 
             // 設置 QuestPDF 的授權類型為社區版
             QuestPDF.Settings.License = LicenseType.Community;
         }
 
-        // GET: job_vacancy/jobapi/ExportToPDF
-        [Route("/job_vacancy/jobapi/{Action=Index}")]
-        public IActionResult ExportToPDF()
+        // GET: job_vacancy/jobapi/ExportToPDF/5
+        [Route("/job_vacancy/jobapi/{Action=Index}/{resumeID}")]
+        public async Task<IActionResult> ExportToPDF(int resumeID)
         {
-            var document = Document.Create(container =>
+            try
             {
-                container.Page(page =>
+
+                var thisResume = await _studentContext.T工作履歷資料s.FindAsync(resumeID);
+                if (thisResume == null)
                 {
-                    page.Size(PageSizes.A4);
-                    page.Margin(2, Unit.Centimetre);
-                    page.PageColor(Colors.White);
-                    page.DefaultTextStyle(x => x
-                            .FontSize(20) // 設定預設字體大小
-                            .FontFamily("微軟正黑體")); // 設定預設字體
+                    return Json(new { success = false, message = "找不到指定的履歷" });
+                }
 
-                    page.Header()
-                        .Text("Hello PDF!")
-                        .SemiBold().FontSize(36).FontColor(Colors.Blue.Medium);
+                var theStudent = await _studentContext.T會員學生s.FindAsync(thisResume.F學員Id);
+                if (theStudent == null)
+                {
+                    return Json(new { success = false, message = "找不到指定的學生" });
+                }
 
-                    page.Content()
-                        .PaddingVertical(1, Unit.Centimetre)
-                        .Column(x =>
-                        {
-                            x.Spacing(20);
+                List<T工作工作經驗> thisResumeWorkExp = null;
+                if (thisResume.F有無工作經驗 == "Y")
+                {
+                    thisResumeWorkExp = await (
+                        from workExp in _studentContext.T工作工作經驗s
+                        join resumeWorkExp in _studentContext.T工作履歷表工作經驗s
+                            on workExp.FId equals resumeWorkExp.F工作經驗Id
+                        where resumeWorkExp.F履歷Id == resumeID
+                        select workExp
+                    ).ToListAsync();
+                }
 
-                            x.Item().Text("文字文字");
-                            x.Item().Image(Placeholders.Image(200, 100)); // 自動產生柔和漸變圖片
-                        });
+                var resumeData = new ResumeDataDTO
+                {
+                    Resume = thisResume,
+                    Student = theStudent,
+                    WorkExperience = thisResumeWorkExp
+                };
 
-                    page.Footer()
-                        .AlignCenter()
-                        .Text(x =>
-                        {
-                            x.Span("第");
-                            x.CurrentPageNumber();
-                            x.Span("頁");
-                        });
+                var document = Document.Create(container =>
+                {
+
+                    container.Page(page =>
+                    {
+                        page.Size(PageSizes.A4);
+                        page.Margin(2, Unit.Centimetre);
+                        page.PageColor(Colors.White);
+                        page.DefaultTextStyle(x => x
+                                .FontSize(12) // 設定預設字體大小
+                                .FontFamily("源石黑體")); // 設定預設字體
+
+                        page.Header()
+                            .Text(resumeData?.Resume?.F履歷名稱)
+                            .SemiBold().FontSize(20).FontColor(Colors.Black);
+
+                        page.Content()
+                            .PaddingVertical(1, Unit.Centimetre)
+                            .Column(x =>
+                            {
+                                x.Spacing(20);
+                                x.Item().Background(Colors.Grey.Medium).Height(50);
+
+                                x.Item().Text($"姓名　{resumeData?.Student?.姓名} {resumeData?.Student?.性別}");
+                                x.Item().Text(resumeData?.Student?.生日.ToString());
+                                x.Item().Text($"連絡電話　{resumeData?.Student?.手機}");
+                                x.Item().Text($"聯絡信箱　{resumeData?.Student?.信箱}");
+
+                                x.Item().Text($"學歷　{resumeData?.Student?.學校} {resumeData?.Student?.學位}  {resumeData?.Student?.科系}  {resumeData?.Student?.畢肄}");
+                                x.Item().Text("專長技能");
+                                x.Item().Text(resumeData?.Resume?.F專長技能);
+                                x.Item().Text("語文能力");
+                                x.Item().Text(resumeData?.Resume?.F語文能力);
+
+                                if (thisResumeWorkExp != null && thisResumeWorkExp.Count > 0)
+                                {
+                                    x.Item().Text("工作經驗");
+                                    foreach (var data in thisResumeWorkExp)
+                                    {
+                                        x.Item().Text($"{data.F公司名稱} {data.F職務名稱}");
+                                        x.Item().Text($"{data.F起始年月} ~ {data.F結束年月}");
+                                        x.Item().Text($"{data.F薪水待遇}");
+                                        x.Item().Text($"工作內容");
+                                        x.Item().Text($"{data.F工作內容}");
+                                        x.Item().PaddingVertical(5).LineHorizontal(1).LineColor(Colors.Grey.Medium);
+                                    }
+                                }
+                                else
+                                {
+                                    x.Item().Text($"工作經驗　無");
+                                }
+
+                                x.Item().Text($"希望職稱　{resumeData?.Resume?.F希望職稱}");
+                                x.Item().Text($"工作性質　{resumeData?.Resume?.F工作性質}");
+                                x.Item().Text($"工作時段　{resumeData?.Resume?.F工作時段}");
+                                x.Item().Text($"配合輪班　{resumeData?.Resume?.F配合輪班}");
+                                x.Item().Text($"希望薪水待遇　{resumeData?.Resume?.F希望薪水待遇}");
+                                x.Item().Text($"希望工作地點　{resumeData?.Resume?.F希望工作地點}");
+
+                                x.Item().Text("自傳");
+                                x.Item().Text(resumeData?.Resume?.F自傳);
+                            });
+
+                        page.Footer()
+                            .BorderBottom(25)
+                            .BorderColor("#008374");
+                    });
                 });
-            });
 
-            // 將 PDF 內容保存到記憶體中
-            MemoryStream memoryStream = new MemoryStream();
-            document.GeneratePdf(memoryStream);
-            memoryStream.Position = 0;
+                // 將 PDF 內容保存到記憶體中
+                MemoryStream memoryStream = new MemoryStream();
+                document.GeneratePdf(memoryStream);
+                memoryStream.Position = 0;
 
-            // 確保資料夾存在
-            string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "export_file");
-            if (!Directory.Exists(folderPath))
-            {
-                Directory.CreateDirectory(folderPath);
+                // 確保資料夾存在
+                string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                string folderPath = Path.Combine(desktopPath, "Rasengan學生服務系統");
+
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                // 構建文件保存路徑
+                string baseFileName = $"{thisResume.F履歷名稱}_{DateTime.Today.ToString("yyyyMMdd")}";
+                string fileName = $"{baseFileName}.pdf";
+                string filePath = Path.Combine(folderPath, fileName);
+
+                //確認檔名的唯一性
+                //int count = 1;
+                //while (System.IO.File.Exists(filePath))
+                //{
+                //    fileName = $"{baseFileName}({count}).pdf";
+                //    filePath = Path.Combine(folderPath, fileName);
+                //    count++;
+                //}
+
+                // 將 PDF 內容保存到文件中
+                using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    memoryStream.WriteTo(fileStream);
+                }
+
+                return Json(new { success = true, message = "履歷檔案位於 桌面/Rasengan學生服務系統 資料夾中。" });
             }
-
-            // 構建文件保存路徑
-            string fileName = "test.pdf";
-            string filePath = Path.Combine(folderPath, fileName);
-
-            // 將 PDF 內容保存到文件中
-            using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
+            catch (Exception ex)
             {
-                memoryStream.WriteTo(fileStream);
+                return Json(new { success = false, message = ex.Message });
             }
-
-            // 返回文件作為下載連結
-            return File(memoryStream.ToArray(), "application/pdf", fileName);
         }
 
         // GET: job_vacancy/jobapi/GetResumeTitles/5
@@ -117,6 +205,11 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             return PartialView("_MyResumesPartial", viewModelList);
         }
 
+        /// <summary>
+        /// 回傳應徵紀錄的視圖
+        /// </summary>
+        /// <param name="studentID"></param>
+        /// <returns></returns>
         // GET: job_vacancy/jobapi/GetMyApplyRecords/5
         [Route("/job_vacancy/jobapi/{Action=Index}/{studentID}")]
         public async Task<IActionResult> GetMyApplyRecords(int studentID)
