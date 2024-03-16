@@ -312,6 +312,7 @@
                                             `);
                 });
                 $('#storeCard').html(datalist);
+
                 // 处理热门店家数据
                 const htmldata = bestStoreTop5.map(({ 店家名稱, 店家介紹, 店家圖片, 評價星數, 風味列表, 店家id }) => {
                     const starsHTML = '<i class="bi bi-star-fill"></i>'.repeat(評價星數);
@@ -355,6 +356,7 @@
                 console.error('An error occurred:', error);
             }
         })();
+
         //點擊愛心將店家加入最愛
         $(document).on('click', 'span.is-heart-icon', function () {
             storeID = $(this).data('id');
