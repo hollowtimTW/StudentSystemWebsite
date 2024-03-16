@@ -1,12 +1,10 @@
 ﻿using Class_system_Backstage_pj.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using QuestPDF.Drawing;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using SkiaSharp;
+using QuestPDF.Previewer;
 using text_loginWithBackgrount.Areas.job_vacancy.DTO;
 using text_loginWithBackgrount.Areas.job_vacancy.ViewModels;
 
@@ -25,6 +23,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
 
             // 設置 QuestPDF 的授權類型為社區版
             QuestPDF.Settings.License = LicenseType.Community;
+
         }
 
         // GET: job_vacancy/jobapi/ExportToPDF/5
@@ -65,30 +64,45 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                     WorkExperience = thisResumeWorkExp
                 };
 
+                QuestPDF.Settings.EnableDebugging = true;
+
                 var document = Document.Create(container =>
                 {
 
                     container.Page(page =>
                     {
                         page.Size(PageSizes.A4);
-                        page.Margin(2, Unit.Centimetre);
                         page.PageColor(Colors.White);
                         page.DefaultTextStyle(x => x
                                 .FontSize(12) // 設定預設字體大小
                                 .FontFamily("源石黑體")); // 設定預設字體
 
-                        page.Header()
-                            .Text(resumeData?.Resume?.F履歷名稱)
-                            .SemiBold().FontSize(20).FontColor(Colors.Black);
+                        // 獲取LOGO圖片的相對路徑
+                        string logoFilePath = Path.Combine("images", "logo.jpg");
+                        // 組合圖片的完整路徑
+                        string logoFullPath = Path.Combine(_hostingEnvironment.WebRootPath, logoFilePath);
+
+                        page.Header().Background("#008374")
+                                     .Height(35);
+                        page.Footer().Background("#008374").Height(35);
 
                         page.Content()
                             .PaddingVertical(1, Unit.Centimetre)
+                            .PaddingHorizontal(2, Unit.Centimetre)
                             .Column(x =>
                             {
-                                x.Spacing(20);
-                                x.Item().Background(Colors.Grey.Medium).Height(50);
+                                x.Item()
+                                    .Height(30)
+                                    .Width(100)
+                                    .Image(logoFullPath);
 
-                                x.Item().Text($"姓名　{resumeData?.Student?.姓名} {resumeData?.Student?.性別}");
+                                x.Spacing(20);
+                                x.Item()
+                                    .Width(1, Unit.Inch)
+                                    .Image(resumeData?.Student?.圖片)
+                                    .WithCompressionQuality(ImageCompressionQuality.Medium);
+
+                                x.Item().Text($"{resumeData?.Student?.姓名} {resumeData?.Student?.性別}");
                                 x.Item().Text(resumeData?.Student?.生日.ToString());
                                 x.Item().Text($"連絡電話　{resumeData?.Student?.手機}");
                                 x.Item().Text($"聯絡信箱　{resumeData?.Student?.信箱}");
@@ -127,12 +141,10 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                                 x.Item().Text("自傳");
                                 x.Item().Text(resumeData?.Resume?.F自傳);
                             });
-
-                        page.Footer()
-                            .BorderBottom(25)
-                            .BorderColor("#008374");
                     });
                 });
+
+                document.ShowInPreviewer();
 
                 // 將 PDF 內容保存到記憶體中
                 MemoryStream memoryStream = new MemoryStream();
