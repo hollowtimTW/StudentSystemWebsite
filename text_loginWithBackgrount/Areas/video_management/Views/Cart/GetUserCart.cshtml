@@ -4,10 +4,10 @@
 @model T影片ShoppingCart
 @{
 }
-<div style="width:90%;margin:auto" class="mt-2">
+<div style="width:60%;margin:auto" class="mt-2">
     @if (Model != null && Model.T影片CartDetails != null && Model.T影片CartDetails.Count > 0)
     {
-        <h5>My Cart</h5>
+        <h5>我的商城</h5>
 
         <table class="table table-striped" id="videoTable">
             <tr>
@@ -29,13 +29,17 @@
                         }
                         else
                         {
-                            <video controls style="width: 16rem; height:16rem">
+                          @*   <video controls style="width: 16rem; height:16rem">
                                 @{
                                     var videoPath = $"~/video/{item.FVideo.FVideoName}.mp4";
                                     Console.WriteLine($"Generated Video Path: {videoPath}");
                                 }
                                 <source src="@Url.Content(videoPath)" type="video/mp4" style="width:80px;height:100px">
-                            </video>
+                            </video> *@
+                            string encodedVideoName = Uri.EscapeDataString(@item.FVideo.FVideoName);
+
+                            <img src="@Url.Content("~/video/看板封面/" + encodedVideoName + ".png")" alt="Video Thumbnail" style="width: 16rem; height: 16rem;">
+
                             
                         }
                     </td>
@@ -43,9 +47,11 @@
                     <td>@item.FVideo.FPrice X @item.Quantity</td>
                     <td>@(item.FVideo.FPrice * item.Quantity)</td>
                     <td>
-                        <a class="btn btn-info add-btn" data-videoId=@item.FVideoId>+</a>
+                      @*   <a class="btn btn-info add-btn" data-videoId=@item.FVideoId>+</a>
 
-                        <a class="btn btn-info" href="/video_management/cart/removeitem/@item.FVideoId">-</a>
+                        <a class="btn btn-info" href="/video_management/cart/removeitem/@item.FVideoId">-</a> *@
+                        <a class="btn btn-success" href="/video_management/Cart/AddItem?FvideoId=@item.FVideoId&&redirect=1">+</a>
+                        <a class="btn btn-success" href="/video_management/Cart/RemoveItem?FvideoId=@item.FVideoId">-</a>
                     </td>
                 </tr>
             }
@@ -57,7 +63,7 @@
         </div>
 
         <div class="my-2">
-            <a class="btn btn-primary" href="/Cart/Checkout">Checkout</a>
+            <a class="btn btn-success" href="/Cart/Checkout">Checkout</a>
         </div>
 
     }
@@ -71,19 +77,19 @@
 @section Scripts{
     <script>
 
-        $("#videoTable").on('click', '.add-btn', function () {
-            const videoId = $(this).attr('data-videoId');
+        // $("#videoTable").on('click', '.add-btn', function () {
+        //     const videoId = $(this).attr('data-videoId');
 
-            try {
-                var response =  fetch(`/video_management/Cart/AddItem/${videoId}`);
-                if (response.ok) {
-                    var result =  response.json();
-                }
-            }
-            catch (err) {
-                console.log(err);
-            }
-        })
+        //     try {
+        //         var response =  fetch(`/video_management/Cart/AddItem/${videoId}`);
+        //         if (response.ok) {
+        //             var result =  response.json();
+        //         }
+        //     }
+        //     catch (err) {
+        //         console.log(err);
+        //     }
+        // })
 
 
      

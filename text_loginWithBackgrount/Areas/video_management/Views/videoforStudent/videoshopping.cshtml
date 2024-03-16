@@ -50,7 +50,7 @@
     </div>
 }
 <section>
-    <div class="my-2 container">
+    <div class="my-2 container ml-auto">
         <form asp-action="videoshopping" class="row row-cols-lg-auto g-3 align-items-center">
             <div class="col-12">
                 <label class="visually-hidden" for="genreId">Genres</label>
@@ -64,7 +64,7 @@
             </div>
 
             <div class="col-12">
-                <label class="visually-hidden" for="sterm">Search by title</label>
+                <label class="visually-hidden" for="sterm">搜尋影片標題</label>
                 <div class="input-group">
                     <div class="input-group-text"></div>
                     <input type="text" class="form-control" value="@Model.STerm" id="sterm" name="sterm" placeholder="Sarch by title">
@@ -72,8 +72,8 @@
             </div>
 
             <div class="col-12">
-                <button type="submit" class="btn btn-primary">Search</button>
-                <a href="/Home/Index" class="btn btn-dark">Reset</a>
+                <button type="submit" class="btn btn-success">Search</button>
+                <a href="/video_management/videoforStudent/videoshopping" class="btn btn-warning">Reset</a>
             </div>
         </form>
     </div>
@@ -90,16 +90,21 @@
         {
             @foreach (var video in Model.Videos)
             {
-                <div class="card mx-2 mb-4" style="width: 16rem;">
+                <div class="card mx-2 mb-4 border border-success-subtle" style="width: 17rem;">
                     @if (video != null && !string.IsNullOrEmpty(video.FVideoName))
                     {//這裡要改東西
-                        <video controls style="width: 16rem; height:16rem">
+                      @*   <video controls style="width: 16rem; height:16rem">
                             @{
                                 var videoPath = $"~/video/{video.FVideoName}.mp4";
                                 Console.WriteLine($"Generated Video Path: {videoPath}");
                             }
                             <source src="@Url.Content(videoPath)" type="video/mp4">
-                        </video>
+                        </video> *@
+                       
+                        string encodedVideoName = Uri.EscapeDataString(video.FVideoName);
+
+                        <img src="@Url.Content("~/video/看板封面/" + encodedVideoName + ".png")" alt="Video Thumbnail" style="width: 16rem; height: 16rem;">
+
 
                     }
                     else
@@ -110,10 +115,10 @@
                         <h5 class="card-title">@video.FVideoTitle</h5>
                         <p class="card-text">
                         
-                            <b>Name: </b>@video.FVideoName <br />
-                            <b>Price: </b>@video.FPrice
+                            <b> </b>@video.FVideoName <br />
+                            <b>$ </b>@video.FPrice
                         </p>
-                        <button type="button" onclick="add(@video.FVideoId)" class="btn btn-primary">Add to cart</button>
+                        <button type="button" onclick="add(@video.FVideoId)" class="btn btn-success">Add to cart</button>
                     </div>
                 </div>
             }

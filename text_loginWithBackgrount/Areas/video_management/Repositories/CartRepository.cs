@@ -71,7 +71,7 @@ namespace text_loginWithBackgrount.Areas.video_management.Repositories
             int userId = GetUserId();
             try
             {
-                if (userId != 0)
+                if (userId == 0)
                     throw new Exception("user is not logged-in");
                 var cart = await GetCart(userId);
                 if (cart is null)
