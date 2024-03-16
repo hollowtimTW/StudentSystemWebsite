@@ -29,7 +29,6 @@
 
         #main {
             background-color: #ffff;
-            min-height: 1500px;
         }
     </style>
 }
@@ -130,7 +129,7 @@
                 <div class="swiper-pagination"></div>
             </div>
         </div>
-    </section><!-- End Testimonials Section -->
+    </section><!-- End 熱門排行 -->
     <hr />
     <section id="portfolio" class="portfolio">
         <div class="container" data-aos="fade-up">
@@ -175,103 +174,104 @@
 
             </div>
         </div>
-    </section><!-- End Portfolio Section -->
-    @* 我的最愛 *@
-    <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
-        <div class="ts-app-topbar">
-            <div class="start">
-                <div class="ts-header is-big">我的最愛餐廳</div>
-            </div>
-            <div class="end">
-                <a class="item">
-                    <span class="ts-close"></span>
-                </a>
-            </div>
+    </section><!-- End 全部店家顯示 -->
+
+</div>    
+@* 我的最愛 *@
+<div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+    <div class="ts-app-topbar">
+        <div class="start">
+            <div class="ts-header is-big">我的最愛餐廳</div>
         </div>
-        <hr />
-        <div class="offcanvas-body" id="favoriteStore">
-
-            <div class="ts-box is-horizontal is-light mt-3">
-                <div class="ts-image is-covered">
-                    <img src="~/images/t訂餐/店家照片/43d98cfe-5cb9-48b7-a37a-8136d529b6d5_images.png" style="width: 90px; height: 100%;" />
-                </div>
-                <div class="ts-content">
-                    <div class="ts-header">
-                        海大王朋友飯店
-                    </div>
-                    <p>美式 日式 義式</p>
-                </div>
-                <div class="ts-content is-end-aligned">
-                    <div class="ts-header">
-                        <button class="ts-button is-icon is-negative is-outlined is-circular">
-                            <span class="ts-icon is-minus-icon"></span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ts-box is-horizontal is-light mt-3">
-                <div class="ts-image is-covered">
-                    <img src="~/images/t訂餐/店家照片/43d98cfe-5cb9-48b7-a37a-8136d529b6d5_images.png" style="width: 90px; height: 100%;" />
-                </div>
-                <div class="ts-content">
-                    <div class="ts-header">
-                        海大王朋友飯店
-                    </div>
-                    <p>美式 日式 義式</p>
-                </div>
-                <div class="ts-content is-end-aligned">
-                    <div class="ts-header">
-                        <button class="ts-button is-icon is-negative is-outlined is-circular">
-                            <span class="ts-icon is-minus-icon"></span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-
+        <div class="end">
+            <a class="item">
+                <span class="ts-close"></span>
+            </a>
         </div>
     </div>
-    @* 購物車 *@
-    <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrollingCar" aria-labelledby="offcanvasScrollingLabel">
-        <div class="ts-app-topbar">
-            <div class="start">
-                <div class="ts-header is-big">購物車</div>
+    <hr />
+    <div class="offcanvas-body" id="favoriteStore">
+
+        <div class="ts-box is-horizontal is-light mt-3">
+            <div class="ts-image is-covered">
+                <img src="~/images/t訂餐/店家照片/43d98cfe-5cb9-48b7-a37a-8136d529b6d5_images.png" style="width: 90px; height: 100%;" />
             </div>
-            <div class="end">
-                <button type="button" class="text-reset btn-close btn-close-white" id="closebtn"></button>
+            <div class="ts-content">
+                <div class="ts-header">
+                    海大王朋友飯店
+                </div>
+                <p>美式 日式 義式</p>
+            </div>
+            <div class="ts-content is-end-aligned">
+                <div class="ts-header">
+                    <button class="ts-button is-icon is-negative is-outlined is-circular">
+                        <span class="ts-icon is-minus-icon"></span>
+                    </button>
+                </div>
             </div>
         </div>
-        @* 購物車內容 *@
-        <div class="offcanvas-body">
-            <div class="container">
-                <div class="ts-grid is-stacked">
-                    <div class="column is-2-wide">
-                        <div class="ts-app-topbar" style="background-color: transparent;color: black;">
-                            <div class="start">
-                                <div class="ts-header is-big"><span id="Shoppingcount">0</span>項商品</div>
-                            </div>
-                            <div class="end">
-                                <span class="ts-text is-heavy is-big">總計: <span class="ts-text is-editable" id="Shoppingtotail">$ 0</span></span>
-                            </div>
+
+        <div class="ts-box is-horizontal is-light mt-3">
+            <div class="ts-image is-covered">
+                <img src="~/images/t訂餐/店家照片/43d98cfe-5cb9-48b7-a37a-8136d529b6d5_images.png" style="width: 90px; height: 100%;" />
+            </div>
+            <div class="ts-content">
+                <div class="ts-header">
+                    海大王朋友飯店
+                </div>
+                <p>美式 日式 義式</p>
+            </div>
+            <div class="ts-content is-end-aligned">
+                <div class="ts-header">
+                    <button class="ts-button is-icon is-negative is-outlined is-circular">
+                        <span class="ts-icon is-minus-icon"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+@* 購物車 *@
+<div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrollingCar" aria-labelledby="offcanvasScrollingLabel">
+    <div class="ts-app-topbar">
+        <div class="start">
+            <div class="ts-header is-big">購物車</div>
+        </div>
+        <div class="end">
+            <button type="button" class="text-reset btn-close btn-close-white" id="closebtn"></button>
+        </div>
+    </div>
+    @* 購物車內容 *@
+    <div class="offcanvas-body">
+        <div class="container">
+            <div class="ts-grid is-stacked">
+                <div class="column is-2-wide">
+                    <div class="ts-app-topbar" style="background-color: transparent;color: black;">
+                        <div class="start">
+                            <div class="ts-header is-big"><span id="Shoppingcount">0</span>項商品</div>
+                        </div>
+                        <div class="end">
+                            <span class="ts-text is-heavy is-big">總計: <span class="ts-text is-editable" id="Shoppingtotail">$ 0</span></span>
                         </div>
                     </div>
-                    <div class="column is-3-wide" id="ShoppingList">
-                    </div>
+                </div>
+                <div class="column is-3-wide" id="ShoppingList">
                 </div>
             </div>
         </div>
-        <footer>
-            <div class="ts-wrap is-vertical is-light">
-                <div class="ts-segment">
-                    <a asp-area="ordering_system" asp-controller="orderforStudent" asp-action="CreateOrder" class="ts-button is-fluid is-large">前往結帳</a>
-                </div>
-                <div class="ts-segment">
-                    <button class="ts-button is-fluid is-large" id="close02">新增商品</button>
-                </div>
-            </div>
-        </footer>
     </div>
+    <footer>
+        <div class="ts-wrap is-vertical is-light">
+            <div class="ts-segment">
+                <a asp-area="ordering_system" asp-controller="orderforStudent" asp-action="CreateOrder" class="ts-button is-fluid is-large">前往結帳</a>
+            </div>
+            <div class="ts-segment">
+                <button class="ts-button is-fluid is-large" id="close02">新增商品</button>
+            </div>
+        </div>
+    </footer>
 </div>
 @section Scripts {
     <script>
