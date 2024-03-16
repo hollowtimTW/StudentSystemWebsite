@@ -1,4 +1,5 @@
-﻿@section Styles {
+﻿@model List<VMstoreCarIndex>;
+@section Styles {
     <!-- 核心：Tocas UI -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocas/4.2.5/tocas.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tocas/4.2.5/tocas.min.js"></script>
@@ -32,7 +33,7 @@
         }
     </style>
 }
-
+@* 頭部 *@
 <div class="is-light">
     <div class="ts-content is-vertically-padded is-tertiary">
         <div class="ts-container">
@@ -65,7 +66,7 @@
             </div>
             <div class="ts-wrap is-center-aligned mt-3">
                 <div class="column is-3-wide">
-                    <button class="ts-button is-circular is-outlined is-start-icon">
+                    <button class="ts-button is-circular is-outlined is-start-icon" id="heightfeedback">
                         <span class="ts-icon is-cart-plus-icon"></span>
                         評分最高
                     </button>
@@ -86,12 +87,13 @@
         </div>
     </div>@* 上面頭部 *@
 </div>
-<div style="background-color:#ffff">
+@* 身體 *@
+<div style="background-color:#ffff" id="storebody">
     <section id="testimonials" class="testimonials p-0">
         <div class="container" data-aos="fade-up">
 
             <div class="section-header p-0">
-                <h2 class="text-start p-0 m-0 mt-5">熱門餐廳</h2>
+                <h2 class="text-start p-0 m-0 mt-5">2024熱門餐廳</h2>
             </div>
 
             <div class="slides-3 swiper" data-aos="fade-up" data-aos-delay="100">
@@ -150,26 +152,29 @@
                 <!-- 簡單型圖文卡片（共有12張，分為4類） -->
                 <div class="row gy-4 portfolio-container" id="storeCard" style="height:auto">
                     <!-- 注意最後一個class，自訂名稱需對應到上方的分頁標題過濾器 --> <!-- 基礎class="col-xl-4 col-md-6 portfolio-item" -->
-                    <div class="col-xl-4 col-md-6 portfolio-item filter-美式 filter-日式">
-                        <div class="portfolio-wrap">
-                            <!-- 圖片連結 -->
-                            <!-- 點進商家圖片連結 -->
-                            <a href="#" data-gallery="portfolio-gallery-app" class="glightbox">
-                                <img src="~/images/t訂餐/店家照片/jai西門.jpg" class="img-fluid" alt="" />
-                            </a>
-                            <div class="portfolio-info">
-                                <!-- 小標題連結 -->
-                                <h4 class="m-0">
-                                    <!-- 點進商家連結 -->
-                                    <a href="portfolio-details.html" title="More Details">海大王朋友飯店</a>
-                                </h4>
-                                <span class="ts-text is-secondary">02-2371-7666</span>
-                                <div class="ts-segment is-secondary is-light">
-                                    最適合情侶約會，家庭聚會、朋友聚會的餐廳，就需要居酒屋的氣氛來帶動，今天要來分享台北必吃居酒屋推薦，一系列日本料理與酒精創造出的完美交響曲
+                    @foreach (var item in Model)
+                    {
+                        var filterString = "filter-" + string.Join(" filter-", item.風味列表);
+                        <div class="col-xl-4 col-md-6 portfolio-item @filterString">
+                            <div class="portfolio-wrap">
+                                <a href="/ordering_system/orderforStudent/StoreMeanu/@item.店家id" data-gallery="portfolio-gallery-app">
+                                    <img src="@item.餐廳照片" class="img-fluid" alt="@item.店家名稱" />
+                                </a>
+                                <div class="portfolio-info">
+                                    <h4>
+                                        <a href="/ordering_system/orderforStudent/StoreMeanu/@item.店家id" title="詳細商品">@item.店家名稱</a>
+                                        <span class="ts-icon is-regular is-heart-icon" data-id="@item.店家id"></span>
+                                    </h4>
+                                    <span class="ts-text is-heavy is-mark is-medium">平均評價: </span>
+                                    <span class="ts-badge is-secondary is-large">@item.平均評論</span>
+                                    <div class="ts-segment is-secondary is-light">@item.餐廳介紹</div>
                                 </div>
                             </div>
                         </div>
-                    </div><!-- End Portfolio Item -->
+
+                        <!-- End Portfolio Item -->
+                    }
+
                 </div><!-- End Portfolio Container -->
 
             </div>
@@ -177,6 +182,68 @@
     </section><!-- End 全部店家顯示 -->
 
 </div>    
+@* 身體02 *@
+<div style="display:none" id="searchbody">
+    <div class="ts-divider"></div>
+    <div class="ts-content is-center-aligned is-vertically-very-padded" style="background: var(--ts-gray-50)">
+        <div class="ts-container is-narrow has-vertically-spaced">
+            <div class="ts-header is-center-aligned is-huge is-heavy">「關鍵字」</div>
+            <div class="ts-text is-secondary">302 個結果</div>
+        </div>
+    </div>
+    <div class="ts-divider"></div>
+    <div class="ts-container is-narrow has-vertically-padded-big">
+        <div class="ts-grid is-3-columns is-relaxed is-stretched">
+
+
+            <div class="column">
+                <div class="ts-box">
+                    <div class="ts-image is-covered is-centered">
+                        <img src="~/images/t訂餐/店家照片/43d98cfe-5cb9-48b7-a37a-8136d529b6d5_images.png" />
+                    </div>
+                    <div class="ts-content">
+                        <div class="ts-header is-heavy">好吃的千層蛋糕！</div>
+                        <p>在 5 月之前於線上網路門市訂購，現在還特別加贈限量環保袋。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="ts-box">
+                    <div class="ts-image is-covered is-centered">
+                        <img src="~/images/t訂餐/店家照片/43d98cfe-5cb9-48b7-a37a-8136d529b6d5_images.png" />
+                    </div>
+                    <div class="ts-content">
+                        <div class="ts-header is-heavy">好吃的千層蛋糕！</div>
+                        <p>在 5 月之前於線上網路門市訂購，現在還特別加贈限量環保袋。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="ts-box">
+                    <div class="ts-image is-covered is-centered">
+                        <img src="~/images/t訂餐/店家照片/43d98cfe-5cb9-48b7-a37a-8136d529b6d5_images.png" />
+                    </div>
+                    <div class="ts-content">
+                        <div class="ts-header is-heavy">好吃的千層蛋糕！</div>
+                        <p>在 5 月之前於線上網路門市訂購，現在還特別加贈限量環保袋。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="ts-box">
+                    <div class="ts-image is-covered is-centered">
+                        <img src="~/images/t訂餐/店家照片/43d98cfe-5cb9-48b7-a37a-8136d529b6d5_images.png" />
+                    </div>
+                    <div class="ts-content">
+                        <div class="ts-header is-heavy">好吃的千層蛋糕！</div>
+                        <p>在 5 月之前於線上網路門市訂購，現在還特別加贈限量環保袋。</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
 @* 我的最愛 *@
 <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
     <div class="ts-app-topbar">
@@ -280,38 +347,39 @@
         (async () => {
             try {
                 // 呼叫API获取数据
-                const [favoriteStorelist, bestStoreTop5, storeStyle, storeInformation] = await Promise.all([
+                const [favoriteStorelist, bestStoreTop5, storeStyle, /* storeInformation */] = await Promise.all([
                     $.ajax({ url: `@Url.Content("~/api/StudentOrderAPI/favoriteStorelist")?id=${studentID}` }),
                     $.ajax({ url: '@Url.Content("~/tOrder_StoreAPI/bestStoreTop5")' }),
                     $.ajax({ url: `@Url.Content("~/tOrder_StoreAPI/storeStyle")` }),
-                    $.ajax({ url: `@Url.Content("~/tOrder_StoreAPI/storeInformation")` })
+                    // $.ajax({ url: `@Url.Content("~/tOrder_StoreAPI/storeInformation")` })
                 ]);
                 // 处理收藏店家列表
                 favoriteStorelist.店家列表.map(a => { FavoriteStorelist.push(a) })
                 // 处理全部店家数据
-                const datalist = storeInformation.map(({ 店家id, 電話, 餐廳照片, 店家名稱, 餐廳介紹, 風味列表 }) => {
-                    const tag = 風味列表.map(b => `filter-${b}`).join(' ');
-                    const isFavorite = FavoriteStorelist.includes(店家id);
-                    const heartIconClass = isFavorite ? '' : 'is-regular';
-                    return (`
-                                                <div class="col-xl-4 col-md-6 portfolio-item ${tag}">
-                                                    <div class="portfolio-wrap">
-                                                        <a href="/ordering_system/orderforStudent/StoreMeanu/${店家id}" data-gallery="portfolio-gallery-app" class="glightbox">
-                                                            <img src="${餐廳照片}" class="img-fluid" alt="${店家名稱}" />
-                                                        </a>
-                                                        <div class="portfolio-info">
-                                                            <h4>
-                                                                <a href="/ordering_system/orderforStudent/StoreMeanu/${店家id}" title="詳細商品">${店家名稱}</a>
-                                                                <span class="ts-icon ${heartIconClass} is-heart-icon" data-id="${店家id}"></span>
-                                                            </h4>
-                                                            <span class="ts-text is-secondary">${電話}</span>
-                                                            <div class="ts-segment is-secondary is-light">${餐廳介紹}</div>
-                                                        </div>
-                                                    </div>
-                                                </div><!-- End Portfolio Item -->
-                                            `);
-                });
-                $('#storeCard').html(datalist);
+                // const datalist = storeInformation.map(({ 店家id, 電話, 餐廳照片, 店家名稱, 餐廳介紹, 風味列表 }) => {
+                //     const tag = 風味列表.map(b => `filter-${b}`).join(' ');
+                //     const isFavorite = FavoriteStorelist.includes(店家id);
+                //     const heartIconClass = isFavorite ? '' : 'is-regular';
+                //     return (`
+                //                                 <div class="col-xl-4 col-md-6 portfolio-item ${tag}">
+                //                                     <div class="portfolio-wrap">
+                //                                         <a href="/ordering_system/orderforStudent/StoreMeanu/${店家id}" data-gallery="portfolio-gallery-app" class="glightbox">
+                //                                             <img src="${餐廳照片}" class="img-fluid" alt="${店家名稱}" />
+                //                                         </a>
+                //                                         <div class="portfolio-info">
+                //                                             <h4>
+                //                                                 <a href="/ordering_system/orderforStudent/StoreMeanu/${店家id}" title="詳細商品">${店家名稱}</a>
+                //                                                 <span class="ts-icon ${heartIconClass} is-heart-icon" data-id="${店家id}"></span>
+                //                                             </h4>
+                //                                             <span class="ts-text is-secondary">平均評價</span>
+                //                                             <span class="ts-badge is-secondary">4.5</span>
+                //                                             <div class="ts-segment is-secondary is-light">${餐廳介紹}</div>
+                //                                         </div>
+                //                                     </div>
+                //                                 </div><!-- End Portfolio Item -->
+                //                             `);
+                // });
+                // $('#storeCard').html(datalist);
 
                 // 处理热门店家数据
                 const htmldata = bestStoreTop5.map(({ 店家名稱, 店家介紹, 店家圖片, 評價星數, 風味列表, 店家id }) => {
@@ -391,6 +459,8 @@
                     else {
                         const dataslist = datas.店家資料.map(a => {
                             const { 店家名稱, 店家圖片, 風味列表, 店家ID } = a;
+                            const plusIcon = $('.ts-icon.is-heart-icon[data-id="' + 店家ID + '"]');
+                            plusIcon.removeClass('is-regular');
                             const tagname = 風味列表.map(b => b).join(',');
                             return (`
                               <div class="ts-box is-horizontal is-light mt-3">
@@ -539,5 +609,10 @@
         const close = () => {
             $('#btncart').click();
         }
+        //測試
+        $('#heightfeedback').click(() => {
+            $('#storebody').hide();
+            $('#searchbody').show();
+        })
     </script>
 }

@@ -34,8 +34,8 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
         /// <param name="myDBContext"></param>
         public IActionResult storeInformation()
         {
-            var result = _myDBContext.T訂餐店家資料表s.
-                Select(a => new
+            var result = _myDBContext.T訂餐店家資料表s
+                .Select(a => new
                 {
                     a.店家id,
                     a.電話,
@@ -47,9 +47,35 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                             join tagE in _myDBContext.T訂餐店家風味表s on tagItem.店家id equals tagE.店家id
                             join tagF in _myDBContext.T訂餐口味總表s on tagE.口味id equals tagF.口味id
                             where tagItem.店家名稱 == a.店家名稱
-                            select tagF.風味名稱).ToList()
+                            select tagF.風味名稱).ToList(),
                 });
+
             return Json(result);
+        }
+        /// <summary>
+        /// 查詢店家平均評價分數
+        /// </summary>
+        /// <param name="id">店家id</param>
+        /// <returns>店家加權的平均評價分數</returns>
+        private static double StorefeedbakAvg(int id, studentContext _myDBContext)
+        {
+            var result3 = (from item in _myDBContext.T訂餐評論表s
+                           join a in _myDBContext.T訂餐訂單資訊表s on item.訂單id equals a.訂單id
+                           join b in _myDBContext.T訂餐訂單詳細資訊表s on a.訂單id equals b.訂單id
+                           join c in _myDBContext.T訂餐店家資料表s on b.店家id equals c.店家id
+                           where c.店家id == id && b.狀態 == "1"
+                           select item).Distinct();
+            var storedata = result3.GroupBy(a => a.滿意度星數).Select(b =>
+            new
+            {
+                滿意度星數 = Convert.ToInt32(b.Key),
+                評論數量 = b.Count(),
+                加權 = Convert.ToInt32(b.Key) * b.Count()
+            });
+            int totalComments = storedata.Sum(item => item.評論數量);
+            int totalWeight = storedata.Sum(item => item.加權);
+            double evaluate = (totalWeight != 0) ? totalWeight / totalComments : 0;
+            return evaluate;
         }
 
         /// <summary>
@@ -108,7 +134,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             });
             int totalComments = storedata.Sum(item => item.評論數量);
             int totalWeight = storedata.Sum(item => item.加權);
-            double evaluate = totalWeight / totalComments;
+            double evaluate = totalWeight!=0?totalWeight / totalComments:0;
             VMstoreInformation storeInformationVM = new VMstoreInformation()
             {
                 turnover = result1,
@@ -526,7 +552,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             return NotFound();
         }
         /// <summary>
-        /// 依照2023年訂單金額與評論星數交叉最高前五名排名
+        /// 依照2024年訂單金額與評論星數交叉最高前五名排名
         /// </summary>
         /// <returns></returns>
         public IActionResult bestStoreTop5()
@@ -538,7 +564,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                                          join d in _myDBContext.T訂餐評論表s on b.訂單id equals d.訂單id
                                          join e in _myDBContext.T訂餐店家風味表s on c.店家id equals e.店家id
                                          join f in _myDBContext.T訂餐口味總表s on e.口味id equals f.口味id
-                                         where (b.訂單狀態).Trim() == "完成" && (b.訂單時間).Substring(0, 4) == "2023"
+                                         where (b.訂單狀態).Trim() == "完成" && (item.狀態).Trim()=="1"&& (b.訂單時間).Substring(0, 4) == "2024"
                                          group new { item, b, a, c, d, e, f } by c into g
                                          select new
                                          {
@@ -1256,7 +1282,8 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
         /// <param name="feedback">訂單評論</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult orderFinallcomplent(int id,string start,string feedback) {
+        public IActionResult orderFinallcomplent(int id, string start, string feedback)
+        {
             var order = _myDBContext.T訂餐訂單資訊表s.Where(a => a.訂單id == id).FirstOrDefault();
             if (order != null)
             {

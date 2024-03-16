@@ -313,19 +313,25 @@
                             const { value: userInput } = await Swal.fire({
                                 title: "訂單評論",
                                 html:
-                         `<select id="swal-input1" class="swal2-input">
-                                 <option value="0">選擇星數</option>
-                                 <option value="5">5星</option>
-                                 <option value="4">4星</option>
-                                 <option value="3">3星</option>
-                                 <option value="2">2星</option>
-                                 <option value="1">1星</option>
-                          </select>
-                        <textarea id="swal-input2" class="swal2-textarea" placeholder="這裡寫下你的評論" maxlength="50"></textarea>`,
+                                    `<div class="ts-wrap is-vertical">
+                                         <div class="ts-segment">
+                                               <div class="ts-rating is-input is-yellow ts-wrap is-center-aligned">
+                                                 <input class="star" type="radio" name="rating" value="1" />
+                                                  <input class="star" type="radio" name="rating" value="2" checked />
+                                                  <input class="star" type="radio" name="rating" value="3" />
+                                                  <input class="star" type="radio" name="rating" value="4" />
+                                                   <input class="star" type="radio" name="rating" value="5" />
+                                                 </div>
+                                             </div>
+                                         <div class="ts-segment">
+                                            <textarea id="swal-input2" class="swal2-textarea" placeholder="這裡寫下你的評論" maxlength="50"></textarea>
+                                         </div>
+                                     </div>
+                                    `,
                                 focusConfirm: false,
                                 preConfirm: () => {
                                     return [
-                                        document.getElementById('swal-input1').value,
+                                        document.querySelector('input[name="rating"]:checked').value,
                                         document.getElementById('swal-input2').value
                                     ];
                                 },
@@ -334,12 +340,8 @@
                                 cancelButtonText: "取消",
                                 showLoaderOnConfirm: true,
                                 preConfirm: async () => {
-                                    const selectValue = document.getElementById('swal-input1').value;
+                                    const selectValue = document.querySelector('input[name="rating"]:checked').value;
                                     const textValue = document.getElementById('swal-input2').value;
-
-                                    if (selectValue == "0") {
-                                        await Swal.showValidationMessage("記得選擇評價星數");
-                                    }
 
                                     return { selectValue, textValue };
                                 }
