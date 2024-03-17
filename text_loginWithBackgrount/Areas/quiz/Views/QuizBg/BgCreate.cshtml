@@ -1,120 +1,11 @@
 ﻿@{
     ViewData["Title"] = "測驗編輯";
     var teacherId = User.Claims.FirstOrDefault(c => c.Type == "teacherID")?.Value;
+    var quizId = @ViewBag.quizId;
 }
 
 @section Styles{
-    <style>
-        .nav-tabs .nav-link {
-            background-color: #ADADAD;
-            color: black;
-            
-        }
-
-        .nav-tabs .nav-link:hover {
-            background-color: #0056b3;
-                color: white;
-        }
-
-        .nav-tabs .nav-link.active {
-            background-color: #007bff; 
-            color: white;
-        }
-
-        .switchBtn{
-            width:2.8rem !important;
-            height:1.2rem;
-        }
-
-        textarea{
-            max-height: 300px;
-        }
-
-
-
-
-        .question-item {
-            border: 1px solid #ccc;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            padding-right: 100px;
-        }
-
-        .question-content, .question-check {
-            width: 100%;
-        }
-
-        .form-control-c, .form-control-textarea {
-            border: none;
-            border-bottom: 1px solid #ced4da;
-            border-radius: 0;
-            margin-top: 8px;
-        }
-
-        .form-control-textarea {
-            resize: vertical; 
-        }
-
-        .option-section {
-            display: flex;
-            align-items: center;
-            margin-top: 8px;
-        }
-
-        .option-section .form-check-input {
-            margin-right: 10px;
-        }
-
-        .option-section-tool {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-        }
-
-
-        .add-option {
-            margin-right: 10px;
-        }
-
-        .button-group {
-            display: flex;
-            flex-direction: column;
-            position: absolute;
-            right: 10px;
-            top: 10px; 
-        }
-
-        .button-group .btn {
-            margin-bottom: 5px;
-        }
-
-        .image-upload-container {
-            display: flex;
-            justify-content: center; 
-            align-items: center;
-            margin: 15px 0;
-            max-width: 400px; 
-            max-height: 400px; 
-            overflow: hidden; 
-        }
-
-        .image-upload-container img {
-            max-width: 100%; 
-            max-height: 100%; 
-        }
-
-        .button-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom:5px
-        }
-
-    </style>
-
+	<link href="~/quiz/css/quizcreate.css" rel="stylesheet" />
 }
 
 
@@ -267,7 +158,7 @@
 
 <!--Toast-->
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-    <div id="toast" class="toast hide" role="alert">
+    <div id="toast" class="toast hide">
         @* 內容 *@
     </div>
 </div>
@@ -281,9 +172,8 @@
 
         $(document).ready(function () {
 
-
-            const $form = $('#quizInfoForm');
-
+            // InfoForm
+            const $InfoForm = $('#quizInfoForm');
             const $qName = $('#qName');
             const $qLimitTime = $('#qLimitTime');
             const $qNote = $('#qNote');;
@@ -296,87 +186,41 @@
 
             const $toast = $('#toast');
 
+            // Toast
+            function showToast(response, status) {
+                var colorclass = "bg-primary"
+                if (!status) {
+                    colorclass = "bg-danger"
+                };
+                $toast.html(`
+                    <div class="toast-body ${colorclass} text-white">
+                        <strong>${response}</strong>
+                    </div>
+                `);
+                var toast = new bootstrap.Toast($toast);
+                toast.show();
+                setTimeout(() => toast.hide(), 2000);
+            }
+
 
 
             $('#tab2-tab').on('click', () => {
                 getInfo()
-                $form.removeClass('was-validated');
+                $InfoForm.removeClass('was-validated');
             })
 
 
-            $form.on('submit', function (event) {
+            $InfoForm.on('submit', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
 
-                if (this.checkValidity()) {
-                    
-                } else {
-                    $form.addClass('was-validated');
+                if (!this.checkValidity()) {
+                    $InfoForm.addClass('was-validated');
                 }
             });
 
-
-
-
-
-
-
-            $('#saveInfoBtn').on('click', () => {
-
-                var jsonData = {
-                    id : @ViewBag.quizId,
-                    name: $qName.val(),
-                    note: $qNote.val(),
-                    limitTime: Number($qLimitTime.val()),
-                    isPublic: $isPublicBtn.prop('checked') ? 1 : 0,
-                    isClosed: $isClosedBtn.prop('checked') ? 1 : 0,
-                };
-
-                console.log(jsonData)
-
-                $.ajax({
-                    url: '/Api/QuizBg/UpdateQuiz',
-                    type: 'POST',
-                    contentType: "application/json",
-                    data: JSON.stringify(jsonData),
-                    success: function (response) {
-                        showToast(response, true);
-                    },
-                    error: function (xhr, status, error) {
-                        console.error(xhr.responseText);
-                        showToast(xhr.responseText, false);
-                    }
-                });
-            })
-
-            $('#deleteBtn').on('click', () => {
-                jsonData = {
-                    id: @ViewBag.quizId,
-                }
-                $.ajax({
-                    url: '/Api/QuizBg/DeleteQuiz',
-                    type: 'POST',
-                    contentType: "application/json",
-                    data: JSON.stringify(jsonData),
-                    success: function (response) {
-                        window.location.href = `/quiz/QuizBg/BgIndex`
-                    },
-                    error: function (xhr, status, error) {
-                        console.error(xhr.responseText);
-                        showToast(xhr.responseText, false);
-                    }
-                });
-            
-            });
-
-
-            
-
-
-
-
-
-            const getInfo = ()=>{
+            // 獲得測驗訊息
+            const getInfo = () => {
                 $.ajax({
                     url: '/Api/QuizBg/GetInfo/@ViewBag.quizId',
                     type: 'GET',
@@ -397,10 +241,9 @@
 
                         if (date.limitTime === "") {
                             $qLimitTime.val("");
-                        } else{
+                        } else {
                             $qLimitTime.val(data.limitTime);
                         };
-                        
                     },
                     error: function (xhr, status, error) {
                         console.error(xhr.responseText);
@@ -408,12 +251,58 @@
                 });
             }
 
+            // 儲存測驗訊息
+            $('#saveInfoBtn').on('click', () => {
+
+                var jsonData = {
+                    id: quizId,
+                    name: $qName.val(),
+                    note: $qNote.val(),
+                    limitTime: Number($qLimitTime.val()),
+                    isPublic: $isPublicBtn.prop('checked') ? 1 : 0,
+                    isClosed: $isClosedBtn.prop('checked') ? 1 : 0,
+                };
+
+                $.ajax({
+                    url: '/Api/QuizBg/UpdateQuiz',
+                    type: 'POST',
+                    contentType: "application/json",
+                    data: JSON.stringify(jsonData),
+                    success: function (response) {
+                        console.log(response);
+                        showToast(response, true);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                        showToast(xhr.responseText, false);
+                    }
+                });
+            })
+
+            // 刪除測驗
+            $('#deleteBtn').on('click', () => {
+                jsonData = {
+                    id: quizId,
+                }
+                $.ajax({
+                    url: '/Api/QuizBg/DeleteQuiz',
+                    type: 'POST',
+                    contentType: "application/json",
+                    data: JSON.stringify(jsonData),
+                    success: function (response) {
+                        window.location.href = `/quiz/QuizBg/BgIndex`
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                        showToast(xhr.responseText, false);
+                    }
+                });
+            });
 
 
             $('#isClosedBtn').change(function () {
                 $('#qClosed').text($(this).prop('checked') ? '開啟' : '關閉');
             });
-
 
             $('#isPublicBtn').change(function () {
                 $('#qPublic').text($(this).prop('checked') ? '公開' : '私人');
@@ -421,40 +310,29 @@
 
 
 
-    
-            $('#add-question').on('click', function () {
-                const questionSection = $('#question-section');
+
+
+
+
+
+
+            const questionSection = $('#question-section');
+
+
+            // 創建一個空的題目模板
+            function createEmptyQuestionTemplate() {
                 const questionDiv = $('<div>').addClass('question-item');
                 questionDiv.html(`
                     <div class="question-content">
                         <textarea class="form-control form-control-c form-control-textarea" placeholder="請輸入題目"></textarea>
                     </div>
-                    <div class="image-upload-container">
-                     
-                    </div>
-                    <div class="option-section-container">
-                        <div class="option-section">
-                        <div>
-                        </div>
-                            <input class="form-check-input" type="checkbox">
-                            <input type="text" class="form-control form-control-c" placeholder="選項">
-                            <button type="button" class="btn-close delete-option"></button>
-                            <div class="option-error"></div> 
-                        </div>
-                        <div class="option-section">
-                            <input class="form-check-input" type="checkbox">
-                            <input type="text" class="form-control form-control-c" placeholder="選項">
-                            <button type="button" class="btn-close delete-option"></button>
-                            <div class="option-error"></div>
-                        </div>
-                    </div>
-                    
-                 
+                    <div class="image-upload-container"></div>
+                    <div class="option-section-container"></div>
                     <div class="button-group">
-                        <button class="upload-image-btn btn border"><i class='bx bx-image-add'></i></i></button>
+                        <button class="upload-image-btn btn border"><i class='bx bx-image-add'></i></button>
                         <button class="btn border move-up"><i class='bx bxs-chevron-up'></i></button>
                         <button class="btn border move-down"><i class='bx bxs-chevron-down'></i></button>
-                        <button class="btn border delete-question"><i class='bx bx-trash'></i></box-icon></button>
+                        <button class="btn border delete-question"><i class='bx bx-trash'></i></button>
                     </div>
                     <div class="option-section-tool">
                         <button class="add-option btn border mt-3 mb-3"><i class='bx bx-plus-circle' ></i></button>
@@ -466,250 +344,127 @@
                         </div>
                     </div>
                 `);
+                return questionDiv;
+            }
+
+
+            // 將題目資料填入題目模板
+            function fillQuestionTemplate(questionDiv, questionData, optionSectionContainer) {
+                questionDiv.find('.question-content textarea').val(questionData.questionText);
+
+                // 添加選項
+                questionData.options.forEach((option, index) => {
+                    const optionSection = `
+                    <div class="option-section">
+                        <input class="form-check-input" type="checkbox">
+                        <input type="text" class="form-control form-control-c" placeholder="選項" value="${option}">
+                        <button type="button" class="btn-close delete-option"></button>
+                        <div class="option-error"></div>
+                    </div>`;
+                    optionSectionContainer.append(optionSection);
+
+                    if (questionData.answer.includes(index)) {
+                        optionSectionContainer.find('.option-section:last-child input[type="checkbox"]').prop('checked', true);
+                    }
+                });
+
+                // 如果 Type 是 1，則勾選多選框
+                if (questionData.type === 1) {
+                    questionDiv.find('.question-check input').prop('checked', true);
+                }
+                // 如果有圖片，則填入圖片資料
+                // 這部分需要根據您的程式碼中如何處理圖片資料進行適當的更新
+                // 可能需要一個單獨的函數來處理圖片的顯示
+            }
+
+            // 當新增問題按鈕被點擊時執行的函數
+            $('#add-question').on('click', function () {
+                // 創建一個空的問題模板
+                const questionDiv = createEmptyQuestionTemplate();
+
+                // 將預設的兩個選項加入問題模板
+                const optionSectionContainer = questionDiv.find('.option-section-container');
+                optionSectionContainer.append(createOptionSection()); // 第一個預設選項
+                optionSectionContainer.append(createOptionSection()); // 第二個預設選項
+
+                // 將空的問題模板添加到問題區域中
                 questionSection.append(questionDiv);
-
-
-                // 移除題目
-                $('.delete-question', questionDiv).on('click', function () {
-                    questionDiv.remove();
-                    showToast("移除成功", true);
-
-                    // 還需加入刪除API
-                });
-
-
-
-                // 新增選項(最多6項)
-                $('.add-option', questionDiv).on('click', function () {
-                    const optionCount = $('.option-section', questionDiv).length;
-                    if (optionCount >= 6) {
-                        alert('最多只能6個選項');
-                        return;
-                    }
-                    const optionSection = $('<div>').addClass('option-section');
-                    optionSection.html(`
-                                        <input class="form-check-input" type="checkbox">
-                                        <input type="text" class="form-control form-control-c" placeholder="選項">
-                                        <button type="button" class="btn-close delete-option"></button>
-                                        <div class="option-error"></div>
-                                    `);
-                    $('.option-section-container', questionDiv).append(optionSection);
-                });
-
-
-                // 如果勾選多選，可以勾選其他選項
-                $(document).on('change', '.option-section-container input[type="checkbox"]', function () {
-                    const isChecked = $(this).prop('checked');
-                    const questionDiv = $(this).closest('.question-item');
-                    const isMultipleSelection = $('#questionCheck', questionDiv).prop('checked');
-
-                    if (!isMultipleSelection && isChecked) {
-                        $('.option-section-container input[type="checkbox"]', questionDiv).not(this).prop('checked', false);
-                    }
-                });
-
-                // 如果取消多選，清除所有選項的狀態
-                $(document).on('change', '.option-section-tool input[type="checkbox"]', function () {
-                    const isChecked = $(this).prop('checked');
-                    const questionDiv = $(this).closest('.question-item');
-
-                    if (!isChecked) {
-                        $('.option-section-container input[type="checkbox"]', questionDiv).prop('checked', false);
-                    }
-                });
-
-
-                $('.move-up', questionDiv).on('click', function () {
-                    if (questionDiv.prev().length > 0) {
-                        questionDiv.prev().before(questionDiv);
-                    }
-                });
-
-                $('.move-down', questionDiv).on('click', function () {
-                    if (questionDiv.next().length > 0) {
-                        questionDiv.next().after(questionDiv);
-                    }
-                });
             });
 
-            // 新增圖片
-            $(document).on('click', '.upload-image-btn', function () {
-                const questionDiv = $(this).closest('.question-item');
-                const input = $('<input>').attr({ type: 'file', accept: 'image/*' }).on('change', function (e) {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function (e) {
-                            const img = $('<img>').attr('src', e.target.result).css('max-width', '100%');
-                            const imageContainer = $('.image-upload-container', questionDiv);
-                            const removeBtn = $('<button>').attr('type', 'button').addClass('btn-close').on('click', function () {
-                                imageContainer.empty();
-                                $(this).remove();
-                            });
-                            const container = $('<div>').addClass('image-container').append(img).append(removeBtn);
-                            imageContainer.empty().append(container);
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
-                input.click();
-            });
-
-            // 變更圖片
-            $(document).on('click', '.image-upload-container img', function () {
-                const img = $(this); 
-                const questionDiv = img.closest('.question-item');
-                const input = $('<input>').attr({ type: 'file', accept: 'image/*' }).on('change', function (e) {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function (e) {
-                            const imgSrc = e.target.result;
-                            img.attr('src', imgSrc); 
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
-                input.click();
-            });
-
-
-            // 刪除選項(最少2項)
-            $(document).on('click', '.delete-option', function () {
-                const optionSection = $(this).closest('.option-section');
-                const questionDiv = optionSection.closest('.question-item');
-                const optionCount = $('.option-section', questionDiv).length;
-                if (optionCount <= 2) {
-                    alert('至少要有2個選項。');
-                    return;
-                }
-                optionSection.remove();
-            });
-
-
-
-            function extractAndValidateQuestionData() {
-                const questionItems = $('.question-item');
-                let allValid = true;
-                let questionsData = [];
-
-                questionItems.each(function () {
-                    const questionItem = $(this);
-                    const questionContentInput = $('.question-content textarea', this);
-                    const questionContent = questionContentInput.val().trim();
-                    const options = $('.option-section', this);
-                    const questionCheck = $('.question-check input', this).prop('checked');
-                    const imageFile = $('.image-upload-container img', this).attr('src') || null;
-                    let optionsList = [];
-                    let answersList = [];
-
-                    // 重置样式和错误信息
-                    questionContentInput.css('border-color', '');
-                    questionItem.css('border-color', '');
-                    $('.validation-error', this).remove();
-
-                    options.each(function (index) {
-                        const optionInput = $('input[type="text"]', this);
-                        optionInput.css('border-color', '');
-                        $('.option-error', this).empty();
-
-                        const optionText = optionInput.val().trim();
-                        optionsList.push(optionText);
-
-                        if (!optionText) {
-                            optionInput.css('border-color', 'red');
-                            $('.option-error', this).html('<div class="validation-error" style="color: red;">選項內容不能為空。</div>');
-                            allValid = false;
-                        }
-
-                        if ($('input.form-check-input', this).prop('checked')) {
-                            answersList.push(index);
-                        }
-                    });
-
-                    if (!questionContent) {
-                        questionContentInput.css('border-color', 'red').after('<div class="validation-error" style="color: red;">題目內容不能為空。</div>');
-                        allValid = false;
-                    }
-
-                    if (!questionCheck && answersList.length !== 1) {
-                        questionItem.append('<div class="validation-error" style="color: red;">單選題至少選擇一個答案。</div>');
-                        allValid = false;
-                    } else if (questionCheck && answersList.length < 2) {
-                        questionItem.append('<div class="validation-error" style="color: red;">多選題至少選擇兩個。</div>');
-                        allValid = false;
-                    }
-
-                    let questionDetails = {
-                        QuestionText: questionContent,
-                        Options: optionsList,
-                        Type: questionCheck ? 1 : 0,
-                        Image: imageFile,
-                        Answer: answersList,
-                    };
-
-                    questionsData.push(questionDetails);
-                });
-                return {
-                    allValid: allValid,
-                    questionsData: questionsData
-                };
-
+            // 創建選項區域的函數
+            function createOptionSection() {
+                return `
+                    <div class="option-section">
+                        <input class="form-check-input" type="checkbox">
+                        <input type="text" class="form-control form-control-c" placeholder="選項">
+                        <button type="button" class="btn-close delete-option"></button>
+                        <div class="option-error"></div>
+                    </div>`;
             }
 
-            $('#saveQuiz').on('click', function () {
-                const results = extractAndValidateQuestionData();
-                console.log(results.questionsData);
 
-                if (!results.allValid) {
-                    showToast("輸入錯誤", false)
-                    return false;
-                } else {
-
-                    const data = {
-                        quizId: @ViewBag.quizId,
-                        questions: results.questionsData
-                    }
-
-                    console.log(data)
-
-                    $.ajax({
-                        url: '/Api/QuizBg/SaveQuesions',
-                        type: 'POST',
-                        contentType: "application/json",
-                        data: JSON.stringify(data),
-                        success: function (response) {
-                            showToast(response, true)
-                            console.log(response)
-                        },
-                        error: function (xhr, status, error) {
-                            showToast(xhr.responseText, false)
-                            console.error(xhr.responseText);
-                        }
-                    });
-
-
-                    showToast("儲存成功", true)
+            const questionDataList = [
+                {
+                    type: 0,
+                    image: null,
+                    questionText: "第一個題目的問題",
+                    options: ["選項1", "選項2"],
+                    answer: [0]
+                },
+                {
+                    type:1,
+                    image:null,
+                    questionText: "第二個題目的問題",
+                    options: ["選項A", "選項B", "選項C"],
+                    answer:[1,2]
                 }
+            ];
 
+
+
+
+            // 將 questionDataList 中的每個元素轉換為填充後的問題模板並直接添加到 questionSection 中
+            questionDataList.map(function (questionData) {
+                const questionDiv = createEmptyQuestionTemplate();
+                const optionSectionContainer = questionDiv.find('.option-section-container');
+                fillQuestionTemplate(questionDiv, questionData, optionSectionContainer);
+                questionSection.append(questionDiv);
             });
 
-            function showToast(response, status) {
-                var colorclass = "bg-primary"
-                if (!status) {
-                    colorclass = "bg-danger"
+
+
+
+            $(document).on('click', '.delete-question', function () {
+                // 找到要刪除的題目
+                const questionItem = $(this).closest('.question-item');
+                // 刪除該題目
+                questionItem.remove();
+            });
+
+
+
+
+
+            // 上移按鈕點擊事件
+            $(document).on('click', '.move-up', function () {
+                const questionItem = $(this).closest('.question-item');
+
+                if (questionItem.prev().length) {
+                    questionItem.prev().before(questionItem);
                 }
-                $toast.html(`
-                        <div class="toast-body ${colorclass} text-white">
-                            <strong>${response}</strong>
-                        </div>
-                                        `)
-                var toast = new bootstrap.Toast($toast);
-                toast.show();
-                setTimeout(function () {
-                    toast.hide();
-                }, 2000);
-            }
+            });
+
+            // 下移按鈕點擊事件
+            $(document).on('click', '.move-down', function () {
+                const questionItem = $(this).closest('.question-item');
+
+                if (questionItem.next().length) {
+                    questionItem.next().after(questionItem);
+                }
+            });
+
+
+
 
 
 

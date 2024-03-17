@@ -65,9 +65,10 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
         [HttpPost]
         public IActionResult CreateQuiz([FromBody] Quiz quiz)
         {
+            TQuizQuiz newQuiz;
             if (ModelState.IsValid)
             {
-                var newQuiz = new TQuizQuiz
+                newQuiz = new TQuizQuiz
                 {
                     FQuizId = quiz.id,
                     FQname = quiz.name,
@@ -81,16 +82,38 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
                 };
                 _context.TQuizQuizzes.Add(newQuiz);
                 _context.SaveChanges();
-                return Ok(newQuiz.FQuizId);
+
+
+                QuestionOrder newQuestionOrder = new QuestionOrder
+                {
+                    QuizID = newQuiz.FQuizId,
+                };
+
+                try
+                {
+
+                     _questionOrderCollection.InsertOneAsync(newQuestionOrder);
+
+                    return Ok(newQuiz.FQuizId);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest("新增失敗");
+                }
+                
+
+
             }
             else
             {
                 return BadRequest("新增失敗");
             }
+
+
         }
 
 
-        // 修改測驗(老師)
+        // 修改測驗資訊(老師)
         [HttpPost]
         public IActionResult UpdateQuiz([FromBody] Quiz quiz)
         {
@@ -178,7 +201,7 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
 
         // 取得某測驗內容(老師)
         [HttpGet("{quizId}")]
-        public async Task<ActionResult<IEnumerable<string>>> GetQuestionIds(int quizId)
+        public async Task<ActionResult<IEnumerable<string>>> GetQuestions(int quizId)
         {
             var questionOrder = await _questionOrderCollection.Find(qo => qo.QuizID == quizId).FirstOrDefaultAsync();
 
@@ -187,10 +210,23 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
                 return NotFound("無內容");
             }
 
-            // 获取QuestionOrderList中的Question的ID
             var questionIds = questionOrder.QuestionOrderList;
 
-            return Ok(questionIds);
+            try
+            {
+                var filter = Builders<Question>.Filter.In(q => q.Id, questionIds);
+
+                var questions = await _questionCollection.Find(filter).ToListAsync();
+
+                return Ok(questions);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"查詢問題時出現錯誤：{ex.Message}");
+            }
+
+
+
         }
 
 
@@ -198,7 +234,7 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
 
 
 
-
+        // 儲存測驗考題
         [HttpPost]
         public async Task<ActionResult<IEnumerable<string>>> SaveQuesions([FromBody] QuizInfo data)
         {
@@ -236,31 +272,16 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
             {
                 var filter = Builders<QuestionOrder>.Filter.Eq(q => q.QuizID, quizId);
                 var questionOrder = await _questionOrderCollection.Find(filter).FirstOrDefaultAsync();
-
-                if (questionOrder == null)
-                {
-                    questionOrder = new QuestionOrder
-                    {
-                        QuizID = quizId,
-                        QuestionOrderList = new List<string>()
-                    };
-                }
-
+                questionOrder.QuestionOrderList = new List<string>();
                 questionOrder.QuestionOrderList.AddRange(ids);
 
-                if (string.IsNullOrEmpty(questionOrder.Id))
-                {
-                    questionOrder.Id = null;
-                }
+                await _questionOrderCollection.ReplaceOneAsync(filter, questionOrder);
 
-                var options = new ReplaceOptions { IsUpsert = true };
-                await _questionOrderCollection.ReplaceOneAsync(filter, questionOrder, options);
-
-                return Ok("QuestionOrder 更新成功");
+                return Ok("更新成功");
             }
             catch (Exception ex)
             {
-                return BadRequest("更新 QuestionOrder 失敗：" + ex.Message);
+                return BadRequest("更新失敗");
             }
         }
     }
