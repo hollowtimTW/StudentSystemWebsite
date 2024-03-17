@@ -52,13 +52,15 @@
             <li><a asp-area="student_management" asp-controller="Member" asp-action="Index"><i class='bx bx-group'></i>學員管理</a></li>
             <li><a asp-area="class_discuss" asp-controller="class_discuss" asp-action="Index"><i class='bx bxs-message-rounded-dots'></i>討論區管理</a></li>
             <li><a asp-area="video_management" asp-controller="T影片Video" asp-action="Index"><i class='bx bxs-video'></i>教學影片</a></li>
-            <li><a asp-area="question_bank" asp-controller="question_bank" asp-action="Index"><i class='bx bxs-copy-alt'></i>考試題庫管理</a></li>
+            <li><a asp-area="quiz" asp-controller="Board" asp-action="Index"><i class='bx bxs-copy-alt'></i>公告管理</a></li>
 
         </ul>
         <ul class="side-menu">
 
             <!--老師 我的課程dashboard-->
             <li><a asp-area="course_management" asp-controller="courseHome" asp-action="TeacherCourseIndex" asp-route-id="@User?.Claims.FirstOrDefault(c => c.Type == "teacherID").Value"><i class='bx bxs-chalkboard'></i>我的課程</a></li>
+            <!--老師 我的測驗dashboard-->
+            <li><a asp-area="quiz" asp-controller="QuizBg" asp-action="BgIndex"><i class='bx bxs-file-blank'></i>測驗管理</a></li>
 
             <li>
                 <a asp-area="" asp-controller="Login" asp-action="logout">
@@ -122,7 +124,7 @@
     </div>
 
     <!-- Chat原件 -->
-    <vc:chat3></vc:chat3>
+    @* <vc:chat3></vc:chat3> *@
 
     <footer class="border-top footer text-muted">
         <div class="container">

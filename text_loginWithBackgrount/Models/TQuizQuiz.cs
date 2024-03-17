@@ -17,27 +17,15 @@ public partial class TQuizQuiz
 
     public int? FLimitTime { get; set; }
 
-    public DateTime? FStartTime { get; set; }
-
-    public DateTime? FEndTime { get; set; }
-
-    public int? FTotalScore { get; set; }
-
-    public int? FNumQs { get; set; }
-
     public int? FTeacherId { get; set; }
 
     public int? FPublic { get; set; }
 
     public int? FClosed { get; set; }
 
-    public int? FSubjectId { get; set; }
-
-    public virtual T課程科目 FSubject { get; set; }
+    public DateTime? FCreateTime { get; set; }
 
     public virtual T會員老師 FTeacher { get; set; }
-
-    public virtual ICollection<TQuizPaper> TQuizPapers { get; set; } = new List<TQuizPaper>();
 
     public virtual ICollection<TQuizRecord> TQuizRecords { get; set; } = new List<TQuizRecord>();
 }

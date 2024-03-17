@@ -15,7 +15,7 @@ public partial class T影片OrderDetail
 
     public double FUnitPrice { get; set; }
 
-    public string FQuantity { get; set; }
+    public int FQuantity { get; set; }
 
     public virtual T影片Order FOrder { get; set; }
 

@@ -1,0 +1,412 @@
+﻿@{
+    Layout = "_QuizLayout";
+}
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+    }
+
+    .vh-100 {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+    }
+
+    .left-top-vh {
+        margin-top: 10px;
+        height: 40vh;
+    }
+
+    .left-bottom-vh {
+        margin-top: 10px;
+        height: 20vh;
+    }
+
+    .right-vh {
+        margin-top: 10px;
+        height: 95vh;
+    }
+
+    .swiper-container {
+        height: 100%;
+        width: 100%;
+    }
+
+    .swiper-slide {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .swiper-pagination {
+        bottom: 10px;
+        right: 10px;
+    }
+
+    .swiper-outer-container {
+        height: 75%;
+        border: 1px solid #005757;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .custom-div {
+        height: 5%;
+    }
+
+    .quiz-button {
+        width: 100px;
+        border-radius: 8px;
+        background-color: white;
+        border-color: #005757;
+        font-weight: bold;
+    }
+
+    .quiz-button:hover {
+        color: white;
+        background-color: rgb(0, 131, 116);
+    }
+
+    .answer-div {
+        height: 20%;
+        border: 1px solid #005757;
+        border-radius: 15px;
+    }
+
+    .quiz-container {
+        display: flex;
+        flex-direction: column;
+        background-color: rgb(0, 131, 116);
+        border-radius:15px;
+    }
+
+    .quiz-name{
+        color:white;
+        font-size:1.2rem;
+        text-align:center;
+    }
+
+    .quiz-nums {
+        display: flex;
+        flex-wrap: wrap;
+        overflow: hidden;
+        overflow-y: auto;
+    }
+
+    .quiz-num {
+        width: 33px;
+        height: 25px;
+        margin: 5px;
+        text-align: center;
+        border:1px solid black;
+        cursor:pointer;
+    }
+
+
+    .quiz-sumbit{
+        color:white;
+        background-color: rgb(0, 131, 116);
+		border-radius: 15px;
+		font-size: 1.2rem;
+        font-size: 1.2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    
+    .sumbit-btn {
+        border-radius: 15px;
+        width: 50%;
+    }
+
+    .sumbit-btn:hover{
+        background-color: orange;
+    }
+
+    .q-num {
+        text-align:center;
+        font-size:1.5rem;
+        color:rgb(255,255,255);
+        background-color: #005757;
+        flex: 1;
+    }
+
+    .q-question {
+        flex: 10;
+        height:100%;
+        overflow-y: auto;
+    }
+
+    .q-quesiotn-div{
+        flex-direction: column;
+        
+    }
+
+
+    .q-question-context {
+        width:80%;
+        font-size:1.2rem;
+        font-weight:bold;
+        
+    }
+
+    .q-question-context-option {
+        width: 80%;
+    }
+
+    .q-answer {
+        margin:10px 0;
+        flex: 1;
+    }
+
+    .option-btn{
+        margin:0 5px;
+        text-align: center;
+        border-radius:15px;
+    }
+
+    .selected {
+        background-color: yellow !important;
+    }
+
+
+</style>
+
+<div class="container">
+    <div class="row vh-100">
+        <div class="col-md-3">
+            <div class="row">
+                <div class="col-12">
+                    <div class="p-3 border left-top-vh quiz-container">
+                        <div class="quiz-name">
+                            測驗0315
+                        </div>
+                        <div class="quiz-nums">
+                            @for (int i = 0; i < 10; i++)
+                            {
+                                <div class="quiz-num bg-light" data-slide-to="@i" id="data-@(i)">
+                                    @(i+1)
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="p-3 border left-bottom-vh quiz-sumbit">
+                        <div class="quiz-sumbit-time">剩餘時間: <span>00:00</span></div>
+                        <button class="sumbit-btn">提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="p-3 bg-light right-vh">
+                 
+                <div class="swiper-outer-container">
+                    <div class="swiper-container">
+                        <div class="swiper-wrapper">
+
+                            @for (int i = 0; i < 10; i++)
+                            {
+                                <div class="swiper-slide">
+                                    <div class="q-num">
+                                        第 @(i+1) 題
+                                    </div>
+                                    <div class="q-question">
+                                        <div class="d-flex justify-content-center align-items-center q-quesiotn-div">
+                                            <div class="q-question-context">
+                                                雞生蛋還是蛋生雞 雞生蛋還是蛋生雞 雞生蛋還是蛋生雞 雞生蛋還是蛋生雞雞生蛋還是蛋生雞 雞生蛋還是蛋生雞 雞生蛋還是蛋生雞 雞生蛋還是蛋生雞
+                                            </div>
+                                            
+                                            <hr />
+                                            <div class="q-question-context-option">
+                                                <div>(1)<span> 雞生蛋還是蛋生雞 雞生蛋還是蛋生雞 </span></div>
+                                                <div>(2)<span> 雞生蛋還是蛋生雞 雞生蛋還是蛋生雞 </span></div>
+                                                <div>(3)<span> 雞生蛋還是蛋生雞 雞生蛋還是蛋生雞 </span></div>
+                                                <div>(4)<span> 雞生蛋還是蛋生雞 雞生蛋還是蛋生雞 </span></div>
+                                            </div>
+                                        </div>
+                                   
+             
+                                    </div>
+                                    <div class="d-flex justify-content-between q-answer multiple" data-id="@i">
+                                        <button class="option-btn flex-fill">1</button>
+                                        <button class="option-btn flex-fill">2</button>
+                                        <button class="option-btn flex-fill">3</button>
+                                        <button class="option-btn flex-fill">4</button>
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+                        <div class="swiper-pagination"></div>
+
+                    </div>
+
+
+                </div>
+
+                <div class="custom-div d-flex justify-content-between">
+                    <button class="button-left quiz-button">上一題</button>
+                    <button class="button-right quiz-button">下一題</button>
+                </div>
+
+                <div class="answer-div">
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            var mySwiper = new Swiper(".swiper-container", {
+                direction: "horizontal",
+                loop: false,
+
+                pagination: {
+                    el: ".swiper-pagination",
+                    type: 'progressbar',
+                }
+            });
+
+            // 上一題
+            $('.button-left').on('click', function () {
+                mySwiper.slidePrev();
+            });
+
+            // 下一題
+            $('.button-right').on('click', function () {
+                mySwiper.slideNext();
+            });
+
+            // 跳至指定題號
+            $('.quiz-num').on('click', function () {
+                var index = $(this).data('slide-to');
+                mySwiper.slideTo(index);
+            });
+
+
+            // 單選
+            $('.q-answer.single').on('click', '.option-btn', function () {
+                var $this = $(this); // 当前点击的按钮
+
+                if (!$this.hasClass('selected')) {
+                    $this.siblings('.option-btn').removeClass('selected');
+                    $this.addClass('selected');
+                    console.log($this.parent().children('.option-btn').index($this));
+                } else {
+                    $this.removeClass('selected');
+                }
+
+                updateSelectionStatus($this)
+            });
+
+
+
+            // 多選
+            $('.q-answer.multiple').on('click', '.option-btn', function () {
+                var $this = $(this);
+                $this.toggleClass('selected');
+
+                var selectedPositions = [];
+                $this.siblings('.option-btn').addBack().each(function (index) {
+                    if ($this.hasClass('selected')) {
+                        selectedPositions.push(index);
+                    }
+                });
+                console.log(selectedPositions);
+                updateSelectionStatus($this)
+            });
+
+            // 
+            const updateSelectionStatus = ($button)=> {
+                var parent = $button.parent();
+                var id = parent.data('id');
+                var hasSelected = parent.find('.option-btn.selected').length > 0;
+
+                if (hasSelected) {
+                    $(`#data-${id}`).addClass('selected');
+                } else {
+                    $(`#data-${id}`).removeClass('selected');
+                }
+            }
+
+
+
+
+
+
+
+
+            mySwiper.on('slideChange', function () {
+                if (mySwiper.isEnd) {
+                    $('.swiper-pagination-progressbar-fill').css('backgroundColor', '#00EC00');
+                } else {
+                    $('.swiper-pagination-progressbar-fill').css('backgroundColor', '#46A3FF');
+                }
+            });
+        });
+
+
+    </script>
+
+
+
+
+
+	@* SignalR *@
+@*     <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
+    <script>
+    
+            
+        var connection = new signalR.HubConnectionBuilder()
+            .withUrl("/quizHub")
+            .build();
+
+
+        //與Server建立連線
+        connection.start().then(function () {
+            console.log("Hub 連線完成");
+        }).catch(function (err) {
+            alert('連線錯誤: ' + err.toString());
+        });
+
+
+        // 設置時間
+        connection.on("SetTime", (time) => {
+            console.log(time);
+        })
+
+        // 時間到
+        connection.on("OverTime", () => {
+            console.log(End);
+        })
+
+
+
+    </script> *@
+
+
+}
+
+
+
+
