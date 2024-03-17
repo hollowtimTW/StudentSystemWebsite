@@ -1,6 +1,7 @@
 ﻿using Class_system_Backstage_pj.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -64,7 +65,8 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                     WorkExperience = thisResumeWorkExp
                 };
 
-                QuestPDF.Settings.EnableDebugging = true;
+                //佈局錯誤時產生附有錯誤標示的檔案（設為false則會中止產生）
+                //QuestPDF.Settings.EnableDebugging = true;
 
                 var document = Document.Create(container =>
                 {
@@ -82,69 +84,206 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                         // 組合圖片的完整路徑
                         string logoFullPath = Path.Combine(_hostingEnvironment.WebRootPath, logoFilePath);
 
-                        page.Header().Background("#008374")
-                                     .Height(35);
-                        page.Footer().Background("#008374").Height(35);
+                        //頁首
+                        page.Header()
+                            .Background("#008374")
+                            .Width(100)
+                            .Height(35)
+                            .AlignMiddle()
+                            .PaddingLeft(25)
+                            .Image(logoFullPath);
 
+                        //頁腳
+                        page.Footer()
+                            .Background("#008374")
+                            .Height(35);
+
+                        //內頁主體
                         page.Content()
                             .PaddingVertical(1, Unit.Centimetre)
                             .PaddingHorizontal(2, Unit.Centimetre)
                             .Column(x =>
                             {
-                                x.Item()
-                                    .Height(30)
-                                    .Width(100)
-                                    .Image(logoFullPath);
+                                // 設定行距
+                                x.Spacing(5);
 
-                                x.Spacing(20);
-                                x.Item()
-                                    .Width(1, Unit.Inch)
-                                    .Image(resumeData?.Student?.圖片)
-                                    .WithCompressionQuality(ImageCompressionQuality.Medium);
+                                // ==== 基本資料區 =====
+                                x.Item().Row(row =>
+                                {
+                                    if (resumeData?.Student?.圖片 != null)
+                                    {
+                                        row.RelativeItem(3)
+                                            .Width(1, Unit.Inch)
+                                            .AlignMiddle()
+                                            .Image(resumeData.Student.圖片)
+                                            .WithCompressionQuality(ImageCompressionQuality.Medium);
+                                    }
+                                    else
+                                    {
+                                        row.RelativeItem(3)
+                                            .Width(1, Unit.Inch)
+                                            .Border(1)
+                                            .BorderColor("#008374")
+                                            .Background(Colors.Grey.Lighten3)
+                                            .AlignBottom()
+                                            .AlignCenter()
+                                            .Height(35)
+                                            .Image(logoFullPath);
+                                    }
+                                    row.RelativeItem(9)
+                                            .Column(column =>
+                                            {
+                                                column.Spacing(5);
+                                                column.Item().Text($"{resumeData?.Student?.姓名}").LetterSpacing(0.05f).FontSize(20).Bold();
 
-                                x.Item().Text($"{resumeData?.Student?.姓名} {resumeData?.Student?.性別}");
-                                x.Item().Text(resumeData?.Student?.生日.ToString());
-                                x.Item().Text($"連絡電話　{resumeData?.Student?.手機}");
-                                x.Item().Text($"聯絡信箱　{resumeData?.Student?.信箱}");
+                                                var birthday = resumeData?.Student?.生日;
+                                                if (birthday != null)
+                                                {
+                                                    var today = DateTime.Today;
+                                                    var age = today.Year - birthday.Value.Year;
+                                                    if (birthday > today.AddYears(-age)) age--;
 
-                                x.Item().Text($"學歷　{resumeData?.Student?.學校} {resumeData?.Student?.學位}  {resumeData?.Student?.科系}  {resumeData?.Student?.畢肄}");
-                                x.Item().Text("專長技能");
-                                x.Item().Text(resumeData?.Resume?.F專長技能);
-                                x.Item().Text("語文能力");
-                                x.Item().Text(resumeData?.Resume?.F語文能力);
+                                                    column.Item().Text(text =>
+                                                    {
+                                                        text.Span("個人資訊　").SemiBold().LetterSpacing(0.05f);
+                                                        text.Span($"{age}歲，{resumeData?.Student.性別 ?? ""}").LetterSpacing(0.05f);
+                                                    });
+                                                }
+                                                else
+                                                {
+                                                    column.Item().Text(text =>
+                                                    {
+                                                        text.Span("個人資訊　").SemiBold().LetterSpacing(0.05f);
+                                                        text.Span(resumeData?.Student.性別 ?? "").LetterSpacing(0.05f);
+                                                    });
+                                                }
 
+                                                column.Item().Text(text =>
+                                                {
+                                                    text.Span("連絡電話　").SemiBold().LetterSpacing(0.05f);
+                                                    text.Span($"{resumeData?.Student?.手機 ?? ""}").LetterSpacing(0.05f);
+                                                });
+
+                                                column.Item().Text(text =>
+                                                {
+                                                    text.Span("聯絡信箱　").SemiBold().LetterSpacing(0.05f);
+                                                    text.Span($"{resumeData?.Student?.信箱 ?? ""}").LetterSpacing(0.05f);
+                                                });
+
+                                                column.Item().Text(text =>
+                                                {
+                                                    text.Span("希望職稱　").SemiBold().LetterSpacing(0.05f);
+                                                    text.Span($"{resumeData?.Resume?.F希望職稱 ?? ""}").LetterSpacing(0.05f);
+                                                });
+                                            });
+                                });
+
+                                // ==== 學歷區 =====
+                                x.Item().Height(20);
+                                x.Item().Text("學歷").FontSize(14).Bold().LetterSpacing(0.05f);
+                                x.Item().PaddingBottom(5).LineHorizontal(2).LineColor("#008374");
+                                x.Item().Text($"{resumeData?.Student?.學校 ?? ""}　{resumeData?.Student?.科系 ?? ""}").SemiBold().LetterSpacing(0.05f);
+                                x.Item().Text($"{resumeData?.Student?.學位 ?? ""}　{resumeData?.Student?.畢肄 ?? ""}").LetterSpacing(0.05f);
+
+                                // ==== 專長技能區 =====
+                                x.Item().Height(30);
+                                x.Item().Text("專長技能").FontSize(14).Bold().LetterSpacing(0.05f);
+                                x.Item().PaddingBottom(5).LineHorizontal(2).LineColor("#008374");
+                                x.Item().Text(resumeData?.Resume?.F專長技能 ?? "").LetterSpacing(0.05f).LineHeight(1.5f);
+
+                                // ==== 語文能力區 =====
+                                x.Item().Height(30);
+                                x.Item().Text("語文能力").FontSize(14).Bold().LetterSpacing(0.05f);
+                                x.Item().PaddingBottom(5).LineHorizontal(2).LineColor("#008374");
+                                x.Item().Text(resumeData?.Resume?.F語文能力 ?? "").LetterSpacing(0.05f).LineHeight(1.5f);
+
+                                // ==== 工作經驗區 =====
+                                x.Item().Height(30);
+                                x.Item().Text("工作經驗").FontSize(14).Bold().LetterSpacing(0.05f);
+                                x.Item().PaddingBottom(5).LineHorizontal(2).LineColor("#008374");
                                 if (thisResumeWorkExp != null && thisResumeWorkExp.Count > 0)
                                 {
-                                    x.Item().Text("工作經驗");
                                     foreach (var data in thisResumeWorkExp)
                                     {
-                                        x.Item().Text($"{data.F公司名稱} {data.F職務名稱}");
-                                        x.Item().Text($"{data.F起始年月} ~ {data.F結束年月}");
-                                        x.Item().Text($"{data.F薪水待遇}");
-                                        x.Item().Text($"工作內容");
-                                        x.Item().Text($"{data.F工作內容}");
-                                        x.Item().PaddingVertical(5).LineHorizontal(1).LineColor(Colors.Grey.Medium);
+                                        x.Item().ShowEntire().Layers(layers =>
+                                        {
+                                            layers
+                                                .Layer()
+                                                .Height(64)
+                                                .Width(62)
+                                                .Background(Colors.Grey.Lighten3);
+
+                                            layers
+                                                .PrimaryLayer()
+                                                .Padding(25)
+                                                .Column(column =>
+                                                {
+                                                    column.Item().Column(c =>
+                                                    {
+                                                        c.Spacing(5);
+                                                        c.Item().Text($"{data.F職務名稱 ?? ""}").FontSize(14).Bold().LetterSpacing(0.05f);
+                                                        c.Item().Text($"{data.F公司名稱 ?? ""}　{data.F起始年月 ?? ""} ~ {data.F結束年月 ?? ""}").FontSize(10).LetterSpacing(0.05f);
+                                                        c.Item().PaddingTop(5).Text($"{data.F工作內容 ?? ""}").LetterSpacing(0.05f).LineHeight(1.5f);
+                                                    });
+                                                });
+                                        });
                                     }
                                 }
                                 else
                                 {
-                                    x.Item().Text($"工作經驗　無");
+                                    x.Item().Text("無");
                                 }
 
-                                x.Item().Text($"希望職稱　{resumeData?.Resume?.F希望職稱}");
-                                x.Item().Text($"工作性質　{resumeData?.Resume?.F工作性質}");
-                                x.Item().Text($"工作時段　{resumeData?.Resume?.F工作時段}");
-                                x.Item().Text($"配合輪班　{resumeData?.Resume?.F配合輪班}");
-                                x.Item().Text($"希望薪水待遇　{resumeData?.Resume?.F希望薪水待遇}");
-                                x.Item().Text($"希望工作地點　{resumeData?.Resume?.F希望工作地點}");
+                                // ==== 求職條件區 =====
+                                x.Item().Height(30);
+                                x.Item().Text("求職條件").FontSize(14).Bold().LetterSpacing(0.05f);
+                                x.Item().PaddingBottom(5).LineHorizontal(2).LineColor("#008374");
 
-                                x.Item().Text("自傳");
-                                x.Item().Text(resumeData?.Resume?.F自傳);
+                                x.Item().Text(text =>
+                                    {
+                                        text.Span("工作性質　").SemiBold().LetterSpacing(0.05f);
+                                        text.Span(resumeData?.Resume?.F工作性質 ?? "").LetterSpacing(0.05f);
+                                    });
+                                x.Item().Text(text =>
+                                    {
+                                        text.Span("工作時段　").SemiBold().LetterSpacing(0.05f);
+                                        text.Span(resumeData?.Resume?.F工作時段 ?? "").LetterSpacing(0.05f);
+                                    });
+                                x.Item().Text(text =>
+                                    {
+                                        text.Span("配合輪班　").SemiBold().LetterSpacing(0.05f);
+
+                                        if(resumeData?.Resume?.F配合輪班 == "Y")
+                                        {
+                                            text.Span("可配合輪班").LetterSpacing(0.05f);
+                                        }
+                                        else
+                                        {
+                                            text.Span("不便配合輪班").LetterSpacing(0.05f);
+                                        }
+                                    });
+                                x.Item().Text(text =>
+                                    {
+                                        text.Span("希望薪水待遇　").SemiBold().LetterSpacing(0.05f);
+                                        text.Span(resumeData?.Resume?.F希望薪水待遇 ?? "").LetterSpacing(0.05f);
+                                    });
+                                x.Item().Text(text =>
+                                    {
+                                        text.Span("希望工作地點　").SemiBold().LetterSpacing(0.05f);
+                                        text.Span(resumeData?.Resume?.F希望工作地點 ?? "").LetterSpacing(0.05f);
+                                    });
+
+                                // ==== 自傳區 =====
+                                x.Item().Height(30);
+                                x.Item().Text("自傳").FontSize(14).Bold().LetterSpacing(0.05f);
+                                x.Item().PaddingBottom(5).LineHorizontal(2).LineColor("#008374");
+                                x.Item().Text(resumeData?.Resume?.F自傳 ?? "").LetterSpacing(0.05f).LineHeight(1.5f);
                             });
                     });
                 });
 
-                document.ShowInPreviewer();
+                //開發過程中方便檢視功用
+                //document.ShowInPreviewer();
 
                 // 將 PDF 內容保存到記憶體中
                 MemoryStream memoryStream = new MemoryStream();
@@ -166,13 +305,13 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                 string filePath = Path.Combine(folderPath, fileName);
 
                 //確認檔名的唯一性
-                //int count = 1;
-                //while (System.IO.File.Exists(filePath))
-                //{
-                //    fileName = $"{baseFileName}({count}).pdf";
-                //    filePath = Path.Combine(folderPath, fileName);
-                //    count++;
-                //}
+                int count = 1;
+                while (System.IO.File.Exists(filePath))
+                {
+                    fileName = $"{baseFileName}({count}).pdf";
+                    filePath = Path.Combine(folderPath, fileName);
+                    count++;
+                }
 
                 // 將 PDF 內容保存到文件中
                 using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
