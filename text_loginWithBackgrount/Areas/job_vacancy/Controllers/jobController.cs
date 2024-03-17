@@ -39,6 +39,11 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 公司詳細資料，返回 CompanyDetails 視圖。
+        /// </summary>
+        /// <param name="companyID"></param>
+        /// <returns></returns>
         // GET: job_vacancy/job/CompanyDetails/5
         [Route("/job_vacancy/job/{Action=Index}/{companyID}")]
         public async Task<IActionResult> CompanyDetails(int companyID)
@@ -75,6 +80,11 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             }
         }
 
+        /// <summary>
+        /// 職缺詳細資料，返回 JobDetails 視圖。
+        /// </summary>
+        /// <param name="jobID"></param>
+        /// <returns></returns>
         // GET: job_vacancy/job/JobDetails/5
         [Route("/job_vacancy/job/{Action=Index}/{jobID}")]
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles = "student")] //限定要登入學員帳號
@@ -239,16 +249,13 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                     // 使用 QuestPDF 生成 PDF 文件
                     var pdfData = GeneratePdf(resumeData);
 
-                    // 將 PDF 文件保存到暫時資料夾
-                    //var pdfFilePath = SavePdf(pdfData);
-
                     // 將 PDF 文件作為附件寄出
                     string recipientName = theCompany.F公司名稱;
                     string recipientEmail = theCompany.F聯絡人Email;
                     string subject = $"【Rasengan 人才培訓服務系統應徵信】{theStudent.姓名} - {theJob.F職務名稱}";
                     string letterBody = $"尊敬的 {recipientName} 負責人，您好，\r\n\r\n" +
                                         $"本封郵件由 Rasengan 人才培訓服務系統自動發送，特此通知貴公司收到一份新的應徵信。\r\n\r\n" +
-                                        $"應徵內容如下：\r\n{viewModel.ApplyLetter}\r\n\r\n" +
+                                        $"應徵內容如下：\r\n\r\n{viewModel.ApplyLetter}\r\n\r\n" +
                                         $"如果對求職者有興趣，請直接與他/她聯絡，謝謝。\r\n\r\n";
 
                     bool sendSuccess = SendEmail(recipientName, recipientEmail, subject, letterBody, pdfData);
@@ -284,6 +291,12 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             }
         }
 
+
+        /// <summary>
+        /// 產生PDF的方法
+        /// </summary>
+        /// <param name="resumeData"></param>
+        /// <returns></returns>
         private byte[] GeneratePdf(ResumeDataDTO resumeData)
         {
             var document = Document.Create(container =>
@@ -508,25 +521,29 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
 
             return memoryStream.ToArray();
         }
-
-        private string SavePdf(byte[] pdfData)
-        {
-            throw new NotImplementedException();
-        }
-
+        
+        /// <summary>
+        /// 寄信的實作方法。
+        /// </summary>
+        /// <param name="recipientEmail"></param>
+        /// <param name="recipientName"></param>
+        /// <param name="subject"></param>
+        /// <param name="body"></param>
+        /// <param name="pdfData"></param>
+        /// <returns></returns>
         public bool SendEmail(string recipientEmail, string recipientName, string subject, string body, byte[] pdfData)
         {
 
             string senderName = "Rasengen人才培訓服務系統";
             string senderEmail = "saiunkoku2008@gmail.com";
             //Environment.GetEnvironmentVariable("SMTP_PASSWORD");
-            string senderPassword = "ubad armd qien kvvo";        //安全性考量
+            string senderPassword = "ubad armd qien kvvo";   //需進行安全性處理
             string smtpServer = "smtp.gmail.com";
             int smtpPort = 587;
 
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress(senderName, senderEmail));
-            message.To.Add(new MailboxAddress(recipientName, senderEmail));
+            message.To.Add(new MailboxAddress(recipientName, senderEmail));  //測試中先自寄自收
             message.Subject = subject;
 
             // 創建一個 MimePart 來表示 PDF 附件
@@ -549,7 +566,6 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             //    ContentTransferEncoding = ContentEncoding.Base64,
             //    FileName = "text.txt"
             //};
-
 
 
             // 創建郵件主體

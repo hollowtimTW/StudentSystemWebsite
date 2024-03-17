@@ -28,6 +28,11 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// 學生專區 - 就業媒合主要頁面（我的履歷）。
+        /// 進入此區即啟動推薦系統。
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
 
@@ -40,13 +45,8 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             return View();
         }
 
-        public IActionResult ResumeDtails()
-        {
-            return View();
-        }
-
         /// <summary>
-        /// 新增履歷1：返回視圖。
+        /// 新增履歷1：返回 partial view。
         /// </summary>
         // GET: job_vacancy/jobforStudent/Create/5
         [Route("/job_vacancy/jobforStudent/{Action=Index}/{studentID?}")]
@@ -186,7 +186,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         }
 
         /// <summary>
-        /// 編輯履歷1：根據履歷編號提取相應的資料，並返回視圖。
+        /// 編輯履歷1：根據履歷編號提取相應的資料，並返回 partial view。
         /// </summary>
         /// <param name="resumeID">履歷ID</param>
         // GET: job_vacancy/jobforStudent/EditResume/5
@@ -415,9 +415,12 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             }
         }
 
-
-
-
+        /// <summary>
+        /// 返回履歷詳細頁中，履歷工作經驗 partial view
+        /// </summary>
+        /// <param name="studentID"></param>
+        /// <param name="resumeID"></param>
+        /// <returns></returns>
         // GET: job_vacancy/jobforStudent/GetMyWorkExp
         [Route("/job_vacancy/jobforStudent/{Action=Index}")]
         public async Task<IActionResult> GetMyWorkExp(int studentID, int? resumeID = null)
@@ -439,7 +442,6 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                     isInResume = _context.T工作履歷表工作經驗s.Any(r => r.F工作經驗Id == data.FId && r.F履歷Id == resumeID);
                 }
 
-
                 var viewModel = new WorkExpViewModel
                 {
                     WorkExpID = data.FId,
@@ -459,7 +461,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         }
 
         /// <summary>
-        /// 新增工作經驗1：返回填寫表單的視圖
+        /// 新增工作經驗1：返回填寫表單 partial view
         /// </summary>
         /// <returns></returns>
         // GET: job_vacancy/jobforStudent/GetAddWorkExpView
@@ -541,7 +543,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         }
 
         /// <summary>
-        /// 編輯工作經驗1：返回填寫表單的視圖
+        /// 編輯工作經驗1：返回填寫表單 partial view
         /// </summary>
         /// <returns></returns>
         // GET: job_vacancy/jobforStudent/GetEditWorkExpView

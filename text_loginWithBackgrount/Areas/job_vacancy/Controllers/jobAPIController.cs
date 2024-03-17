@@ -27,6 +27,11 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
 
         }
 
+        /// <summary>
+        /// 提供使用者將履歷下載為PDF檔，並存於桌面。
+        /// </summary>
+        /// <param name="resumeID"></param>
+        /// <returns></returns>
         // GET: job_vacancy/jobapi/ExportToPDF/5
         [Route("/job_vacancy/jobapi/{Action=Index}/{resumeID}")]
         public async Task<IActionResult> ExportToPDF(int resumeID)
@@ -327,6 +332,11 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             }
         }
 
+        /// <summary>
+        /// 返回學生專區 - 我的履歷 partial view
+        /// </summary>
+        /// <param name="studentID"></param>
+        /// <returns></returns>
         // GET: job_vacancy/jobapi/GetResumeTitles/5
         [Route("/job_vacancy/jobapi/{Action=Index}/{studentID}")]
         public async Task<IActionResult> GetMyResumes(int studentID)
@@ -357,7 +367,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         }
 
         /// <summary>
-        /// 回傳應徵紀錄的視圖
+        /// 返回學生專區 - 應徵紀錄 partial view
         /// </summary>
         /// <param name="studentID"></param>
         /// <returns></returns>
@@ -399,6 +409,11 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             return PartialView("_MyApplyRecordsPartial", viewModelList);
         }
 
+        /// <summary>
+        /// 返回學生專區 - 收藏紀錄  partial view
+        /// </summary>
+        /// <param name="studentID"></param>
+        /// <returns></returns>
         // GET: job_vacancy/jobapi/GetMyFavoritesJobs/5
         [Route("/job_vacancy/jobapi/{Action=Index}/{studentID}")]
         public async Task<IActionResult> GetMyFavoritesJobs(int studentID)
@@ -435,6 +450,11 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             return PartialView("_MyFavoritesJobsPartial", viewModelList);
         }
 
+        /// <summary>
+        /// 返回學生專區 - 推薦清單 partial view
+        /// </summary>
+        /// <param name="studentID"></param>
+        /// <returns></returns>
         // GET: job_vacancy/jobapi/GetMyRecommendedJobs/5
         [Route("/job_vacancy/jobapi/{Action=Index}/{studentID}")]
         public async Task<IActionResult> GetMyRecommendedJobs(int studentID)
@@ -470,7 +490,12 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             return PartialView("_MyRecommendedJobsPartial", viewModelList);
         }
 
-
+        /// <summary>
+        /// 返回 職缺一覽表中，對應職缺類型的職缺資料
+        /// </summary>
+        /// <param name="tabName"></param>
+        /// <param name="page"></param>
+        /// <returns></returns>
         [Route("/job_vacancy/jobapi/{Action=Index}/{tabName}")]
         public async Task<IActionResult> GetJobsByTabName(string? tabName, int page = 1)
         {
@@ -521,7 +546,11 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             return Ok(jobs);
         }
 
-
+        /// <summary>
+        /// 返回 公司詳細頁中，該公司發布的職缺資料
+        /// </summary>
+        /// <param name="searchJobDTO"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult CompanyJoblist([FromBody] SearchJobDTO searchJobDTO)
         {
@@ -591,10 +620,5 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
 
             return Json(thisCompanyJobsPaging);
         }
-
-
-
-        
-
     }
 }
