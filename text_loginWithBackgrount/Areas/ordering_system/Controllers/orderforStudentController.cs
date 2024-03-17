@@ -136,7 +136,10 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                         join tagF in _myDBContext.T訂餐口味總表s on tagE.口味id equals tagF.口味id
                         where tagItem.店家名稱 == a.店家名稱
                         select tagF.風味名稱).ToList(),
-                平均評論 = evaluationDictionary.ContainsKey(a.店家id) ? (evaluationDictionary[a.店家id]).ToString() : "新店家"
+                平均評論 = evaluationDictionary.ContainsKey(a.店家id) ? (evaluationDictionary[a.店家id]).ToString() : "新店家",
+                營業資料= (from time in _myDBContext.T訂餐營業時間表s
+                       where time.店家id == a.店家id && time.顯示.Trim() == "1"
+                       select time).ToList()
             }).ToList();
             return result;
         }

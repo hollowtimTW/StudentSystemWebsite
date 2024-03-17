@@ -85,13 +85,19 @@
     @* 畫面上頭 *@
     <div class="ts-content is-tertiary">
         <div class="ts-container has-vertically-padded-large">
-            <a class="ts-text is-undecorated" href="/ordering_system/orderforStudent/Studentrestaurant">
-                <span class="ts-icon is-circular is-house-icon is-huge"></span>
-                <div class="ts-text is-secondary is-large">返回點餐首頁</div>
-            </a>
+            <div class="ts-wrap">
+                <a class="ts-text is-undecorated" href="/ordering_system/orderforStudent/Studentrestaurant">
+                    <span class="ts-icon is-circular is-house-icon is-huge"></span>
+                    <div class="ts-text is-secondary is-large">點餐頁</div>
+                </a>
+                <a class="ts-text is-undecorated" href="javascript:void(0);" onclick="history.back();">
+                    <span class="ts-icon is-circular is-reply-icon is-huge"></span>
+                    <div class="ts-text is-secondary is-large">上一頁</div>
+                </a>
+            </div>
             <div class="ts-grid is-relaxed is-stretched has-top-spaced">
                 <div class="column is-11-wide">
-                    <div class="ts-image is-rounded" style="max-height: 527px;">
+                    <div class="ts-image is-rounded is-covered" style="max-height: 527px;">
                         <img src="@Html.DisplayFor(model => model.餐廳照片)" style="width: 100%; height: 100%; object-fit: cover;" />
                     </div>
                 </div>

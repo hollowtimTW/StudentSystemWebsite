@@ -1,18 +1,11 @@
-﻿using Class_system_Backstage_pj.Areas.ordering_system.Data;
-using Class_system_Backstage_pj.Areas.ordering_system.Models;
+﻿using Class_system_Backstage_pj.Areas.ordering_system.Models;
 using Class_system_Backstage_pj.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.IO;
 using text_loginWithBackgrount.Areas.ordering_system.Models;
 using text_loginWithBackgrount.Areas.ordering_system.Models.forStudentDTO;
 using TEXTpie_chart.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
@@ -30,7 +23,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
         }
         /// <summary>
         /// 呼叫所有店家資料
-        /// </summary>
+        /// </summary>//https://localhost:7150/tOrder_StoreAPI/storeInformation
         /// <param name="myDBContext"></param>
         public IActionResult storeInformation()
         {
@@ -48,6 +41,11 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                             join tagF in _myDBContext.T訂餐口味總表s on tagE.口味id equals tagF.口味id
                             where tagItem.店家名稱 == a.店家名稱
                             select tagF.風味名稱).ToList(),
+                    營業日期 = (from time in _myDBContext.T訂餐營業時間表s
+                            where time.店家id == a.店家id && time.顯示.Trim() == "1"
+                            select time).ToList(),
+
+
                 });
 
             return Json(result);
@@ -134,7 +132,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             });
             int totalComments = storedata.Sum(item => item.評論數量);
             int totalWeight = storedata.Sum(item => item.加權);
-            double evaluate = totalWeight!=0?totalWeight / totalComments:0;
+            double evaluate = totalWeight != 0 ? totalWeight / totalComments : 0;
             VMstoreInformation storeInformationVM = new VMstoreInformation()
             {
                 turnover = result1,
@@ -564,7 +562,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                                          join d in _myDBContext.T訂餐評論表s on b.訂單id equals d.訂單id
                                          join e in _myDBContext.T訂餐店家風味表s on c.店家id equals e.店家id
                                          join f in _myDBContext.T訂餐口味總表s on e.口味id equals f.口味id
-                                         where (b.訂單狀態).Trim() == "完成" && (item.狀態).Trim()=="1"&& (b.訂單時間).Substring(0, 4) == "2024"
+                                         where (b.訂單狀態).Trim() == "完成" && (item.狀態).Trim() == "1" && (b.訂單時間).Substring(0, 4) == "2024"
                                          group new { item, b, a, c, d, e, f } by c into g
                                          select new
                                          {
@@ -1275,11 +1273,11 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             return Ok(spots);
         }
         /// <summary>
-        /// 
+        /// 將進行中訂單完成後給予評論與星數
         /// </summary>
         /// <param name="id">訂單ID</param>
         /// <param name="start">評價星數</param>
-        /// <param name="feedback">訂單評論</param>
+        /// <param name="feedback">訂單評論(可null)</param>
         /// <returns></returns>
         [HttpPost]
         public IActionResult orderFinallcomplent(int id, string start, string feedback)
@@ -1299,6 +1297,41 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                 return Ok();
             }
             return BadRequest();
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="_search"></param>
+        /// <returns></returns>
+        public IActionResult storeSearch([FromBody] StoreShow _search)
+        {
+            var spots = _myDBContext.T訂餐店家資料表s.Select(a => new VMstoreCarIndex
+            {
+                店家id = a.店家id,
+                電話 = a.電話,
+                餐廳照片 = a.餐廳照片 ?? "/images/user.jpg",
+                店家名稱 = a.店家名稱,
+                餐廳介紹 = a.餐廳介紹,
+                風味列表 = (from tagItem in _myDBContext.T訂餐店家資料表s
+                        join tagE in _myDBContext.T訂餐店家風味表s on tagItem.店家id equals tagE.店家id
+                        join tagF in _myDBContext.T訂餐口味總表s on tagE.口味id equals tagF.口味id
+                        where tagItem.店家名稱 == a.店家名稱
+                        select tagF.風味名稱).ToList(),
+                營業資料 = (from time in _myDBContext.T訂餐營業時間表s
+                        where time.店家id == a.店家id && time.顯示.Trim() == "1"
+                        select time).ToList(),
+                餐點資料 = (from menu in _myDBContext.T訂餐餐點資訊表s
+                        where menu.店家id == a.店家id && menu.上架 == "1"
+                        select menu.餐點名稱).ToList()
+            }).ToList();
+            if (!string.IsNullOrEmpty(_search.keyword))
+            {
+                spots = spots.Where(s => s.店家名稱.Contains(_search.keyword) || s.餐廳介紹.Contains(_search.keyword) || s.餐點資料.Any(dish => dish.Contains(_search.keyword))||s.風味列表.Any(dish=>dish.Contains(_search.keyword))).ToList();
+            }
+            PagingDTO sportsPagingDTO = new PagingDTO();
+            sportsPagingDTO.TotalPages = 100; //不用頁數顯示
+            sportsPagingDTO.vMstoreCarIndices = spots;
+            return Json(sportsPagingDTO);
         }
         //https://localhost:7150/tOrder_StoreAPI/shoppingCar/7
     }
