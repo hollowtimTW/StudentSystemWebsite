@@ -24,10 +24,20 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
         {
             return View();
         }
-        public IActionResult Studentrestaurant()
+        public IActionResult Studentrestaurant(string searchKeyWord = null,string orderby= "評論")
         {
+            ViewData["searchKeyWord"] =searchKeyWord;
             ViewData["Title"] = "學生餐廳";
-            return View(vMstoreCarIndices());
+            var data = vMstoreCarIndices();
+            switch (orderby) {
+                case "新店家":
+                    data = data.OrderBy(a => a.平均評論).ToList();
+                    break;
+                case "評論":
+                    data = data.OrderByDescending(a => a.平均評論).ToList();
+                    break;
+            }
+            return View(data);
         }
         public IActionResult CreateOrder()
         {
@@ -117,7 +127,12 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                         int totalComments = storedata.Sum(item => item.評論數量);
                         int totalWeight = storedata.Sum(item => item.加權);
                         double evaluate = totalComments != 0 ? Math.Round((double)totalWeight / totalComments, 2) : 0.0;
+                        if (totalComments <5)
+                        {
+                            evaluate = 0.0;
+                        }
                         return evaluate;
+
                     }
                 );
 
@@ -136,7 +151,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                         join tagF in _myDBContext.T訂餐口味總表s on tagE.口味id equals tagF.口味id
                         where tagItem.店家名稱 == a.店家名稱
                         select tagF.風味名稱).ToList(),
-                平均評論 = evaluationDictionary.ContainsKey(a.店家id) ? (evaluationDictionary[a.店家id]).ToString() : "新店家",
+                平均評論 = evaluationDictionary.ContainsKey(a.店家id) ? evaluationDictionary[a.店家id]==0?0: evaluationDictionary[a.店家id] : 0,
                 營業資料= (from time in _myDBContext.T訂餐營業時間表s
                        where time.店家id == a.店家id && time.顯示.Trim() == "1"
                        select time).ToList()

@@ -2,7 +2,7 @@
 @{
     int index = 0;
     var ordered = ViewData["ordered"] as List<VMstoreStudentOrder>;
-    var 餐點IDs = ordered.Select(item =>item.餐點ID ).ToArray();
+    var 餐點IDs = ordered.Select(item => item.餐點ID).ToArray();
 }
 @section Styles {
     <!-- 核心：Tocas UI -->
@@ -42,7 +42,6 @@
             max-width: 2000px;
         }
 
-
     </style>
 }
 <div id="storeID" data-storeid="@ViewData["storeID"]"></div>
@@ -54,14 +53,17 @@
             <div class="ts-box is-light">
                 <div class="ts-app-layout is-horizontal">
                     <div class="cell is-fluid">
-                        <div class="ts-content">
-                            <div class="input-group mb-3 ts-input is-circular">
-                                <input type="text" class="form-control" placeholder="搜尋........." aria-label="Recipient's username" aria-describedby="button-addon2" id="searchKeyWord">
-                                <button class="ts-button is-icon" onclick="search()">
-                                    <span class="ts-icon is-magnifying-glass-icon"></span>
-                                </button>
+                        <form action="/ordering_system/orderforStudent/Studentrestaurant" method="get">
+                            <div class="ts-content">
+                                <div class="input-group mb-3 ts-input is-circular">
+                                    <input type="text" class="form-control" placeholder="搜尋關鍵字........." aria-label="Recipient's username" aria-describedby="button-addon2" name="searchKeyWord">
+                                    <button class="ts-button is-icon" type="submit">
+                                        <span class="ts-icon is-magnifying-glass-icon"></span>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        </form>
+                        
                     </div>
                     <div class="cell">
                         <div class="ts-content ts-wrap">
@@ -305,8 +307,6 @@
                     </div>
                 </div>
                 <div class="column is-3-wide" id="ShoppingList">
-
-
                 </div>
             </div>
         </div>
@@ -438,10 +438,10 @@
                 success: (datas) => {
                     if (datas.店家資料.length == 0) {
                         const nullLove = `            <div class="ts-blankslate is-light">
-                                <span class="ts-icon is-heart-icon"></span>
-                                <div class="header" style="background-color:#ffff">目前還沒有加入最愛</div>
-                                <div class="description">快去看看找你最愛的店家吧</div>
-                            </div>`
+                                        <span class="ts-icon is-heart-icon"></span>
+                                        <div class="header" style="background-color:#ffff">目前還沒有加入最愛</div>
+                                        <div class="description">快去看看找你最愛的店家吧</div>
+                                    </div>`
                         $('#favoriteStore').html(nullLove);
                     }
                     else {
@@ -449,29 +449,29 @@
                             const { 店家名稱, 店家圖片, 風味列表, 店家ID } = a;
                             const tagname = 風味列表.map(b => b).join(',');
                             return (`
-                                      <div class="ts-box is-horizontal is-light mt-3">
-                                        <div class="ts-image is-covered">
-                                       <a href="/ordering_system/orderforStudent/StoreMeanu/${店家ID}">
-                                            <img src="${店家圖片}" style="width: 90px; height: 100%;" />
-                                       </a>
-                                        </div>
-                                        <div class="ts-content">
-                                            <a href="/ordering_system/orderforStudent/StoreMeanu/${店家ID}">
-                                                    <div class="ts-header">
-                                                    ${店家名稱}
+                                              <div class="ts-box is-horizontal is-light mt-3">
+                                                <div class="ts-image is-covered">
+                                               <a href="/ordering_system/orderforStudent/StoreMeanu/${店家ID}">
+                                                    <img src="${店家圖片}" style="width: 90px; height: 100%;" />
+                                               </a>
+                                                </div>
+                                                <div class="ts-content">
+                                                    <a href="/ordering_system/orderforStudent/StoreMeanu/${店家ID}">
+                                                            <div class="ts-header">
+                                                            ${店家名稱}
+                                                            </div>
+                                                    </a>
+                                                <p>${tagname}</p>
+                                                </div>
+                                                <div class="ts-content is-end-aligned">
+                                                   <div class="ts-header is-end-aligned">
+                                                                <button class="ts-button is-icon is-negative is-outlined is-circular" onclick="delete01(${店家ID})">
+                                                            <span class="ts-icon is-minus-icon"></span>
+                                                        </button>
                                                     </div>
-                                            </a>
-                                        <p>${tagname}</p>
-                                        </div>
-                                        <div class="ts-content is-end-aligned">
-                                           <div class="ts-header is-end-aligned">
-                                                        <button class="ts-button is-icon is-negative is-outlined is-circular" onclick="delete01(${店家ID})">
-                                                    <span class="ts-icon is-minus-icon"></span>
-                                                </button>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                        `);
+                                                `);
                         });
                         $('#favoriteStore').html(dataslist);
                     }
@@ -501,44 +501,44 @@
                         $('#Shoppingcount').text(0);
                         $('#Shoppingtotail').text(0);
                         const nulllist = ` <div class="ts-blankslate is-light">
-                                <span class="ts-icon is-cart-shopping-icon"></span>
-                                <div class="header" style="background-color:#ffff">購物車是空的</div>
-                                <div class="description">請購買些商品之後再回來查看</div>
-                                <div class="action">
-                                    <button class="ts-button" id="close01">瀏覽商品</button>
-                                </div>
-                            </div>`;
+                                        <span class="ts-icon is-cart-shopping-icon"></span>
+                                        <div class="header" style="background-color:#ffff">購物車是空的</div>
+                                        <div class="description">請購買些商品之後再回來查看</div>
+                                        <div class="action">
+                                            <button class="ts-button" id="close01">瀏覽商品</button>
+                                        </div>
+                                    </div>`;
                         $('#ShoppingList').html(nulllist);
                         $('#close01').click(() => {
                             close();
                         })
-                    } 
+                    }
                     else {
                         $('#Shoppingcount').text(datas.筆數);
                         $('#Shoppingtotail').text(datas.總額);
                         const datalist = datas.待購物清單.map(a => {
                             const { 購物車ID, 餐點圖片, 餐點數量, 餐點名稱, 小計, 餐點ID } = a;
                             return (`
-                                      <div class="ts-box is-horizontal is-light mt-3">
-                                        <div class="ts-image is-covered">
-                                        <img src="${餐點圖片}" style="width: 90px; height: 100%;" />
-                                        </div>
-                                        <div class="ts-content">
-                                            <div class="ts-header">
-                                                ${餐點名稱}
-                                            </div>
-                                            <p>小計:<span>$${小計}</span></p>
-                                        </div>
-                                        <div class="ts-content is-end-aligned" style="max-width:130px">
-                                            <div class="ts-header">
-                                                <p>數量</p>
-                                                <div class="ts-input is-circular">
-                                                  <input type="number" value="${餐點數量}" data-id="${餐點ID}" min="0" max="100">
+                                              <div class="ts-box is-horizontal is-light mt-3">
+                                                <div class="ts-image is-covered">
+                                                <img src="${餐點圖片}" style="width: 90px; height: 100%;" />
+                                                </div>
+                                                <div class="ts-content">
+                                                    <div class="ts-header">
+                                                        ${餐點名稱}
+                                                    </div>
+                                                    <p>小計:<span>$${小計}</span></p>
+                                                </div>
+                                                <div class="ts-content is-end-aligned" style="max-width:130px">
+                                                    <div class="ts-header">
+                                                        <p>數量</p>
+                                                        <div class="ts-input is-circular">
+                                                          <input type="number" value="${餐點數量}" data-id="${餐點ID}" min="0" max="100">
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                `);
+                                        `);
                         })
                         $('#ShoppingList').html(datalist);
                     }
@@ -558,7 +558,7 @@
                                     console.log('api傳送失敗')
                                 }
                             })
-                        } 
+                        }
                         else {
                             const minusIcon = $('.ts-icon.is-minus-icon[data-id="' + 餐點 + '"]');
                             minusIcon.click();

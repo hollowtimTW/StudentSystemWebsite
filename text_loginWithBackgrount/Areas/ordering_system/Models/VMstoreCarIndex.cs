@@ -11,7 +11,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Models
         public string 店家名稱 { get; set; }
         public string 餐廳介紹 { get; set; }
         public List<string> 風味列表 { get; set; }
-        public string 平均評論 { get; set; }
+        public double 平均評論 { get; set; }
         public List<T訂餐營業時間表> 營業資料 { get; set; }
         public List<string> 餐點資料 { get; set; }
     }
