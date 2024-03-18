@@ -21,7 +21,6 @@
 </div>
 
 <div class="button-container">
-    <a class="btn btn-primary" id="saveQuiz">儲存測驗</a>
     <a class="btn btn-primary" asp-area="quiz" asp-controller="QuizBg" asp-action="BgIndex">返回列表</a>
 </div>
 
@@ -42,8 +41,14 @@
 
         <div class="tab-content" id="myTabsContent">
 
+            <!--測驗題目編輯-->
             <div class="tab-pane fade show active mb-5" id="tab1">
                 <div class="container mt-3">
+                    <div class="d-flex justify-content-between">
+                        <a class="btn btn-primary mb-3" id="saveQuiz">儲存</a>
+                        <a class="btn btn-secondary mb-3" id="resetQuiz">重置</a>
+                    </div>
+
                     <div id="question-section">
                   
                     </div>
@@ -51,6 +56,7 @@
                 </div>
             </div>
 
+            <!--測驗資訊編輯-->
             <div class="tab-pane fade" id="tab2">
                 <div class="col-6 d-flex justify-content-center" style="width:100%">
                     <form class="needs-validation" id="quizInfoForm" novalidate>
@@ -156,6 +162,9 @@
 
 
 
+
+
+
 <!--Toast-->
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
     <div id="toast" class="toast hide">
@@ -203,7 +212,6 @@
             }
 
 
-
             $('#tab2-tab').on('click', () => {
                 getInfo()
                 $InfoForm.removeClass('was-validated');
@@ -222,7 +230,7 @@
             // 獲得測驗訊息
             const getInfo = () => {
                 $.ajax({
-                    url: '/Api/QuizBg/GetInfo/@ViewBag.quizId',
+                    url: '/Api/QuizBg/GetInfo/@quizId',
                     type: 'GET',
 
                     success: function (data) {
@@ -255,7 +263,7 @@
             $('#saveInfoBtn').on('click', () => {
 
                 var jsonData = {
-                    id: quizId,
+                    id: @quizId,
                     name: $qName.val(),
                     note: $qNote.val(),
                     limitTime: Number($qLimitTime.val()),
@@ -282,7 +290,7 @@
             // 刪除測驗
             $('#deleteBtn').on('click', () => {
                 jsonData = {
-                    id: quizId,
+                    id: @quizId,
                 }
                 $.ajax({
                     url: '/Api/QuizBg/DeleteQuiz',
@@ -310,18 +318,12 @@
 
 
 
-
-
-
-
-
-
             const questionSection = $('#question-section');
 
 
             // 創建一個空的題目模板
             function createEmptyQuestionTemplate() {
-                const questionDiv = $('<div>').addClass('question-item');
+                const questionDiv = $('<div>').addClass('question-item').attr('data-id', '');
                 questionDiv.html(`
                     <div class="question-content">
                         <textarea class="form-control form-control-c form-control-textarea" placeholder="請輸入題目"></textarea>
@@ -329,7 +331,7 @@
                     <div class="image-upload-container"></div>
                     <div class="option-section-container"></div>
                     <div class="button-group">
-                        <button class="upload-image-btn btn border"><i class='bx bx-image-add'></i></button>
+                        <button class="btn border upload-image-btn"><i class='bx bx-image-add'></i></button>
                         <button class="btn border move-up"><i class='bx bxs-chevron-up'></i></button>
                         <button class="btn border move-down"><i class='bx bxs-chevron-down'></i></button>
                         <button class="btn border delete-question"><i class='bx bx-trash'></i></button>
@@ -351,6 +353,21 @@
             // 將題目資料填入題目模板
             function fillQuestionTemplate(questionDiv, questionData, optionSectionContainer) {
                 questionDiv.find('.question-content textarea').val(questionData.questionText);
+                if (questionData.id){
+                    const questionId = questionDiv.attr('data-id', questionData.id);
+                }
+
+                // 添加圖片
+                if (questionData.image) {
+                    const img = $('<img>').attr('src', questionData.image).css('max-width', '100%');
+                    const imageContainer = $('.image-upload-container', questionDiv);
+                    const removeBtn = $('<button>').attr('type', 'button').addClass('btn-close').on('click', function () {
+                        imageContainer.empty();
+                        $(this).remove();
+                    });
+                    const container = $('<div>').addClass('image-container').append(img).append(removeBtn);
+                    imageContainer.empty().append(container);
+                }
 
                 // 添加選項
                 questionData.options.forEach((option, index) => {
@@ -372,9 +389,6 @@
                 if (questionData.type === 1) {
                     questionDiv.find('.question-check input').prop('checked', true);
                 }
-                // 如果有圖片，則填入圖片資料
-                // 這部分需要根據您的程式碼中如何處理圖片資料進行適當的更新
-                // 可能需要一個單獨的函數來處理圖片的顯示
             }
 
             // 當新增問題按鈕被點擊時執行的函數
@@ -391,7 +405,7 @@
                 questionSection.append(questionDiv);
             });
 
-            // 創建選項區域的函數
+            // 選項模板
             function createOptionSection() {
                 return `
                     <div class="option-section">
@@ -403,46 +417,68 @@
             }
 
 
-            const questionDataList = [
-                {
-                    type: 0,
-                    image: null,
-                    questionText: "第一個題目的問題",
-                    options: ["選項1", "選項2"],
-                    answer: [0]
-                },
-                {
-                    type:1,
-                    image:null,
-                    questionText: "第二個題目的問題",
-                    options: ["選項A", "選項B", "選項C"],
-                    answer:[1,2]
-                }
-            ];
+            // 載入資料
+            function loadData() {
+
+                $.ajax({
+                    url: '/Api/QuizBg/GetQuestions/@quizId',
+                    type: 'GET',
+                    success: function (data) {
+                        console.log(data)
+                        data.map(function (questionData) {
+                            const questionDiv = createEmptyQuestionTemplate();
+                            const optionSectionContainer = questionDiv.find('.option-section-container');
+                            fillQuestionTemplate(questionDiv, questionData, optionSectionContainer);
+                            questionSection.append(questionDiv);
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });          
+            }
 
 
-
-
-            // 將 questionDataList 中的每個元素轉換為填充後的問題模板並直接添加到 questionSection 中
-            questionDataList.map(function (questionData) {
-                const questionDiv = createEmptyQuestionTemplate();
-                const optionSectionContainer = questionDiv.find('.option-section-container');
-                fillQuestionTemplate(questionDiv, questionData, optionSectionContainer);
-                questionSection.append(questionDiv);
+            // 新增圖片
+            $(document).on('click', '.upload-image-btn', function () {
+                const questionDiv = $(this).closest('.question-item');
+                const input = $('<input>').attr({ type: 'file', accept: 'image/*' }).on('change', function (e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            const imgSrc = e.target.result;
+                            const img = $('<img>').attr('src', imgSrc).css('max-width', '100%');
+                            const imageContainer = $('.image-upload-container', questionDiv);
+                            const removeBtn = $('<button>').attr('type', 'button').addClass('btn-close').on('click', function () {
+                                imageContainer.empty();
+                                $(this).remove();
+                            });
+                            const container = $('<div>').addClass('image-container').append(img).append(removeBtn);
+                            imageContainer.empty().append(container);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+                input.click();
             });
 
-
-
-
-            $(document).on('click', '.delete-question', function () {
-                // 找到要刪除的題目
-                const questionItem = $(this).closest('.question-item');
-                // 刪除該題目
-                questionItem.remove();
+            // 變更圖片
+            $(document).on('click', '.image-upload-container img', function () {
+                const img = $(this);
+                const input = $('<input>').attr({ type: 'file', accept: 'image/*' }).on('change', function (e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            const imgSrc = e.target.result;
+                            img.attr('src', imgSrc);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+                input.click();
             });
-
-
-
 
 
             // 上移按鈕點擊事件
@@ -463,10 +499,164 @@
                 }
             });
 
+            // 刪除題目
+            $(document).on('click', '.delete-question', function () {
+                // 找到要刪除的題目
+                const questionItem = $(this).closest('.question-item');
+                // 刪除該題目
+                questionItem.remove();
+            });
+
+            // 增加選項(最多6項)
+            $(document).on('click', '.add-option', function () {
+                const questionItem = $(this).closest('.question-item');
+                const optionCount = $('.option-section', questionItem).length;
+                if (optionCount >= 6) {
+                    alert('最多只能6個選項');
+                    return;
+                }
+                // 找到該題目元素下的選項容器
+                const optionSectionContainer = questionItem.find('.option-section-container');
+                optionSectionContainer.append(createOptionSection());
+            });
+
+            // 刪除選項(至少2項)
+            $(document).on('click', '.delete-option', function () {
+                const optionSection = $(this).closest('.option-section');
+                const questionDiv = optionSection.closest('.question-item');
+                const optionCount = $('.option-section', questionDiv).length;
+                if (optionCount <= 2) {
+                    alert('至少要有2個選項。');
+                    return;
+                }
+                optionSection.remove();
+            });
+
+
+            // 驗證
+            function extractAndValidateQuestionData() {
+                const questionItems = $('.question-item');
+                let allValid = true;
+                let questionsData = [];
+
+                questionItems.each(function () {
+                    const questionItem = $(this);
+                    const questionId = questionItem.data('id')
+                    const questionContentInput = $('.question-content textarea', this);
+                    const questionContent = questionContentInput.val().trim();
+                    const options = $('.option-section', this);
+                    const questionCheck = $('.question-check input', this).prop('checked');
+                    const imageFile = $('.image-upload-container img', this).attr('src') || null;
+                    let optionsList = [];
+                    let answersList = [];
+
+                    // 重置錯誤樣式和消息
+                    questionContentInput.css('border-color', '');
+                    questionItem.css('border-color', '');
+                    $('.validation-error', this).remove();
+
+                    // 驗證選項內容並填充選項列表和答案列表
+                    options.each(function (index) {
+                        const optionInput = $('input[type="text"]', this);
+                        optionInput.css('border-color', '');
+                        $('.option-error', this).empty();
+
+                        const optionText = optionInput.val().trim();
+                        optionsList.push(optionText);
+
+                        if (!optionText) {
+                            optionInput.css('border-color', 'red');
+                            $('.option-error', this).html('<div class="validation-error">選項內容不能為空。</div>');
+                            allValid = false;
+                        }
+
+                        if ($('input.form-check-input', this).prop('checked')) {
+                            answersList.push(index);
+                        }
+                    });
+
+                    // 驗證題目內容
+                    if (!questionContent) {
+                        questionContentInput.css('border-color', 'red').after('<div class="validation-error">題目內容不能為空。</div>');
+                        allValid = false;
+                    }
+
+                    // 驗證選擇的答案數量
+                    if (!questionCheck && answersList.length !== 1) {
+                        questionItem.append('<div class="validation-error">單選題至少選擇一個答案。</div>');
+                        allValid = false;
+                    } else if (questionCheck && answersList.length < 2) {
+                        questionItem.append('<div class="validation-error">多選題至少選擇兩個答案。</div>');
+                        allValid = false;
+                    }
+
+                    // 構造題目詳細信息
+                    let questionDetails = {
+                        Id: questionId,
+                        QuestionText: questionContent,
+                        Options: optionsList,
+                        Type: questionCheck ? 1 : 0,
+                        Image: imageFile,
+                        Answer: answersList,
+                    };
+
+                    // 將題目詳細信息添加到題目數據列表中
+                    questionsData.push(questionDetails);
+                });
+
+                return {
+                    allValid: allValid,
+                    questionsData: questionsData
+                };
+            }
+
+
+            // 儲存題目
+            $('#saveQuiz').on('click', function () {
+                const results = extractAndValidateQuestionData();
+                console.log(results.questionsData);
+
+                if (!results.allValid) {
+                    showToast("輸入錯誤", false)
+                    return false;
+                } else {
+
+                    const data = {
+                        quizId: @ViewBag.quizId,
+                        questions: results.questionsData
+                    }
+
+                    console.log(data)
+
+                    $.ajax({
+                        url: '/Api/QuizBg/SaveQuesions',
+                        type: 'POST',
+                        contentType: "application/json",
+                        data: JSON.stringify(data),
+                        success: function (response) {
+                            showToast(response, true)
+                            console.log(response)
+                        },
+                        error: function (xhr, status, error) {
+                            showToast(xhr.responseText, false)
+                            console.error(xhr.responseText);
+                        }
+                    });
+                    showToast("儲存成功", true)
+                }
+            });
+
+            // 重置
+            $('#resetQuiz').on('click', function () {
+                $("#question-section").empty();
+                loadData();
+                showToast("重置完成", true)
+            });
 
 
 
-
+            // 開始執行
+            loadData();
 
         });
 

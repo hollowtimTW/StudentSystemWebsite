@@ -199,15 +199,15 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
 
 
 
-        // 取得某測驗內容(老師)
+        // 取得某測驗考題(老師)
         [HttpGet("{quizId}")]
         public async Task<ActionResult<IEnumerable<string>>> GetQuestions(int quizId)
         {
-            var questionOrder = await _questionOrderCollection.Find(qo => qo.QuizID == quizId).FirstOrDefaultAsync();
+            var questionOrder = await _questionOrderCollection.Find(q => q.QuizID == quizId).FirstOrDefaultAsync();
 
             if (questionOrder == null)
             {
-                return NotFound("無內容");
+                return Ok("無考題資料");
             }
 
             var questionIds = questionOrder.QuestionOrderList;
@@ -263,7 +263,6 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
                 {
 
                     await _questionCollection.InsertOneAsync(question);
-
                     ids.Add(question.Id);
                 }
             }
