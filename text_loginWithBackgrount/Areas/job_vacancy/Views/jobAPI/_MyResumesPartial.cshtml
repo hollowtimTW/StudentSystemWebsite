@@ -248,6 +248,26 @@
 
                 createContext.html(result);
                 $('#createModal').modal('show');
+
+                //設定自傳編輯區字數顯示
+                const textarea = document.querySelector('.word_count_textarea');
+                const wordCount = document.getElementById('word-count');
+                const maxLength = 1000;
+                wordCount.textContent = textarea.value.length; // 初始化字數顯示
+
+                textarea.addEventListener('input', function () {
+                    let content = textarea.value;
+                    let currentLength = content.length; // 獲取當前字數
+
+                    // 如果超過最大字數，則截斷內容並更新 textarea 內容與字數顯示
+                    if (currentLength > maxLength) {
+                        textarea.value = content.slice(0, maxLength);
+                        currentLength = textarea.value.length;
+                    }
+
+                    // 更新字數顯示
+                    wordCount.textContent = currentLength;
+                });
             },
             error: function (error) {
                 console.error('呼叫新增視窗 error', error);
@@ -379,6 +399,27 @@
 
                 editContext.html(result);
                 $('#editModal').modal('show');
+
+                //設定自傳編輯區字數顯示
+                const textarea = document.querySelector('.word_count_textarea');
+                const wordCount = document.getElementById('word-count');
+                const maxLength = 1000;
+                wordCount.textContent = textarea.value.length; // 初始化字數顯示
+
+                textarea.addEventListener('input', function () {
+                    let content = textarea.value;
+                    let currentLength = content.length; // 獲取當前字數
+
+                    // 如果超過最大字數，則截斷內容並更新 textarea 內容與字數顯示
+                    if (currentLength > maxLength) {
+                        textarea.value = content.slice(0, maxLength);
+                        currentLength = textarea.value.length;
+                    }
+
+                    // 更新字數顯示
+                    wordCount.textContent = currentLength;
+                });
+
             },
             error: function (error) {
                 console.error('呼叫編輯視窗 error', error);

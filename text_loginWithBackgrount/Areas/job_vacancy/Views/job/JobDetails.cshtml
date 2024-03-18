@@ -232,6 +232,26 @@
                     console.log('呼叫應徵信 success');
                     // 清空並設置內容
                     applyContext.html(result);
+
+                    //設定應徵信字數顯示
+                    const textarea = document.querySelector('.word_count_textarea');
+                    const wordCount = document.getElementById('word-count');
+                    const maxLength = 500;
+                    wordCount.textContent = textarea.value.length; // 初始化字數顯示
+
+                    textarea.addEventListener('input', function () {
+                        let content = textarea.value;
+                        let currentLength = content.length; // 獲取當前字數
+
+                        // 如果超過最大字數，則截斷內容並更新 textarea 內容與字數顯示
+                        if (currentLength > maxLength) {
+                            textarea.value = content.slice(0, maxLength);
+                            currentLength = textarea.value.length;
+                        }
+
+                        // 更新字數顯示
+                        wordCount.textContent = currentLength;
+                    });
                 },
                 error: function (error) {
                     console.error('呼叫應徵信 error', error);
@@ -297,14 +317,7 @@
             }
         });
 
-        // const textarea = document.querySelector('textarea');
-        // const wordCount = document.getElementById('word-count');
-        // wordCount.textContent = textarea.value.length;
-
-        // textarea.addEventListener('input', function () {
-        //     const content = textarea.value;
-        //     wordCount.textContent = content.length;
-        // });
+        
 
     </script>
 }

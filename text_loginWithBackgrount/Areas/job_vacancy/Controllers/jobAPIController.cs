@@ -82,7 +82,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                         page.PageColor(Colors.White);
                         page.DefaultTextStyle(x => x
                                 .FontSize(12) // 設定預設字體大小
-                                .FontFamily("源石黑體")); // 設定預設字體
+                                .FontFamily("微軟正黑體")); // 設定預設字體
 
                         // 獲取LOGO圖片的相對路徑
                         string logoFilePath = Path.Combine("images", "logo.jpg");

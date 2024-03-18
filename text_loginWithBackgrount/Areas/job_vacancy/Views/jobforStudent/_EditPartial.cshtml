@@ -223,7 +223,7 @@
             <div class="row dialog container-fluid">
                 <div class="form-group">
                     <label asp-for="Autobiography" class="control-label"></label>
-                    <textarea asp-for="Autobiography" class="container-fluid large_textarea" placeholder="請填寫自傳內容，注意不要透露個人隱私資訊。">@Model.Autobiography</textarea>
+                    <textarea asp-for="Autobiography" class="container-fluid large_textarea word_count_textarea" placeholder="請填寫自傳內容，注意不要透露個人隱私資訊。">@Model.Autobiography</textarea>
                     <div class="d-flex justify-content-end">
                         <div>字數：<span id="word-count">0</span> / <span style="color:#f85a40">1000</span></div>
                     </div>
