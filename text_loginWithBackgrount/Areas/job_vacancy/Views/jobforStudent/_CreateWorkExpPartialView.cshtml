@@ -80,9 +80,9 @@
         </div>
         <div class="form-group">
             <div class="control-label mb-3">工作內容</div>
-            <textarea class="container-fluid" asp-for="JobContent"></textarea>
+            <textarea class="container-fluid word_count_workexp" asp-for="JobContent"></textarea>
             <div class="d-flex justify-content-end">
-                <div>字數：<span id="word-count">0</span> / <span style="color:#f85a40">500</span></div>
+                <div>字數：<span id="wordcount_workexp">0</span> / <span style="color:#f85a40">500</span></div>
             </div>
             <span asp-validation-for="JobContent" class="text-danger"></span>
         </div>

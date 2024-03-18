@@ -16,7 +16,8 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="resume-item position-relative">
                         <div>
-                            <button type="button" class="btn btn-close" onclick="deleteResume(@viewModel.ResumeID)"></button>
+                            <button type="button" class="btn btn-circle btn-float1" onclick="deleteResume(@viewModel.ResumeID)"><i class="bi bi-x-lg"></i></button>
+                            <button type="button" class="btn btn-circle btn-float2" onclick="exportResume(@viewModel.ResumeID)"><i class="bi bi-filetype-pdf"></i></button>
                         </div>
                         <div class="pointer-link" onclick="popup_edit(@viewModel.ResumeID)">
                             <div class="icon">
@@ -89,8 +90,68 @@
 
 <script>
 
+    // ==== 匯出履歷 ====
+    function exportResume(resumeId) {
+        Swal.fire({
+            title: '是否將此履歷匯出為PDF檔？',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: '確定',
+            cancelButtonText: '取消',
+            customClass: {
+                confirmButton: 'btn btn-normal',
+                cancelButton: 'btn btn-cancel'
+            },
+            confirmButtonColor: '#008374',
+            cancelButtonColor: '#6c757d'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/job_vacancy/jobapi/ExportToPDF/" + resumeId,
+                    type: 'GET',
+                    success: function (result) {
+                        if (result.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '匯出成功',
+                                text: result.message,
+                                customClass: {
+                                    confirmButton: 'btn btn-normal',
+                                },
+                                confirmButtonColor: '#008374',
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '匯出失敗',
+                                text: result.message,
+                                customClass: {
+                                    confirmButton: 'btn btn-normal',
+                                },
+                                confirmButtonColor: '#008374',
+                            });
+                        }
+                    },
+                    error: function (result) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '匯出失敗',
+                            text: result.message,
+                            customClass: {
+                                confirmButton: 'btn btn-normal',
+                            },
+                            confirmButtonColor: '#008374',
+                        });
+                    }
+                });
+            } else {
+                // 不執行任何操作
+            }
+        });
+    };
 
-    // 刪除履歷
+
+    // ==== 刪除履歷 ====
     function deleteResume(resumeId) {
 
         Swal.fire({
@@ -173,7 +234,7 @@
         });
     };
 
-    @* 呼叫新增視窗的內容 *@
+    // ==== 呼叫新增視窗的內容 ====
     function popup_create() {
 
         const createContext = $("#create_context");
@@ -187,6 +248,26 @@
 
                 createContext.html(result);
                 $('#createModal').modal('show');
+
+                //設定自傳編輯區字數顯示
+                const textarea = document.querySelector('.word_count_textarea');
+                const wordCount = document.getElementById('word-count');
+                const maxLength = 1000;
+                wordCount.textContent = textarea.value.length; // 初始化字數顯示
+
+                textarea.addEventListener('input', function () {
+                    let content = textarea.value;
+                    let currentLength = content.length; // 獲取當前字數
+
+                    // 如果超過最大字數，則截斷內容並更新 textarea 內容與字數顯示
+                    if (currentLength > maxLength) {
+                        textarea.value = content.slice(0, maxLength);
+                        currentLength = textarea.value.length;
+                    }
+
+                    // 更新字數顯示
+                    wordCount.textContent = currentLength;
+                });
             },
             error: function (error) {
                 console.error('呼叫新增視窗 error', error);
@@ -203,7 +284,7 @@
         });
     }
 
-    @* 取消新增 *@
+    // ==== 取消新增 ====
     document.getElementById('btnCancelCreate').addEventListener('click', function () {
         Swal.fire({
             title: '確認取消編輯',
@@ -228,7 +309,7 @@
         });
     });
 
-    @* 提交新增表單 *@
+    // ==== 提交新增表單 ====
     document.getElementById('btnSummitCreate').addEventListener('click', async (event) => {
 
         event.preventDefault();  //停止預設行為
@@ -240,10 +321,23 @@
         let workExpValue = checkbox.checked ? 'N' : 'Y';
         formData.set('WorkExperience', workExpValue);
 
+        //履歷表工作經驗（resumeWorkIDForSummit為全域變數）
+        resumeWorkIDForSummit.forEach(id => {
+            formData.append('ThisResumeWorkExpIDs', id);
+        });
+
         //輪班
         checkbox = document.getElementById('workShiftCheck');
         let workShiftValue = checkbox.checked ? 'Y' : 'N';
         formData.set('WorkShift', workShiftValue);
+
+        //工作時段
+        let selectedWorkTimes = [];
+        $('input[name="WorkTime"]:checked').each(function() {
+            selectedWorkTimes.push($(this).val());
+        });
+        let worktime = selectedWorkTimes.join(',');
+        formData.set('WorkTime', worktime);
 
         //希望薪資
         let selectedValue;
@@ -254,12 +348,6 @@
             selectedValue = document.querySelector('input[name="HopeSalary"]:checked')?.value;
         }
         formData.set('HopeSalary', selectedValue);
-
-        //自傳
-        //const autobiography = $('#summernote').summernote('code');
-        //let regEx = /<[^>]*>/g;  //去除HTML標籤
-        //const plain = autobiography.replace(regEx, "");
-        formData.set('Autobiography', '自傳內容');
 
         const url = '/job_vacancy/jobforStudent/CreateResume/';
         const response = await fetch(url, {
@@ -305,7 +393,7 @@
         }
     });
 
-    @* 呼叫編輯視窗的內容 *@
+    // ==== 呼叫編輯視窗的內容 ====
     function popup_edit(resumeId) {
 
         const editContext = $("#edit_context");
@@ -319,6 +407,27 @@
 
                 editContext.html(result);
                 $('#editModal').modal('show');
+
+                //設定自傳編輯區字數顯示
+                const textarea = document.querySelector('.word_count_textarea');
+                const wordCount = document.getElementById('word-count');
+                const maxLength = 1000;
+                wordCount.textContent = textarea.value.length; // 初始化字數顯示
+
+                textarea.addEventListener('input', function () {
+                    let content = textarea.value;
+                    let currentLength = content.length; // 獲取當前字數
+
+                    // 如果超過最大字數，則截斷內容並更新 textarea 內容與字數顯示
+                    if (currentLength > maxLength) {
+                        textarea.value = content.slice(0, maxLength);
+                        currentLength = textarea.value.length;
+                    }
+
+                    // 更新字數顯示
+                    wordCount.textContent = currentLength;
+                });
+
             },
             error: function (error) {
                 console.error('呼叫編輯視窗 error', error);
@@ -327,7 +436,7 @@
         });
     }
 
-    @* 取消編輯 *@
+    // ==== 取消編輯 ====
     document.getElementById('btnCancelEdit').addEventListener('click', function () {
         Swal.fire({
             title: '確認取消編輯',
@@ -344,7 +453,7 @@
             cancelButtonColor: '#008374'
         }).then((result) => {
             if (result.isConfirmed) {
-                $('#edit_context').empty(); //清空partialview的內容
+                $('#edit_context').empty(); //清空 履歷編輯partialview 的內容
                 document.getElementById('btnCloseEdit').click();
             } else {
                 // 使用者點擊了 "繼續編輯" 按鈕，不執行任何操作
@@ -352,8 +461,7 @@
         });
     });
 
-
-    @* 提交編輯表單 *@
+    // ==== 提交編輯表單 ====
     document.getElementById('btnSummitEdit').addEventListener('click', async (event) => {
 
         event.preventDefault();  //停止預設行為
@@ -365,10 +473,23 @@
         let workExpValue = checkbox.checked ? 'N' : 'Y';
         formData.set('WorkExperience', workExpValue);
 
+        //履歷表工作經驗（resumeWorkIDForSummit為全域變數）
+        resumeWorkIDForSummit.forEach(id => {
+            formData.append('ThisResumeWorkExpIDs', id);
+        });
+
         //輪班
         checkbox = document.getElementById('workShiftCheck');
         let workShiftValue = checkbox.checked ? 'Y' : 'N';
         formData.set('WorkShift', workShiftValue);
+        
+        //工作時段
+        let selectedWorkTimes = [];
+        $('input[name="WorkTime"]:checked').each(function() {
+            selectedWorkTimes.push($(this).val());
+        });
+        let worktime = selectedWorkTimes.join(',');
+        formData.set('WorkTime', worktime);
 
         //希望薪資
         let selectedValue;
@@ -380,11 +501,10 @@
         }
         formData.set('HopeSalary', selectedValue);
 
-        //自傳
-        //const autobiography = $('#summernote').summernote('code');
-        //let regEx = /<[^>]*>/g;  //去除HTML標籤
-        //const plain = autobiography.replace(regEx, "");
-        formData.set('Autobiography', '自傳內容');
+        // for (const pair of formData.entries()) {
+        //     console.log(pair[0] + ': ' + pair[1]);
+        // }
+        // return;
 
         const url = '/job_vacancy/jobforStudent/UpdateResume/';
         const response = await fetch(url, {

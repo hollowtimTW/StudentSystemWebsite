@@ -14,7 +14,7 @@
                     <li>@Model.JobTitle</li>
                 </ol>
                 <div style="margin-top: -10px; margin-bottom: -10px">
-                    <button type="button" class="btn btn-hollow btn-like"><i class="bi bi-heart"></i> 收藏</button>
+                    <button type="button" class="btn btn-hollow btn-like" job-id="@Model.JobID"><i class="bi bi-heart"></i> 收藏</button>
                     <button type="button" class="btn btn-normal" data-bs-toggle="modal" data-bs-target="#applyModal" onclick="popup_apply(@ViewData["ApplyStudentID"])">
                         <i class="bi bi-envelope"></i> 應徵
                     </button>
@@ -232,6 +232,26 @@
                     console.log('呼叫應徵信 success');
                     // 清空並設置內容
                     applyContext.html(result);
+
+                    //設定應徵信字數顯示
+                    const textarea = document.querySelector('.word_count_textarea');
+                    const wordCount = document.getElementById('word-count');
+                    const maxLength = 500;
+                    wordCount.textContent = textarea.value.length; // 初始化字數顯示
+
+                    textarea.addEventListener('input', function () {
+                        let content = textarea.value;
+                        let currentLength = content.length; // 獲取當前字數
+
+                        // 如果超過最大字數，則截斷內容並更新 textarea 內容與字數顯示
+                        if (currentLength > maxLength) {
+                            textarea.value = content.slice(0, maxLength);
+                            currentLength = textarea.value.length;
+                        }
+
+                        // 更新字數顯示
+                        wordCount.textContent = currentLength;
+                    });
                 },
                 error: function (error) {
                     console.error('呼叫應徵信 error', error);
@@ -248,9 +268,9 @@
 
             const formData = new FormData(document.getElementById('formApply'));
 
-            // for (const pair of formData.entries()) {
-            //     console.log(pair[0] + ': ' + pair[1]);
-            // }
+            for (const pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
             //return;
 
             const url = '/job_vacancy/job/ApplyLetter/';
@@ -259,12 +279,7 @@
                 method: 'POST'
             });
 
-            console.log('AAA')
-
             const data = await response.json();
-
-            console.log('data:' + data)
-
             if (response.ok) {
                 if (data.success) {
                     Swal.fire({
@@ -303,17 +318,30 @@
         });
 
 
+        document.addEventListener('DOMContentLoaded', function () {
 
+            //設置職缺收藏按鍵監聽事件
+            const likeBtns = document.querySelectorAll('.btn-like');
+            likeBtns.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    let jobID = $(this).attr('job-id');
+                    $.ajax({
+                        type: 'GET',
+                        url: '/job_vacancy/job/ToggleFavorite/' + jobID,
+                        success: function (result) {
+                            console.log('啟動收藏開關 success');
 
+                            // 切換按鈕的 active 狀態
+                            btn.classList.toggle('active');
 
-        // const textarea = document.querySelector('textarea');
-        // const wordCount = document.getElementById('word-count');
-        // wordCount.textContent = textarea.value.length;
-
-        // textarea.addEventListener('input', function () {
-        //     const content = textarea.value;
-        //     wordCount.textContent = content.length;
-        // });
+                        },
+                        error: function (error) {
+                            console.error('啟動收藏開關 error', error);
+                        }
+                    });
+                });
+            });
+        });
 
     </script>
 }

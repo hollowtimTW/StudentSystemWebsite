@@ -1,0 +1,66 @@
+﻿@{
+    ViewData["Title"] = "職缺管理";
+}
+@section Styles
+{
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
+    <style>
+
+        .btnCreate {
+            background-color: darkcyan;
+            color: white;
+            margin-left: 20px;
+        }
+    </style>
+}
+<div class="header">
+    <!-- 主頁上方操作流程序，記得有新增頁面時要記得編輯 -->
+    <div class="left">
+        <h1>@ViewData["Title"]</h1>
+        <ul class="breadcrumb">
+            <li><a asp-area="job_vacancy" asp-controller="jobHome" asp-action="Index">工作媒合管理</a></li>
+            /
+            <li><a href="#" class="active">@ViewData["Title"]</a></li>
+        </ul>
+    </div>
+    <!-- 主頁上方操作流程序-->
+</div>
+<div>
+    <button type="button" class="btn btnCreate" id="btnPreduceKeyword">職缺資料關鍵字分析</button>
+</div>
+
+@section Scripts
+{
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+    <script>
+
+        btnPreduceKeyword.addEventListener('click', function (event) {
+            $.ajax({
+                type: 'GET',
+                url: '/job_vacancy/Vacancy/ProduceJobKeyword/',
+                success: function (result) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: result.message,
+                        customClass: {
+                            confirmButton: 'btn btn-normal',
+                        },
+                        confirmButtonColor: '#008374',
+                    });
+                },
+                error: function (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '失敗',
+                        text: error.responseText,
+                        customClass: {
+                            confirmButton: 'btn btn-normal',
+                        },
+                        confirmButtonColor: '#008374',
+                    });
+                }
+            });
+        });
+
+    </script>
+}

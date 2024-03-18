@@ -14,21 +14,7 @@ function formatDateTime(dateTime) {
     return `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`;
 }
 
-document.addEventListener('DOMContentLoaded', function () {
 
-    // 找到所有具有 .btn-like 類別的按鈕
-    const likeBtns = document.querySelectorAll('.btn-like');
-
-    // 如果存在，則對每個按鈕添加事件監聽器
-    if (likeBtns.length > 0) {
-        likeBtns.forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                // 切換按鈕的 active 狀態
-                btn.classList.toggle('active');
-            });
-        });
-    }
-});
 
 
 

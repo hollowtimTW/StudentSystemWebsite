@@ -1,6 +1,7 @@
 ﻿@model ResumeCreateViewModel
 <style>
-    <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet" / >
+    <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet"/>
+
 </style>
 <section class="Resume-Edit">
     <div class="container-fluid">
@@ -81,8 +82,8 @@
                         <label asp-for="Academic" class="control-label"></label>
                         <select asp-for="Academic" class="form-control">
                             <option value="">無</option>
-                            <option value="學士" selected="@(Model.Academic == "學士")">學士</option>
-                            <option value="副學士" selected="@(Model.Academic == "副學士")">副學士</option>
+                            <option value="高中" selected="@(Model.Academic == "高中")">高中</option>
+                            <option value="大學" selected="@(Model.Academic == "大學")">大學</option>
                             <option value="碩士" selected="@(Model.Academic == "碩士")">碩士</option>
                             <option value="博士" selected="@(Model.Academic == "博士")">博士</option>
                         </select>
@@ -131,13 +132,11 @@
                     <span asp-validation-for="WorkExperience" class="text-danger"></span>
                 </div>
                 <div class="col-12">
-                    <button id="btnExpAdd" type="button" class="btn btn-normal" onclick="callWorkExp()">選擇或新增</button>
+                    <button id="btnExpAdd" type="button" class="btn btn-normal">選擇或新增</button>
                 </div>
                 <div class="col-12" id="workExp_context">
                     <!-- 學員工作經驗 _workExpPartial -->
                 </div>
-                
-
             </div>
 
             <!-- 4.求職條件-->
@@ -166,19 +165,19 @@
                 <div class="form-group">
                     <label asp-for="WorkTime" class="control-label col-md-2"></label>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="WorkTime" id="workTime1" value="日班" @(Model.WorkTime == "日班" ? "checked" : "")>
+                        <input class="form-check-input" type="checkbox" name="WorkTime" id="workTime1" value="日班">
                         <label class="form-check-label" for="workTime1">日班</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="WorkTime" id="workTime2" value="晚班" @(Model.WorkTime == "晚班" ? "checked" : "")>
+                        <input class="form-check-input" type="checkbox" name="WorkTime" id="workTime2" value="晚班">
                         <label class="form-check-label" for="workTime2">晚班</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="WorkTime" id="workTime3" value="假日班" @(Model.WorkTime == "假日班" ? "checked" : "")>
+                        <input class="form-check-input" type="checkbox" name="WorkTime" id="workTime3" value="假日班">
                         <label class="form-check-label" for="workTime3">假日班</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="WorkTime" id="workTime4" value="大夜班" @(Model.WorkTime == "大夜班" ? "checked" : "")>
+                        <input class="form-check-input" type="checkbox" name="WorkTime" id="workTime4" value="大夜班">
                         <label class="form-check-label" for="workTime4">大夜班</label>
                     </div>
                     <span asp-validation-for="WorkTime" class="text-danger"></span>
@@ -224,54 +223,44 @@
             <div class="row dialog container-fluid">
                 <div class="form-group">
                     <label asp-for="Autobiography" class="control-label"></label>
-                    @* <div id="summernote" name="Autobiography"></div> *@
-                    <div id="editor" name="Autobiography" placeholder="請在這裡填寫內容"></div>
-                    <span asp-validation-for="Autobiography" class="text-danger"></span>
-
-                    <div class="document-editor">
-                        <div class="document-editor__toolbar"></div>
-                        <div class="document-editor__editable-container">
-                            <div class="document-editor__editable">
-                                <p>@Model.Autobiography</p>
-                            </div>
-                        </div>
+                    <textarea asp-for="Autobiography" class="container-fluid large_textarea word_count_textarea" placeholder="請填寫自傳內容，注意不要透露個人隱私資訊。">@Model.Autobiography</textarea>
+                    <div class="d-flex justify-content-end">
+                        <div>字數：<span id="word-count">0</span> / <span style="color:#f85a40">1000</span></div>
                     </div>
-
                 </div>
             </div>
         </form>
     </div>
 </section>
 
-@* <script src="~/js/job_vacancy/resume.js"></script> *@
-@* <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script> *@
-@* <script src="~/js/job_vacancy/summernote-zh-tw.js"></script> *@
-<script src="~/js/job_vacancy/ckeditor5/build/ckeditor.js"></script>
-
 <script>
 
-    const selectedWorkExpIDs = [];
-
-    // 恢復已選擇的工作經驗項目的勾選狀態
+    //恢復已選擇的工作經驗項目的勾選狀態
     function restoreCheckedItems() {
         if (typeof selectedWorkExpIDs !== 'undefined') {
+
             // 根據記錄的id重新設置勾選狀態
             $('.cbWorkExp').each(function () {
-                var itemId = $(this).attr('item-id');
-                $(this).prop('checked', selectedWorkExpIDs.includes(itemId));
-                console.log(itemId);
+                var itemId = $(this).attr('workExp-id');
+                var isChecked = selectedWorkExpIDs.includes(itemId);
+                $(this).prop('checked', isChecked);
+
+                // 輸出到控制台
+                if (isChecked) {
+                    console.log('項目 ' + itemId + ' 已經被勾選');
+                }
             });
         }
     }
 
-
     //呼叫學員工作經驗資料（返回_workExpPartial）
-    function callWorkExp(){
+    function callWorkExp(restoreChecked = false) {
 
         const workExpContext = $("#workExp_context");
         $.ajax({
             type: 'GET',
-            url: '/job_vacancy/jobforStudent/GetMyWorkExp/' + @Model.StudentID,
+            url: '/job_vacancy/jobforStudent/GetMyWorkExp/',
+            data: { studentID: @Model.StudentID, resumeID: @Model.ResumeID},
             success: function (result) {
                 console.log('呼叫工作經驗資料 success');
 
@@ -281,8 +270,10 @@
                 // 清空並設置內容
                 workExpContext.html(result);
 
-                // 恢復已選擇的工作經驗項目的勾選狀態
-                restoreCheckedItems();
+                // 如果需要恢復勾選狀態，則調用 restoreCheckedItems() 函式
+                if (restoreChecked) {
+                    restoreCheckedItems();
+                }
             },
             error: function (error) {
                 console.error('呼叫工作經驗資料 error', error);
@@ -292,12 +283,38 @@
         });
     }
 
+    //照片預覽函式
+    function previewImage(inputFile, img) {
+        if (inputFile.files && inputFile.files[0]) {
+            let allowType = "image.*";
+            // 檢查上傳的檔案類型是否符合允許的檔案類型
+            if (inputFile.files[0].type.match(allowType)) {
+                // 創建 FileReader 物件用於讀取檔案
+                let reader = new FileReader();
+                reader.onload = function (e) {
+                    $(img).attr('src', e.target.result); // 將 img 包裝在 $() 函數中
+                    $(img).attr('title', inputFile.files[0].name); // 將 img 包裝在 $() 函數中
+                    //$(".btn").prop('disabled', false);
+                };
+                // 開始讀取檔案內容，這會觸發上述的 reader.onload 事件
+                reader.readAsDataURL(inputFile.files[0]);
+            } else {
+                alert("不支援的檔案上傳格式！");
+                //$(".btn").prop('disabled', true);
+            }
+        }
+    }
 
     $(document).ready(function () {
 
         // ========= 載入資料時 =========
+
+        // 宣告紀錄履歷工作經驗勾選情形的列表
+        let selectedWorkExpIDs = [];
+
         // 處理希望薪資的選項
-        switch ("@Html.Raw(Model.HopeSalary)".trim()) {
+        const hopeSalary = "@Html.Raw(Model.HopeSalary)".trim();
+        switch (hopeSalary) {
             case "面議":
                 document.getElementById('hopeSalary1').checked = true;
                 break;
@@ -306,40 +323,49 @@
                 break;
             default:
                 document.getElementById('hopeSalary3').checked = true;
-                salaryInput.value = hopeSalary;
-                salaryInput.style.visibility = "visible";
+                document.getElementById('salaryInput').value = hopeSalary;
+                document.getElementById('salaryInput').style.visibility = "visible";
                 break;
         }
 
-        //處理工作經驗
+        // 處理工作經驗的匯入
         if ('@Model.WorkExperience' === 'Y') {
-            loadResumeWorkExp();
+            callWorkExp(true);
         }
 
-
-        function loadResumeWorkExp()
-
-        // ========= CKEditor 相關 =========
-        // DecoupledEditor
-        // .create(document.querySelector('.document-editor__editable'), {
-        //     cloudServices: {
-        //         // A configuration of CKEditor Cloud Services.
-        //         // ...
-        //     }
-        // })
-        // .then(editor => {
-        //     const toolbarContainer = document.querySelector('.document-editor__toolbar');
-
-        //     toolbarContainer.appendChild(editor.ui.view.toolbar.element);
-
-        //     window.editor = editor;
-        // })
-        // .catch(err => {
-        //     console.error(err);
-        // });
-
+        //處理工作時段的匯入
+        var encodedWorkTimes = '@Html.Raw(Model.WorkTime)'.split(',');
+        $('input[name="WorkTime"]').each(function() {
+            var checkboxValue = $(this).val();
+            if (encodedWorkTimes.includes(checkboxValue)) {
+                $(this).prop('checked', true);
+            }
+        });
 
         // ====================== 事件監聽器 ===========================
+
+
+        //有無工作經驗
+        document.getElementById('workExpCheck').addEventListener('change', function (event) {
+            if (event.target.checked) {
+                selectedWorkExpIDs = []; //清空所有選擇的工作經驗（暫時無用）
+
+                $('#expListArea').hide();
+                $('#expSelectArea').hide();
+                $('#btnExpAdd').show();
+            }
+        });
+
+        // 選擇或新增工作經驗
+        document.getElementById('btnExpAdd').addEventListener('click', function (event) {
+
+            var workExpCheck = document.getElementById('workExpCheck');
+            if (workExpCheck.checked) {
+                callWorkExp();
+            } else {
+                callWorkExp(true);
+            }
+        });
 
         // 顯示圖片
         document.getElementById('Photo').addEventListener('change', function (event) {
@@ -362,30 +388,6 @@
             });
         });
 
-        
-
     });
 
-    // ========= 照片預覽函式 =========
-    function previewImage(inputFile, img) {
-        if (inputFile.files && inputFile.files[0]) {
-            let allowType = "image.*";
-            // 檢查上傳的檔案類型是否符合允許的檔案類型
-            if (inputFile.files[0].type.match(allowType)) {
-                // 創建 FileReader 物件用於讀取檔案
-                let reader = new FileReader();
-                reader.onload = function (e) {
-                    $(img).attr('src', e.target.result); // 將 img 包裝在 $() 函數中
-                    $(img).attr('title', inputFile.files[0].name); // 將 img 包裝在 $() 函數中
-                    //$(".btn").prop('disabled', false);
-                };
-                // 開始讀取檔案內容，這會觸發上述的 reader.onload 事件
-                reader.readAsDataURL(inputFile.files[0]);
-            } else {
-                alert("不支援的檔案上傳格式！");
-                //$(".btn").prop('disabled', true);
-            }
-        }
-    }
-    
 </script>
