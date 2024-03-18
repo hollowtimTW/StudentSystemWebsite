@@ -224,7 +224,7 @@
          "ObjectType": 0
       }
    ],
-   "UiHint": "desktop-rae7e6c.dbStudentSystem.dbo",
+   "UiHint": "tim.dbStudentSystem.dbo",
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,
