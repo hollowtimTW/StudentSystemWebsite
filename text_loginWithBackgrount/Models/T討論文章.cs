@@ -13,19 +13,17 @@ public partial class T討論文章
 
     public string 內容 { get; set; }
 
-    public DateTime? 時間 { get; set; }
+    public string 時間 { get; set; }
 
     public int? 觀看數 { get; set; }
 
     public string 標題 { get; set; }
 
-    public int? 總讚數 { get; set; }
-
-    public int? 總倒讚數 { get; set; }
-
     public int? 子版id { get; set; }
 
     public int? 看板id { get; set; }
+
+    public string 刪除 { get; set; }
 
     public virtual ICollection<T討論文章點讚> T討論文章點讚s { get; set; } = new List<T討論文章點讚>();
 

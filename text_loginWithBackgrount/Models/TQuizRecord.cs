@@ -7,9 +7,9 @@ namespace Class_system_Backstage_pj.Models;
 
 public partial class TQuizRecord
 {
-    public int FId { get; set; }
+    public int FRecordId { get; set; }
 
-    public int FQuizId { get; set; }
+    public int? FQuizId { get; set; }
 
     public int? FStudentId { get; set; }
 
@@ -19,13 +19,11 @@ public partial class TQuizRecord
 
     public DateTime? FStartTime { get; set; }
 
-    public DateTime? FFinishTime { get; set; }
+    public DateTime? FEndTime { get; set; }
 
-    public string FRecord { get; set; }
+    public DateTime? FSubmitTime { get; set; }
 
-    public int? FScored { get; set; }
-
-    public int? FResult { get; set; }
+    public decimal? FRate { get; set; }
 
     public virtual TQuizQuiz FQuiz { get; set; }
 

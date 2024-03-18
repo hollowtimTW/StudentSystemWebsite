@@ -203,12 +203,12 @@
             const datalist = data.map(a => `
                     <div class="col-xl-4 col-md-6 portfolio-item">
                       <div class="portfolio-wrap" data-id="${a.看板id}">
-                 <a href="/class_discuss/discuss/Articles?board_id=${a.看板id}" data-gallery="portfolio-gallery-app" style="display: block; width: 400px; height: 300px;">
+                         <a href="/class_discuss/discuss/Articles?subid=${a.看板id}" data-gallery="portfolio-gallery-app" style="display: block; width: 400px; height: 300px;">
                          <img src="/images/t論壇/看板封面/${encodeURIComponent(a.名稱)}.png" class="img-fluid" style="width: 100%; height: 100%; object-fit: contain;">
                             </a>
                     <div class="portfolio-info">
                         <h4>
-                <a href="/class_discuss/discuss/Articles?board_id=${a.看板id}" title="More Details">${a.名稱}</a>
+                        <a href="/class_discuss/discuss/Articles?subid=${a.看板id}" title="More Details">${a.名稱}</a>
                         </h4>
                     </div>
                 </div>

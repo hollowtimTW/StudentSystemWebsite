@@ -13,18 +13,6 @@ public partial class studentContext : DbContext
     {
     }
 
-    public virtual DbSet<TChatContent> TChatContents { get; set; }
-
-    public virtual DbSet<TChatDate> TChatDates { get; set; }
-
-    public virtual DbSet<TChatRoom> TChatRooms { get; set; }
-
-    public virtual DbSet<TChatStdRoom> TChatStdRooms { get; set; }
-
-    public virtual DbSet<TQuizPaper> TQuizPapers { get; set; }
-
-    public virtual DbSet<TQuizQuestion> TQuizQuestions { get; set; }
-
     public virtual DbSet<TQuizQuiz> TQuizQuizzes { get; set; }
 
     public virtual DbSet<TQuizRecord> TQuizRecords { get; set; }
@@ -131,144 +119,16 @@ public partial class studentContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<TChatContent>(entity =>
-        {
-            entity.HasKey(e => e.FContentId);
-
-            entity.ToTable("tChat_Content");
-
-            entity.Property(e => e.FContentId).HasColumnName("fContentID");
-            entity.Property(e => e.FContent).HasColumnName("fContent");
-            entity.Property(e => e.FDateId).HasColumnName("fDateID");
-            entity.Property(e => e.FOther).HasColumnName("fOther");
-            entity.Property(e => e.FRole).HasColumnName("fRole");
-            entity.Property(e => e.FRoomId).HasColumnName("fRoomID");
-            entity.Property(e => e.FSendId).HasColumnName("fSendID");
-            entity.Property(e => e.FSendTime)
-                .HasColumnType("datetime")
-                .HasColumnName("fSendTime");
-            entity.Property(e => e.FType).HasColumnName("fType");
-
-            entity.HasOne(d => d.FDate).WithMany(p => p.TChatContents)
-                .HasForeignKey(d => d.FDateId)
-                .HasConstraintName("FK_tChat_Content_tCHat_Date");
-
-            entity.HasOne(d => d.FSend).WithMany(p => p.TChatContents)
-                .HasForeignKey(d => d.FSendId)
-                .HasConstraintName("FK_tChat_Content_t會員_老師");
-        });
-
-        modelBuilder.Entity<TChatDate>(entity =>
-        {
-            entity.HasKey(e => e.FDateId);
-
-            entity.ToTable("tCHat_Date");
-
-            entity.Property(e => e.FDateId).HasColumnName("fDateID");
-            entity.Property(e => e.FDate)
-                .HasColumnType("date")
-                .HasColumnName("fDate");
-        });
-
-        modelBuilder.Entity<TChatRoom>(entity =>
-        {
-            entity.HasKey(e => e.FRoomId);
-
-            entity.ToTable("tChat_Room");
-
-            entity.Property(e => e.FRoomId).HasColumnName("fRoomID");
-            entity.Property(e => e.FAuthority).HasColumnName("fAuthority");
-            entity.Property(e => e.FCreatTime)
-                .HasColumnType("datetime")
-                .HasColumnName("fCreatTime");
-            entity.Property(e => e.FGroup)
-                .HasMaxLength(8)
-                .HasColumnName("fGroup");
-            entity.Property(e => e.FHidden).HasColumnName("fHidden");
-            entity.Property(e => e.FOpenTime)
-                .HasColumnType("datetime")
-                .HasColumnName("fOpenTime");
-            entity.Property(e => e.FRoomCode)
-                .HasMaxLength(6)
-                .HasColumnName("fRoomCode");
-            entity.Property(e => e.FRoomImage).HasColumnName("fRoomImage");
-            entity.Property(e => e.FRoomName)
-                .HasMaxLength(50)
-                .HasColumnName("fRoomName");
-            entity.Property(e => e.FTeacherId).HasColumnName("fTeacherID");
-
-            entity.HasOne(d => d.FTeacher).WithMany(p => p.TChatRooms)
-                .HasForeignKey(d => d.FTeacherId)
-                .HasConstraintName("FK_tChat_Room_t會員_老師");
-        });
-
-        modelBuilder.Entity<TChatStdRoom>(entity =>
-        {
-            entity.HasKey(e => e.FId);
-
-            entity.ToTable("tChat_StdRoom");
-
-            entity.Property(e => e.FId).HasColumnName("fID");
-            entity.Property(e => e.FRoomId).HasColumnName("fRoomID");
-            entity.Property(e => e.FState).HasColumnName("fState");
-            entity.Property(e => e.FStudentId).HasColumnName("fStudentID");
-
-            entity.HasOne(d => d.FRoom).WithMany(p => p.TChatStdRooms)
-                .HasForeignKey(d => d.FRoomId)
-                .HasConstraintName("FK_tChat_StdRoom_tChat_Room");
-        });
-
-        modelBuilder.Entity<TQuizPaper>(entity =>
-        {
-            entity.HasKey(e => e.FId);
-
-            entity.ToTable("tQuiz_Paper");
-
-            entity.Property(e => e.FId).HasColumnName("fId");
-            entity.Property(e => e.FNum).HasColumnName("fNum");
-            entity.Property(e => e.FQuestionId).HasColumnName("fQuestionId");
-            entity.Property(e => e.FQuizId).HasColumnName("fQuizId");
-
-            entity.HasOne(d => d.FQuestion).WithMany(p => p.TQuizPapers)
-                .HasForeignKey(d => d.FQuestionId)
-                .HasConstraintName("FK_tQuiz_Paper_tQuiz_Question");
-
-            entity.HasOne(d => d.FQuiz).WithMany(p => p.TQuizPapers)
-                .HasForeignKey(d => d.FQuizId)
-                .HasConstraintName("FK_tQuiz_Paper_tQuiz_quiz");
-        });
-
-        modelBuilder.Entity<TQuizQuestion>(entity =>
-        {
-            entity.HasKey(e => e.FQuestionId).HasName("PK_fQuiz_Question");
-
-            entity.ToTable("tQuiz_Question");
-
-            entity.Property(e => e.FQuestionId).HasColumnName("fQuestionId");
-            entity.Property(e => e.FAnswer).HasColumnName("fAnswer");
-            entity.Property(e => e.FImages).HasColumnName("fImages");
-            entity.Property(e => e.FOptions).HasColumnName("fOptions");
-            entity.Property(e => e.FQuestion).HasColumnName("fQuestion");
-            entity.Property(e => e.FScore).HasColumnName("fScore");
-            entity.Property(e => e.FType).HasColumnName("fType");
-        });
-
         modelBuilder.Entity<TQuizQuiz>(entity =>
         {
             entity.HasKey(e => e.FQuizId).HasName("PK_tQuiz_quiz");
 
             entity.ToTable("tQuiz_Quiz");
 
-            entity.Property(e => e.FQuizId)
-                .ValueGeneratedNever()
-                .HasColumnName("fQuizId");
+            entity.Property(e => e.FQuizId).HasColumnName("fQuizId");
             entity.Property(e => e.FClosed).HasColumnName("fClosed");
-            entity.Property(e => e.FEndTime)
-                .HasColumnType("datetime")
-                .HasColumnName("fEndTime");
             entity.Property(e => e.FLimitTime).HasColumnName("fLimitTime");
             entity.Property(e => e.FNote).HasColumnName("fNote");
-            entity.Property(e => e.FNumQs).HasColumnName("fNumQs");
             entity.Property(e => e.FPublic).HasColumnName("fPublic");
             entity.Property(e => e.FQcode)
                 .HasMaxLength(6)
@@ -276,49 +136,42 @@ public partial class studentContext : DbContext
             entity.Property(e => e.FQname)
                 .HasMaxLength(50)
                 .HasColumnName("fQName");
-            entity.Property(e => e.FStartTime)
-                .HasColumnType("datetime")
-                .HasColumnName("fStartTime");
-            entity.Property(e => e.FSubjectId).HasColumnName("fSubjectId");
             entity.Property(e => e.FTeacherId).HasColumnName("fTeacherId");
-            entity.Property(e => e.FTotalScore).HasColumnName("fTotalScore");
-
-            entity.HasOne(d => d.FSubject).WithMany(p => p.TQuizQuizzes)
-                .HasForeignKey(d => d.FSubjectId)
-                .HasConstraintName("FK_tQuiz_quiz_t課程_科目");
 
             entity.HasOne(d => d.FTeacher).WithMany(p => p.TQuizQuizzes)
                 .HasForeignKey(d => d.FTeacherId)
-                .HasConstraintName("FK_tQuiz_quiz_t會員_老師");
+                .HasConstraintName("FK_tQuiz_Quiz_t會員_老師");
         });
 
         modelBuilder.Entity<TQuizRecord>(entity =>
         {
-            entity.HasKey(e => e.FId);
+            entity.HasKey(e => e.FRecordId);
 
             entity.ToTable("tQuiz_Record");
 
-            entity.Property(e => e.FId).HasColumnName("fId");
-            entity.Property(e => e.FFinishTime)
+            entity.Property(e => e.FRecordId).HasColumnName("fRecordId");
+            entity.Property(e => e.FEndTime)
                 .HasColumnType("datetime")
-                .HasColumnName("fFinishTime");
+                .HasColumnName("fEndTime");
             entity.Property(e => e.FGroup)
                 .HasMaxLength(8)
                 .HasColumnName("fGroup");
             entity.Property(e => e.FQuizId).HasColumnName("fQuizId");
-            entity.Property(e => e.FRecord).HasColumnName("fRecord");
-            entity.Property(e => e.FResult).HasColumnName("fResult");
-            entity.Property(e => e.FScored).HasColumnName("fScored");
+            entity.Property(e => e.FRate)
+                .HasColumnType("decimal(5, 2)")
+                .HasColumnName("fRate");
             entity.Property(e => e.FStartTime)
                 .HasColumnType("datetime")
                 .HasColumnName("fStartTime");
             entity.Property(e => e.FState).HasColumnName("fState");
             entity.Property(e => e.FStudentId).HasColumnName("fStudentId");
+            entity.Property(e => e.FSubmitTime)
+                .HasColumnType("datetime")
+                .HasColumnName("fSubmitTime");
 
             entity.HasOne(d => d.FQuiz).WithMany(p => p.TQuizRecords)
                 .HasForeignKey(d => d.FQuizId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tQuiz_Record_tQuiz_quiz");
+                .HasConstraintName("FK_tQuiz_Record_tQuiz_Quiz");
 
             entity.HasOne(d => d.FStudent).WithMany(p => p.TQuizRecords)
                 .HasForeignKey(d => d.FStudentId)
@@ -750,11 +603,7 @@ public partial class studentContext : DbContext
 
             entity.Property(e => e.FSeqNo).HasColumnName("fSeqNO");
             entity.Property(e => e.FOrderId).HasColumnName("fOrderId");
-            entity.Property(e => e.FQuantity)
-                .IsRequired()
-                .HasMaxLength(10)
-                .IsFixedLength()
-                .HasColumnName("fQuantity");
+            entity.Property(e => e.FQuantity).HasColumnName("fQuantity");
             entity.Property(e => e.FUnitPrice).HasColumnName("fUnitPrice");
             entity.Property(e => e.FVideoId).HasColumnName("fVideoId");
 
@@ -1301,9 +1150,15 @@ public partial class studentContext : DbContext
             entity.ToTable("t討論_文章");
 
             entity.Property(e => e.文章id).HasColumnName("文章ID");
+            entity.Property(e => e.刪除)
+                .IsRequired()
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasDefaultValueSql("((0))")
+                .IsFixedLength();
             entity.Property(e => e.子版id).HasColumnName("子版ID");
             entity.Property(e => e.學生id).HasColumnName("學生ID");
-            entity.Property(e => e.時間).HasColumnType("datetime");
+            entity.Property(e => e.時間).HasMaxLength(50);
             entity.Property(e => e.標題).HasMaxLength(20);
             entity.Property(e => e.看板id).HasColumnName("看板ID");
 
@@ -1351,7 +1206,7 @@ public partial class studentContext : DbContext
             entity.Property(e => e.子版id).HasColumnName("子版ID");
             entity.Property(e => e.學生id).HasColumnName("學生ID");
             entity.Property(e => e.文章id).HasColumnName("文章ID");
-            entity.Property(e => e.時間).HasColumnType("datetime");
+            entity.Property(e => e.時間).HasMaxLength(50);
             entity.Property(e => e.看板id).HasColumnName("看板ID");
 
             entity.HasOne(d => d.子版).WithMany(p => p.T討論留言s)

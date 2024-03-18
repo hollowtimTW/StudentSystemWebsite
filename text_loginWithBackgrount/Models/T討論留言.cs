@@ -13,7 +13,7 @@ public partial class T討論留言
 
     public string 內容 { get; set; }
 
-    public DateTime? 時間 { get; set; }
+    public string 時間 { get; set; }
 
     public int? 總讚數 { get; set; }
 
