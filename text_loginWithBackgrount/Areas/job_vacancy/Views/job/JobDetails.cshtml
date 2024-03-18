@@ -14,7 +14,7 @@
                     <li>@Model.JobTitle</li>
                 </ol>
                 <div style="margin-top: -10px; margin-bottom: -10px">
-                    <button type="button" class="btn btn-hollow btn-like"><i class="bi bi-heart"></i> 收藏</button>
+                    <button type="button" class="btn btn-hollow btn-like" job-id="@Model.JobID"><i class="bi bi-heart"></i> 收藏</button>
                     <button type="button" class="btn btn-normal" data-bs-toggle="modal" data-bs-target="#applyModal" onclick="popup_apply(@ViewData["ApplyStudentID"])">
                         <i class="bi bi-envelope"></i> 應徵
                     </button>
@@ -317,7 +317,31 @@
             }
         });
 
-        
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            //設置職缺收藏按鍵監聽事件
+            const likeBtns = document.querySelectorAll('.btn-like');
+            likeBtns.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    let jobID = $(this).attr('job-id');
+                    $.ajax({
+                        type: 'GET',
+                        url: '/job_vacancy/job/ToggleFavorite/' + jobID,
+                        success: function (result) {
+                            console.log('啟動收藏開關 success');
+
+                            // 切換按鈕的 active 狀態
+                            btn.classList.toggle('active');
+
+                        },
+                        error: function (error) {
+                            console.error('啟動收藏開關 error', error);
+                        }
+                    });
+                });
+            });
+        });
 
     </script>
 }

@@ -804,9 +804,9 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
 
                 // Levenshtein 比對職務名稱
                 int distance = CalculateLevenshteinDistance(resumeData.hopeJobTitle, job.jobTitle);
-                double similarityB = 1 - (double)distance / Math.Max(resumeData.hopeJobTitle.Length, job.jobTitle.Length);
-                jobTitleScore = Convert.ToInt32(similarityB * 100); // 將相似度轉換為百分比作為分數
-                Console.WriteLine($"職務名稱 - 履歷職稱: {resumeData.hopeJobTitle}, 職缺職稱: {job.jobTitle}, Levenshtein 比對度: {similarityB}");
+                double similarity = 1 - (double)distance / Math.Max(resumeData.hopeJobTitle.Length, job.jobTitle.Length);
+                jobTitleScore = Convert.ToInt32(similarity * 100); // 將相似度轉換為百分比作為分數
+                Console.WriteLine($"職務名稱 - 履歷職稱: {resumeData.hopeJobTitle}, 職缺職稱: {job.jobTitle}, Levenshtein 比對度: {similarity}");
 
                 // 比對專業技能並計算分數
                 if (jobSkillKeywords.Intersect(resumeSkillKeywords).Any())

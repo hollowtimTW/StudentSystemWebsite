@@ -39,6 +39,51 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             return View();
         }
 
+        // GET: job_vacancy/job/ToggleFavorite/5
+        [Route("/job_vacancy/job/{Action=Index}/{jobID}")]
+        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles = "student")] //限定要登入學員帳號
+        public async Task<IActionResult> ToggleFavorite(int jobID)
+        {
+            //獲取登入學生的ID
+            var user = HttpContext.User.Claims.ToList();
+            var loginID = Convert.ToInt32(user.Where(a => a.Type == "StudentId").First().Value);
+
+            try
+            {
+                var oldData = _context.T工作儲存工作紀錄s
+                                       .Where(data => data.F學員Id == loginID && data.F職缺Id == jobID)
+                                       .FirstOrDefault();
+
+                //已有紀錄（取消收藏）
+                if (oldData != null)
+                {
+                    _context.T工作儲存工作紀錄s.Remove(oldData);
+                    await _context.SaveChangesAsync();
+
+                    return Json(new { success = true, favorited = false });
+                }
+                else
+                {
+                    T工作儲存工作紀錄 record = new T工作儲存工作紀錄
+                    {
+                        F學員Id = loginID,
+                        F職缺Id = jobID,
+                        F儲存時間 = DateTime.Now
+                    };
+
+                    _context.T工作儲存工作紀錄s.Add(record);
+                    await _context.SaveChangesAsync();
+
+                    return Json(new { success = true, favorited = true });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "發生異常：" + ex.Message });
+            }
+
+        }
+
         /// <summary>
         /// 公司詳細資料，返回 CompanyDetails 視圖。
         /// </summary>
