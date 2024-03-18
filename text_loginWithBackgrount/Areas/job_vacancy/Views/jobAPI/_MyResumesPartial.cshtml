@@ -331,6 +331,14 @@
         let workShiftValue = checkbox.checked ? 'Y' : 'N';
         formData.set('WorkShift', workShiftValue);
 
+        //工作時段
+        let selectedWorkTimes = [];
+        $('input[name="WorkTime"]:checked').each(function() {
+            selectedWorkTimes.push($(this).val());
+        });
+        let worktime = selectedWorkTimes.join(',');
+        formData.set('WorkTime', worktime);
+
         //希望薪資
         let selectedValue;
         if (hopeSalary3.checked) {
@@ -474,6 +482,14 @@
         checkbox = document.getElementById('workShiftCheck');
         let workShiftValue = checkbox.checked ? 'Y' : 'N';
         formData.set('WorkShift', workShiftValue);
+        
+        //工作時段
+        let selectedWorkTimes = [];
+        $('input[name="WorkTime"]:checked').each(function() {
+            selectedWorkTimes.push($(this).val());
+        });
+        let worktime = selectedWorkTimes.join(',');
+        formData.set('WorkTime', worktime);
 
         //希望薪資
         let selectedValue;

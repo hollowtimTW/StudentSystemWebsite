@@ -165,19 +165,19 @@
                 <div class="form-group">
                     <label asp-for="WorkTime" class="control-label col-md-2"></label>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="WorkTime" id="workTime1" value="日班" @(Model.WorkTime == "日班" ? "checked" : "")>
+                        <input class="form-check-input" type="checkbox" name="WorkTime" id="workTime1" value="日班">
                         <label class="form-check-label" for="workTime1">日班</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="WorkTime" id="workTime2" value="晚班" @(Model.WorkTime == "晚班" ? "checked" : "")>
+                        <input class="form-check-input" type="checkbox" name="WorkTime" id="workTime2" value="晚班">
                         <label class="form-check-label" for="workTime2">晚班</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="WorkTime" id="workTime3" value="假日班" @(Model.WorkTime == "假日班" ? "checked" : "")>
+                        <input class="form-check-input" type="checkbox" name="WorkTime" id="workTime3" value="假日班">
                         <label class="form-check-label" for="workTime3">假日班</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="WorkTime" id="workTime4" value="大夜班" @(Model.WorkTime == "大夜班" ? "checked" : "")>
+                        <input class="form-check-input" type="checkbox" name="WorkTime" id="workTime4" value="大夜班">
                         <label class="form-check-label" for="workTime4">大夜班</label>
                     </div>
                     <span asp-validation-for="WorkTime" class="text-danger"></span>
@@ -332,6 +332,15 @@
         if ('@Model.WorkExperience' === 'Y') {
             callWorkExp(true);
         }
+
+        //處理工作時段的匯入
+        var encodedWorkTimes = '@Html.Raw(Model.WorkTime)'.split(',');
+        $('input[name="WorkTime"]').each(function() {
+            var checkboxValue = $(this).val();
+            if (encodedWorkTimes.includes(checkboxValue)) {
+                $(this).prop('checked', true);
+            }
+        });
 
         // ====================== 事件監聽器 ===========================
 
