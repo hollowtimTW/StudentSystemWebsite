@@ -216,30 +216,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[tChat_Content]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[tCHat_Date]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[tChat_Room]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[tChat_StdRoom]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[tQuiz_Paper]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[tQuiz_Question]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[tQuiz_Quiz]",
          "ObjectType": 0
       },

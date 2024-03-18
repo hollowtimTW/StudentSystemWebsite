@@ -10,6 +10,8 @@ using System.Text;
 using text_loginWithBackgrount.Areas.video_management.Repositories;
 using text_loginWithBackgrount.Data;
 using text_loginWithBackgrount.Areas.course_management.Hubs;
+using text_loginWithBackgrount.Areas.quiz.Services;
+using text_loginWithBackgrount.Areas.quiz.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -68,6 +70,11 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR(); // 將 SignalR 服務添加到 DI 容器中
 builder.Services.AddDistributedMemoryCache(); // 將 _cashe 服務添加到 DI 容器中
 
+// 自訂Service
+builder.Services.AddTransient<QuizService>();
+// MongoDb
+builder.Services.Configure<MongoDbSettings>(
+    builder.Configuration.GetSection("MongoDb"));
 
 
 var app = builder.Build();

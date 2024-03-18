@@ -23,6 +23,8 @@ public partial class TQuizQuiz
 
     public int? FClosed { get; set; }
 
+    public DateTime? FCreateTime { get; set; }
+
     public virtual T會員老師 FTeacher { get; set; }
 
     public virtual ICollection<TQuizRecord> TQuizRecords { get; set; } = new List<TQuizRecord>();

@@ -1,0 +1,690 @@
+﻿@{
+    ViewData["Title"] = "測驗編輯";
+    var teacherId = User.Claims.FirstOrDefault(c => c.Type == "teacherID")?.Value;
+    var quizId = @ViewBag.quizId;
+}
+
+@section Styles{
+	<link href="~/quiz/css/quizcreate.css" rel="stylesheet" />
+}
+
+
+
+
+
+
+
+<div class="header mb-3">
+    <div class="left">
+        <h1> @ViewData["Title"]</h1>
+    </div>
+</div>
+
+<div class="button-container">
+    <a class="btn btn-primary" asp-area="quiz" asp-controller="QuizBg" asp-action="BgIndex">返回列表</a>
+</div>
+
+
+
+<div class="container  d-flex justify-content-center">
+    <div class="col-10 bg-light">
+
+        <ul class="nav nav-tabs nav-fill justify-content-center" id="myTabs">
+            <li class="nav-item">
+                <button class="nav-link active" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button">題目編輯</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button">測驗設定</button>
+            </li>
+        </ul>
+
+
+        <div class="tab-content" id="myTabsContent">
+
+            <!--測驗題目編輯-->
+            <div class="tab-pane fade show active mb-5" id="tab1">
+                <div class="container mt-3">
+                    <div class="d-flex justify-content-between">
+                        <a class="btn btn-primary mb-3" id="saveQuiz">儲存</a>
+                        <a class="btn btn-secondary mb-3" id="resetQuiz">重置</a>
+                    </div>
+
+                    <div id="question-section">
+                  
+                    </div>
+                    <button id="add-question" class="btn btn-primary mt-3">新增題目</button>
+                </div>
+            </div>
+
+            <!--測驗資訊編輯-->
+            <div class="tab-pane fade" id="tab2">
+                <div class="col-6 d-flex justify-content-center" style="width:100%">
+                    <form class="needs-validation" id="quizInfoForm" novalidate>
+
+                        <div class="input-group mt-3 mb-3 has-validation">
+                            <span class="input-group-text">名稱</span>
+                            <input type="text" class="form-control" id="qName" required>
+                            <div class="invalid-tooltip">
+                                請輸入測驗名稱。
+                            </div>
+                        </div>
+
+                        <div class="input-group mb-3 has-validation">
+                            <span class="input-group-text">測驗時間</span>
+                            <select class="form-select" id="qLimitTime" required>
+                                <option selected disabled value="">---</option>
+                                @for (int i = 5; i <= 30; i += 5)
+                                {
+                                    <option value="@i">@i 分</option>
+                                }
+                                <option value="">無限制</option>
+                            </select>
+                            <div class="invalid-tooltip">
+                                請選擇測驗限制時間。
+                            </div>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">說明</span>
+                            <textarea class="form-control" id="qNote"></textarea>
+                        </div>
+
+                        <div class="container mt-3">
+
+                            <div class="row">
+                                <div class="col-auto">
+                                    <label class="form-label">隱私: </label>
+                                </div>
+                                <div class="col d-flex align-items-center">
+                                    <div class="form-check form-switch mb-3">
+                                        <input class="form-check-input switchBtn" type="checkbox" id="isPublicBtn">
+                                        <label class="form-check-label ms-2 text-secondary" id="qPublic">公開</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-auto">
+                                    <label class="form-label">狀態: </label>
+                                </div>
+                                <div class="col d-flex align-items-center">
+                                    <div class="form-check form-switch mb-3">
+                                        <input class="form-check-input switchBtn" type="checkbox" id="isClosedBtn">
+                                        <label class="form-check-label ms-2 text-secondary" id="qClosed">關閉</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-auto">
+                                    <label class="form-label me-2">測驗代碼: </label>
+                                    <span class="text-secondary" id="qCode"></span>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-auto">
+                                    <label class="form-label me-2">創立時間: </label>
+                                    <span class="text-secondary" id="qCreateTime"></span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-12 mb-3 d-flex justify-content-between">
+                            <button class="btn btn-danger" type="submit" data-bs-toggle="modal" data-bs-target="#deleteQuizModal">刪除</button>
+                            <button class="btn btn-primary" type="submit" id="saveInfoBtn">儲存</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="deleteQuizModal" tabindex="-1">
+    <div class="modal-dialog  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">確認刪除</h5>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="deleteBtn">刪除</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<!--Toast-->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="toast" class="toast hide">
+        @* 內容 *@
+    </div>
+</div>
+
+  
+
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+
+            // InfoForm
+            const $InfoForm = $('#quizInfoForm');
+            const $qName = $('#qName');
+            const $qLimitTime = $('#qLimitTime');
+            const $qNote = $('#qNote');;
+            const $qCode = $('#qCode');;
+            const $isPublicBtn = $('#isPublicBtn');
+            const $qPublic = $('#qPublic');
+            const $qClosed = $('#qClosed');
+            const $isClosedBtn = $('#isClosedBtn');
+            const $qCreateTime = $('#qCreateTime');
+
+            const $toast = $('#toast');
+
+            // Toast
+            function showToast(response, status) {
+                var colorclass = "bg-primary"
+                if (!status) {
+                    colorclass = "bg-danger"
+                };
+                $toast.html(`
+                    <div class="toast-body ${colorclass} text-white">
+                        <strong>${response}</strong>
+                    </div>
+                `);
+                var toast = new bootstrap.Toast($toast);
+                toast.show();
+                setTimeout(() => toast.hide(), 2000);
+            }
+
+
+            $('#tab2-tab').on('click', () => {
+                getInfo()
+                $InfoForm.removeClass('was-validated');
+            })
+
+
+            // 測驗訊息儲存
+            $InfoForm.on('submit', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                if (!this.checkValidity()) {
+                    $InfoForm.addClass('was-validated');
+                }
+            });
+
+            // 獲得測驗訊息
+            const getInfo = () => {
+                $.ajax({
+                    url: '/Api/QuizBg/GetInfo/@quizId',
+                    type: 'GET',
+
+                    success: function (data) {
+                        console.log(data)
+
+                        $qName.val(data.name);
+                        $qNote.val(data.note);
+                        $isPublicBtn.prop('checked', data.isPublic === 1);
+                        $qPublic.text(data.isPublic === 1 ? '公開' : '私人');
+                        $isClosedBtn.prop('checked', data.isClosed === 1);
+                        $qClosed.text(data.isClosed === 1 ? '開啟' : '關閉');
+                        $qCode.html(data.code);
+
+                        const date = new Date(data.createTime).toLocaleDateString('zh-CN')
+                        $qCreateTime.html(date);
+
+                        if (date.limitTime === "") {
+                            $qLimitTime.val("");
+                        } else {
+                            $qLimitTime.val(data.limitTime);
+                        };
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
+
+            // 儲存測驗訊息
+            $('#saveInfoBtn').on('click', () => {
+
+                var jsonData = {
+                    id: @quizId,
+                    name: $qName.val(),
+                    note: $qNote.val(),
+                    limitTime: Number($qLimitTime.val()),
+                    isPublic: $isPublicBtn.prop('checked') ? 1 : 0,
+                    isClosed: $isClosedBtn.prop('checked') ? 1 : 0,
+                };
+
+                $.ajax({
+                    url: '/Api/QuizBg/UpdateQuiz',
+                    type: 'POST',
+                    contentType: "application/json",
+                    data: JSON.stringify(jsonData),
+                    success: function (response) {
+                        console.log(response);
+                        showToast(response, true);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                        showToast(xhr.responseText, false);
+                    }
+                });
+            })
+
+            // 刪除測驗
+            $('#deleteBtn').on('click', () => {
+                jsonData = {
+                    id: @quizId,
+                }
+                $.ajax({
+                    url: '/Api/QuizBg/DeleteQuiz',
+                    type: 'POST',
+                    contentType: "application/json",
+                    data: JSON.stringify(jsonData),
+                    success: function (response) {
+                        window.location.href = `/quiz/QuizBg/BgIndex`
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                        showToast(xhr.responseText, false);
+                    }
+                });
+            });
+
+
+            $('#isClosedBtn').change(function () {
+                $('#qClosed').text($(this).prop('checked') ? '開啟' : '關閉');
+            });
+
+            $('#isPublicBtn').change(function () {
+                $('#qPublic').text($(this).prop('checked') ? '公開' : '私人');
+            });
+
+
+
+            const questionSection = $('#question-section');
+
+
+            // 創建一個空的題目模板
+            function createEmptyQuestionTemplate() {
+                const questionDiv = $('<div>').addClass('question-item').attr('data-id', '');
+                questionDiv.html(`
+                    <div class="question-content">
+                        <textarea class="form-control form-control-c form-control-textarea" placeholder="請輸入題目"></textarea>
+                    </div>
+                    <div class="image-upload-container"></div>
+                    <div class="option-section-container"></div>
+                    <div class="button-group">
+                        <button class="btn border upload-image-btn"><i class='bx bx-image-add'></i></button>
+                        <button class="btn border move-up"><i class='bx bxs-chevron-up'></i></button>
+                        <button class="btn border move-down"><i class='bx bxs-chevron-down'></i></button>
+                        <button class="btn border delete-question"><i class='bx bx-trash'></i></button>
+                    </div>
+                    <div class="option-section-tool">
+                        <button class="add-option btn border mt-3 mb-3"><i class='bx bx-plus-circle' ></i></button>
+                        <div class="form-check question-check">
+                            <input class="form-check-input" type="checkbox" id="questionCheck">
+                            <label class="form-check-label" for="questionCheck">
+                                多選
+                            </label>
+                        </div>
+                    </div>
+                `);
+                return questionDiv;
+            }
+
+
+            // 將題目資料填入題目模板
+            function fillQuestionTemplate(questionDiv, questionData, optionSectionContainer) {
+                questionDiv.find('.question-content textarea').val(questionData.questionText);
+                if (questionData.id){
+                    const questionId = questionDiv.attr('data-id', questionData.id);
+                }
+
+                // 添加圖片
+                if (questionData.image) {
+                    const img = $('<img>').attr('src', questionData.image).css('max-width', '100%');
+                    const imageContainer = $('.image-upload-container', questionDiv);
+                    const removeBtn = $('<button>').attr('type', 'button').addClass('btn-close').on('click', function () {
+                        imageContainer.empty();
+                        $(this).remove();
+                    });
+                    const container = $('<div>').addClass('image-container').append(img).append(removeBtn);
+                    imageContainer.empty().append(container);
+                }
+
+                // 添加選項
+                questionData.options.forEach((option, index) => {
+                    const optionSection = `
+                    <div class="option-section">
+                        <input class="form-check-input" type="checkbox">
+                        <input type="text" class="form-control form-control-c" placeholder="選項" value="${option}">
+                        <button type="button" class="btn-close delete-option"></button>
+                        <div class="option-error"></div>
+                    </div>`;
+                    optionSectionContainer.append(optionSection);
+
+                    if (questionData.answer.includes(index)) {
+                        optionSectionContainer.find('.option-section:last-child input[type="checkbox"]').prop('checked', true);
+                    }
+                });
+
+                // 如果 Type 是 1，則勾選多選框
+                if (questionData.type === 1) {
+                    questionDiv.find('.question-check input').prop('checked', true);
+                }
+            }
+
+            // 當新增問題按鈕被點擊時執行的函數
+            $('#add-question').on('click', function () {
+                // 創建一個空的問題模板
+                const questionDiv = createEmptyQuestionTemplate();
+
+                // 將預設的兩個選項加入問題模板
+                const optionSectionContainer = questionDiv.find('.option-section-container');
+                optionSectionContainer.append(createOptionSection()); // 第一個預設選項
+                optionSectionContainer.append(createOptionSection()); // 第二個預設選項
+
+                // 將空的問題模板添加到問題區域中
+                questionSection.append(questionDiv);
+            });
+
+            // 選項模板
+            function createOptionSection() {
+                return `
+                    <div class="option-section">
+                        <input class="form-check-input" type="checkbox">
+                        <input type="text" class="form-control form-control-c" placeholder="選項">
+                        <button type="button" class="btn-close delete-option"></button>
+                        <div class="option-error"></div>
+                    </div>`;
+            }
+
+            // 載入資料
+            function loadData() {
+
+                $.ajax({
+                    url: '/Api/QuizBg/GetQuestions/@quizId',
+                    type: 'GET',
+                    success: function (data) {
+                        console.log(data)
+                        data.map(function (questionData) {
+                            const questionDiv = createEmptyQuestionTemplate();
+                            const optionSectionContainer = questionDiv.find('.option-section-container');
+                            fillQuestionTemplate(questionDiv, questionData, optionSectionContainer);
+                            questionSection.append(questionDiv);
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });          
+            }
+
+
+            // 新增圖片
+            $(document).on('click', '.upload-image-btn', function () {
+                const questionDiv = $(this).closest('.question-item');
+                const input = $('<input>').attr({ type: 'file', accept: 'image/*' }).on('change', function (e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            const imgSrc = e.target.result;
+                            const img = $('<img>').attr('src', imgSrc).css('max-width', '100%');
+                            const imageContainer = $('.image-upload-container', questionDiv);
+                            const removeBtn = $('<button>').attr('type', 'button').addClass('btn-close').on('click', function () {
+                                imageContainer.empty();
+                                $(this).remove();
+                            });
+                            const container = $('<div>').addClass('image-container').append(img).append(removeBtn);
+                            imageContainer.empty().append(container);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+                input.click();
+            });
+
+            // 變更圖片
+            $(document).on('click', '.image-upload-container img', function () {
+                const img = $(this);
+                const input = $('<input>').attr({ type: 'file', accept: 'image/*' }).on('change', function (e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            const imgSrc = e.target.result;
+                            img.attr('src', imgSrc);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+                input.click();
+            });
+
+
+            // 上移按鈕點擊事件
+            $(document).on('click', '.move-up', function () {
+                const questionItem = $(this).closest('.question-item');
+
+                if (questionItem.prev().length) {
+                    questionItem.prev().before(questionItem);
+                }
+            });
+
+            // 下移按鈕點擊事件
+            $(document).on('click', '.move-down', function () {
+                const questionItem = $(this).closest('.question-item');
+
+                if (questionItem.next().length) {
+                    questionItem.next().after(questionItem);
+                }
+            });
+
+            // 刪除題目
+            $(document).on('click', '.delete-question', function () {
+                // 找到要刪除的題目
+                const questionItem = $(this).closest('.question-item');
+                // 刪除該題目
+                questionItem.remove();
+            });
+
+            // 增加選項(最多6項)
+            $(document).on('click', '.add-option', function () {
+                const questionItem = $(this).closest('.question-item');
+                const optionCount = $('.option-section', questionItem).length;
+                if (optionCount >= 6) {
+                    alert('最多只能6個選項');
+                    return;
+                }
+                // 找到該題目元素下的選項容器
+                const optionSectionContainer = questionItem.find('.option-section-container');
+                optionSectionContainer.append(createOptionSection());
+            });
+
+            // 刪除選項(至少2項)
+            $(document).on('click', '.delete-option', function () {
+                const optionSection = $(this).closest('.option-section');
+                const questionDiv = optionSection.closest('.question-item');
+                const optionCount = $('.option-section', questionDiv).length;
+                if (optionCount <= 2) {
+                    alert('至少要有2個選項。');
+                    return;
+                }
+                optionSection.remove();
+            });
+
+            // 如果勾選多選，可以勾選其他選項
+            $(document).on('change', '.option-section-container input[type="checkbox"]', function () {
+                const isChecked = $(this).prop('checked');
+                const questionDiv = $(this).closest('.question-item');
+                const isMultipleSelection = $('#questionCheck', questionDiv).prop('checked');
+
+                if (!isMultipleSelection && isChecked) {
+                    $('.option-section-container input[type="checkbox"]', questionDiv).not(this).prop('checked', false);
+                }
+            });
+
+            // 如果取消多選，清除所有選項的狀態
+            $(document).on('change', '.option-section-tool input[type="checkbox"]', function () {
+                const isChecked = $(this).prop('checked');
+                const questionDiv = $(this).closest('.question-item');
+
+                if (!isChecked) {
+                    $('.option-section-container input[type="checkbox"]', questionDiv).prop('checked', false);
+                }
+            });
+
+
+
+            // 驗證
+            function extractAndValidateQuestionData() {
+                const questionItems = $('.question-item');
+                let allValid = true;
+                let questionsData = [];
+
+                questionItems.each(function () {
+                    const questionItem = $(this);
+                    const questionId = questionItem.data('id')
+                    const questionContentInput = $('.question-content textarea', this);
+                    const questionContent = questionContentInput.val().trim();
+                    const options = $('.option-section', this);
+                    const questionCheck = $('.question-check input', this).prop('checked');
+                    const imageFile = $('.image-upload-container img', this).attr('src') || null;
+                    let optionsList = [];
+                    let answersList = [];
+
+                    // 重置錯誤樣式和消息
+                    questionContentInput.css('border-color', '');
+                    questionItem.css('border-color', '');
+                    $('.validation-error', this).remove();
+
+                    // 驗證選項內容並填充選項列表和答案列表
+                    options.each(function (index) {
+                        const optionInput = $('input[type="text"]', this);
+                        optionInput.css('border-color', '');
+                        $('.option-error', this).empty();
+
+                        const optionText = optionInput.val().trim();
+                        optionsList.push(optionText);
+
+                        if (!optionText) {
+                            optionInput.css('border-color', 'red');
+                            $('.option-error', this).html('<div class="validation-error">選項內容不能為空。</div>');
+                            allValid = false;
+                        }
+
+                        if ($('input.form-check-input', this).prop('checked')) {
+                            answersList.push(index);
+                        }
+                    });
+
+                    // 驗證題目內容
+                    if (!questionContent) {
+                        questionContentInput.css('border-color', 'red').after('<div class="validation-error">題目內容不能為空。</div>');
+                        allValid = false;
+                    }
+
+                    // 驗證選擇的答案數量
+                    if (!questionCheck && answersList.length !== 1) {
+                        questionItem.append('<div class="validation-error">單選題至少選擇一個答案。</div>');
+                        allValid = false;
+                    } else if (questionCheck && answersList.length < 2) {
+                        questionItem.append('<div class="validation-error">多選題至少選擇兩個答案。</div>');
+                        allValid = false;
+                    }
+
+                    // 構造題目詳細信息
+                    let questionDetails = {
+                        Id: questionId,
+                        QuestionText: questionContent,
+                        Options: optionsList,
+                        Type: questionCheck ? 1 : 0,
+                        Image: imageFile,
+                        Answer: answersList,
+                    };
+
+                    // 將題目詳細信息添加到題目數據列表中
+                    questionsData.push(questionDetails);
+                });
+
+                return {
+                    allValid: allValid,
+                    questionsData: questionsData
+                };
+            }
+
+
+            // 儲存題目
+            $('#saveQuiz').on('click', function () {
+                const results = extractAndValidateQuestionData();
+                console.log(results.questionsData);
+
+                if (!results.allValid) {
+                    showToast("輸入錯誤", false)
+                    return false;
+                } else {
+
+                    const data = {
+                        quizId: @ViewBag.quizId,
+                        questions: results.questionsData
+                    }
+
+                    console.log(data)
+
+                    $.ajax({
+                        url: '/Api/QuizBg/SaveQuesions',
+                        type: 'POST',
+                        contentType: "application/json",
+                        data: JSON.stringify(data),
+                        success: function (response) {
+                            showToast(response, true)
+                            console.log(response)
+                        },
+                        error: function (xhr, status, error) {
+                            showToast(xhr.responseText, false)
+                            console.error(xhr.responseText);
+                        }
+                    });
+                    showToast("儲存成功", true)
+                }
+            });
+
+            // 重置
+            $('#resetQuiz').on('click', function () {
+                $("#question-section").empty();
+                loadData();
+                showToast("重置完成", true)
+            });
+
+
+
+            // 開始執行
+            loadData();
+
+        });
+
+  
+
+    </script>
+
+
+}

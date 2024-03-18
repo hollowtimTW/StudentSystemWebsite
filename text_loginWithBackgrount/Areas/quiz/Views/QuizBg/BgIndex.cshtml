@@ -1,0 +1,334 @@
+﻿
+@{
+    ViewData["Title"] = "測驗管理";
+    var teacherId = User.Claims.FirstOrDefault(c => c.Type == "teacherID")?.Value;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+    <link href="~/css/datatablesinline.min.css" rel="stylesheet" />
+
+    <style>
+
+        .invalid-tooltip{
+            font-size:0.8rem;
+        }
+
+        #quizTable{
+            font-size:1.2rem;
+        }
+
+
+        #quizTable th, #quizTable tr {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+
+        #quizTable tbody tr:nth-child(odd) {
+            background-color: rgb(128, 128, 192);
+        }
+    </style>
+
+}
+
+
+
+<div class="header">
+    <div class="left">
+        <h1> @ViewData["Title"]</h1>
+    </div>
+</div>
+
+
+<div class="bottom-data">
+    <div class="orders">
+        <div class="header">
+            <i class='bx bx-receipt'></i>
+            <h3>測驗列表</h3>
+
+            <!-- Button trigger modal -->
+            <button type="button" id="addBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createQuizModal">
+                新增測驗
+            </button>
+
+        </div>
+        <table id="quizTable">
+            <thead>
+                <tr>                   
+                    <th>名稱</th>
+                    <th>考試代碼</th>
+                    <th>公開</th>
+                    <th>狀態</th>
+                    <th>功能</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+
+
+<!-- 新增測驗Modal -->
+<div class="modal fade" id="createQuizModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">新增測驗</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <form class="needs-validation" id="addForm" novalidate>
+        
+                    <div class="input-group mb-3 has-validation">
+                        <span class="input-group-text">名稱</span>
+                        <input type="text" class="form-control" id="quizName" aria-describedby="quizName" required>
+                        <div class="invalid-tooltip">
+                            請輸入測驗名稱。
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-5 mb-3">
+                        <div class="input-group has-validation">
+                            <span class="input-group-text">測驗時間</span>
+                            <select class="form-select" id="quizLimitTime" aria-describedby="quizLimitTimeFeedback" required>
+                                <option selected disabled value="">---</option>
+                                @for (int i = 5; i <= 30; i += 5)
+                                {
+                                    <option value="@i">@i 分</option>
+                                }
+                                <option value="">無限制</option>
+                            </select>
+                            <div class="invalid-tooltip">
+                                請選擇測驗限制時間。
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">說明</span>
+                        <textarea class="form-control" aria-label="With textarea" style="max-height:300px;" id="quizNote"></textarea>
+                    </div>
+
+                    <div class="col-12 text-end">
+                        <button class="btn btn-primary" type="submit">新增</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">新增成功</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancelBtn">確認</button>
+                <button type="button" class="btn btn-primary" data-quizid="" id="continueEditBtn">編輯測驗</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+@section Scripts{
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+
+            const form = $('#addForm');
+
+            // 更新dataTable
+            const updateDataTable = () => {
+                $('#quizTable').DataTable().destroy()
+                $('#quizTable').DataTable({
+                    autoWidth: false,
+                    ajax: {
+                        type: 'GET',
+                        url: "/Api/QuizBg/GetQuiz/@teacherId",
+                        dataSrc: function (json) {return json}
+                    },
+                    columns: [
+                        { data: "name", "orderable": false },
+                        { data: "code", "width": "15%", "orderable": false },
+                        {
+                            data: "isPublic",
+                            "width": "10%",
+                            render: function (data, type, row) {
+                                return data === 1 ? "公開" : "私人";
+                            }
+                        },
+                        {
+                            data: "isClosed",
+                            "width": "10%",
+                            render: function (data, type, row) {
+                                return data === 1 ? "開啟" : "關閉";
+                            }
+                        },
+                        {
+                            data: null,
+                            "width": "20%",
+                            "orderable": false,
+                            render: function (data, type, row) {
+                                let buttonVal = row.isClosed === 0 ? "開啟" : "關閉";
+                                let buttonClass = row.isClosed === 0 ? "btn-primary" : "btn-secondary"
+                                return `
+                                        <button type="button" class="openOrCloseBtn btn ${buttonClass}" data-quizid="${row.id}"> ${buttonVal} </button>
+                                        <button type="button" class="btn btn-secondary edit-btn" data-quizid="${row.id}"> 編輯 </button>
+                                `;
+                            }
+                        },
+                    ],
+                    order: [],
+                    dom: 'flrtip',
+                    fixedHeader: {
+                        header: true
+                    },
+                    language: {
+                        url: "https://cdn.datatables.net/plug-ins/1.13.7/i18n/zh-HANT.json"
+                    }
+                });
+            }
+
+
+            // 新增測驗按鈕
+            $('#addBtn').on('click', function (event) {
+                form[0].reset();
+                form.removeClass('was-validated');
+            });
+
+
+            // 表單提交
+            form.on('submit', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                if (this.checkValidity()) {
+                    createQuiz();
+                    $('#createQuizModal').modal('hide');
+                    $('#successModal').modal('show');
+                    
+
+                } else {
+                    form.addClass('was-validated');
+                }
+            });
+
+
+            // 新增測驗
+            const createQuiz = () => {
+
+                var jsonData = {
+                    name: $('#quizName').val(),
+                    note: $('#quizNote').val(),
+                    code: generateCode(),
+                    limitTime: Number($('#quizLimitTime').val()),
+                    teacherId: @teacherId,
+                    isPublic: 0,
+                    isClosed: 0,
+                    createTime: new Date()
+                };
+
+                $.ajax({
+                    url: '/Api/QuizBg/CreateQuiz',
+                    type: 'POST',
+                    contentType: "application/json",
+                    data: JSON.stringify(jsonData),
+                    success: function (id) {
+                        $('.btn-primary').attr('data-quizid', id);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
+
+
+            // 測驗開關
+            $('#quizTable').on('click', '.openOrCloseBtn', function () {
+                var quizId = $(this).data('quizid');
+                console.log(quizId)
+
+                var formData = new FormData()
+                formData.append('quizId', quizId);
+
+                $.ajax({
+                    url: '/Api/QuizBg/OpenOrClose',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+
+                        updateDataTable()
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+
+
+            // 跳轉到剛新增的測驗進行編輯
+            $('#continueEditBtn').on('click', function () {
+                const quizId = $('#continueEditBtn').attr('data-quizid');
+                window.location.href = `/quiz/QuizBg/BgCreate/${quizId}`
+            })
+            $('#cancelBtn').on('click', function () {
+                updateDataTable();
+            })
+
+
+            // 測驗編輯
+            $('#quizTable').on('click', '.edit-btn', function () {
+                const quizId = $(this).attr('data-quizid');
+                window.location.href = `/quiz/QuizBg/BgCreate/${quizId}`;
+             
+            });
+
+
+            // 產生代碼
+            const generateCode = () => {
+                const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                let randomString = '';
+                for (let i = 0; i < 6; i++) {
+                    const randomIndex = Math.floor(Math.random() * characters.length);
+                    randomString += characters[randomIndex];
+                }
+                return randomString;
+            }
+
+
+
+            updateDataTable();
+
+        });
+
+
+
+    </script>
+
+   
+
+
+}

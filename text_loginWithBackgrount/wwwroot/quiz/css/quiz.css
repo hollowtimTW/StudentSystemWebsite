@@ -1,0 +1,172 @@
+﻿* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.vh-100 {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.left-top-vh {
+    margin-top: 10px;
+    height: 40vh;
+}
+
+.left-bottom-vh {
+    margin-top: 10px;
+    height: 20vh;
+}
+
+.right-vh {
+    margin-top: 10px;
+    height: 95vh;
+}
+
+.swiper-container {
+    height: 100%;
+    width: 100%;
+}
+
+.swiper-slide {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.swiper-pagination {
+    bottom: 10px;
+    right: 10px;
+}
+
+.swiper-outer-container {
+    height: 75%;
+    border: 1px solid #005757;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.custom-div {
+    height: 5%;
+}
+
+.quiz-button {
+    width: 100px;
+    border-radius: 8px;
+    background-color: white;
+    border-color: #005757;
+    font-weight: bold;
+}
+
+.quiz-button:hover {
+    color: white;
+    background-color: rgb(0, 131, 116);
+}
+
+.answer-div {
+    height: 20%;
+    border: 1px solid #005757;
+    border-radius: 15px;
+}
+
+.quiz-container {
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(0, 131, 116);
+    border-radius: 15px;
+}
+
+.quiz-name {
+    color: white;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+.quiz-nums {
+    display: flex;
+    flex-wrap: wrap;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.quiz-num {
+    width: 33px;
+    height: 25px;
+    margin: 5px;
+    text-align: center;
+    border: 1px solid black;
+    cursor: pointer;
+}
+
+
+.quiz-sumbit {
+    color: white;
+    background-color: rgb(0, 131, 116);
+    border-radius: 15px;
+    font-size: 1.2rem;
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+}
+
+
+.sumbit-btn {
+    border-radius: 15px;
+    width: 50%;
+}
+
+    .sumbit-btn:hover {
+        background-color: orange;
+    }
+
+.q-num {
+    text-align: center;
+    font-size: 1.5rem;
+    color: rgb(255,255,255);
+    background-color: #005757;
+    flex: 1;
+}
+
+.q-question {
+    flex: 10;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.q-quesiotn-div {
+    flex-direction: column;
+}
+
+
+.q-question-context {
+    width: 80%;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.q-question-context-option {
+    width: 80%;
+}
+
+.q-answer {
+    margin: 10px 0;
+    flex: 1;
+}
+
+.option-btn {
+    margin: 0 5px;
+    text-align: center;
+    border-radius: 15px;
+}
+
+.selected {
+    background-color: yellow !important;
+}
+
+

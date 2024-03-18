@@ -1,0 +1,119 @@
+﻿
+/*最上方功能*/
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 5px
+}
+
+
+/*導覽列*/
+.nav-tabs .nav-link {
+    background-color: #ADADAD;
+    color: black;
+}
+
+.nav-tabs .nav-link:hover {
+    background-color: #0056b3;
+    color: white;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #007bff;
+    color: white;
+}
+
+
+/*雙向開關*/
+.switchBtn {
+    width: 2.8rem !important;
+    height: 1.2rem;
+}
+
+
+/*多行高度輸入限制*/
+textarea {
+    max-height: 300px;
+}
+
+
+.question-item {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding-right: 100px;
+}
+
+
+.question-content, .question-check {
+    width: 100%;
+}
+
+.form-control-c, .form-control-textarea {
+    border: none;
+    border-bottom: 1px solid #ced4da;
+    border-radius: 0;
+    margin-top: 8px;
+}
+
+.form-control-textarea {
+    resize: vertical;
+}
+
+.option-section {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+}
+
+
+.option-section .form-check-input {
+    margin-right: 10px;
+}
+
+.option-section-tool {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+
+.add-option {
+    margin-right: 10px;
+}
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.button-group .btn {
+    margin-bottom: 5px;
+}
+
+.image-upload-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 15px 0;
+    max-width: 400px;
+    max-height: 400px;
+    overflow: hidden;
+}
+
+.image-upload-container img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+
+.validation-error{
+    color:red;
+}
