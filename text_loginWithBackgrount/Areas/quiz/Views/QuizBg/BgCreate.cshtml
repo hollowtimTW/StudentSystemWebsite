@@ -218,6 +218,7 @@
             })
 
 
+            // 測驗訊息儲存
             $InfoForm.on('submit', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -416,7 +417,6 @@
                     </div>`;
             }
 
-
             // 載入資料
             function loadData() {
 
@@ -531,6 +531,28 @@
                 }
                 optionSection.remove();
             });
+
+            // 如果勾選多選，可以勾選其他選項
+            $(document).on('change', '.option-section-container input[type="checkbox"]', function () {
+                const isChecked = $(this).prop('checked');
+                const questionDiv = $(this).closest('.question-item');
+                const isMultipleSelection = $('#questionCheck', questionDiv).prop('checked');
+
+                if (!isMultipleSelection && isChecked) {
+                    $('.option-section-container input[type="checkbox"]', questionDiv).not(this).prop('checked', false);
+                }
+            });
+
+            // 如果取消多選，清除所有選項的狀態
+            $(document).on('change', '.option-section-tool input[type="checkbox"]', function () {
+                const isChecked = $(this).prop('checked');
+                const questionDiv = $(this).closest('.question-item');
+
+                if (!isChecked) {
+                    $('.option-section-container input[type="checkbox"]', questionDiv).prop('checked', false);
+                }
+            });
+
 
 
             // 驗證

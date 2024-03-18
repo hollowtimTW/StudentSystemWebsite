@@ -1,2 +1,189 @@
-﻿<h1>學生前台</h1>
+﻿@{
+    var studentId = User.Claims.FirstOrDefault(c => c.Type == "StudentId")?.Value;
+    ViewData["Title"] = "測驗平台";
+}
+
+
+@section Styles {
+    <style>
+        .custom-button {
+            background-color: rgb(248, 90, 64);
+            border-color: rgba(255, 255, 255, 0.1);
+            font-size: 16px;
+        }
+
+        .custom-button:hover {
+            background-color: rgb(248, 90, 64) !important;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .custom-button:active {
+                background-color: rgb(0, 121, 107) !important;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .row .d-flex {
+            height: 150px;
+        }
+
+        #room-img {
+            max-width: 150px;
+        }
+
+        .errorMessage {
+            color: red;
+            font-size: 0.8rem;
+            display: none;
+            text-align: right;
+        }
+
+
+    </style>
+}
+
+
+
+
+
+
+@section BreadcrumbsSection {
+    <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
+    <div class="breadcrumbs">
+        <div class="page-header d-flex align-items-center" style="background-image: url('');">
+            <div class="container position-relative">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-lg-6 text-center">
+                        <h2>@ViewData["Title"]</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav>
+            <div class="container d-flex justify-content-between align-items-center">
+
+                <ol>
+                    <li><a asp-area="" asp-controller="Template" asp-action="Index">首頁</a></li>
+                    <li>@ViewData["Title"]</li>
+                </ol>
+                <!-- Button trigger modal -->
+                <button class="btn btn-primary custom-button" data-bs-toggle="modal" data-bs-target="#searchModal" id="quizCodeBtn">測驗代碼</button>
+            </div>
+        </nav>
+    </div>
+}
+
+
+
+
+
+
+
+
+
+
+<h1>學生前台</h1>
 <a asp-area="quiz" asp-controller="Quiz" asp-action="Quiz">進入考試</a>
+
+
+
+
+<!-- 查詢Modal -->
+<div class="modal fade" id="searchModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">加入測驗</h5>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">測驗代碼</span>
+                    <input type="text" class="form-control" id="inputQuizCode" placeholder="輸入代碼.." aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+                <div class="errorMessage">查無測驗代碼!</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="searchBtn">查詢</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- 預覽Modal -->
+<div class="modal fade" id="previewModal" tabindex="-1">
+    <div class="modal-dialog  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="previewModalLabel">測驗資訊</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">測驗代碼</span>
+                    <input type="text" class="form-control" id="inputRoomCode" placeholder="輸入代碼.." aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-quizid="" id="joinQuizBtn">加入測驗</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+
+    <script>
+
+        $(document).ready(function () {
+
+
+
+
+            $('#quizCodeBtn').on('click', function () {
+                $('.errorMessage').hide();
+            });
+
+
+            $('#searchBtn').on('click', function () {
+                const quizCode = $('#inputQuizCode').val();
+
+                if (!quizCode.trim()) {
+                    $('.errorMessage').show();
+                    return;
+                } else {
+                    $('.errorMessage').hide();
+                }
+
+                $.ajax({
+                    url: `/Api/Quiz/GetQuiz/${quizCode}`,
+                    type: 'GET',
+                    success: function (result) {
+                        $('#searchModal').modal('hide');
+                        $('#previewModal').modal('show');
+                        
+
+
+
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                        $('.errorMessage').show();
+                    }
+                });
+            });
+
+
+
+
+
+        });
+
+
+
+    </script>
+
+}
