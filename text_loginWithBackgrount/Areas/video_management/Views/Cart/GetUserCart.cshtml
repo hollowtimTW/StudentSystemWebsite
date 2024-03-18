@@ -25,7 +25,7 @@
                     <td>
                         @if (string.IsNullOrEmpty(item.FVideo.FVideoName))
                         {
-                            <video src="/video/no video.png" style="width:80px;height:100px" />
+                            <video src="/video/no video.png" style="width:60px;height:80px" />
                         }
                         else
                         {
@@ -43,9 +43,14 @@
                             
                         }
                     </td>
-                    <td>@item.FVideo.Genre.GenreName</td>
+                   @*  <td>@item.FVideo.Genre.GenreName</td>
                     <td>@item.FVideo.FPrice X @item.Quantity</td>
-                    <td>@(item.FVideo.FPrice * item.Quantity)</td>
+                    <td>@(item.FVideo.FPrice * item.Quantity)</td> *@
+
+
+                    <td>@(item.FVideo.Genre.GenreName)</td>
+                    <td>@item.FVideo.FPrice.ToString("0.##") X @item.Quantity</td>
+                    <td>@string.Format("{0:0.##}", item.FVideo.FPrice * item.Quantity)</td>
                     <td>
                       @*   <a class="btn btn-info add-btn" data-videoId=@item.FVideoId>+</a>
 
@@ -58,8 +63,10 @@
         </table>
 
         <div class="my-2">
-            <h5>Total(INR): </h5>
-            @(Model.T影片CartDetails.Select(item => item.FVideo.FPrice * item.Quantity).Sum())
+            <h5>總價: </h5>
+     @*        @(Model.T影片CartDetails.Select(item => item.FVideo.FPrice * item.Quantity).Sum()) *@
+            @(Model.T影片CartDetails.Select(item => item.FVideo.FPrice * item.Quantity).Sum().ToString("0.##"))
+
         </div>
 
         <div class="my-2">

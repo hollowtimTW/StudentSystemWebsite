@@ -116,7 +116,8 @@
                         <p class="card-text">
                         
                             <b> </b>@video.FVideoName <br />
-                            <b>$ </b>@video.FPrice
+                            @* <b>$ </b>@video.FPrice *@
+                            <b>$ </b>@Math.Floor(video.FPrice)
                         </p>
                         <button type="button" onclick="add(@video.FVideoId)" class="btn btn-success">Add to cart</button>
                     </div>
@@ -131,6 +132,7 @@
 
     @section Scripts {
         <script>
+
         async function add(FVideoId) {
            
             var usernameEl = document.getElementById("username");
@@ -142,7 +144,7 @@
                     //  }
                 }
                 try {
-                var response = await fetch(`/video_management/Cart/AddItem/${FVideoId}`);
+                var response = await fetch(`/video_management/Cart/AddItem?FVideoId=${FVideoId}`);
                     if (response.ok) {
                         var result = await response.json();
                         var cartCountEl = document.getElementById("cartCount");
@@ -153,10 +155,6 @@
                 catch (err) {
                     console.log(err);
                 }
-
-
-     
-          
 
 
 
