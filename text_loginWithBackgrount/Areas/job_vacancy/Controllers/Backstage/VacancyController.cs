@@ -44,7 +44,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers.Backstage
                 //創建匿名類型
                 var jsonData = new
                 {
-                    公司簡介 = item.F公司.F公司簡介,
+                    //公司簡介 = item.F公司.F公司簡介,
                     //職務名稱 = item.F職務名稱,
                     //薪水待遇 = item.F薪水待遇,
                     //工作性質 = item.F工作性質,
