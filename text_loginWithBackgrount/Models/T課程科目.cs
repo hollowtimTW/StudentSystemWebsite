@@ -15,6 +15,8 @@ public partial class T課程科目
 
     public int 狀態 { get; set; }
 
+    public virtual ICollection<TQuizQuiz> TQuizQuizzes { get; set; } = new List<TQuizQuiz>();
+
     public virtual ICollection<T影片Video> T影片Videos { get; set; } = new List<T影片Video>();
 
     public virtual ICollection<T課程班級科目> T課程班級科目s { get; set; } = new List<T課程班級科目>();

@@ -1,10 +1,56 @@
-﻿@using text_loginWithBackgrount.Areas.video_management.DTO
+﻿
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@using text_loginWithBackgrount.Areas.video_management.DTO
+
+@{
+    // 驗證用戶身份，但不引發任何挑戰
+    var authenticateResult = await Context.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+}
 
 @model VideoDisPlay
 @{
 }
+
+@section BreadcrumbsSection {
+    <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
+    <div class="breadcrumbs">
+        <div class="page-header d-flex align-items-center" style="background-image: url('');">
+            <div class="container position-relative">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-lg-6 text-center">
+                        <h2>@ViewData["Title"]</h2>
+                        <p>
+                            學員專區是專為學員提供的服務平台。在這裡，您可以：讓您可以一站式完成所有學務相關事宜。
+                        </p>
+                        <p>學員專區是您學習生活的最佳伴侶。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav>
+            <div class="container">
+                <!-- 導覽列項目設置，請根據目前網頁的深度增減 -->
+                <ol>
+                    <li><a asp-area="" asp-controller="Template" asp-action="Index">首頁</a></li>
+                    <li><a asp-area="video_management" asp-controller="videoforStudentController" asp-action="Index">教材影片</a></li>
+                    <li>
+                        Hello <span id="username">@authenticateResult.Principal.Identity.Name</span>!
+                       @*  @authenticateResult.Principal.Identity.Name *@
+                </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/video_management/Cart/GetUserCart">
+                            <span id="cartCount" class="badge text-bg-info">0</span>
+                            <i class="bi bi-cart text-black"></i>
+                        </a>
+                    </li>
+            </ol>
+            </div>
+        </nav>
+    </div>
+}
 <section>
-    <div class="my-2 container">
+    <div class="my-2 container ml-auto">
         <form asp-action="videoshopping" class="row row-cols-lg-auto g-3 align-items-center">
             <div class="col-12">
                 <label class="visually-hidden" for="genreId">Genres</label>
@@ -18,7 +64,7 @@
             </div>
 
             <div class="col-12">
-                <label class="visually-hidden" for="sterm">Search by title</label>
+                <label class="visually-hidden" for="sterm">搜尋影片標題</label>
                 <div class="input-group">
                     <div class="input-group-text"></div>
                     <input type="text" class="form-control" value="@Model.STerm" id="sterm" name="sterm" placeholder="Sarch by title">
@@ -26,8 +72,8 @@
             </div>
 
             <div class="col-12">
-                <button type="submit" class="btn btn-primary">Search</button>
-                <a href="/Home/Index" class="btn btn-dark">Reset</a>
+                <button type="submit" class="btn btn-success">Search</button>
+                <a href="/video_management/videoforStudent/videoshopping" class="btn btn-warning">Reset</a>
             </div>
         </form>
     </div>
@@ -44,16 +90,21 @@
         {
             @foreach (var video in Model.Videos)
             {
-                <div class="card mx-2 mb-4" style="width: 16rem;">
+                <div class="card mx-2 mb-4 border border-success-subtle" style="width: 17rem;">
                     @if (video != null && !string.IsNullOrEmpty(video.FVideoName))
                     {//這裡要改東西
-                        <video controls>
+                      @*   <video controls style="width: 16rem; height:16rem">
                             @{
                                 var videoPath = $"~/video/{video.FVideoName}.mp4";
                                 Console.WriteLine($"Generated Video Path: {videoPath}");
                             }
                             <source src="@Url.Content(videoPath)" type="video/mp4">
-                        </video>
+                        </video> *@
+                       
+                        string encodedVideoName = Uri.EscapeDataString(video.FVideoName);
+
+                        <img src="@Url.Content("~/video/看板封面/" + encodedVideoName + ".png")" alt="Video Thumbnail" style="width: 16rem; height: 16rem;">
+
 
                     }
                     else
@@ -64,33 +115,37 @@
                         <h5 class="card-title">@video.FVideoTitle</h5>
                         <p class="card-text">
                         
-                            <b>Name: </b>@video.FVideoName <br />
-                            <b>Price: </b>@video.FPrice
+                            <b> </b>@video.FVideoName <br />
+                            @* <b>$ </b>@video.FPrice *@
+                            <b>$ </b>@Math.Floor(video.FPrice)
                         </p>
-                        <button type="button" onclick="add(@video.FVideoId)" class="btn btn-primary">Add to cart</button>
+                        <button type="button" onclick="add(@video.FVideoId)" class="btn btn-success">Add to cart</button>
                     </div>
                 </div>
             }
         }
     </div>
+   
 
 
     </section>
 
     @section Scripts {
         <script>
+
         async function add(FVideoId) {
-                var usernameEl = document.getElementById("姓名");
+           
+            var usernameEl = document.getElementById("username");
                 if (usernameEl == null) {
-                    window.location.href = "/Identity/Account/Login";
+                window.location.href = "/Login/StudentRegister";
                     //var username=usernameEl.innerText;
                     //  if(username.length<1){
                     //      window.location.href="/Identity/Account/Login";
                     //  }
                 }
                 try {
-                    var response = await fetch(`/Cart/AddItem?bookId=${bookId}`);
-                    if (response.status == 200) {
+                var response = await fetch(`/video_management/Cart/AddItem?FVideoId=${FVideoId}`);
+                    if (response.ok) {
                         var result = await response.json();
                         var cartCountEl = document.getElementById("cartCount");
                         cartCountEl.innerHTML = result;
@@ -100,7 +155,26 @@
                 catch (err) {
                     console.log(err);
                 }
+
+
+
+
             }
+        loadCartCount();
+        async function loadCartCount() {
+            try {
+                var response = await fetch(`/video_management/Cart/GetTotalItemInCart`);
+                console.log(response)
+                if (response.status == 200) {
+                    var result = await response.json();
+                    var cartCountEl = document.getElementById("cartCount");
+                    cartCountEl.innerHTML = result;
+                }
+            }
+            catch (err) {
+                console.log(err);
+            }
+        }
         </script>
     }
 
