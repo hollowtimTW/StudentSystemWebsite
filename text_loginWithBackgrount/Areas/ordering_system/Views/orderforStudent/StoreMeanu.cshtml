@@ -1,0 +1,588 @@
+﻿@model VMstore;
+@{
+    int index = 0;
+    var ordered = ViewData["ordered"] as List<VMstoreStudentOrder>;
+    var 餐點IDs = ordered.Select(item => item.餐點ID).ToArray();
+}
+@section Styles {
+    <!-- 核心：Tocas UI -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocas/4.2.5/tocas.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocas/4.2.5/tocas.min.js"></script>
+
+    <!-- 字體：Noto Sans TC -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+    <style>
+        h2.text-start::after {
+            content: none; /* 将内容设置为 'none'，即空字符串 */
+        }
+
+        .portfolio-wrap {
+            position: relative;
+            overflow: hidden;
+        }
+
+            .portfolio-wrap img {
+                width: 100%;
+                height: auto;
+                transition: transform 0.3s ease;
+            }
+
+            .portfolio-wrap:hover img {
+                transform: scale(1.05); /* 鼠标悬停时放大图像 */
+            }
+
+        #main {
+            background-color: #ffff;
+            min-height: 1243.05px;
+        }
+
+        .ts-container {
+            max-width: 2000px;
+        }
+
+    </style>
+}
+<div id="storeID" data-storeid="@ViewData["storeID"]"></div>
+
+<div class="is-light">
+    <div class="ts-content is-vertically-padded is-tertiary">
+        <div class="ts-container">
+            @* 上頭標籤區 *@
+            <div class="ts-box is-light">
+                <div class="ts-app-layout is-horizontal">
+                    <div class="cell is-fluid">
+                        <form action="/ordering_system/orderforStudent/Studentrestaurant" method="get">
+                            <div class="ts-content">
+                                <div class="input-group mb-3 ts-input is-circular">
+                                    <input type="text" class="form-control" placeholder="搜尋關鍵字........." aria-label="Recipient's username" aria-describedby="button-addon2" name="searchKeyWord">
+                                    <button class="ts-button is-icon" type="submit">
+                                        <span class="ts-icon is-magnifying-glass-icon"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        
+                    </div>
+                    <div class="cell">
+                        <div class="ts-content ts-wrap">
+                            <button class="ts-button is-start-labeled-icon" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling" id="btnfavorite">
+                                <span class="ts-icon is-heart-icon"></span>
+                                我的最愛
+                            </button>
+                            <button class="ts-button is-start-icon" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrollingCar" aria-controls="offcanvasScrollingCar" id="btncart">
+                                <span class="ts-icon is-cart-plus-icon"></span>
+                                購物車
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>@* 上面頭部 *@
+</div>
+<div class="is-light">
+    <div class="ts-divider"></div>
+    @* 畫面上頭 *@
+    <div class="ts-content is-tertiary">
+        <div class="ts-container has-vertically-padded-large">
+            <div class="ts-wrap">
+                <a class="ts-text is-undecorated" href="/ordering_system/orderforStudent/Studentrestaurant">
+                    <span class="ts-icon is-circular is-house-icon is-huge"></span>
+                    <div class="ts-text is-secondary is-large">點餐頁</div>
+                </a>
+                <a class="ts-text is-undecorated" href="javascript:void(0);" onclick="history.back();">
+                    <span class="ts-icon is-circular is-reply-icon is-huge"></span>
+                    <div class="ts-text is-secondary is-large">上一頁</div>
+                </a>
+            </div>
+            <div class="ts-grid is-relaxed is-stretched has-top-spaced">
+                <div class="column is-11-wide">
+                    <div class="ts-image is-rounded is-covered" style="max-height: 527px;">
+                        <img src="@Html.DisplayFor(model => model.餐廳照片)" style="width: 100%; height: 100%; object-fit: cover;" />
+                    </div>
+                </div>
+                <div class="column is-5-wide">
+                    <div class="ts-segment is-padded is-secondary">
+                        <div class="ts-header is-huge is-heavy m-2">@Html.DisplayFor(model => model.店家名稱)</div>
+                        @foreach (var item in Model.營業時間表)
+                        {
+                            <div class="ts-text is-description">營業時段@(index + 1)</div>
+                            <div class="ts-grid has-top-spaced">
+                                <div class="column is-fluid">
+                                    <div class="ts-header is-big is-heavy">@Html.DisplayFor(a => item.星期)</div>
+                                </div>
+                            </div>
+                            <div class="ts-header is-big is-heavy has-top-spaced">@Html.DisplayFor(a => item.開始營業時間)~@Html.DisplayFor(a => item.結束營業時間)</div>
+                            index++;
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* 畫面上頭結束 *@
+
+    <div class="ts-divider"></div>
+    <div class="ts-content is-tertiary is-dense">
+        <div class="ts-container">
+            <div class="ts-grid is-relaxed">
+                <div class="column is-3-wide"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ts-container has-vertically-padded-big">
+        <div class="ts-grid is-relaxed">
+            <div class="column is-4-wide">
+                <div class="ts-menu is-separated">
+                    <div class="ts-header is-start-icon is-center-aligned is-big">
+                        <span class="ts-icon is-store-icon"></span>
+                        相關店家
+                    </div>
+                    <hr />
+                    <div class="list-group">
+                        @foreach (var item in Model.相關店家)
+                        {
+                            <a class="list-group-item list-group-item-action m-2 text-center" aria-current="true" asp-area="ordering_system" asp-controller="orderforStudent" asp-action="StoreMeanu" asp-route-id="@item.店家ID">
+                                @item.店家名稱
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+            @* 最左側條列結束 *@
+            <div class="column is-12-wide">
+                <div class="ts-header is-start-icon is-start-aligned is-big">
+                    <span class="ts-icon is-utensils-icon"></span>
+                    超值餐點
+                </div>
+                <hr />
+                <div class="container">
+                    <div class="row row-cols-1 row-cols-md-2">
+                        @foreach (var item in Model.餐點列表)
+                        {
+                            <div class="col">
+                                <div class="ts-grid w-100 p-3 h-100" style="border: 1px solid #ccc; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); overflow: hidden;">
+                                    <div class="column is-6-wide">
+                                        <img src="@Html.DisplayFor(a=>item.餐點照片)" style="width: 100%; height: 100%; object-fit: cover;" />
+                                    </div>
+                                    <div class="column is-6-wide">
+                                        <div class="ts-content">
+                                            <div class="ts-header is-heavy is-large">
+                                                @Html.DisplayFor(a => item.餐點名稱)
+                                            </div>
+                                            <div class="ts-text m-2 is-bold is-start-aligned is-large">
+                                                $@Html.DisplayFor(a => item.餐點定價)
+                                            </div>
+                                            <div class="ts-text is-large is-heavy">
+                                                @Html.DisplayFor(a => item.餐點描述)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="column is-4-wide">
+                                        @* <span class="ts-icon is-circular is-plus-icon mt-2" data-id="@Html.DisplayFor(a => item.餐點id)"></span> *@
+                                        <div class="container">
+                                            @if (餐點IDs.Contains(item.餐點id))
+                                            {
+                                                <div class="row">
+                                                    <div class="col order-last">
+                                                        <span class="ts-icon is-circular is-plus-icon mt-2" data-id="@item.餐點id" onclick="toggleText('@item.餐點id',ApiaddOrder)"></span>
+                                                    </div>
+                                                    <div class="col">
+                                                        @{
+                                                            var 餐點數量 = ordered.FirstOrDefault(a => a.餐點ID == item.餐點id)?.數量;
+                                                        }
+                                                        <div id="text-@item.餐點id" class="ts-text is-big is-heavy toggle-text" style="display: block;">@餐點數量</div>
+                                                    </div>
+                                                    <div class="col order-first">
+                                                        <span class="ts-icon is-circular is-minus-icon mt-2" data-id="@item.餐點id" onclick="miusText('@item.餐點id',ApiaddOrder,removeMenu)" style="display: block;"></span>
+                                                    </div>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="row">
+                                                    <div class="col order-last">
+                                                        <span class="ts-icon is-circular is-plus-icon mt-2" data-id="@item.餐點id" onclick="toggleText('@item.餐點id',ApiaddOrder)"></span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div id="text-@item.餐點id" class="ts-text is-big is-heavy toggle-text" style="display: none;">0</div>
+                                                    </div>
+                                                    <div class="col order-first">
+                                                        <span class="ts-icon is-circular is-minus-icon mt-2" data-id="@item.餐點id" onclick="miusText('@item.餐點id',ApiaddOrder,removeMenu)" style="display: none;"></span>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@* 我的最愛 *@
+<div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+    <div class="ts-app-topbar">
+        <div class="start">
+            <div class="ts-header is-big">我的最愛餐廳</div>
+        </div>
+        <div class="end">
+            <a class="item">
+                <span class="ts-close"></span>
+            </a>
+        </div>
+    </div>
+    <hr />
+    <div class="offcanvas-body" id="favoriteStore">
+
+        <div class="ts-box is-horizontal is-light mt-3">
+            <div class="ts-image is-covered">
+                <img src="~/images/t訂餐/店家照片/43d98cfe-5cb9-48b7-a37a-8136d529b6d5_images.png" style="width: 90px; height: 100%;" />
+            </div>
+            <div class="ts-content">
+                <div class="ts-header">
+                    海大王朋友飯店
+                </div>
+                <p>美式 日式 義式</p>
+            </div>
+            <div class="ts-content is-end-aligned">
+                <div class="ts-header">
+                    <button class="ts-button is-icon is-negative is-outlined is-circular">
+                        <span class="ts-icon is-minus-icon"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="ts-box is-horizontal is-light mt-3">
+            <div class="ts-image is-covered">
+                <img src="~/images/t訂餐/店家照片/43d98cfe-5cb9-48b7-a37a-8136d529b6d5_images.png" style="width: 90px; height: 100%;" />
+            </div>
+            <div class="ts-content">
+                <div class="ts-header">
+                    海大王朋友飯店
+                </div>
+                <p>美式 日式 義式</p>
+            </div>
+            <div class="ts-content is-end-aligned">
+                <div class="ts-header">
+                    <button class="ts-button is-icon is-negative is-outlined is-circular">
+                        <span class="ts-icon is-minus-icon"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+@* 購物車 *@
+<div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrollingCar" aria-labelledby="offcanvasScrollingLabel">
+    <div class="ts-app-topbar">
+        <div class="start">
+            <div class="ts-header is-big">購物車</div>
+        </div>
+        <div class="end">
+            <button type="button" class="text-reset btn-close btn-close-white" id="closebtn"></button>
+        </div>
+    </div>
+    @* 購物車內容 *@
+    <div class="offcanvas-body">
+        <div class="container">
+            <div class="ts-grid is-stacked">
+                <div class="column is-2-wide">
+                    <div class="ts-app-topbar" style="background-color: transparent;color: black;">
+                        <div class="start">
+                            <div class="ts-header is-big"><span id="Shoppingcount">0</span>項商品</div>
+                        </div>
+                        <div class="end">
+                            <span class="ts-text is-heavy is-big">總計: <span class="ts-text is-editable" id="Shoppingtotail">$ 0</span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-3-wide" id="ShoppingList">
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="ts-wrap is-vertical is-light">
+            <div class="ts-segment">
+                <a asp-area="ordering_system" asp-controller="orderforStudent" asp-action="CreateOrder" class="ts-button is-fluid is-large">前往結帳</a>
+            </div>
+            <div class="ts-segment">
+                <button class="ts-button is-fluid is-large" id="close02">新增商品</button>
+            </div>
+        </div>
+    </footer>
+</div>
+@section Scripts {
+    <script>
+        const studentID = @User?.FindFirst("StudentId")?.Value;
+        const storeID = $('#storeID').data('storeid');
+        //網頁載入開始
+        $(document).ready(function () {
+            console.log(storeID);
+            favoriteStore();
+            shoppingCart();
+        });
+        //餐點按鈕新增
+        function toggleText(id, callback) {
+            const textshow = $('#text-' + id);
+            let count = textshow.text();
+            const plusIcon = $('.ts-icon.is-plus-icon[data-id="' + id + '"]');
+            const minusIcon = $('.ts-icon.is-minus-icon[data-id="' + id + '"]');
+            minusIcon.css('display', 'block');
+            textshow.css('display', 'block');
+            count++;
+            textshow.text(count);
+            if (count == 1) {
+                minusIcon.addClass('is-negative');
+                if (typeof callback === 'function') {
+                    ApiaddOrder(id, count); // 将计数值传递给回调函数
+                }
+            }
+            else {
+                minusIcon.removeClass('is-negative');
+                if (typeof callback === 'function') {
+                    ApiaddOrder(id, count); // 将计数值传递给回调函数
+                }
+            }
+        }
+        //餐點按鈕減少
+        function miusText(id, callback, removeMenu) {
+            const textshow = $('#text-' + id);
+            let count = parseInt(textshow.text());
+            const plusIcon = $('.ts-icon.is-plus-icon[data-id="' + id + '"]');
+            const minusIcon = $('.ts-icon.is-minus-icon[data-id="' + id + '"]');
+            if (count == 1) {
+                count--;
+                textshow.text(count);
+                minusIcon.removeClass('is-negative');
+                minusIcon.css('display', 'none');
+                textshow.css('display', 'none');
+                if (typeof removeMenu === 'function') {
+                    removeMenu(id);
+                }
+            } else if (count == 2) {
+                minusIcon.addClass('is-negative');
+                count--;
+                textshow.text(count);
+                if (typeof callback === 'function') {
+                    ApiaddOrder(id, count); // 将计数值传递给回调函数
+                }
+            } else {
+                minusIcon.removeClass('is-negative');
+                count--;
+                textshow.text(count);
+                // 执行回调函数
+                if (typeof callback === 'function') {
+                    ApiaddOrder(id, count); // 将计数值传递给回调函数
+                }
+            }
+        }
+        //點選新增購物車
+        function ApiaddOrder(id, count) {
+            const 餐點ID = id;
+            const 數量 = count;
+            $.ajax({
+                url: `@Url.Content("~/tOrder_StoreAPI/ModifyshoppingCar")?id=${studentID}&menuID=${餐點ID}&count=${數量}`,
+                success: () => {
+                    shoppingCart();
+                },
+                error: () => {
+                    console.log('新增失敗')
+                }
+            })
+        }
+        //點選刪除訂單
+        function removeMenu(id) {
+            const 餐點ID = id;
+            $.ajax({
+                url: `@Url.Content("~/tOrder_StoreAPI/removeShoppingCar")?id=${studentID}&menuID=${餐點ID}`,
+                method: 'Delete',
+                success: () => {
+                    shoppingCart();
+                },
+                error: () => {
+                    console.log('api問題回報')
+                }
+            })
+        }
+        //點選關閉側邊最愛商店
+        $(document).on('click', 'span.ts-close', function () {
+            //$('#offcanvasScrolling').offcanvas('hide');
+            $('#btnfavorite').click();
+        })
+        //刪除學生最愛店家列表
+        function delete01(ID) {
+            $.ajax({
+                url: `@Url.Content("~/api/StudentOrderAPI/favoriteStoredelete")?id=${studentID}&storeID=${ID}`,
+                method: 'Delete',
+                success: () => {
+                    favoriteStore();
+                },
+                error: () => { console.log("失敗") }
+            })
+        }
+        //輸入學生最愛店家列表
+        const favoriteStore = () => {
+            $.ajax({
+                url: `@Url.Content("~/api/StudentOrderAPI/favoriteStorelist")?id=${studentID}`,
+                success: (datas) => {
+                    if (datas.店家資料.length == 0) {
+                        const nullLove = `            <div class="ts-blankslate is-light">
+                                        <span class="ts-icon is-heart-icon"></span>
+                                        <div class="header" style="background-color:#ffff">目前還沒有加入最愛</div>
+                                        <div class="description">快去看看找你最愛的店家吧</div>
+                                    </div>`
+                        $('#favoriteStore').html(nullLove);
+                    }
+                    else {
+                        const dataslist = datas.店家資料.map(a => {
+                            const { 店家名稱, 店家圖片, 風味列表, 店家ID } = a;
+                            const tagname = 風味列表.map(b => b).join(',');
+                            return (`
+                                              <div class="ts-box is-horizontal is-light mt-3">
+                                                <div class="ts-image is-covered">
+                                               <a href="/ordering_system/orderforStudent/StoreMeanu/${店家ID}">
+                                                    <img src="${店家圖片}" style="width: 90px; height: 100%;" />
+                                               </a>
+                                                </div>
+                                                <div class="ts-content">
+                                                    <a href="/ordering_system/orderforStudent/StoreMeanu/${店家ID}">
+                                                            <div class="ts-header">
+                                                            ${店家名稱}
+                                                            </div>
+                                                    </a>
+                                                <p>${tagname}</p>
+                                                </div>
+                                                <div class="ts-content is-end-aligned">
+                                                   <div class="ts-header is-end-aligned">
+                                                                <button class="ts-button is-icon is-negative is-outlined is-circular" onclick="delete01(${店家ID})">
+                                                            <span class="ts-icon is-minus-icon"></span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                                `);
+                        });
+                        $('#favoriteStore').html(dataslist);
+                    }
+                },
+                error: () => { console.log("錯誤問題") }
+            })
+        }
+        ////////////////////關閉相關//////////////////////////
+        //關閉購物車
+        $('#closebtn').click(() => {
+            close();
+        })
+        $('#close02').click(() => {
+            close();
+        })
+        //關閉購物車function
+        const close = () => {
+            $('#btncart').click();
+        }
+        /////////////////////關閉結束///////////////////////////
+        //載入學員是否已經有購物車
+        const shoppingCart = () => {
+            $.ajax({
+                url: `@Url.Content("~/tOrder_StoreAPI/shoppingCar")?id=${studentID}`,
+                success: (datas) => {
+                    if (datas.待購物清單.length == 0) {
+                        $('#Shoppingcount').text(0);
+                        $('#Shoppingtotail').text(0);
+                        const nulllist = ` <div class="ts-blankslate is-light">
+                                        <span class="ts-icon is-cart-shopping-icon"></span>
+                                        <div class="header" style="background-color:#ffff">購物車是空的</div>
+                                        <div class="description">請購買些商品之後再回來查看</div>
+                                        <div class="action">
+                                            <button class="ts-button" id="close01">瀏覽商品</button>
+                                        </div>
+                                    </div>`;
+                        $('#ShoppingList').html(nulllist);
+                        $('#close01').click(() => {
+                            close();
+                        })
+                    }
+                    else {
+                        $('#Shoppingcount').text(datas.筆數);
+                        $('#Shoppingtotail').text(datas.總額);
+                        const datalist = datas.待購物清單.map(a => {
+                            const { 購物車ID, 餐點圖片, 餐點數量, 餐點名稱, 小計, 餐點ID } = a;
+                            return (`
+                                              <div class="ts-box is-horizontal is-light mt-3">
+                                                <div class="ts-image is-covered">
+                                                <img src="${餐點圖片}" style="width: 90px; height: 100%;" />
+                                                </div>
+                                                <div class="ts-content">
+                                                    <div class="ts-header">
+                                                        ${餐點名稱}
+                                                    </div>
+                                                    <p>小計:<span>$${小計}</span></p>
+                                                </div>
+                                                <div class="ts-content is-end-aligned" style="max-width:130px">
+                                                    <div class="ts-header">
+                                                        <p>數量</p>
+                                                        <div class="ts-input is-circular">
+                                                          <input type="number" value="${餐點數量}" data-id="${餐點ID}" min="0" max="100">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        `);
+                        })
+                        $('#ShoppingList').html(datalist);
+                    }
+                    $('input[type="number"][data-id]').on('change', function () {
+                        // 在這裡處理 input 值的變化
+                        var newValue = $(this).val();
+                        var 餐點 = $(this).data('id');
+                        if (newValue != 0) {
+                            $.ajax({
+                                url: `@Url.Content("~/tOrder_StoreAPI/ModifyshoppingCar")?id=${studentID}&menuID=${餐點}&count=${newValue}`,
+                                success: () => {
+                                    const textshow = $('#text-' + 餐點);
+                                    textshow.text(newValue);
+                                    shoppingCart();
+                                },
+                                error: () => {
+                                    console.log('api傳送失敗')
+                                }
+                            })
+                        }
+                        else {
+                            const minusIcon = $('.ts-icon.is-minus-icon[data-id="' + 餐點 + '"]');
+                            minusIcon.click();
+                            $.ajax({
+                                url: `@Url.Content("~/tOrder_StoreAPI/removeShoppingCar")?id=${studentID}&menuID=${餐點}`,
+                                method: 'Delete',
+                                success: () => {
+                                    shoppingCart();
+                                },
+                                error: () => {
+                                    console.log('api問題回報')
+                                }
+                            })
+                        }
+                    });
+                },
+                error: (xhr, status, error) => {
+                    if (xhr.status == 404) {
+                        console.log("目前沒有購物車，寫預設圖片")
+                    } else {
+                        console.log('Error:', error);
+                    }
+                }
+            })
+        }
+    </script>
+}

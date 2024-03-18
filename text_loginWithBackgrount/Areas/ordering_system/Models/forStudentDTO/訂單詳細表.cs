@@ -9,5 +9,6 @@
         public int 小計 { get; set; }
         public string 信箱 { get; set; }
         public string 電話 { get; set; }
+        public string 狀態 { get; set; }
     }
 }

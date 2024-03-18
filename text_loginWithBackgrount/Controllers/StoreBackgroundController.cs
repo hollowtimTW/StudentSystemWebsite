@@ -109,12 +109,13 @@ namespace text_loginWithBackgrount.Controllers
             });
             int totalComments = storedata.Sum(item => item.評論數量);
             int totalWeight = storedata.Sum(item => item.加權);
-            double evaluate = (totalWeight!=0)?totalWeight / totalComments:0;
+            double evaluate = totalComments != 0 ? Math.Round((double)totalWeight / totalComments, 2) : 0.0;
+
             VMstoreInformation storeInformationVM = new VMstoreInformation()
             {
                 turnover = result1,
                 historyorder = result,
-                evaluate = evaluate.ToString("0.0"),
+                evaluate = evaluate.ToString(),
                 commentsNum = totalComments
             };
             return storeInformationVM;

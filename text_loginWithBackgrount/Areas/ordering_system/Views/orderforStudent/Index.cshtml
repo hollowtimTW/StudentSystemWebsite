@@ -1,21 +1,34 @@
 ﻿@{
-    ViewData["Title"] = "學員專區";
+    ViewData["Title"] = "學員訂單管理";
 }
 @* @User.Identity?.Name 這能抓到使用者的名稱 *@
 @* @User?.FindFirst("FullName")?.Value 也能抓到使用者的名稱*@
 @* @User?.FindFirst("StudentId")?.Value 這能抓到使用者的PK *@
 @section Styles
 {
+    <!-- 核心：Tocas UI -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocas/4.2.5/tocas.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocas/4.2.5/tocas.min.js"></script>
+
+    <!-- 字體：Noto Sans TC -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
     <style>
-        .meta-bottom
-        {
-            display:flex;
-            justify-content:center;
-            align-items:center;
+        .meta-bottom {
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .accordion .accordion-item .accordion-button:hover{
+        .accordion .accordion-item .accordion-button:hover {
             background-color: rgba(196,206,157,0.2);
+        }
+
+        #main {
+            background-color: #ffff;
+            min-height: 1243.05px;
         }
     </style>
 }
@@ -60,7 +73,7 @@
                     <!-- 搜尋框 -->
                     <div class="sidebar-item search-form">
                         <h3 class="sidebar-title">Search</h3>
-                        <form class="mt-3">
+                        <form class="mt-3 is-light">
                             <input type="text" placeholder="請輸入訂單編號、日期或店家全名" id="keyword">
                             <button type="button" onclick="keypointbtw()"><i class="bi bi-search"></i></button>
                         </form>
@@ -85,24 +98,38 @@
             <div class="col-lg-8">
                 <!-- 內容 -->
                 <article class="blog-details">
-                    <h2 class="title m-3">訂單管理</h2>
-                    <div class="accordion" id="accordionPanelsStayOpenExample">
-                        <div class="accordion-item" id="inputorderdeatial">
-                            <img src="~/images/t訂餐/loading02.gif" class="rounded mx-auto d-block" id="loadinggif" />
-                            <!-- 詳細訂單載入 -->
-                        </div>
-                    </div>
-                    <div class="meta-bottom">
-                        <div class="btn-group me-2" role="group" aria-label="First group" id="page">
-                            <!-- 載入分頁 -->
-                        </div>
-                    </div><!-- End meta bottom -->
+                    <div class="ts-grid is-stacked">
+                        <div class="column">
+                            <div class="ts-header is-big is-heavy mb-3">進行中訂單</div>
+                            <div class="accordion-item">
+                                <div class="accordion" id="orderNotcomplent">
+                                </div>
+                                <div class="column">
+                                    <div>
+                                        <div class="ts-header is-big is-heavy mt-3 mb-2">歷史訂單查看</div>
+                                        <div class="accordion">
+                                            <div class="accordion-item" id="inputorderdeatial">
+                                                <img src="~/images/t訂餐/loading02.gif" class="rounded mx-auto d-block" id="loadinggif" />
+                                                <!-- 詳細訂單載入 -->
+                                            </div>
+                                        </div>
+                                        <div class="meta-bottom">
+                                            <div class="btn-group me-2" role="group" aria-label="First group" id="page">
+                                                <!-- 載入分頁 -->
+                                            </div>
+                                        </div><!-- End meta bottom -->
+                                    </div>
+                                </div>
+                            </div>
+
+
                 </article><!-- End blog post -->
             </div>
         </div>
     </div>
 </section><!-- End Blog Details Section -->
 @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
     <script>
         const studentID = @User?.FindFirst("StudentId")?.Value;
         let searchData = {
@@ -111,6 +138,7 @@
             "page": 1,
             "pageSize": 5
         };
+        //載入歷史訂單已完成且有評論
         const loadSpots = () => {
             $('#loadinggif').show();
             $.ajax({
@@ -121,65 +149,66 @@
                 success: (data) => {
                     const datalist = data.spotImagesSpots.map((a, index) => {
                         const { 訂單id, 狀態, 日期, 支付方式, 評價星數, 總價, 訂單詳細表, 評價內容 } = a;
+                        const ifnull = 評價內容 == null ? "未留評價" : 評價內容;
                         const orderDetailsHTML = 訂單詳細表.map(detail => {
                             return `<tr class="table-light align-middle">
-                                        <td>${detail.店家名稱}</td>
-                                        <td>${detail.餐點名稱}</td>
-                                        <td>${detail.數量}</td>
-                                        <td>${detail.小計}</td>
-                                        <td><a href="mailto:${detail.信箱}"><i class="bi bi-envelope"></i></a><p><a href='#'>${detail.電話}</a></p></td>
-                                    </tr>`;
+                                                        <td>${detail.店家名稱}</td>
+                                                        <td>${detail.餐點名稱}</td>
+                                                        <td>${detail.數量}</td>
+                                                        <td>${detail.小計}</td>
+                                                        <td><a href="mailto:${detail.信箱}"><i class="bi bi-envelope"></i></a><p><a href='#'>${detail.電話}</a></p></td>
+                                                    </tr>`;
                         }).join('');
 
                         return `<div class="accordion-item">
-                                     <h2 class="accordion-header rounded-3" id="panelsStayOpen-headingTwo">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo-${index}" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo-${index}">
-                                            <table class="table table-bordered">
-                                                  <thead class="text-center">
-                                                    <tr class="table-secondary">
-                                                        <th>訂單編號</th>
-                                                        <th>訂單日期</th>
-                                                        <th>訂單狀態</th>
-                                                        <th>總價</th>
-                                                        <th>付款方式</th>
-                                                        <th>評價星數</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody class="text-center">
-                                                    <tr class="table-light">
-                                                        <td>${訂單id}</td>
-                                                        <td>${日期}</td>
-                                                        <td>${狀態}</td>
-                                                        <td>${總價}</td>
-                                                        <td>${支付方式}</td>
-                                                        <td>${評價星數}</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </button>
-                                    </h2>
-                                    <div id="panelsStayOpen-collapseTwo-${index}" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo-${index}">
-                                        <div class="accordion-body">
-                                            <div class="p-3">
-                                            <strong class="fs-5">訂單詳論:</strong><spam class="fs-5 m-1 text-black-50">${評價內容}</spam>
-                                            </div>
-                                               <table class="table table-bordered table-hover">
-                                                <thead class="text-center fw-bold">
-                                                     <tr class="table-warning">
-                                                        <th>店家名稱</th>
-                                                        <th>餐點名稱</th>
-                                                        <th>數量</th>
-                                                        <th>小計</th>
-                                                        <th>聯絡店家</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody class="text-center">
-                                                    ${orderDetailsHTML}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>`;
+                                                     <h2 class="accordion-header rounded-3" id="panelsStayOpen-headingTwo">
+                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo-${index}" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo-${index}">
+                                                            <table class="table table-bordered">
+                                                                  <thead class="text-center">
+                                                                    <tr class="table-secondary">
+                                                                        <th>訂單編號</th>
+                                                                        <th>訂單日期</th>
+                                                                        <th>訂單狀態</th>
+                                                                        <th>總價</th>
+                                                                        <th>付款方式</th>
+                                                                        <th>評價星數</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody class="text-center">
+                                                                    <tr class="table-light">
+                                                                        <td>${訂單id}</td>
+                                                                        <td>${日期}</td>
+                                                                        <td>${狀態}</td>
+                                                                        <td>${總價}</td>
+                                                                        <td>${支付方式}</td>
+                                                                        <td>${評價星數}</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </button>
+                                                    </h2>
+                                                    <div id="panelsStayOpen-collapseTwo-${index}" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo-${index}">
+                                                        <div class="accordion-body">
+                                                            <div class="p-3">
+                                                            <strong class="fs-5">訂單詳論:</strong><spam class="fs-5 m-1 text-black-50">${ifnull}</spam>
+                                                            </div>
+                                                               <table class="table table-bordered table-hover">
+                                                                <thead class="text-center fw-bold">
+                                                                     <tr class="table-warning">
+                                                                        <th>店家名稱</th>
+                                                                        <th>餐點名稱</th>
+                                                                        <th>數量</th>
+                                                                        <th>小計</th>
+                                                                        <th>聯絡店家</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody class="text-center">
+                                                                    ${orderDetailsHTML}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>`;
                     }).join('');
                     $('#loadinggif').hide();
                     $('#inputorderdeatial').html(datalist);
@@ -195,11 +224,167 @@
                 }
             })
         };
+        //載入訂單狀態點選完成寫入評論與星數
+        const orderNotcomplent = () => {
+            $.ajax({
+                url: `@Url.Content("~/tOrder_StoreAPI/orderNotcomplent")?id=${studentID}`,
+                success: (datas) => {
+                    if (datas.length == 0) {
+                        const nullOrder = (`
+                                 <div class="ts-blankslate is-light">
+                                     <div class="header" style="background-color:#ffff">目前沒有進行中的訂單</div>
+                                     <div class="description">能快去學生餐廳挑選一些想吃的東西吧</div>
+                                   </div>
+                                `);
+                        $('#orderNotcomplent').html(nullOrder);
+                    }
+                    else {
+                        const datalist = datas.map((a, index) => {
+                            let stringArray = [];
+                            const { 訂單id, 狀態, 日期, 支付方式, 評價星數, 總價, 訂單詳細表 } = a;
+                            const orderDetailsHTML = 訂單詳細表.map(detail => {
+                                stringArray.push(detail.狀態);
+                                return `<tr class="table-light align-middle">
+                                                                <td>${detail.狀態}</td>
+                                                                <td>${detail.店家名稱}</td>
+                                                                <td>${detail.餐點名稱}</td>
+                                                                <td>${detail.數量}</td>
+                                                                <td>${detail.小計}</td>
+                                                                <td><a href="mailto:${detail.信箱}"><i class="bi bi-envelope"></i></a><p><a href='#'>${detail.電話}</a></p></td>
+                                                            </tr>`;
+                            }).join('');
+                            const bool = stringArray.indexOf('進行中') !== -1 ? "is-disabled" : "";
+                            const word = stringArray.indexOf('進行中') !== -1 ? "有訂單未完成" : "完成訂單";
+                            return `<div class="accordion-item">
+                                                             <h2 class="accordion-header rounded-3" id="panelsStayOpen-headingTwo">
+                                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo-1-${index}" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo-1-${index}">
+                                                                    <table class="table table-bordered">
+                                                                          <thead class="text-center">
+                                                                            <tr class="table-secondary">
+                                                                                <th>訂單編號</th>
+                                                                                <th>訂單日期</th>
+                                                                                <th>訂單狀態</th>
+                                                                                <th>總價</th>
+                                                                                <th>付款方式</th>
+
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody class="text-center">
+                                                                            <tr class="table-light">
+                                                                                <td>${訂單id}</td>
+                                                                                <td>${日期}</td>
+                                                                                <td>${狀態}</td>
+                                                                                <td>${總價}</td>
+                                                                                <td>${支付方式}</td>
+
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </button>
+                                                            </h2>
+                                                            <div id="panelsStayOpen-collapseTwo-1-${index}" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo-1-${index}">
+                                                                <div class="accordion-body">
+                                                                    <div class="p-3">
+                                                                    <button class="ts-button is-light ${bool}" data-id="${訂單id}">${word}</button>
+                                                                    </div>
+                                                                       <table class="table table-bordered table-hover">
+                                                                        <thead class="text-center fw-bold">
+                                                                             <tr class="table-warning">
+                                                                                <th>狀態</th>
+                                                                                <th>店家名稱</th>
+                                                                                <th>餐點名稱</th>
+                                                                                <th>數量</th>
+                                                                                <th>小計</th>
+                                                                                <th>聯絡店家</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody class="text-center">
+                                                                            ${orderDetailsHTML}
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>`;
+                        }).join('');
+                        $('#orderNotcomplent').html(datalist);
+                        $('button[data-id]').on('click', async function () {
+                            var orderId = $(this).data('id');
+                            //console.log(orderId);
+                            const { value: userInput } = await Swal.fire({
+                                title: "訂單評論",
+                                html:
+                                    `<div class="ts-wrap is-vertical">
+                                         <div class="ts-segment">
+                                               <div class="ts-rating is-input is-yellow ts-wrap is-center-aligned">
+                                                 <input class="star" type="radio" name="rating" value="1" />
+                                                  <input class="star" type="radio" name="rating" value="2" checked />
+                                                  <input class="star" type="radio" name="rating" value="3" />
+                                                  <input class="star" type="radio" name="rating" value="4" />
+                                                   <input class="star" type="radio" name="rating" value="5" />
+                                                 </div>
+                                             </div>
+                                         <div class="ts-segment">
+                                            <textarea id="swal-input2" class="swal2-textarea" placeholder="這裡寫下你的評論" maxlength="50"></textarea>
+                                         </div>
+                                     </div>
+                                    `,
+                                focusConfirm: false,
+                                preConfirm: () => {
+                                    return [
+                                        document.querySelector('input[name="rating"]:checked').value,
+                                        document.getElementById('swal-input2').value
+                                    ];
+                                },
+                                showCancelButton: true,
+                                confirmButtonText: "確認送出",
+                                cancelButtonText: "取消",
+                                showLoaderOnConfirm: true,
+                                preConfirm: async () => {
+                                    const selectValue = document.querySelector('input[name="rating"]:checked').value;
+                                    const textValue = document.getElementById('swal-input2').value;
+
+                                    return { selectValue, textValue };
+                                }
+                            });
+                            if (userInput) {
+                                const { selectValue, textValue } = userInput;
+                                var requestData = {
+                                    id: orderId, // 訂單ID
+                                    start: userInput.selectValue, // 評價星數
+                                    feedback: userInput.textValue // 訂單評論
+                                };
+                                //這裡寫完成訂單與留下訂單評論userInput.selectValue為星數，userInput.textValue為評論
+                                $.ajax({
+                                    url: `@Url.Content("~/tOrder_StoreAPI/orderFinallcomplent")`,
+                                    data: requestData,
+                                    method:'post',
+                                    success: () => {
+                                        //刷新畫面
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: '完成訂單評論',
+                                            text: '感謝你的意見回饋><',
+                                        }).then(() => {
+                                            orderNotcomplent();
+                                            loadSpots();
+                                        })
+                                    },
+                                    error: () => {
+                                        console.log('出一點小問題')
+                                    }
+                                })
+                                //console.log(userInput);
+                            }
+                        })
+                    }
+                }
+            })
+        };
         (async () => {
             loadSpots();
+            orderNotcomplent();
         })();
-        function pagechange(page) 
-        {
+        function pagechange(page) {
             searchData.page = page;
             loadSpots();
         };

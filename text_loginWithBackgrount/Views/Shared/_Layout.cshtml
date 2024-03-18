@@ -91,7 +91,12 @@
                             <li><a asp-area="class_discuss" asp-controller="discuss" asp-action="Index">學習討論區</a></li>
                             <li><a asp-area="video_management" asp-controller="video" asp-action="Index">線上課程影片</a></li>
                             <li><a asp-area="job_vacancy" asp-controller="job" asp-action="Index">就業媒合</a></li>
-                            <li><a asp-area="ordering_system" asp-controller="order" asp-action="Index">餐點外送</a></li>
+                            <li></li>
+                            <li class="dropdown">
+                                <a asp-area="ordering_system" asp-controller="order" asp-action="Index"><span>餐點外送</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
+                                <ul>
+                                    <li><a asp-area="ordering_system" asp-controller="orderforStudent" asp-action="Studentrestaurant">點餐大廳</a></li>
+                                </ul>
                         </ul>
                     </li>
                     <li>

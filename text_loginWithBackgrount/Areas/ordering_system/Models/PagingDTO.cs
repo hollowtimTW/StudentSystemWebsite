@@ -1,4 +1,5 @@
 ﻿using Class_system_Backstage_pj.Models;
+using text_loginWithBackgrount.Areas.ordering_system.Models;
 
 namespace Class_system_Backstage_pj.Areas.ordering_system.Models
 {
@@ -9,5 +10,6 @@ namespace Class_system_Backstage_pj.Areas.ordering_system.Models
         public List<orderdeatialViewModel> spotOrderdeatial { get; set; }
 
         public List<T訂餐餐點資訊表> spotMeauList { get; set; }
+        public List<VMstoreCarIndex> vMstoreCarIndices { get; set; } //餐廳頁搜尋用
     }
 }
