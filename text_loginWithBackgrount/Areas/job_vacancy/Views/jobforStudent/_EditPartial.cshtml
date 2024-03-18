@@ -82,8 +82,8 @@
                         <label asp-for="Academic" class="control-label"></label>
                         <select asp-for="Academic" class="form-control">
                             <option value="">無</option>
-                            <option value="學士" selected="@(Model.Academic == "學士")">學士</option>
-                            <option value="副學士" selected="@(Model.Academic == "副學士")">副學士</option>
+                            <option value="高中" selected="@(Model.Academic == "高中")">高中</option>
+                            <option value="大學" selected="@(Model.Academic == "大學")">大學</option>
                             <option value="碩士" selected="@(Model.Academic == "碩士")">碩士</option>
                             <option value="博士" selected="@(Model.Academic == "博士")">博士</option>
                         </select>
@@ -330,7 +330,7 @@
 
         // 處理工作經驗的匯入
         if ('@Model.WorkExperience' === 'Y') {
-            callWorkExp();
+            callWorkExp(true);
         }
 
         // ====================== 事件監聽器 ===========================
@@ -352,9 +352,9 @@
 
             var workExpCheck = document.getElementById('workExpCheck');
             if (workExpCheck.checked) {
-                callWorkExp(true);
-            } else {
                 callWorkExp();
+            } else {
+                callWorkExp(true);
             }
         });
 
