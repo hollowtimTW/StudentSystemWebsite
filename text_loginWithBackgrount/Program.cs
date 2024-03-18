@@ -21,7 +21,7 @@ builder.Services.AddControllers(); //向DI容器註冊控制器所需的服務
 builder.Services.AddSignalR(); // 將 SignalR 服務添加到 DI 容器中
 
 builder.Services.AddDbContext<studentContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("StudentDB")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Azure")));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
