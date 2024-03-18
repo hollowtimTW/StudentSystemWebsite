@@ -12,7 +12,7 @@ using System.Text;
 
 namespace Class_system_Backstage_pj.Areas.student_management.Controllers
 {
-    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles = "teacher")]
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles = "teacher, admin")]
     [Area("student_management")]
     public class MemberController : Controller
     {
