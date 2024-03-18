@@ -6,6 +6,15 @@
 @* @User?.FindFirst("StudentId")?.Value 這能抓到使用者的PK *@
 @model text_loginWithBackgrount.ViewModels.MemberViewModel
 
+<!-- 生日選擇套件 不用可移除-->
+<!-- Flatpickr -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<!-- 包含中文語言文件 -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/zh.js"></script>
+
+
+
 @section BreadcrumbsSection {
     <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
     <div class="breadcrumbs">
@@ -78,107 +87,128 @@
                         </p>
                     </div><!-- End meta top -->
                     <hr />
-                    <form asp-action="StudentEdit" asp-controller="Student" method="post" role="form" class="php-email-form" id="StudentEdit">
-                        <div class="row">
-                            <div class="col-md-8 form-group mt-3">
-                                <input asp-for="姓名" class="form-control" placeholder="姓名" id="name">
-                                <span asp-validation-for="姓名" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-4 form-group mt-3">
-                                <select asp-for="性別" class="form-control" id="gender" required>
-                                    <option value="">請選擇性別</option>
-                                    <option value="男">男</option>
-                                    <option value="女">女</option>
-                                </select>
-                                <span asp-validation-for="性別" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-12 form-group mt-3">
-                                <input asp-for="身分證字號" class="form-control" placeholder="身分證字號" id="id_number">
-                                <span asp-validation-for="身分證字號" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-12 form-group mt-3">
-                                <input asp-for="信箱" class="form-control" placeholder="信箱" id="email">
-                                <span asp-validation-for="信箱" class="text-danger"></span>
-                                <span id="emailErrorMessage" class="text-danger"></span>
-                            </div>            
-                            <div class="col-md-12 form-group mt-3">
-                                <input asp-for="手機" class="form-control" placeholder="手機" id="phone">
-                                <span asp-validation-for="手機" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-12 form-group mt-3">
-                                <input asp-for="地址" class="form-control" placeholder="地址" id="address">
-                                <span asp-validation-for="地址" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-12 form-group mt-3">
-                                <input asp-for="生日" class="form-control" placeholder="生日" id="birthday">
-                                <span asp-validation-for="生日" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-12 form-group mt-3">
-                                <input type="file" asp-for="圖片" class="form-control" placeholder="頭像" id="UserImage" accept=".png, .jpg, .jpeg" />
-                                <span asp-validation-for="圖片" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-12 form-group mt-3">
-                                <input asp-for="學校" class="form-control" placeholder="學校" id="school">
-                                <span asp-validation-for="學校" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-12 form-group mt-3">
-                                <input asp-for="科系" class="form-control" placeholder="科系" id="department">
-                                <span asp-validation-for="科系" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-12 form-group mt-3">
-                                <select asp-for="學位" class="form-control" required id="degree">
-                                    <option value="">----請選擇最高學位----</option>
-                                    <option value="國小">國小</option>
-                                    <option value="國中">國中</option>
-                                    <option value="高中">高中</option>
-                                    <option value="大學">大學</option>
-                                    <option value="碩士">碩士</option>
-                                    <option value="博士">博士</option>
-                                </select>
-                                <span asp-validation-for="學位" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-12 form-group mt-3">
-                                <select asp-for="畢肄" class="form-control" required id="graduation">
-                                    <option value="">----請選擇畢肄業狀態----</option>
-                                    <option value="畢業">畢業</option>
-                                    <option value="肄業">肄業</option>
-                                </select>
-                                <span asp-validation-for="畢肄" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-12 form-group mt-3">
+                    <section class="contact">
+                        <form asp-action="StudentEdit" asp-controller="Student" method="post" role="form" class="php-email-form" id="StudentEdit">
+                            <div class="row">
+                                <div class="col-md-8 form-group mt-3">
+                                    <input asp-for="姓名" class="form-control" placeholder="姓名" id="name">
+                                    <span asp-validation-for="姓名" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4 form-group mt-3">
+                                    <select asp-for="性別" class="form-control" id="gender" required>
+                                        <option value="">請選擇性別</option>
+                                        <option value="男">男</option>
+                                        <option value="女">女</option>
+                                    </select>
+                                    <span asp-validation-for="性別" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-12 form-group mt-3">
+                                    <input asp-for="身分證字號" class="form-control" placeholder="身分證字號" id="id_number">
+                                    <span asp-validation-for="身分證字號" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-12 form-group mt-3">
+                                    <input asp-for="信箱" class="form-control" placeholder="信箱" id="email">
+                                    <span asp-validation-for="信箱" class="text-danger"></span>
+                                    <span id="emailErrorMessage" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-12 form-group mt-3">
+                                    <input asp-for="手機" class="form-control" placeholder="手機" id="phone">
+                                    <span asp-validation-for="手機" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-12 form-group mt-3">
+                                    <input asp-for="地址" class="form-control" placeholder="地址" id="address">
+                                    <span asp-validation-for="地址" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-12 form-group mt-3">
+                                    <input asp-for="生日" class="form-control" placeholder="生日" id="birthday">
+                                    <span asp-validation-for="生日" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-12 form-group mt-3">
+                                    <input type="file" asp-for="圖片" class="form-control" placeholder="頭像" id="UserImage" accept=".png, .jpg, .jpeg" />
+                                    <span asp-validation-for="圖片" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-12 form-group mt-3">
+                                    <input asp-for="學校" class="form-control" placeholder="學校" id="school">
+                                    <span asp-validation-for="學校" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-12 form-group mt-3">
+                                    <input asp-for="科系" class="form-control" placeholder="科系" id="department">
+                                    <span asp-validation-for="科系" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-12 form-group mt-3">
+                                    <select asp-for="學位" class="form-control" required id="degree">
+                                        <option value="">----請選擇最高學位----</option>
+                                        <option value="國小">國小</option>
+                                        <option value="國中">國中</option>
+                                        <option value="高中">高中</option>
+                                        <option value="大學">大學</option>
+                                        <option value="碩士">碩士</option>
+                                        <option value="博士">博士</option>
+                                    </select>
+                                    <span asp-validation-for="學位" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-12 form-group mt-3">
+                                    <select asp-for="畢肄" class="form-control" required id="graduation">
+                                        <option value="">----請選擇畢肄業狀態----</option>
+                                        <option value="畢業">畢業</option>
+                                        <option value="肄業">肄業</option>
+                                    </select>
+                                    <span asp-validation-for="畢肄" class="text-danger"></span>
+                                </div>
+                                @*                             <div class="col-md-12 form-group mt-3">
                                 <input asp-for="密碼" type="password" class="form-control" placeholder="若要修改請輸入密碼" id="password">
                                 <span asp-validation-for="密碼" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-12 form-group mt-3">
+                                </div>
+                                <div class="col-md-12 form-group mt-3">
                                 <input asp-for="密碼驗證" type="password" class="form-control" placeholder="密碼再次確認" id="confirm_password">
                                 <span asp-validation-for="密碼驗證" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-12 text-center mt-3">
-                                <button type="submit" id="btn_edit">修改資訊</button>
-                                @* <button type="button" id="fillDataBtn" class="btn btn-primary">DEMO</button> *@
-                                 <div class="my-3">
-                                    <div class="loading">Loading</div>
-                                    <div class="error-message">請完成項目</div>
-                                    <div class="sent-message">修改成功</div>
+                                </div> *@
+                                <div class="col-md-12 text-center mt-3">
+                                    <button type="submit" id="btn_edit">修改資訊</button>
+                                    @* <button type="button" id="fillDataBtn" class="btn btn-primary">DEMO</button> *@
+                                    <div class="my-3">
+                                        <div class="loading">Loading</div>
+                                        <div class="error-message">請完成項目</div>
+                                        <div class="sent-message">修改成功</div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </form>
-                    <div class="meta-bottom">
-                        <i class="bi bi-calendar-check-fill"></i>
-                        <ul class="cats">
-                            <li>
-                                <p>
-                                    您上次於 @Model.修改日期 變更個人資訊
-                                </p>
-                            </li>
-                        </ul>
-                    </div><!-- End meta bottom -->
+                        </form>
+                        <div class="meta-bottom">
+                            <ul class="cats">
+                                <li>
+                                    <p>
+                                        您上次於 @Model.修改日期 變更個人資訊
+                                    </p>
+                                </li>
+                            </ul>
+                        </div><!-- End meta bottom -->
+                    </section>
                 </article><!-- End blog post -->
             </div>
         </div>
     </div>
 </section><!-- End Blog Details Section -->
+<!-- 確認修改的模態對話框 -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">確認修改</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                確定要修改嗎？
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="confirmBtn">確定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section Scripts
 {
     <script>
@@ -188,35 +218,51 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
-        // $("#btn_edit").click(async function (e) {
-        //     e.preventDefault();
+        $("#btn_edit").click(function (e) {
+            e.preventDefault();
+            $("#confirmModal").modal('show');
+        });
 
-        //     let formData = $('#StudentEdit').serialize();
-        //     $(".loading").addClass('d-block');
+        $("#confirmBtn").click(async function () {
+            $("#confirmModal").modal('hide');
 
-        //     try {
-        //         const response = await fetch('/Student/StudentEdit', {
-        //             method: 'POST',
-        //             headers: {
-        //                 'Content-Type': 'application/x-www-form-urlencoded' 
-        //             },
-        //             body: formData
-        //         });
+            let formData = $('#StudentEdit').serialize();
+            $(".loading").addClass('d-block');
 
-        //         if (!response.ok) {
-        //             throw new Error('連線失敗');
-        //         }
+            try {
+                const response = await fetch('/Student/StudentEdit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: formData
+                });
 
-        //         $(".loading").removeClass('d-block');
-        //         $(".error-message").removeClass('d-block');
-        //         $(".sent-message").addClass('d-block');
+                if (!response.ok) {
+                    throw new Error('連線失敗');
+                    $(".error-message").addClass('d-block');
+                    $(".sent-message").removeClass('d-block');
+                }
 
-        //     } catch (error) {
-        //         $(".loading").removeClass('d-block');
-        //         $(".error-message").addClass('d-block');
-        //         console.error('錯誤!', error);
-        //     }
-        // });
+                $(".loading").removeClass('d-block');
+                $(".error-message").removeClass('d-block');
+                $(".sent-message").addClass('d-block');
+
+            } catch (error) {
+
+                $(".loading").removeClass('d-block');
+                $(".error-message").addClass('d-block');
+                console.error('錯誤!', error);
+            }
+        });
+
+
+        flatpickr("#birthday", {
+            dateFormat: "Y-m-d", // 日期格式
+            enableTime: false, // 禁用時間
+            locale: "zh"
+        });
+
 
     </script>
 }

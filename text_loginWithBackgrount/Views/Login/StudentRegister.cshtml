@@ -1,7 +1,7 @@
 @{
     ViewData["Title"] = "歡迎登入/註冊";
 }
-@model text_loginWithBackgrount.ViewModels.MemberViewModel
+@model text_loginWithBackgrount.ViewModels.MemberViewModelWithPwd
 
 <!-- 生日選擇套件 不用可移除-->
 <!-- Flatpickr -->
@@ -59,7 +59,14 @@
                 <form asp-action="StudentRegister" role="form" class="php-email-form" id="StudentRegiest">
                     <div class="row">
                         <div class="col-md-8 form-group mt-3">
-                            <input asp-for="姓名" class="form-control" placeholder="姓名" id="name">
+                            @if (@TempData["RegiestName"] != null)
+                            {
+                                <input asp-for="姓名" class="form-control" placeholder="姓名" id="name" value="@TempData["RegiestName"]" readonly style="background-color: #cccccc;">
+                            }
+                            else
+                            {
+                                <input asp-for="姓名" class="form-control" placeholder="姓名" id="name">                                
+                            }
                             <span asp-validation-for="姓名" class="text-danger"></span>
                         </div>
                         <div class="col-md-4 form-group mt-3">
@@ -75,8 +82,16 @@
                             <span asp-validation-for="身分證字號" class="text-danger"></span>
                         </div>
                         <div class="col-md-12 form-group mt-3">
-                            <input asp-for="信箱" class="form-control" placeholder="信箱" id="email">
-                            @* <span asp-validation-for="信箱" class="text-danger"></span> *@
+                            <div class="col-md-8 form-group mt-3">
+                                @if (@TempData["RegiestEmail"] != null)
+                                {
+                                    <input asp-for="信箱" class="form-control" placeholder="信箱" id="email" value="@TempData["RegiestEmail"]" readonly style="background-color: #cccccc;">
+                                }
+                                else
+                                {
+                                    <input asp-for="信箱" class="form-control" placeholder="信箱" id="email">
+                                }
+                            </div>
                             <span id="emailErrorMessage" class="text-danger"></span>
                         </div>
                         <div class="col-md-12 form-group mt-3">
@@ -240,5 +255,9 @@
             enableTime: false, // 禁用時間
             locale: "zh"
         });
+
+
     </script>
+
 }
+

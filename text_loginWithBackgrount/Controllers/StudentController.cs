@@ -65,13 +65,15 @@ namespace text_loginWithBackgrount.Controllers
 
             if (!ModelState.IsValid)
             {
-                TempData["return_message"] = "alert('修改失敗，請檢查您的輸入。')";
+                var errorMessages = ModelState.Values
+    .SelectMany(v => v.Errors)
+    .Select(e => e.ErrorMessage)
+    .ToList();
                 return BadRequest(new { errorMessage = "修改失敗，請檢查您的輸入。" });
             }
 
             if (MemberEditInfo.信箱 == null || MemberEditInfo.信箱 == "")
             {
-                TempData["return_message"] = "alert('請填入正確信箱。')";
                 return BadRequest(new { errorMessage = "請填入正確信箱。" });
             }
 
@@ -95,15 +97,13 @@ namespace text_loginWithBackgrount.Controllers
                 }
             }
 
-            IRegistrationEncryptor encryptor = EncryptorFactory.CreateEncryptor();
-            (string _hashPassword, string _salt) = encryptor.EncryptPassword(MemberEditInfo.密碼);
-
-
+            //這邊不改密碼
+            //IRegistrationEncryptor encryptor = EncryptorFactory.CreateEncryptor();
+            //(string _hashPassword, string _salt) = encryptor.EncryptPassword(MemberEditInfo.密碼);
 
             if (user == null)
             {
-                TempData["return_message"] = "alert('找不到學生！')";
-                return BadRequest();
+                return BadRequest(new { errorMessage = "查無此人。" });
             }
             else
             {
@@ -126,9 +126,7 @@ namespace text_loginWithBackgrount.Controllers
                 _dbStudentSystemContext.SaveChanges();
             }
 
-
-            TempData["return_message"] = "alert('修改成功！')";
-            return RedirectToAction("Index");
+            return Ok();
             //return Ok(new { successMessage = "修改成功！" });
         }
 
