@@ -7,7 +7,7 @@
 <div style="width:60%;margin:auto" class="mt-2">
     @if (Model != null && Model.T影片CartDetails != null && Model.T影片CartDetails.Count > 0)
     {
-        <h5>我的商城</h5>
+        <h5>我的購物車</h5>
 
         <table class="table table-striped" id="videoTable">
             <tr>
@@ -38,7 +38,7 @@
                             </video> *@
                             string encodedVideoName = Uri.EscapeDataString(@item.FVideo.FVideoName);
 
-                            <img src="@Url.Content("~/video/看板封面/" + encodedVideoName + ".png")" alt="Video Thumbnail" style="width: 16rem; height: 16rem;">
+                            <img src="@Url.Content("~/video/看板封面/" + encodedVideoName + ".png")" alt="Video Thumbnail" style="width: 10rem; height: 10rem;">
 
                             
                         }
