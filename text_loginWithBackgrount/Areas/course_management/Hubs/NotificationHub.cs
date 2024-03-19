@@ -57,14 +57,15 @@ namespace text_loginWithBackgrount.Areas.course_management.Hubs
         public async Task SendNotification(string teacheId)
         {
             string message = "您有一則新通知!";
-            // 將通知發送給接收者
-            //await Clients.All.SendAsync("ReceiveNotification", userId);
+            // 將通知發送給有上線的接收者
+
             string connectionId = ConnectionTeacherMap.FirstOrDefault(pair => pair.Value == teacheId).Key;
 
             if (connectionId != null)
             {
                 await Clients.Client(connectionId).SendAsync("ReceiveNotification", message);
             }
+
 
 
         }

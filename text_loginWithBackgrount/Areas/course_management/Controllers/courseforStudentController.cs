@@ -204,7 +204,10 @@ namespace text_loginWithBackgrount.Areas.course_management.Controllers
         {
 
             var data = _context.T課程評分主表s.FirstOrDefault(tc => tc.學生id == StudentId && tc.班級科目id == ClassCourseId);
-
+            if (data == null)
+            {
+                return false;
+            }
             if (data.狀態 == 2)
             {
 
