@@ -30,9 +30,17 @@
 }
 
 
-.portfolio-item{
 
+
+.modal-body div {
+    font-weight: bold;
 }
+
+
+.modal-body p{
+    font-weight:bold;
+}
+
 
 
 .filter-open .portfolio-wrap {
@@ -52,9 +60,12 @@
     background-color: #BEBEBE;
 }
 
+
+
+
 .quiz-name {
     font-weight:bold;
-    font-size: 2rem;
+    font-size: 1.8rem;
 }
 
 .custom-span {

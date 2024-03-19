@@ -77,7 +77,6 @@
                                 {
                                     <option value="@i">@i 分</option>
                                 }
-                                <option value="">無限制</option>
                             </select>
                             <div class="invalid-tooltip">
                                 請選擇測驗限制時間。
@@ -243,16 +242,12 @@
                         $qPublic.text(data.isPublic === 1 ? '公開' : '私人');
                         $isClosedBtn.prop('checked', data.isClosed === 1);
                         $qClosed.text(data.isClosed === 1 ? '開啟' : '關閉');
+                        $qLimitTime.val(data.limitTime);
                         $qCode.html(data.code);
 
                         const date = new Date(data.createTime).toLocaleDateString('zh-CN')
                         $qCreateTime.html(date);
 
-                        if (date.limitTime === "") {
-                            $qLimitTime.val("");
-                        } else {
-                            $qLimitTime.val(data.limitTime);
-                        };
                     },
                     error: function (xhr, status, error) {
                         console.error(xhr.responseText);
