@@ -1,2 +1,139 @@
-﻿body {
+﻿
+.table th {
+    font-family: "Roboto", sans-serif;
+    font-size: 15px;
+    line-height: 1;
+    color: lightgray;
+    background-color: white;
+}
+
+.table td {
+    font-family: "Roboto", sans-serif;
+    font-size: 1.15vw;
+    font-weight: bold;
+    color: gray;
+    line-height: 1.4
+}
+
+
+.table tr {
+    background-color: white;
+}
+
+
+.table {
+    overflow: hidden;
+    box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+    -moz-box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+    -webkit-box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+    -o-box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+    -ms-box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+}
+
+
+button {
+    background-color: lightgray !important;
+    border: none !important;
+}
+
+.selected-row {
+    background-color: lightgray !important;
+}
+
+.fc-scrollgrid-sync-table {
+    width: 100% !important;
+}
+
+#modal_content {
+    background: url(https://img.freepik.com/premium-photo/empty-space-paper-copy-space_78502-575.jpg?w=1060) center center no-repeat;
+    background-size: cover;
+    background-color: gray;
+    filter: grayscale(30%);
+}
+
+.btn {
+    display: inline-block;
+    outline: none;
+    cursor: pointer;
+    font-weight: 600;
+    border-radius: 3px;
+    border: 0;
+    color: white;
+    line-height: 1.15;
+    font-size: 16px;
+}
+
+.btn-primary {
+    background-color: #76daff !important;
+}
+
+.btn-success {
+    background-color: #47cf73 !important;
+}
+
+.btn-warning {
+    background-color: #fcd000 !important;
+}
+
+.btn-secondary {
+    background-color: #cdcdcd !important;
+}
+
+.btn:hover {
+    transition: all .1s ease;
+    box-shadow: 2px 2px 0 0 azure, 0 0 0 4px lightblue;
+}
+
+.bx-trash {
+    color: white;
+}
+
+.toggle-container {
+    display: flex;
+    align-items: center;
+}
+
+.toggle-btn {
+    width: 60px;
+    height: 30px;
+    background-color: #ddd;
+    border-radius: 15px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.inner-circle {
+    width: 26px;
+    height: 26px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s ease;
+}
+
+#statusSpan {
+    margin-right: 10px;
+}
+
+#statusSection .fs-4 {
+    transition: color 0.3s ease;
+}
+
+#statusSection.active .toggle-btn {
+    background-color: #6dd961;
+}
+
+#statusSection.active .fs-4 {
+    color: yellowgreen;
+}
+
+#statusSection.active .inner-circle {
+    transform: translateX(30px);
+}
+
+.bxCourse {
+    color: white !important;
 }
