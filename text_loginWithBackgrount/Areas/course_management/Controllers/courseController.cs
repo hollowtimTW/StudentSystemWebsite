@@ -4,9 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace text_loginWithBackgrount.Areas.course_management.Controllers
 {
-    /// <summary>
-    /// 訪客看到的頁面
-    /// </summary>
+    
     [Area("course_management")]
     public class courseController : Controller
     {
@@ -17,19 +15,23 @@ namespace text_loginWithBackgrount.Areas.course_management.Controllers
             _context = context;
         }
 
-       
 
+        /// <summary>
+        /// 訪客看到的頁面，從現在到未來六個月之內的班級，取三個班。
+        /// </summary>
         public async Task<IActionResult> Index()
         {
             var now = DateTime.Now;
             var sixMonthsLater = now.AddMonths(6);
 
-            var studentContext = _context.T課程班級s
+            var classContext = _context.T課程班級s
                 .Include(t => t.班級導師)
                 .Where(t => t.入學日期 > now && t.入學日期 <= sixMonthsLater)
                 .Take(3);
 
-            return View(await studentContext.ToListAsync());
+            //如果null前端會顯示不同的資訊
+            var classlist = await classContext.ToListAsync();
+            return View(classlist);
         }
     }
 }

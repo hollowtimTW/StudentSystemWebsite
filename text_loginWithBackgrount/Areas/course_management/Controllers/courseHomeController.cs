@@ -283,7 +283,11 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
             return View();
         }
 
-        //id 班級科目id
+        /// <summary>
+        /// 這個方法用於返回現在這個班級科目id的老師端白板畫面。
+        /// </summary>
+        /// <param name="id">班級科目id。</param>
+        /// <returns>classFeature頁面</returns>  
         public IActionResult whiteBoard(int id)
         {
             ViewBag.classCourseId = id;
