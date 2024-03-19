@@ -66,16 +66,32 @@
                 align-items: center;
             }
 
-        h3 {
-            margin-top: 3px;
-            color: gray;
-        }
     </style>
 }
 
+@{
+    ViewData["Title"] = "螢幕分享";
 
-<div id="content" class="text-center">
-    <h3>Screen Sharing</h3>
+}
+
+<div id="content">
+
+    <div class="header">
+        <!-- 主頁上方操作流程序能引入操作流程返回，記得有新增頁面時要記得編輯，有class="active的是現在位置-->
+        <div class="left">
+            <h1 class="text-black-50"> @ViewData["Title"]</h1>
+            <ul class="breadcrumb">
+                <li>
+                    <a asp-area="" asp-controller="SystemBackground" asp-action="Index"> 首頁 </a>
+                </li>
+                /
+                <li><a href="#" class="active">@ViewData["Title"]</a></li>
+            </ul>
+        </div>
+        <!-- 主頁上方操作流程序結束-->
+    </div>
+
+
 
     <div id="toolToolbar">
         <input type="hidden" id="modeToggle" value="draw">
@@ -101,154 +117,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.10/signalr.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.3.1/peerjs.min.js"></script>
     <script>
-        let connection;
-        let groupName;
-        let localStream;
-        let peer;
-        var start = 0;
-        var record = false;
-        var sound = false;
-
-        $(function () {
-            // Initialize SignalR connection
-            connection = new signalR.HubConnectionBuilder().withUrl("/StreamHub").build();
-            // Start SignalR connection
-            connection.start().then(function () {
-                console.log("SignalR connection established.");
-                connection.invoke("createGroup", '@ViewBag.classCourseId');
-            }).catch(function (err) {
-                console.error("SignalR connection error: ", err);
-            });
-
-            // Handler for group join state
-            connection.on("groupJoinState", function (data) {
-                var obj = JSON.parse(data);
-                groupName = obj.groupName;
-                console.log(groupName);
-                alert(obj.message);
-            });
-
-            // Handler for receiving student connection ID
-            connection.on("ReceiveStudentConnectId", function (studentPeerId) {
-                if (localStream) {
-                    console.log("Local stream is available. Creating and sending offer to student.");
-                    const call = peer.call(studentPeerId, localStream);
-                    call.on('stream', function (remoteStream) {
-                    });
-
-                    call.on('error', function (err) {
-                        console.error("Error during the call: ", err);
-                    });
-                } else {
-                    console.log("Local stream is not available. Cannot create offer without local stream.");
-                }
-            });
-
-        });
-
-        function toggleRecording() {
-            record = !record;
-            sound = !sound;
-            var localVideo = document.getElementById('localVideo');
-            var waitingGif = document.getElementById('waitingGif');
-            var recordIcon = document.getElementById('recordIcon');
-
-            //檢查是否是第一次開啟直播，如果是要初始化數據流
-            if (start === 0) {
-                navigator.mediaDevices.getDisplayMedia({ video: true })
-                    .then(videoStream => {
-                        navigator.mediaDevices.getUserMedia({ audio: true })
-                            .then(audioStream => {
-                                //設置本地流
-                                localStream = new MediaStream([...videoStream.getVideoTracks(), ...audioStream.getAudioTracks()]);
-                                document.getElementById('localVideo').srcObject = localStream;
-                                //設置老師端的圖示變化
-                                localVideo.style.display = 'block';
-                                waitingGif.style.display = 'none';
-                                recordIcon.classList.replace("bi-record-circle", "bi-stop");
-                                //傳送給後端告知已經開啟直播，請求學生端回傳peerId
-                                setUpPeer();
-                                connection.invoke("informStudent", groupName);
-                                //之後就不是第一次開啟
-                                start++;
-                            })
-                            .catch(err => {
-                                console.error("Error getting audio stream: ", err);
-                            });
-                    })
-                    .catch(err => {
-                        console.error("Error getting video stream: ", err);
-                    });
-            } else {
-                // 當不是第一次按這按紐，就是暫停或重新繼續直播
-                if (record) {
-                    // 繼續直播，讓本來的流每個流都能被獲取
-                    localStream.getVideoTracks().forEach(track => {
-                        track.enabled = true;
-                    });
-                    localStream.getAudioTracks().forEach(track => {
-                        track.enabled = sound;
-                    });
-                    recordIcon.classList.replace("bi-stop", "bi-record-circle");
-                    localVideo.style.display = 'block';
-                    waitingGif.style.display = 'none';
-                } else {
-                    // 當暫停直播後
-                    localStream.getTracks().forEach(track => {
-                        track.enabled = false;
-                    });
-
-                    recordIcon.classList.replace("bi-record-circle", "bi-stop");
-                    localVideo.style.display = 'none';
-                    waitingGif.style.display = 'block';
-                }
-            }
-        }
-
-
-        function reloadPage() {
-            window.location.reload();
-        }
-
-
-
-        function togglemute() {
-            var micIcon = document.getElementById('soundIcon');
-            sound = !sound;
-            localStream.getAudioTracks().forEach(track => {
-                track.enabled = sound;
-            });
-            if (sound) {
-                micIcon.classList.replace("bi-mic-mute-fill", "bi-mic-fill");
-            } else {
-                micIcon.classList.replace("bi-mic-fill", "bi-mic-mute-fill");
-            }
-        }
-
-        // Function to set up the peer
-        function setUpPeer() {
-            peer = new Peer({
-                config: {
-                    iceServers: [
-                        { urls: 'stun:stun.l.google.com:19302' },
-                        {
-                            urls: "turns:global.relay.metered.ca:443?transport=tcp",
-                            username: "73bbff3c8731ebccf9f03eae",
-                            credential: "4Lc/Nvbuux92bsEG",
-                        },
-                    ]
-                }
-            });
-
-            // On peer open
-            peer.on('open', function (id) {
-                console.log("Peer ID is: " + id);
-            });
-
-            // On peer error
-            peer.on('error', function (err) {
-                console.error("Peer.js error: ", err);
-            });
-        }
+        var classCourseId = '@ViewBag.classCourseId';
     </script>
+    <script src="~/js/course_management/Live.js"></script>
 }

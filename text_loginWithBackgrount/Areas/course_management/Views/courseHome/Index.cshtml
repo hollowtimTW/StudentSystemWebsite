@@ -4,8 +4,6 @@
 @section Styles
 {
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
-    @* <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script> *@
-    @* <link href="~/css/datatablesinline.css" rel="stylesheet" /> *@
     <link href="~/css/datatablesinline.min.css" rel="stylesheet" />
     <style>
         .imthead {
@@ -13,10 +11,9 @@
             font-weight: 700;
         }
 
-        .insights{
-            padding-left:0;     
+        .insights {
+            padding-left: 0;
         }
-      
     </style>
 }
 <div class="header">
@@ -37,12 +34,12 @@
 <!-- Insights -->
 <ul class="insights">
     <li id="li_1">
-        <i class='bx bxs-book'></i>        
+        <i class='bx bxs-book'></i>
         <span class="info">
-                <h3>
-                    課程科目管理
-                </h3>            
-            </span>
+            <h3>
+                課程科目管理
+            </h3>
+        </span>
     </li>
 
     <li id="li_2">
@@ -50,8 +47,8 @@
         <span class="info">
             <h3>
                 科目分類管理
-            </h3>    
-        </span>     
+            </h3>
+        </span>
     </li>
 
     <li id="li_3">
@@ -71,17 +68,17 @@
             </h3>
         </span>
     </li>
-   
+
 </ul>
 <!-- End of Insights -->
 
 <div class="bottom-data">
     <div class="orders">
         <div class="header">
-            <i class='bx bx-receipt'></i> 
+            <i class='bx bx-receipt'></i>
             <h3>Embedded Power BI Report</h3>
         </div>
-        <p>
+        <p class="text-center">
             <iframe title="科目" width="600" height="373.5" src="https://app.powerbi.com/view?r=eyJrIjoiYzlkZWU0YjUtYTcxNC00YmFhLThjYTUtY2RhMzIyYWY0NzMwIiwidCI6IjcwODk3ZDZmLTBhNDgtNDlkZS04ODBmLTI3ZDhhZDQ1ZDc2ZSIsImMiOjEwfQ%3D%3D" frameborder="0" allowFullScreen="true"></iframe>
         </p>
     </div>
@@ -127,11 +124,11 @@
 
     <script>
         document.querySelector('.insights').addEventListener('click', function (event) {
-            
-            // 檢查是否點擊的是 #li_1 或其子元素，點到就由window導航到指定路由
+
+            // 檢查是否點擊的是 #li_i系列的元素或其子元素(圖片)，點到就由window導航到指定路由[四個子功能]
             if (event.target.closest('#li_1')) {
-                window.location.href = '/course_management/T課程科目/Index'; 
-            } else if (event.target.closest('#li_2')){
+                window.location.href = '/course_management/T課程科目/Index';
+            } else if (event.target.closest('#li_2')) {
                 window.location.href = '/course_management/T課程科目分類/Index';
 
             } else if (event.target.closest('#li_3')) {
@@ -142,6 +139,6 @@
 
             }
         });
-     
+
     </script>
- }
+}

@@ -62,6 +62,7 @@
             connection.start()
                 .then(function () {
                     console.log("SignalR connection established.");
+
                     peer = new Peer({
                         config: {
                             iceServers: [
@@ -111,16 +112,18 @@
                     console.error("Error during SignalR or Peer operations: ", error);
                 });
 
-            // Group join state feedback.
+
+            connection.on("SendPeerIdToteacher", function (data) {
+                connection.invoke("SendPeerId", groupName, studentPeerId);
+                console.log("SendPeerIdToteacher");
+            });
+
+
             connection.on("groupJoinState", function (data) {
                 var obj = JSON.parse(data);
                 groupName = obj.groupName;
                 console.log(groupName);
-                console.log(obj.message);
-            });
-
-            connection.on("SendPeerIdToteacher", function (data) {
-                connection.invoke("SendPeerId", groupName, studentPeerId);
+                alert(obj.message);
             });
 
 

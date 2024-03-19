@@ -21,16 +21,16 @@
             background-color: #f3f3fa;
         }
 
-        #table td {
-            border-top: 1px solid azure;
-            border-bottom: 1px solid azure;
-         }
+            #table td {
+                border-top: 1px solid azure;
+                border-bottom: 1px solid azure;
+            }
 
         .table-head {
             background-color: azure;
         }
 
-       
+
 
         #modal_content {
             background: url(https://img.freepik.com/premium-photo/empty-space-paper-copy-space_78502-575.jpg?w=1060) center center no-repeat;
@@ -70,7 +70,7 @@
         .btn:hover {
             transition: all .1s ease;
             box-shadow: 0 0 0 0 azure, 0 0 0 3px azure;
-            color:white;
+            color: white;
         }
 
         .bx-trash {
@@ -88,7 +88,7 @@
 <table class="table table-hover" id="table" style="width:100%">
     <thead class="table-head">
         <tr>
-         
+
             <th>
                 @Html.DisplayNameFor(model => model.科目)
             </th>
@@ -116,8 +116,8 @@
         @foreach (var item in Model)
         {
             <tr>
-               
-               
+
+
                 <td>
                     @Html.DisplayFor(modelItem => item.科目.科目名稱)
                 </td>
@@ -168,7 +168,7 @@
 
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/boxicons.js"></script>  
+    <script src="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/boxicons.js"></script>
 
     <script>
         let exampleModalLabel = document.getElementById("exampleModalLabel");
@@ -222,7 +222,7 @@
             });
 
         }
-         
+
         function popup_edit(id) {
 
             $.ajax({
@@ -241,7 +241,7 @@
                 }
             });
 
-        }      
+        }
         function popup_detail(id) {
 
             $.ajax({
@@ -267,7 +267,7 @@
 
             var selectedSubjects = [];
             $(document).on('change', '#subjectSelect', function () {
-               
+
                 var selectedSubjectId = $(this).val();
                 $.ajax({
                     url: '/course_management/T課程班級科目/GetTeachersBySubjectId/' + selectedSubjectId,
@@ -297,7 +297,7 @@
                 var teacherName = $(this).closest('tr').find('td:first').text();
                 var courseId = $(this).attr('data-course-id');
                 var courseName = $('#subjectSelect option:selected').text();
-               
+
                 //新增新的科目-老師組合 到陣列
                 selectedSubjects.push({ courseId: courseId, teacherId: teacherId });
                 console.log(selectedSubjects);
@@ -363,31 +363,31 @@
                     }
                 });
             });
-         
+
         });
 
 
     </script>
 
-    
-     <script>
-            function sendMail(email) {
-                $.ajax({
-                    url: "/course_management/T課程班級科目/sendMail" , 
-                    type: "POST",
-                    data: {
-                        email: email
-                    },
-                    success: function (response) {
-                        console.log("Success:", response);
-                        alert("成功");
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("Error:", error);
-                        alert("發生錯誤，請稍後再試。");
-                    }
-                });
-            }
+
+    <script>
+        function sendMail(email) {
+            $.ajax({
+                url: "/course_management/T課程班級科目/sendMail",
+                type: "POST",
+                data: {
+                    email: email
+                },
+                success: function (response) {
+                    console.log("Success:", response);
+                    alert("成功");
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error:", error);
+                    alert("發生錯誤，請稍後再試。");
+                }
+            });
+        }
 
         function notification(receiveId, sendId, classCourseId) {
             $.ajax({
@@ -408,7 +408,11 @@
                             console.log('Connected with connection ID:');
 
                             // 在連線建立後，調用 SignalR hub 方法通知接收者
+
                             connection.invoke("SendNotification", receiveId)
+                                .then(function () {
+                                    alert("您已傳送通知");
+                                })
                                 .catch(function (err) {
                                     return console.error(err.toString());
                                 });
@@ -427,6 +431,6 @@
         }
     </script>
 
-    
+
 
 }
