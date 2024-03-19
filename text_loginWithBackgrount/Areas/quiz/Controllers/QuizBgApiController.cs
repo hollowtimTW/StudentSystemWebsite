@@ -225,8 +225,6 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
                 return BadRequest($"查詢問題時出現錯誤：{ex.Message}");
             }
 
-
-
         }
 
 

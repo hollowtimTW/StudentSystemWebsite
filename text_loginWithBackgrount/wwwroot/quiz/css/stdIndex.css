@@ -1,0 +1,50 @@
+﻿.custom-button {
+    background-color: rgb(248, 90, 64);
+    border-color: rgba(255, 255, 255, 0.1);
+    font-size: 16px;
+}
+
+    .custom-button:hover {
+        background-color: rgb(248, 90, 64) !important;
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .custom-button:active {
+        background-color: rgb(0, 121, 107) !important;
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+.row .d-flex {
+    height: 150px;
+}
+
+#room-img {
+    max-width: 150px;
+}
+
+.errorMessage {
+    color: red;
+    font-size: 0.8rem;
+    display: none;
+    text-align: right;
+}
+
+
+.portfolio-item{
+
+}
+
+
+.filter-open .portfolio-wrap {
+    background-color: rgb(0, 131, 116);
+}
+
+.filter-close .portfolio-wrap {
+    background-color: #BEBEBE;
+}
+
+
+.portfolio-wrap {
+    padding: 12px;
+}
+

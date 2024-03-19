@@ -40,32 +40,68 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
 
 
         // 代碼搜尋
-        //[HttpGet("{quizCode}")]
-        //public IActionResult GetQuiz(string quizCode)
-        //{
-        //    var quiz = _context.TQuizQuizzes
-        //        .Where(p => p.FQcode == quizCode)
-        //        .Select(p => new
-        //        {
-        //            id = p.FQuizId,
-        //            name = p.FQname,
-        //            note = p.FNote,
-        //            code = p.FQcode,
-        //            limitTime = p.FLimitTime,
-        //            teacherId = p.FTeacher.姓名,
-        //            isPublic = p.FPublic,
-        //            isClosed = p.FClosed,
-        //            createTime = p.FCreateTime
-        //        })
-        //        .FirstOrDefault();
+        [HttpGet("{quizCode}")]
+        public IActionResult PrivateQuiz(string quizCode)
+        {
+            var quiz = _context.TQuizQuizzes
+                .Where(p => p.FQcode == quizCode)
+                .Select(p => new
+                {
+                    id = p.FQuizId,
+                    name = p.FQname,
+                    note = p.FNote,
+                    code = p.FQcode,
+                    limitTime = p.FLimitTime,
+                    teacherId = p.FTeacher.姓名,
+                    isPublic = p.FPublic,
+                    isClosed = p.FClosed,
+                    createTime = p.FCreateTime,
+                    count = _context.TQuizRecords.Count(r => r.FQuizId == p.FQuizId)
+                })
+                .FirstOrDefault();
 
-        //    if (result == null)
-        //    {
-        //        return BadRequest("匹配錯誤");
-        //    }
+            if (quiz == null)
+            {
+                return BadRequest("無此代碼");
+            }
 
-        //    return Json(result);
-        //}
+            return Json(quiz);
+        }
+
+
+
+        [HttpGet("{studentId}")]
+        public IActionResult GetQuizList(int studentId)
+        {
+            var quizList = _context.TQuizQuizzes
+                .Select(p => new
+                {
+                    id = p.FQuizId,
+                    name = p.FQname,
+                    note = p.FNote,
+                    limitTime = p.FLimitTime,
+                    teacherId = p.FTeacher.姓名,
+                    isPublic = p.FPublic,
+                    isClosed = p.FClosed,
+                    createTime = p.FCreateTime,
+                    count = _context.TQuizRecords.Count(r => r.FQuizId == p.FQuizId),
+                    hasRecord = _context.TQuizRecords.Any(r => r.FQuizId == p.FQuizId && r.FStudentId == studentId) ? 1 : 0
+                })
+                .OrderByDescending(p => p.count)
+                .ThenByDescending(p => p.isClosed)
+                .ToList(); 
+
+            if (quizList == null || quizList.Count == 0)
+            {
+                return BadRequest("無此代碼");
+            }
+
+            return Json(quizList);
+        }
+
+
+
+
 
 
 

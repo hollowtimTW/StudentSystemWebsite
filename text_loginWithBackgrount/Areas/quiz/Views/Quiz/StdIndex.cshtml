@@ -1,44 +1,13 @@
-﻿@{
+﻿@model List<QuizView>
+
+@{
     var studentId = User.Claims.FirstOrDefault(c => c.Type == "StudentId")?.Value;
     ViewData["Title"] = "測驗平台";
 }
 
 
 @section Styles {
-    <style>
-        .custom-button {
-            background-color: rgb(248, 90, 64);
-            border-color: rgba(255, 255, 255, 0.1);
-            font-size: 16px;
-        }
-
-        .custom-button:hover {
-            background-color: rgb(248, 90, 64) !important;
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .custom-button:active {
-                background-color: rgb(0, 121, 107) !important;
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .row .d-flex {
-            height: 150px;
-        }
-
-        #room-img {
-            max-width: 150px;
-        }
-
-        .errorMessage {
-            color: red;
-            font-size: 0.8rem;
-            display: none;
-            text-align: right;
-        }
-
-
-    </style>
+    <link href="~/quiz/css/stdindex.css" rel="stylesheet" />
 }
 
 
@@ -47,7 +16,6 @@
 
 
 @section BreadcrumbsSection {
-    <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
     <div class="breadcrumbs">
         <div class="page-header d-flex align-items-center" style="background-image: url('');">
             <div class="container position-relative">
@@ -75,6 +43,62 @@
 
 
 
+<section id="portfolio" class="portfolio" style="padding-top:0;">
+
+    <div class="container" data-aos="fade-up">
+
+        <div class="portfolio-isotope" data-portfolio-filter="*" data-portfolio-layout="masonry" data-portfolio-sort="original-order" data-aos="fade-up" data-aos-delay="100">
+
+            <!-- 分頁標題 -->
+            <div>
+                <ul class="portfolio-flters">
+                    <li data-filter="*" class="filter-active">All</li>
+                    <li data-filter=".filter-open">開放中</li>
+                    <li data-filter=".filter-close">已關閉</li>
+                    <li data-filter=".filter-finish">已完成</li>
+                </ul>
+            </div>
+
+            <!-- 簡單型圖文卡片 -->
+            <div class="row gy-4 portfolio-container">
+
+
+                @foreach (var quiz in Model)
+                {
+                    if (quiz.IsPublic == 0)
+                    {
+                        continue;
+                    }
+
+                    string attr = (quiz.IsClosed == 1) ? "filter-open" : "filter-close";
+
+                    if (quiz.HasRecord == 1)
+                    {
+                        attr += " filter-finish";
+                    }
+
+                    <div class="col-xl-4 col-md-6 portfolio-item @attr">
+                        <div class="portfolio-wrap">
+                            <div class="portfolio-info">
+                                <h3>
+                                    <div>@quiz.Name</div>
+                                </h3>
+                                <p>測驗人數: <span>@quiz.Count</span>人</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+             
+
+
+
+            </div><!-- End Portfolio Container -->
+        </div>
+
+    </div>
+</section><!-- End Portfolio Section -->
+
+
 
 
 
@@ -97,7 +121,7 @@
             <div class="modal-body">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon1">測驗代碼</span>
-                    <input type="text" class="form-control" id="inputQuizCode" placeholder="輸入代碼.." aria-label="Username" aria-describedby="basic-addon1">
+                    <input type="text" class="form-control" id="inputQuizCode" placeholder="輸入代碼..">
                 </div>
                 <div class="errorMessage">查無測驗代碼!</div>
             </div>
@@ -140,14 +164,11 @@
 
         $(document).ready(function () {
 
+            // 儲存全部測驗
+            var quizList = @Html.Raw(Json.Serialize(Model));
+            console.log(quizList)
 
-
-
-            $('#quizCodeBtn').on('click', function () {
-                $('.errorMessage').hide();
-            });
-
-
+            // 代碼搜尋
             $('#searchBtn').on('click', function () {
                 const quizCode = $('#inputQuizCode').val();
 
@@ -157,24 +178,62 @@
                 } else {
                     $('.errorMessage').hide();
                 }
-
-                $.ajax({
-                    url: `/Api/Quiz/GetQuiz/${quizCode}`,
-                    type: 'GET',
-                    success: function (result) {
-                        $('#searchModal').modal('hide');
-                        $('#previewModal').modal('show');
-                        
-
-
-
-                    },
-                    error: function (xhr, status, error) {
-                        console.error(xhr.responseText);
-                        $('.errorMessage').show();
-                    }
+                var foundQuiz = quizList.find(function (quiz) {
+                    return quiz.code === quizCode;
                 });
+
+                if (foundQuiz) {
+                    $('#searchModal').modal('hide');
+                    $('#previewModal').modal('show');
+                } else {
+                    console.error("Quiz not found");
+                    $('.errorMessage').show();
+                }
             });
+
+            $('#quizCodeBtn').on('click', function () {
+                $('.errorMessage').hide();
+                $('#inputQuizCode').val("");
+            });
+
+
+
+
+
+
+
+
+            // 初始載入
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
