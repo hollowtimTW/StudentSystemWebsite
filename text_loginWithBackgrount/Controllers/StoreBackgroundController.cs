@@ -77,7 +77,7 @@ namespace text_loginWithBackgrount.Controllers
                                   訂單編號 = (item.訂單詳細表id),
                                   餐點名稱 = b.餐點名稱,
                                   數量 = item.餐點數量,
-                                  金額 = Convert.ToInt32(b.餐點定價 * item.餐點數量),
+                                  金額 = Convert.ToInt32(item.金額小記),
                                   支付方式 = (a.支付方式).Trim(),
                                   訂單狀態 = item.狀態 == "1" ? "完成" : item.狀態 == "0" ? "進行中" : item.狀態 == "-1" ? "取消" : "取消",
                                   訂單日期 = (a.訂單時間).Substring(0, 4)+"-"+ (a.訂單時間).Substring(4, 2)+"-"+ (a.訂單時間).Substring(6, 2),
