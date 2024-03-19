@@ -196,16 +196,16 @@
 
         const loadData = async () => {
 
-            const resopnse = await fetch('@Url.Content("~/job_vacancy/JobAPI/CompanyJoblist")', {
+            const response = await fetch('@Url.Content("~/job_vacancy/JobAPI/CompanyJoblist")', {
                 'method': 'POST',
                 'body': JSON.stringify(searchData),
                 'headers': {
                     'Content-Type': 'application/json'
                 }
             });
-            if (resopnse.ok) {
-                const datas = await resopnse.json();
-                console.log(datas);
+            if (response.ok) {
+                const datas = await response.json();
+
                 // 檢查 JSON 資料是否為空
                 if (datas.companyJobsResult !== null && datas.companyJobsResult.length !== 0) {
 
@@ -282,7 +282,7 @@
                 }
             } else {
                 // 處理回應錯誤的情況
-                console.error('回應錯誤:', resopnse.statusText);
+                console.error('回應錯誤:', response.statusText);
             }
 
 

@@ -130,9 +130,15 @@
         // 根據 tabName 載入相應的的職缺資料
         const loadJobs = async (tabName) => {
             const response = await fetch(`@Url.Content("~/job_vacancy/JobAPI/GetJobsByTabName/${tabName}")`);
-            const jobs = await response.json();
+            if (response.ok) {
 
-            renderJobs(jobs, true);
+                const datas = await response.json();
+                renderJobs(datas, true);
+
+            } else {
+                // 處理回應錯誤的情況
+                console.error('回應錯誤:', response.statusText);
+            }
         }
 
         // 渲染職缺資料到UI
@@ -143,49 +149,63 @@
                 jobListElement.innerHTML = '';
             }
 
-            // 創建工作性質與圖片路徑的映射
-            const jobTypeImageMap = {
-                '全職': '@Url.Content("~/images/job_vacancy/fulltime.png")',
-                '兼職': '@Url.Content("~/images/job_vacancy/parttime.png")',
-                '派遣': '@Url.Content("~/images/job_vacancy/dispatche.png")',
-                'default': '@Url.Content("~/images/job_vacancy/jobtype.png")'
-            };
+            // 檢查資料是否為空
+            if (jobs !== null && jobs.length !== 0) {
 
-            jobs.forEach(job => {
+                // 創建工作性質與圖片路徑的映射
+                const jobTypeImageMap = {
+                    '全職': '@Url.Content("~/images/job_vacancy/fulltime.png")',
+                    '兼職': '@Url.Content("~/images/job_vacancy/parttime.png")',
+                    '派遣': '@Url.Content("~/images/job_vacancy/dispatche.png")',
+                    'default': '@Url.Content("~/images/job_vacancy/jobtype.png")'
+                };
 
-                //根據工作性質獲取對應的圖片
-                const jobTypeImagePath = jobTypeImageMap[job.jobType] || jobTypeImageMap['default'];
 
-                //設定顯示的工作地點
-                let jobLocation = job.jobLocation.substring(0, 6);
+                jobs.forEach(job => {
 
-                // 設定顯示的最後更新時間（呼叫共用方法）
-                let updateTime = formatDateTime(job.updateTime);
+                    //根據工作性質獲取對應的圖片
+                    const jobTypeImagePath = jobTypeImageMap[job.jobType] || jobTypeImageMap['default'];
 
-                const jobHTML = `<div class="job-item p-4 mb-4">
-                                    <div class="row g-4">
-                                        <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                            <img src="${jobTypeImagePath}" class="img-fluid border rounded flex-shrink-0" alt="">
-                                            <div class="text-start ps-4">
-                                                <h5>${job.jobTitle}</h5>
-                                                <h6 class="mb-3"><a href="/job_vacancy/Job/CompanyDetails/${job.companyID}">${job.companyName}</a></h6>
-                                                <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> ${jobLocation}</span>
-                                                <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> ${job.jobType}</span>
-                                                <span class="text-truncate me-3"><i class="bi bi-cash flex-shrink-0"></i> ${job.salary}</span>
-                                                <span class="text-truncate me-0"><i class="bi bi-people-fill flex-shrink-0"></i> ${job.requiredPeople}</span>
+                    //設定顯示的工作地點
+                    let jobLocation = job.jobLocation.substring(0, 6);
+
+                    // 設定顯示的最後更新時間（呼叫共用方法）
+                    let updateTime = formatDateTime(job.updateTime);
+
+                    const jobHTML = `<div class="job-item p-4 mb-4">
+                                            <div class="row g-4">
+                                                <div class="col-sm-12 col-md-8 d-flex align-items-center">
+                                                    <img src="${jobTypeImagePath}" class="img-fluid border rounded flex-shrink-0" alt="">
+                                                    <div class="text-start ps-4">
+                                                        <h5>${job.jobTitle}</h5>
+                                                        <h6 class="mb-3"><a href="/job_vacancy/Job/CompanyDetails/${job.companyID}">${job.companyName}</a></h6>
+                                                        <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> ${jobLocation}</span>
+                                                        <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> ${job.jobType}</span>
+                                                        <span class="text-truncate me-3"><i class="bi bi-cash flex-shrink-0"></i> ${job.salary}</span>
+                                                        <span class="text-truncate me-0"><i class="bi bi-people-fill flex-shrink-0"></i> ${job.requiredPeople}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                                    <div class="d-flex mb-3 mt-3">
+                                                        <a href="/job_vacancy/Job/JobDetails/${job.jobID}" class="btn-detail">詳細資訊</a>
+                                                    </div>
+                                                    <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：${updateTime}</small>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
-                                            <div class="d-flex mb-3 mt-3">
-                                                <a href="/job_vacancy/Job/JobDetails/${job.jobID}" class="btn-detail">詳細資訊</a>
-                                            </div>
-                                            <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：${updateTime}</small>
-                                        </div>
-                                    </div>
-                                </div>`;
+                                        </div>`;
 
-                jobListElement.innerHTML += jobHTML;
-            });
+                    jobListElement.innerHTML += jobHTML;
+                });
+            }
+            else {
+                console.log('沒有返回任何資料');
+
+                jobListElement.innerHTML = `<div class="job-item item-border p-4 mb-4">
+                                                <div class="row g-4">
+                                                            目前沒有職缺
+                                                </div>
+                                            </div>`;
+            }
         }
 
         // 初始化頁面，默認加載全部職缺
