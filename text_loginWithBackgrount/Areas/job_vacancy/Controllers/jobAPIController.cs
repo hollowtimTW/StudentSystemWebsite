@@ -383,7 +383,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                                 from record in _studentContext.T工作應徵工作紀錄s.Include(record => record.F職缺.F公司)
                                 join favorite in _studentContext.T工作儲存工作紀錄s
                                     on record.F職缺Id equals favorite.F職缺Id into favGroup
-                                from fav in favGroup.DefaultIfEmpty()
+                                from fav in favGroup.Where(f => f.F學員Id == studentID).DefaultIfEmpty()
                                 where record.F學員Id == studentID && record.F刪除狀態 == "0"
                                 orderby record.F應徵時間 descending
                                 select new { Record = record, Favorite = fav }
@@ -474,11 +474,12 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                                 from job in _studentContext.T工作推薦職缺s.Include(job => job.F職缺.F公司)
                                 join favorite in _studentContext.T工作儲存工作紀錄s
                                     on job.F職缺Id equals favorite.F職缺Id into favGroup
-                                from fav in favGroup.DefaultIfEmpty()
+                                from fav in favGroup.Where(f => f.F學員Id == studentID).DefaultIfEmpty()
                                 where job.F學員Id == studentID
                                 select new { Recommend = job, Favorite = fav }
                             )
                             .ToListAsync();
+
 
             var viewModelList = new List<MyRecommendedJobsViewModel>();
 

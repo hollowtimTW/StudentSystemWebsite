@@ -41,8 +41,9 @@
         }
         else
         {
-            <div>
-                <h3>還沒有推薦職缺</h3>
+            <div class="d-flex flex-column align-items-center justify-content-center" style="height: 500px">
+                <h3 class="mb-4">您還沒有建立任何履歷，還無法推薦職缺唷！</h3>
+                <a asp-area="job_vacancy" asp-controller="Job" asp-action="Index" class="btn btn-normal">熱門職缺一覽</a>
             </div>
         }
         
