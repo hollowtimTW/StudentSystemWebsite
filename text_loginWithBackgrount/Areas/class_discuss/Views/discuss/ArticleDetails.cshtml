@@ -3,6 +3,12 @@
 *@
 @{
     ViewData["Title"] = @ViewBag.artName;
+    string subName = ViewBag.subName;
+    int subId = ViewBag.subId;
+    string artName = ViewBag.artName;
+    int artId = ViewBag.artId;
+    int writerId = ViewBag.writerId;
+    int userId = ViewBag.userId;
 }
 @section BreadcrumbsSection {
     <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
@@ -23,16 +29,16 @@
                 <ol>
                     <li><a asp-area="" asp-controller="Template" asp-action="Index">首頁</a></li>
                     <li><a asp-area="class_discuss" asp-controller="discuss" asp-action="Index">學生論壇</a></li>
-                    <li><a href="/class_discuss/discuss/Articles?subid=@ViewBag.subId">@ViewBag.subName</a></li>
+                    <li><a href="/class_discuss/discuss/Articles?subid=@subId">@subName</a></li>
                     <li>@ViewData["Title"]</li>
                 </ol>
                 <div id="btn" style="display: none;">
-                <a class="btn btn-entrance">
-                    刪除文章
-                </a>
-                <a href="~/class_discuss/discuss/ArticleEdit?subid=@ViewBag.subId&artid=@ViewBag.artId" class="btn btn-entrance">
-                    修改文章
-                </a>
+                    <a id="btnDelete" class="btn btn-entrance">
+                        刪除文章
+                    </a>
+                    <a href="~/class_discuss/discuss/ArticleEdit?subid=@subId&artid=@artId" class="btn btn-entrance">
+                        修改文章
+                    </a>
                 </div>
             </div>
         </nav>
@@ -46,54 +52,51 @@
         <div class="row g-5">
 
             <!-- 文章內容區 -->
-                <article class="blog-details" id="artDetail">
+            <article class="blog-details" id="artDetail">
                 <!-- 標題 -->
-                    <h2 class="title">Dolorum optio tempore voluptas dignissimos cumque fuga qui quibusdam quia</h2>
+                <h2 class="title">Dolorum optio tempore voluptas dignissimos cumque fuga qui quibusdam quia</h2>
                 <!-- 作者/時間/留言數 -->
-                    <div class="meta-top">
-                        <ul>
-                            <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a asp-area="" asp-controller="Home" asp-action="BlogDetails">John Doe</a></li>
-                            <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a asp-area="" asp-controller="Home" asp-action="BlogDetails"><time datetime="2020-01-01">Jan 1, 2022</time></a></li>
-                            <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a asp-area="" asp-controller="Home" asp-action="BlogDetails">12 Comments</a></li>
-                        </ul>
-                    </div><!-- End meta top -->
+                <div class="meta-top">
+                    <ul>
+                        <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a asp-area="" asp-controller="Home" asp-action="BlogDetails">John Doe</a></li>
+                        <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a asp-area="" asp-controller="Home" asp-action="BlogDetails"><time datetime="2020-01-01">Jan 1, 2022</time></a></li>
+                        <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a asp-area="" asp-controller="Home" asp-action="BlogDetails">12 Comments</a></li>
+                    </ul>
+                </div><!-- End meta top -->
                 <!-- 內容 -->
-                    <div class="content">內容載入失敗了啦 ==</div><!-- End post content -->
-
+                <div class="content">內容載入失敗了啦 ==</div><!-- End post content -->
                 <!-- 標籤 -->
-                    <div class="meta-bottom">
-                        <i class="bi bi-tags"></i>
-                        <ul class="tags">
-                            <li><a href="#">Creative</a></li>
-                            <li><a href="#">Tips</a></li>
-                            <li><a href="#">Marketing</a></li>
-                        </ul>
-                    </div><!-- End meta bottom -->
+                <div class="meta-bottom">
+                    <i class="bi bi-tags"></i>
+                    <ul class="tags">
+                        <li><a href="#">Creative</a></li>
+                        <li><a href="#">Tips</a></li>
+                        <li><a href="#">Marketing</a></li>
+                    </ul>
+                </div><!-- End meta bottom -->
 
-                </article><!-- End blog post -->
-
+            </article><!-- End blog post -->
             <!-- 作者資料區 -->
-                <div class="post-author d-flex align-items-center" id="writer">
-                    <img src="~/assets/img/blog/blog-author.jpg" class="rounded-circle flex-shrink-0" alt="">
-                    <div>
-                        <h4>Jane Smith</h4>
-                        <div class="social-links">
-                            <a href="https://twitters.com/#"><i class="bi bi-twitter"></i></a>
-                            <a href="https://facebook.com/#"><i class="bi bi-facebook"></i></a>
-                            <a href="https://instagram.com/#"><i class="biu bi-instagram"></i></a>
-                        </div>
-                        <p>
-                            Itaque quidem optio quia voluptatibus dolorem dolor. Modi eum sed possimus accusantium. Quas repellat voluptatem officia numquam sint aspernatur voluptas. Esse et accusantium ut unde voluptas.
-                        </p>
+            <div class="post-author d-flex align-items-center" id="writer">
+                <img src="~/assets/img/blog/blog-author.jpg" class="rounded-circle flex-shrink-0" alt="">
+                <div>
+                    <h4>Jane Smith</h4>
+                    <div class="social-links">
+                        <a href="https://twitters.com/#"><i class="bi bi-twitter"></i></a>
+                        <a href="https://facebook.com/#"><i class="bi bi-facebook"></i></a>
+                        <a href="https://instagram.com/#"><i class="biu bi-instagram"></i></a>
                     </div>
-                </div><!-- End post author -->
-
+                    <p>
+                        Itaque quidem optio quia voluptatibus dolorem dolor. Modi eum sed possimus accusantium. Quas repellat voluptatem officia numquam sint aspernatur voluptas. Esse et accusantium ut unde voluptas.
+                    </p>
+                </div>
+            </div><!-- End post author -->
             <!-- 留言區 -->
-                <div class="comments">
+            <div class="comments">
                 <!-- 留言數 -->
-                    <h4 class="comments-count">8 Comments</h4>
+                <h4 class="comments-count">8 Comments</h4>
                 <!-- 留言#1 -->
-                    <div id="comment-1" class="comment">
+                <div id="comment-1" class="comment">
                     <div class="d-flex">
                         <div class="comment-img"><img src="~/assets/img/blog/comments-1.jpg" alt=""></div>
                         <div>
@@ -107,128 +110,141 @@
                     </div>
                 </div><!-- End comment #1 -->
                 <!-- 留言#2 -->
-                    <div id="comment-2" class="comment">
+                <div id="comment-2" class="comment">
+                    <div class="d-flex">
+                        <div class="comment-img"><img src="~/assets/img/blog/comments-2.jpg" alt=""></div>
+                        <div>
+                            <h5><a href="">Aron Alvarado</a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
+                            <time datetime="2020-01-01">01 Jan,2022</time>
+                            <p>
+                                Ipsam tempora sequi voluptatem quis sapiente non. Autem itaque eveniet saepe. Officiis illo ut beatae.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- 留言回復 -->
+                    <div id="comment-reply-1" class="comment comment-reply">
                         <div class="d-flex">
-                            <div class="comment-img"><img src="~/assets/img/blog/comments-2.jpg" alt=""></div>
+                            <div class="comment-img"><img src="~/assets/img/blog/comments-3.jpg" alt=""></div>
                             <div>
-                                <h5><a href="">Aron Alvarado</a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
+                                <h5><a href="">Lynda Small</a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
                                 <time datetime="2020-01-01">01 Jan,2022</time>
                                 <p>
-                                    Ipsam tempora sequi voluptatem quis sapiente non. Autem itaque eveniet saepe. Officiis illo ut beatae.
+                                    Enim ipsa eum fugiat fuga repellat. Commodi quo quo dicta. Est ullam aspernatur ut vitae quia mollitia id non. Qui ad quas nostrum rerum sed necessitatibus aut est. Eum officiis sed repellat maxime vero nisi natus. Amet nesciunt nesciunt qui illum omnis est et dolor recusandae.
+
+                                    Recusandae sit ad aut impedit et. Ipsa labore dolor impedit et natus in porro aut. Magnam qui cum. Illo similique occaecati nihil modi eligendi. Pariatur distinctio labore omnis incidunt et illum. Expedita et dignissimos distinctio laborum minima fugiat.
+
+                                    Libero corporis qui. Nam illo odio beatae enim ducimus. Harum reiciendis error dolorum non autem quisquam vero rerum neque.
                                 </p>
                             </div>
                         </div>
-                    <!-- 留言回復 -->
-                        <div id="comment-reply-1" class="comment comment-reply">
+
+                        <div id="comment-reply-2" class="comment comment-reply">
                             <div class="d-flex">
-                                <div class="comment-img"><img src="~/assets/img/blog/comments-3.jpg" alt=""></div>
+                                <div class="comment-img"><img src="~/assets/img/blog/comments-4.jpg" alt=""></div>
                                 <div>
-                                    <h5><a href="">Lynda Small</a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
+                                    <h5><a href="">Sianna Ramsay</a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
                                     <time datetime="2020-01-01">01 Jan,2022</time>
                                     <p>
-                                        Enim ipsa eum fugiat fuga repellat. Commodi quo quo dicta. Est ullam aspernatur ut vitae quia mollitia id non. Qui ad quas nostrum rerum sed necessitatibus aut est. Eum officiis sed repellat maxime vero nisi natus. Amet nesciunt nesciunt qui illum omnis est et dolor recusandae.
-
-                                        Recusandae sit ad aut impedit et. Ipsa labore dolor impedit et natus in porro aut. Magnam qui cum. Illo similique occaecati nihil modi eligendi. Pariatur distinctio labore omnis incidunt et illum. Expedita et dignissimos distinctio laborum minima fugiat.
-
-                                        Libero corporis qui. Nam illo odio beatae enim ducimus. Harum reiciendis error dolorum non autem quisquam vero rerum neque.
+                                        Et dignissimos impedit nulla et quo distinctio ex nemo. Omnis quia dolores cupiditate et. Ut unde qui eligendi sapiente omnis ullam. Placeat porro est commodi est officiis voluptas repellat quisquam possimus. Perferendis id consectetur necessitatibus.
                                     </p>
                                 </div>
                             </div>
 
-                            <div id="comment-reply-2" class="comment comment-reply">
-                                <div class="d-flex">
-                                    <div class="comment-img"><img src="~/assets/img/blog/comments-4.jpg" alt=""></div>
-                                    <div>
-                                        <h5><a href="">Sianna Ramsay</a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
-                                        <time datetime="2020-01-01">01 Jan,2022</time>
-                                        <p>
-                                            Et dignissimos impedit nulla et quo distinctio ex nemo. Omnis quia dolores cupiditate et. Ut unde qui eligendi sapiente omnis ullam. Placeat porro est commodi est officiis voluptas repellat quisquam possimus. Perferendis id consectetur necessitatibus.
-                                        </p>
-                                    </div>
-                                </div>
+                        </div><!-- End comment reply #2-->
 
-                            </div><!-- End comment reply #2-->
+                    </div><!-- End comment reply #1-->
 
-                        </div><!-- End comment reply #1-->
+                </div><!-- End comment #2-->
 
-                    </div><!-- End comment #2-->
-
-                </div><!-- End blog comments -->
+            </div><!-- End blog comments -->
 
         </div>
     </div>
 </section><!-- End Blog Details Section -->
-
-@section Scripts{
+@section Scripts {
     <script>
         //文章內容
         (async () => {
-            const artId = @ViewBag.artId;
-            const url = `@Url.Content("~/WebApi/Article")?id=${artId}`;
+            const url = `@Url.Content("~/WebApi/Article")?id=${@artId}`;
             const request = await fetch(url);
             const data = await request.json();
             const datalist = data.map(a => `
-                <!-- 標題 -->
-                    <h2 class="title">${a.標題}</h2>
-                <!-- 作者/時間/留言數 -->
-                    <div class="meta-top">
-                        <ul>
-                            <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="#writer">${a.作者}</a></li>
-                            <li class="d-flex align-items-center"><i class="bi bi-clock"></i><time datetime="2022-01-01">${a.日期}</time></li>
-                            <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a asp-area="" asp-controller="Home" asp-action="BlogDetails">還沒做</a></li>
-                        </ul>
-                    </div><!-- End meta top -->
-                <!-- 內容 -->
-                    <div class="content">${a.內容}</div><!-- End post content -->
+                        <!-- 標題 -->
+                            <h2 class="title">${a.標題}</h2>
+                        <!-- 作者/時間/留言數 -->
+                            <div class="meta-top">
+                                <ul>
+                                    <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="#writer">${a.作者}</a></li>
+                                    <li class="d-flex align-items-center"><i class="bi bi-clock"></i><time datetime="2022-01-01">"修改日期：${a.日期}"</time></li>
+                                    <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a asp-area="" asp-controller="Home" asp-action="BlogDetails">還沒做</a></li>
+                                </ul>
+                            </div><!-- End meta top -->
+                        <!-- 內容 -->
+                            <div class="content">${a.內容}</div><!-- End post content -->
 
-                <!-- 標籤 -->
-                    <div class="meta-bottom">
-                        <i class="bi bi-tags"></i>
-                        <ul class="tags">
-                            <li>${a.分類}</li>
-                        </ul>
-                    </div><!-- End meta bottom -->
-            `);
+                        <!-- 標籤 -->
+                            <div class="meta-bottom">
+                                <i class="bi bi-tags"></i>
+                                <ul class="tags">
+                                    <li>${a.分類}</li>
+                                </ul>
+                            </div><!-- End meta bottom -->
+                    `);
             $('#artDetail').html(datalist);
         })();
         //作者欄
         (async () => {
-            const artId = @ViewBag.artId;
-            const url = `@Url.Content("~/WebApi/Writer")?id=${artId}`;
+            const url = `@Url.Content("~/WebApi/Writer")?id=${@artId}`;
             const request = await fetch(url);
             const data = await request.json();
             const defaultImage = '/images/t論壇/預設頭像.png';
             const datalist = data.map(a => `
-                <img src="${a.頭像 ? 'data:image/jpeg;base64,' + a.頭像 : defaultImage}" class="rounded-circle flex-shrink-0" alt="">
-                    <div>
-                        <h4>${a.作者}</h4>
-                        <div class="social-links">
-                            <p>${a.信箱}</p>
-                        </div>
-                        <div class="meta-bottom">
-                        <ul class="tags">
-                            <li>${a.學校}</li>
-                            <li>${a.科系}</li>
-                        </ul>
-                    </div>
-                    </div>
-            `);
+                        <img src="${a.頭像 ? 'data:image/jpeg;base64,' + a.頭像 : defaultImage}" class="rounded-circle flex-shrink-0" alt="">
+                            <div>
+                                <h4>${a.作者}</h4>
+                                <div class="social-links">
+                                    <p>${a.信箱}</p>
+                                </div>
+                                <div class="meta-bottom">
+                                <ul class="tags">
+                                    <li>${a.學校}</li>
+                                    <li>${a.科系}</li>
+                                </ul>
+                            </div>
+                            </div>
+                    `);
             $('#writer').html(datalist);
         })();
 
         //刪除修改按鈕顯示
         document.addEventListener('DOMContentLoaded', function () {
-            var dataId = @ViewBag.writerId;
-            var loginId = @ViewBag.userId;
+            var dataId = @writerId;
+            var loginId = @userId;
 
             var btn = document.getElementById('btn');
-
-            // 检查dataId和loginId是否相同
             if (dataId === loginId) {
-                // 如果相同，显示按钮
                 btn.style.display = 'block';
             }
         });
 
+        var btnDelete = document.getElementById('btnDelete');
+        var subid = @subId;
+        var artid = @artId;
+        btnDelete.addEventListener('click', function () {
+            var confirmation = confirm("確定要刪除文章嗎?");
+            if (confirmation) {
+                $.ajax({
+                    type: "POST",
+                    url: "/class_discuss/discuss/ArticleDelete",
+                    data: { subid: subid, artid: artid },
+                    success: function (response) {
+                        window.location.href = "/class_discuss/discuss/Articles?subid=@subId";
+                    },
+                    error: function () {
+                        console.log("刪除失敗");
+                    }
+                });
+            }
+        })
     </script>
 }

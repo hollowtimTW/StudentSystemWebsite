@@ -6,6 +6,8 @@
 
 @{
     ViewData["Title"] = "新增文章";
+    int subId = ViewBag.subId;
+    string subName = ViewBag.subName;
 }
 @section BreadcrumbsSection {
     <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
@@ -26,7 +28,7 @@
                 <ol>
                     <li><a asp-area="" asp-controller="Template" asp-action="Index">首頁</a></li>
                     <li><a asp-area="class_discuss" asp-controller="discuss" asp-action="Index">學生論壇</a></li>
-                    <li><a href="/class_discuss/discuss/Articles?subid=@ViewBag.subId">@ViewBag.subName</a></li>
+                    <li><a href="/class_discuss/discuss/Articles?subid=@subId">@subName</a></li>
                     <li>@ViewData["Title"]</li>
                 </ol>
             </div>
@@ -67,7 +69,7 @@
 
             <!-- 表單區 -->
             <div class="col-lg-8">
-                <form action="~/class_discuss/discuss/ArticleCreate?subid=@ViewBag.subId" method="post" role="form" class="php-email-form">
+                <form action="~/class_discuss/discuss/ArticleCreate?subid=@subId" method="post" role="form" class="php-email-form">
                     <div class="row">
                         <!-- 子版標籤 -->
                         <div class="col-md-6 form-group">
@@ -123,7 +125,10 @@
 
         $("#cancel").click(function (e) {
             e.preventDefault();
-            window.location.href = "/class_discuss/discuss/Articles?subid=@ViewBag.subId";
+            window.location.href = "/class_discuss/discuss/Articles?subid=@subId";
+        });
+        $("#done").click(function (e) {
+            window.location.href = "/class_discuss/discuss/Articles?subid=@subId";
         });
     </script>
 }
