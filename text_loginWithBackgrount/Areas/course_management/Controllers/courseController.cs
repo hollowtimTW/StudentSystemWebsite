@@ -35,6 +35,7 @@ namespace text_loginWithBackgrount.Areas.course_management.Controllers
                 //如果null前端會顯示不同的資訊
                 var classlist = await classContext.ToListAsync();
                 return View(classlist);
+
             }catch (Exception ex)
             {
                 Console.WriteLine($"發生錯誤: {ex.Message}");

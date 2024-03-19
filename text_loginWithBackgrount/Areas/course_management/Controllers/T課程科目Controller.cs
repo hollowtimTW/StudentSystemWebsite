@@ -23,123 +23,174 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
             _context = context;
         }
 
-        //course_management/T課程科目
-        public  IActionResult Index()
+        //course_management/T課程科目/ [read]
+        // <summary>
+        // 這個方法用於呈現科目管理系統中的課程科目子功能。
+        // </summary>
+        // <returns>成功進入該頁面後，返回空的沒有模型的頁面，讓頁面上的datatable去render</returns>
+        public IActionResult Index()
         {
             return View();
         }
-        
+
+        //course_management/T課程科目/ [read]
+        // <summary>
+        // 這個方法用於呈現科目管理系統中的課程科目子功能頁面的datatable數據來源。
+        // </summary>
+        // <returns>成功，返回josn的數據</returns>
         public async Task<JsonResult> IndexJson()
         {
 
-            var viewModel = await _context.T課程科目s
-           .Where(t => t.狀態 == 1)
-           .Select(t => new courseIndexViewModel
-           {
-               科目id = t.科目id,
-               科目名稱 = t.科目名稱,
-               科目類別id = t.科目類別id,
-               科目類別名稱 = t.科目類別.科目類別名稱,
-               狀態 = t.狀態
-           }).ToListAsync();
-
-            return Json(viewModel);
-
-
-        }
-
-        //course_management/T課程科目/Details
-        [HttpGet, ActionName("Details")]
-        public async Task<IActionResult> DetailsPartialView(int? id)
-        {
-            if (id == null || _context.T課程科目s == null)
+            try
             {
-                return NotFound();
+                var viewModel = await _context.T課程科目s
+                    .Where(t => t.狀態 == 1)
+                    .Select(t => new courseIndexViewModel
+                    {
+                        科目id = t.科目id,
+                        科目名稱 = t.科目名稱,
+                        科目類別id = t.科目類別id,
+                        科目類別名稱 = t.科目類別.科目類別名稱,
+                        狀態 = t.狀態
+                    }).ToListAsync();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                
+                Console.WriteLine($"發生錯誤: {ex.Message}");
+                //前端會處理error的屬性
+                return Json(new { error = "Failed to retrieve data. Please try again later." });
             }
 
-            var t課程科目 = await _context.T課程科目s
-                .Include(t => t.科目類別)
-                .FirstOrDefaultAsync(m => m.科目id == id);
-            if (t課程科目 == null)
-            {
-                return NotFound();
-            }
 
-            return PartialView("_DetailsPartial",t課程科目);
         }
 
         //course_management/T課程科目/Create
+        // <summary>
+        // 這個方法用於呈現科目管理系統中的課程科目子功能頁面的create。
+        // </summary>
+        // <returns>成功，返回create 的 partialView</returns>
         [HttpGet, ActionName("Create")]
         public IActionResult CreatePartialView()
         {
-            var categories = _context.T課程科目分類s.ToList();
-            SelectList categorySelectList = new SelectList(_context.T課程科目分類s
-             .Where(t => t.狀態 == 1)
-             .Select(c=>new
+            try
             {
-                Categoryid=c.科目類別id,
-                CategoryName = c.科目類別名稱
-            }), "Categoryid", "CategoryName");
+                var categories = _context.T課程科目分類s.ToList();
 
-            ViewBag.Category = categorySelectList;
+                SelectList categorySelectList = 
+                new SelectList(
+                 _context.T課程科目分類s
+                 .Select(c => new
+                 {
+                     Categoryid = c.科目類別id,
+                     CategoryName = c.科目類別名稱
+                 })
+                 ,"Categoryid", "CategoryName");
 
-            return PartialView("_CreatePartial");
+                //如果SelectList是null 前端處理呈現不同資料
+                ViewBag.Category = categorySelectList;
+
+                return PartialView("_CreatePartial");
+
+            }catch (Exception ex)
+            {
+                Console.WriteLine($"發生錯誤: {ex.Message}");
+                return View("Error");
+            }
 
         }
 
+        //course_management/T課程科目/Create
+        // <summary>
+        // 這個方法用於接收科目管理系統中的課程科目子功能頁面的create回傳的資料 透過model去接收。
+        // </summary>
+        // <param name="t課程科目">T課程科目類別的model。</param>
+        // <returns>成功，返回create 的 model</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("科目名稱,科目類別id,狀態")] T課程科目 t課程科目)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(t課程科目);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-               
-                
+                try
+                {
+                    _context.Add(t課程科目);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }catch (Exception ex)
+                {
+                    Console.WriteLine($"發生錯誤: {ex.Message}");
+
+                    return View("Error");
+
+                }
+
             }
-            return View(t課程科目);
+            //如果驗證失敗就返回error
+            return View("Error");
 
         }
 
-
-        //course_management/T課程科目/Edit/5
+        //course_management/T課程科目/Edit
+        // <summary>
+        // 這個方法用於呈現科目管理系統中的課程科目子功能頁面的edit。
+        // </summary>
+        // <param name="id">課程科目id。</param>
+        // <returns>成功，返回edit 的 partialView</returns>
         [HttpGet, ActionName("Edit")]
         public async Task<IActionResult> EditPartialView(int? id)
         {
-            if (id == null || _context.T課程科目s == null)
+            try
             {
-                return NotFound();
+                if (id == null || id == 0 || _context.T課程科目s == null)
+                {
+                    return View("Error");
+
+                }
+
+                var t課程科目 = await _context.T課程科目s.FindAsync(id);
+                if (t課程科目 == null)
+                {
+                    return View("Error");
+
+                }
+
+                var categories = _context.T課程科目分類s.ToList();
+                SelectList categorySelectList = new SelectList(_context.T課程科目分類s                 
+                    .Select(c => new
+                    {
+                        Categoryid = c.科目類別id,
+                        CategoryName = c.科目類別名稱
+                    }), "Categoryid", "CategoryName");
+
+                //如果null前端處理呈現不同資料
+                ViewBag.Category = categorySelectList;
+
+                return PartialView("_EditPartial", t課程科目);
             }
-
-            var t課程科目 = await _context.T課程科目s.FindAsync(id);
-            if (t課程科目 == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                Console.WriteLine($"發生錯誤: {ex.Message}");
+                return View("Error");
             }
-
-            var categories = _context.T課程科目分類s.ToList();
-            SelectList categorySelectList = new SelectList(_context.T課程科目分類s
-                 .Where(t => t.狀態 == 1)
-                .Select(c => new
-            {
-                Categoryid = c.科目類別id,
-                CategoryName = c.科目類別名稱
-            }), "Categoryid", "CategoryName");
-
-            ViewBag.Category = categorySelectList;
-
-            return PartialView("_EditPartial", t課程科目);
         }
 
+        //course_management/T課程科目/Edit
+        // <summary>
+        // 這個方法用於接收科目管理系統中的課程科目子功能頁面的edit回傳的資料 透過model去接收。
+        // </summary>
+        // <param name="t課程科目">T課程科目類別的model。</param>
+        // <returns>成功，返回edit 的 model，並更新課程科目表的對應資料</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("科目id,科目名稱,科目類別id,狀態")] T課程科目 t課程科目)
         {
             if (id != t課程科目.科目id)
             {
-                return NotFound();
+                return View("Error");
+
             }
 
             if (ModelState.IsValid)
@@ -148,54 +199,62 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
                 {
                     _context.Update(t課程科目);
                     await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
+                    return RedirectToAction(nameof(Index));
+
+                }catch (Exception ex)
                 {
-                    if (!T課程科目Exists(t課程科目.科目id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    Console.WriteLine($"發生錯誤: {ex.Message}");
+                    return View("Error");                 
                 }
-                return RedirectToAction(nameof(Index));
+
+            }else{
+                return View("Error");
             }
 
-            //如果沒成功
-            var categories = _context.T課程科目分類s.ToList();
-            SelectList categorySelectList = new SelectList(_context.T課程科目分類s.Select(c => new
-            {
-                Categoryid = c.科目類別id,
-                CategoryName = c.科目類別名稱
-            }), "Categoryid", "CategoryName");
-
-            ViewBag.Category = categorySelectList; 
-            return View(t課程科目);
+          
         }
 
-        // GET: course_management/T課程科目/Delete/5
+        // GET: course_management/T課程科目/Delete
+        // <summary>
+        // 這個方法用於呈現科目管理系統中的課程科目子功能頁面的delete。
+        // </summary>
+        // <param name="id">課程科目id。</param>
+        // <returns>成功，返回delete 的 partialView</returns>
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.T課程科目s == null)
+            try
             {
-                return NotFound();
-            }
+                if (id == null || id == 0 || _context.T課程科目s == null)
+                {
+                    return View("Error");
+                }
 
-            var t課程科目 = await _context.T課程科目s
-                .Include(t => t.科目類別)
-                .FirstOrDefaultAsync(m => m.科目id == id);
-            if (t課程科目 == null)
+                var t課程科目 = await _context.T課程科目s
+                    .Include(t => t.科目類別)
+                    .FirstOrDefaultAsync(m => m.科目id == id);
+
+                if (t課程科目 == null)
+                {
+                    return View("Error");
+                }
+
+                return PartialView("_DeletePartial", t課程科目);
+            }
+            catch (Exception ex)
             {
-                return NotFound();
-            }
+                Console.WriteLine($"發生錯誤: {ex.Message}");
+                return View("Error");
 
-            return PartialView("_DeletePartial", t課程科目);
+            }
 
         }
 
-        // POST: course_management/T課程科目/Delete/5
+        // POST: course_management/T課程科目/Delete
+        // <summary>
+        // 這個方法用於接收科目管理系統中的課程科目子功能頁面的delete回傳的資料 透過model去接收。。
+        // </summary>
+        // <param name="id">課程科目id。</param>
+        // <returns>成功，刪除課程科目表內的對應資料，返回到index頁面</returns>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -204,16 +263,64 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
             {
                 return Problem("Entity set 'studentContext.T課程科目s'  is null.");
             }
-            var t課程科目 = await _context.T課程科目s.FindAsync(id);
-            if (t課程科目 != null)
+
+            try
             {
-                _context.T課程科目s.Remove(t課程科目);
+                var t課程科目 = await _context.T課程科目s.FindAsync(id);
+                if (t課程科目 != null)
+                {
+                    _context.T課程科目s.Remove(t課程科目);
+                }
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+
+            } catch (Exception ex)
+            {
+                Console.WriteLine($"發生錯誤: {ex.Message}");
+                return View("Error");
             }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+           
         }
 
+        //course_management/T課程科目/Details
+        // <summary>
+        // 這個方法用於呈現科目管理系統中的課程科目子功能頁面的Details。
+        // </summary>
+        // <param name="id">課程科目id。</param>
+        // <returns>成功，返回Details 的 partialView</returns>
+        [HttpGet, ActionName("Details")]
+        public async Task<IActionResult> DetailsPartialView(int? id)
+        {
+            if (id == null ||  id == 0 || _context.T課程科目s == null)
+            {
+                return View("Error");
+            }
+
+            try
+            {
+
+                var t課程科目 = await _context.T課程科目s
+                .Include(t => t.科目類別)
+                .FirstOrDefaultAsync(m => m.科目id == id);
+                if (t課程科目 == null)
+                {
+                    return View("Error");
+                }
+
+                return PartialView("_DetailsPartial", t課程科目);
+            } catch (Exception ex)
+            {
+                Console.WriteLine($"發生錯誤: {ex.Message}");
+                return View("Error");
+            }
+        }
+
+
+        //course_management/T課程科目/CourseTeacher
+        // <summary>
+        // 這個方法用於呈現科目管理系統中的課程科目子功能頁面的add teacher。
+        // </summary>
+        // <returns>成功，返回_IndexCourseteacherPartial 的 partialView</returns>
         [HttpGet, ActionName("CourseTeacher")]
         public  IActionResult IndexCourseteacherView()
         {
@@ -222,70 +329,127 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
 
         }
 
+        //course_management/T課程科目/CourseTeacher
+        // <summary>
+        // 這個方法用於接收科目管理系統中的課程科目子功能頁面的add teacher的表單。
+        // </summary>
+        // <param name="t課程老師科目">T課程老師科目類別的model。</param>
+        // <returns>成功，存入老師科目表，返回Index</returns>
         [HttpPost, ActionName("CourseTeacher")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CourseTeacher([Bind("老師id,科目id,狀態")] T課程老師科目 t課程老師科目)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(t課程老師科目);
-                await _context.SaveChangesAsync();
+                if (ModelState.IsValid)
+                {
+                    _context.Add(t課程老師科目);
+                    await _context.SaveChangesAsync();
 
+                }
+                return RedirectToAction(nameof(Index));
+            } catch (Exception ex)
+            {
+                Console.WriteLine($"發生錯誤: {ex.Message}");
+                return View("Error");
             }
-            return RedirectToAction(nameof(Index));
-
         }
+
+        //course_management/T課程科目/CourseTeacher
+        // <summary>
+        // 這個方法用於呈現科目管理系統中的課程科目子功能頁面的add teacher裡，關於目前現有老師的資料，以幫助使用者選擇要新增哪個老師。
+        // </summary>
+        // <returns>成功，撈出所有老師資料，返回josn格式，成為datatable的數據流</returns>
         public async Task<JsonResult> allTeacherJson()
         {
-             var teachers = await _context.T會員老師s.ToListAsync();
+            try
+            {
+                var teachers = await _context.T會員老師s.ToListAsync();
+                //null datatable會處理
+                return Json(teachers);
 
+            }catch(Exception ex)
+            {
+                Console.WriteLine($"發生錯誤: {ex.Message}");
+                return Json(new { error = "Failed to retrieve teachers data." });
 
-            return Json(teachers);
+            }
 
         }
 
+        //course_management/T課程科目/CourseTeacher
+        // <summary>
+        // 這個方法用於呈現科目管理系統中的課程科目子功能頁面的add teacher裡，關於目前選定科目中能夠教授該科目的老師資料，以幫助使用者查看現有科目的老師有誰。
+        // </summary>
+        // <param name="id">課程科目id。</param>
+        // <returns>成功，撈出所有能授課老師資料，返回josn格式，成為datatable的數據流</returns>
         public async Task<IActionResult> allcourseTeacherJson(int? id)
         {
-            if (id == null || _context.T課程科目s == null)
+            try
             {
-                return NotFound();
-            }
-            var t課程科目 = await _context.T課程科目s
-               .FirstOrDefaultAsync(m => m.科目id == id);
+                if (id == null || id == 0 || _context.T課程科目s == null)
+                {
+                    return View("Error");
 
-            if (t課程科目 == null)
+                }
+                var t課程科目 = await _context.T課程科目s
+                   .FirstOrDefaultAsync(m => m.科目id == id);
+
+                if (t課程科目 == null)
+                {
+                    return View("Error");
+
+                }
+                var Courseteachers = await _context.T課程老師科目s
+                .Where(tc => tc.科目id == id)
+                .Select(tc => tc.老師)
+                .ToListAsync();
+
+
+                //null datatable會處理
+                return Json(Courseteachers);
+
+            }catch (Exception ex)
             {
-                return NotFound();
+                Console.WriteLine($"發生錯誤: {ex.Message}");
+                return Json(new { error = "Failed to retrieve teachers who can teach this subject." });
             }
-            var Courseteachers = await _context.T課程老師科目s
-            .Where(tc => tc.狀態 == 1 && tc.科目id == id)
-            .Select(tc => tc.老師)
-            .ToListAsync();
-
-
-
-            return Json(Courseteachers);
+            
 
         }
 
+        //course_management/T課程科目/CourseTeacher
+        // <summary>
+        // 這個方法用於呈現科目管理系統中的課程科目子功能頁面的add teacher裡，刪除目前選定科目中能夠教授該科目的老師資料。
+        // </summary>
+        // <param name="teacherid">老師id。</param>
+        // <param name="courseid">課程科目id。</param>
+        // <returns>成功，刪除老師科目表內，指定科目id的指定老師id都符合的第一個資料，並返回index</returns>
         [HttpPost]
         public async Task<IActionResult> DeleteCourseTeacherConfirmed(int teacherid, int courseid)
         {
-            if (_context.T課程老師科目s == null)
+            try
             {
-                return Problem("Entity set 'studentContext.T課程科目s'  is null.");
-            }
+                if (_context.T課程老師科目s == null)
+                {
+                    return Problem("Entity set 'studentContext.T課程科目s'  is null.");
+                }
 
-            var t課程老師科目 = await _context.T課程老師科目s
-              .FirstOrDefaultAsync(m => m.科目id == courseid & m.老師id== teacherid);
+                var t課程老師科目 = await _context.T課程老師科目s
+                  .FirstOrDefaultAsync(m => m.科目id == courseid & m.老師id == teacherid);
 
-            if (t課程老師科目 != null)
+                if (t課程老師科目 != null)
+                {
+                    _context.T課程老師科目s.Remove(t課程老師科目);
+                }
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }catch (Exception ex)
             {
-                _context.T課程老師科目s.Remove(t課程老師科目);
+                Console.WriteLine($"發生錯誤: {ex.Message}");
+                return Json(new { error = "Failed to retrieve teachers who can teach this subject." });
             }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
         }
 
         private bool T課程科目Exists(int id)

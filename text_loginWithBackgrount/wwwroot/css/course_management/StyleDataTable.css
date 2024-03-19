@@ -1,0 +1,69 @@
+﻿<style >
+.table-hover tbody tr:hover {
+    background-color: azure;
+}
+
+#table {
+    border-collapse: collapse;
+    width: 100%;
+    color: gray;
+}
+
+    #table td {
+        border-top: 1px solid azure;
+        border-bottom: 1px solid azure;
+    }
+
+.table-head {
+    background-color: azure;
+}
+
+.dataTables_filter {
+    margin-bottom: 15px !important;
+}
+
+#modal_content {
+    background: url(https://img.freepik.com/premium-photo/empty-space-paper-copy-space_78502-575.jpg?w=1060) center center no-repeat;
+    background-size: cover;
+    background-color: gray;
+    filter: grayscale(30%);
+}
+
+.btn {
+    display: inline-block;
+    outline: none;
+    cursor: pointer;
+    font-weight: 600;
+    border-radius: 3px;
+    border: 0;
+    color: white;
+    line-height: 1.15;
+    font-size: 16px;
+}
+
+.btn-primary {
+    background-color: #76daff !important;
+}
+
+.btn-success {
+    background-color: #47cf73 !important;
+}
+
+.btn-warning {
+    background-color: #fcd000 !important;
+}
+
+.btn-secondary {
+    background-color: #cdcdcd !important;
+}
+
+.btn:hover {
+    transition: all .1s ease;
+    box-shadow: 0 0 0 0 azure, 0 0 0 3px azure;
+}
+
+.bx-trash {
+    color: white;
+}
+
+</style >
