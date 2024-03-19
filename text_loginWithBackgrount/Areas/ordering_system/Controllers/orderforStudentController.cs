@@ -154,7 +154,8 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                 平均評論 = evaluationDictionary.ContainsKey(a.店家id) ? evaluationDictionary[a.店家id]==0?0: evaluationDictionary[a.店家id] : 0,
                 營業資料= (from time in _myDBContext.T訂餐營業時間表s
                        where time.店家id == a.店家id && time.顯示.Trim() == "1"
-                       select time).ToList()
+                       select time).ToList(),
+                口味總表=_myDBContext.T訂餐口味總表s.Select(a=>a.風味名稱).ToList(),
             }).ToList();
             return result;
         }

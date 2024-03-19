@@ -169,6 +169,12 @@
                 <!-- 放入商家口味標籤分類 -->
                 <div>
                     <ul class="portfolio-flters pb-5" id="stylelist">
+                        <li data-filter="*" class="filter-active">All</li>
+                        @foreach (var tag in Model[0].口味總表)
+                        {
+                            <li data-filter=".filter-@tag">@tag</li>
+                        }
+
                         <!-- 口味標籤類 -->
                     </ul><!-- End Portfolio Filters -->
                 </div>
@@ -393,10 +399,10 @@
         (async () => {
             try {
                 // 呼叫API获取数据
-                const [favoriteStorelist, bestStoreTop5, storeStyle, /* storeInformation */] = await Promise.all([
+                const [/* storeStyle */ favoriteStorelist, bestStoreTop5, /* storeInformation */] = await Promise.all([
+                    // $.ajax({ url: `@Url.Content("~/tOrder_StoreAPI/storeStyle")` }),
                     $.ajax({ url: `@Url.Content("~/api/StudentOrderAPI/favoriteStorelist")?id=${studentID}` }),
                     $.ajax({ url: '@Url.Content("~/tOrder_StoreAPI/bestStoreTop5")' }),
-                    $.ajax({ url: `@Url.Content("~/tOrder_StoreAPI/storeStyle")` }),
                     // $.ajax({ url: `@Url.Content("~/tOrder_StoreAPI/storeInformation")` })
                 ]);
                 // 处理收藏店家列表
@@ -460,9 +466,9 @@
                 $('#cardiv').html(htmldata);
 
                 // 处理口味标签列
-                const daralist = storeStyle.map((a, index) => `<li data-filter=".filter-${a}">${a}</li>`);
-                const newElement = '<li data-filter="*" class="filter-active">All</li>';
-                $('#stylelist').prepend(newElement + daralist.join(''));
+                // const daralist = storeStyle.map((a, index) => `<li data-filter=".filter-${a}">${a}</li>`);
+                // const newElement = '<li data-filter="*" class="filter-active">All</li>';
+                // $('#stylelist').prepend(newElement + daralist.join(''));
                 favoriteStore();
                 shoppingCart();
             }
