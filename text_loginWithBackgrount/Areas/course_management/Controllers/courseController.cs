@@ -21,17 +21,25 @@ namespace text_loginWithBackgrount.Areas.course_management.Controllers
         /// </summary>
         public async Task<IActionResult> Index()
         {
-            var now = DateTime.Now;
-            var sixMonthsLater = now.AddMonths(6);
+            try
+            {
 
-            var classContext = _context.T課程班級s
-                .Include(t => t.班級導師)
-                .Where(t => t.入學日期 > now && t.入學日期 <= sixMonthsLater)
-                .Take(3);
+                var now = DateTime.Now;
+                var sixMonthsLater = now.AddMonths(6);
 
-            //如果null前端會顯示不同的資訊
-            var classlist = await classContext.ToListAsync();
-            return View(classlist);
+                var classContext = _context.T課程班級s
+                    .Include(t => t.班級導師)
+                    .Where(t => t.入學日期 > now && t.入學日期 <= sixMonthsLater)
+                    .Take(3);
+
+                //如果null前端會顯示不同的資訊
+                var classlist = await classContext.ToListAsync();
+                return View(classlist);
+            }catch (Exception ex)
+            {
+                Console.WriteLine($"發生錯誤: {ex.Message}");
+                return View("Error");
+            }
         }
     }
 }
