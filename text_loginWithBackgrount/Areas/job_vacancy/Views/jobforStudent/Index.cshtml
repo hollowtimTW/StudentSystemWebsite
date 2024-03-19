@@ -155,6 +155,29 @@
                     console.log('顯示應徵紀錄 success');
                     // 清空並設置內容
                     tabContext.html(result);
+
+                    //設置職缺收藏按鍵監聽事件
+                    const likeBtns = document.querySelectorAll('.btn-like');
+                    likeBtns.forEach(function (btn) {
+                        btn.addEventListener('click', function () {
+                            let jobID = this.getAttribute('job-id');
+                            let likeBtn = this;
+
+                            $.ajax({
+                                type: 'GET',
+                                url: '/job_vacancy/job/ToggleFavorite/' + jobID,
+                                success: function (result) {
+                                    console.log('啟動收藏開關 success');
+
+                                    // 切換按鈕的 active 狀態
+                                    likeBtn.classList.toggle('active');
+                                },
+                                error: function (error) {
+                                    console.error('啟動收藏開關 error', error);
+                                }
+                            });
+                        });
+                    });
                 },
                 error: function (error) {
                     console.error('顯示應徵紀錄 error', error);
@@ -173,6 +196,32 @@
                     console.log('顯示收藏清單 success');
                     // 清空並設置內容
                     tabContext.html(result);
+
+                    //設置職缺收藏按鍵監聽事件
+                    const likeBtns = document.querySelectorAll('.btn-like');
+                    likeBtns.forEach(function (btn) {
+                        btn.addEventListener('click', function () {
+                            let jobID = this.getAttribute('job-id');
+                            let likeBtn = this;
+
+                            $.ajax({
+                                type: 'GET',
+                                url: '/job_vacancy/job/ToggleFavorite/' + jobID,
+                                success: function (result) {
+                                    console.log('啟動收藏開關 success');
+
+                                    // 切換按鈕的 active 狀態
+                                    likeBtn.classList.toggle('active');
+
+                                    // 重新載入收藏清單畫面
+                                    GetMyFavoritesJobs()
+                                },
+                                error: function (error) {
+                                    console.error('啟動收藏開關 error', error);
+                                }
+                            });
+                        });
+                    });
                 },
                 error: function (error) {
                     console.error('顯示收藏清單 error', error);
@@ -191,6 +240,29 @@
                     console.log('顯示推薦清單 success');
                     // 清空並設置內容
                     tabContext.html(result);
+
+                    //設置職缺收藏按鍵監聽事件
+                    const likeBtns = document.querySelectorAll('.btn-like');
+                    likeBtns.forEach(function (btn) {
+                        btn.addEventListener('click', function () {
+                            let jobID = this.getAttribute('job-id');
+                            let likeBtn = this;
+
+                            $.ajax({
+                                type: 'GET',
+                                url: '/job_vacancy/job/ToggleFavorite/' + jobID,
+                                success: function (result) {
+                                    console.log('啟動收藏開關 success');
+
+                                    // 切換按鈕的 active 狀態
+                                    likeBtn.classList.toggle('active');
+                                },
+                                error: function (error) {
+                                    console.error('啟動收藏開關 error', error);
+                                }
+                            });
+                        });
+                    });
                 },
                 error: function (error) {
                     console.error('顯示推薦清單 error', error);
