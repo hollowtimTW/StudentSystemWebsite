@@ -144,18 +144,20 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             try
             {
                 var thisJob = await _context.T工作職缺資料s.FindAsync(jobID);
-
                 if (thisJob == null)
                 {
                     return NotFound("找不到此職缺資料");
                 }
 
                 var thisCompany = await _context.T工作公司資料s.FirstOrDefaultAsync(company => company.FId == thisJob.F公司Id);
-
                 if (thisCompany == null)
                 {
                     return NotFound("找不到此職缺的相應公司資料，請聯絡平台系統管理員");
                 }
+
+                var favoriteJob = await _context.T工作儲存工作紀錄s
+                                        .Where(data => data.F學員Id == loginID && data.F職缺Id == jobID)
+                                        .FirstOrDefaultAsync();
 
                 var viewModel = new JobDetailViewModel
                 {
@@ -178,7 +180,9 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                     CompanyName = thisCompany.F公司名稱,
                     ContactPerson = !string.IsNullOrEmpty(thisCompany.F聯絡人) ? thisCompany.F聯絡人 : "請洽平台系統管理員",
                     ContactPhone = !string.IsNullOrEmpty(thisCompany.F聯絡人電話) ? thisCompany.F聯絡人電話 : "請洽平台系統管理員",
-                    ContactEmail = !string.IsNullOrEmpty(thisCompany.F聯絡人Email) ? thisCompany.F聯絡人Email : "請洽平台系統管理員"
+                    ContactEmail = !string.IsNullOrEmpty(thisCompany.F聯絡人Email) ? thisCompany.F聯絡人Email : "請洽平台系統管理員",
+
+                    IsFavorite = favoriteJob != null ? true : false,
                 };
 
                 return View(viewModel);
