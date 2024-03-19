@@ -43,8 +43,22 @@
     background-color: #BEBEBE;
 }
 
-
-.portfolio-wrap {
-    padding: 12px;
+.filter-open .quiz-name {
+    background-color: rgb(0, 131, 116);
+    color: white;
 }
 
+.filter-close .quiz-name {
+    background-color: #BEBEBE;
+}
+
+.quiz-name {
+    font-weight:bold;
+    font-size: 2rem;
+}
+
+.custom-span {
+    font-size: 1rem;
+    color: white;
+    background-color:red;
+}

@@ -40,7 +40,7 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
                     HasRecord = _context.TQuizRecords.Any(r => r.FQuizId == p.FQuizId && r.FStudentId.ToString() == studentId) ? 1 : 0
                 })
                 .OrderByDescending(p => p.IsClosed)
-                .ThenByDescending(p => p.Count  )
+                .ThenByDescending(p => p.Count)
                 .ToList();
 
             return View(quizList);
