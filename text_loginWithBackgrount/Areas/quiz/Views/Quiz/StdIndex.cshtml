@@ -11,10 +11,6 @@
 }
 
 
-
-
-
-
 @section BreadcrumbsSection {
     <div class="breadcrumbs">
         <div class="page-header d-flex align-items-center" style="background-image: url('');">
@@ -39,9 +35,6 @@
         </nav>
     </div>
 }
-
-
-
 
 <section id="portfolio" class="portfolio mt-1">
 
@@ -79,26 +72,27 @@
                             attr += " filter-finish";
                         }
 
-                            <div class="col-xl-4 col-md-6 portfolio-item @attr" data-order="@i">
-                                <div class="portfolio-wrap">
-                                    <div class="portfolio-info d-flex row m-2 p-2 align-items-center">
-                                        <div class="col-12 quiz-name">
-                                            @quiz.Name
-                                            @if (quiz.HasRecord == 1)
-                                        {
-                                                <span class="custom-span ms-2">已完成</span>
-                                        }
-                                        </div>
-                                        <div class="col-9">
-                                            <p class="p-0 m-0">測驗人數: <span>@quiz.Count</span>人</p>
-                                        </div>
-                                        <div class="col-3">
-                                            <a class="btn btn-secondary show-info">查看</a>
-                                        </div>
-                                    </div>
+                                <div class="col-xl-4 col-md-6 portfolio-item @attr" data-order="@i">
+                                    <div class="portfolio-wrap">
+                                        <div class="portfolio-info d-flex row m-2 p-2 align-items-center">
+                                            <div class="col-12 quiz-name">
+                                                @quiz.Name
+                                                @if (quiz.HasRecord == 1)
+                                            {
+                                                    <span class="custom-span ms-2">已完成</span>
+                                            }
+                                            </div>
+                                            <div class="col-9">
+                                                <p class="p-0 m-0">測驗人數: <span>@quiz.Count</span>人</p>
+                                            </div>
 
+                                            <div class="col-3">
+                                                <a class="btn btn-secondary show-info">查看</a>
+                                            </div>
+                                        </div>
+
+                                    </div>
                                 </div>
-                            </div>
                     }
                  }
 
@@ -107,16 +101,6 @@
 
     </div>
 </section><!-- End Portfolio Section -->
-
-
-
-
-
-
-
-
-<h1>學生前台</h1>
-<a asp-area="quiz" asp-controller="Quiz" asp-action="Quiz">進入考試</a>
 
 
 
@@ -145,7 +129,6 @@
 
 
 
-
 <!-- 預覽Modal -->
 <div class="modal fade" id="previewModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
@@ -155,38 +138,65 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
+                <div id="quiz-code" hidden></div>
+                <div id="quiz-quizid" hidden></div>
                 <div class="mb-3">
                     <label class="form-label text-primary">名稱:</label>
-                    <span class="form-text ms-2" id="quiz-mame"></span> <!-- 添加了 ms-2 类，表示左侧间距为 0.5rem -->
+                    <span class="form-text ms-2" id="quiz-mame"></span> 
                 </div>
                 <div class="mb-3">
                     <label class="form-label text-primary">創建者:</label>
-                    <span class="form-text ms-2" id="quiz-creater"></span> <!-- 添加了 ms-2 类，表示左侧间距为 0.5rem -->
+                    <span class="form-text ms-2" id="quiz-creater"></span> 
                 </div>
                 <div class="mb-3">
                     <label class="form-label text-primary">限制時間:</label>
-                    <span class="form-text ms-2" id="quiz-limitTime"></span> <!-- 添加了 ms-2 类，表示左侧间距为 0.5rem -->
+                    <span class="form-text ms-2" id="quiz-limitTime"></span>
                 </div>
                 <div class="mb-3">
                     <label class="form-label text-primary">創建時間:</label>
-                    <span class="form-text ms-2" id="quiz-createTime"></span> <!-- 添加了 ms-2 类，表示左侧间距为 0.5rem -->
+                    <span class="form-text ms-2" id="quiz-createTime"></span> 
                 </div>
                 <div class="mb-3">
                     <label class="form-label text-primary">測驗人數:</label>
-                    <span class="form-text ms-2" id="quiz-count"></span> <!-- 添加了 ms-2 类，表示左侧间距为 0.5rem -->
+                    <span class="form-text ms-2" id="quiz-count"></span>
                 </div>
                 <div class="mb-3">
                     <label class="form-label text-primary">說明:</label>
-                    <span class="form-text ms-2" id="quiz-note"></span> <!-- 添加了 ms-2 类，表示左侧间距为 0.5rem -->
+                    <span class="form-text ms-2" id="quiz-note"></span> 
                 </div>
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-quizid="" id="joinQuizBtn">加入測驗</button>
+                <button type="button" class="btn btn-primary" id="joinQuizBtn">加入測驗</button>
             </div>
         </div>
     </div>
 </div>
+
+
+
+<!-- 紀錄Modal -->
+<div class="modal fade" id="recordModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="recordModalLabel">加入測驗</h5>
+            </div>
+            <div class="modal-body">
+        
+
+
+            </div>
+            <div class="modal-footer">
+       
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 
 
@@ -232,7 +242,11 @@
 
 
             function fillModalBody(quizInfo) {
+
+                console.log(quizInfo)
                 $('#quiz-mame').text(quizInfo.name || '');
+                $('#quiz-code').text(quizInfo.code || '');
+                $('#quiz-quizid').text(quizInfo.id || '');
                 $('#quiz-creater').text(quizInfo.teacherId || '');
                 $('#quiz-limitTime').text(`${quizInfo.limitTime} 分` || '');
                 $('#quiz-createTime').text(quizInfo.createTime || '');
@@ -240,15 +254,47 @@
                 $('#quiz-note').text(quizInfo.note || '');
 
                 $('#joinQuizBtn').text(quizInfo.hasRecord === 1 ? "查看紀錄" : "加入測驗");
-    
-            
+                $('#joinQuizBtn').prop('disabled', quizInfo.isClosed === 0 && quizInfo.hasRecord === 0);
+
             }
 
 
             $('.show-info').on('click', function () {
                 var order = $(this).closest('.portfolio-item').data('order');
                 $('#previewModal').modal('show');
+
                 fillModalBody(quizList[order]);
+            });
+
+
+
+            $('#joinQuizBtn').on('click', function () {
+                var quizId = $('#quiz-quizid').text();
+                var quizCode = $('#quiz-code').text();
+                var data  = {
+                    FQuizId: quizId,
+                    FStudentId: @studentId
+                }
+                $.ajax({
+                    url: '/Api/Quiz/CheckRecord',
+                    type: 'POST',
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    success: function (response) {
+
+                        if (response.fState) {
+                            $('#previewModal').modal('hide');
+                            $('#recordModal').modal('show');
+                        }else{
+                            window.location.href = `/quiz/Quiz/Quiz/${quizCode}`
+                        }
+
+                    },
+                    error: function (xhr, status, error) {
+
+                        console.error(xhr.responseText);
+                    }
+                });
             });
 
 
@@ -258,35 +304,7 @@
 
 
 
-
-
-
-
-
-          
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         });
-
-
 
     </script>
 

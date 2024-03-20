@@ -70,33 +70,25 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
 
 
 
-        [HttpGet("{studentId}")]
-        public IActionResult GetQuizList(int studentId)
-        {
-            var quizList = _context.TQuizQuizzes
-                .Select(p => new
-                {
-                    id = p.FQuizId,
-                    name = p.FQname,
-                    note = p.FNote,
-                    limitTime = p.FLimitTime,
-                    teacherId = p.FTeacher.姓名,
-                    isPublic = p.FPublic,
-                    isClosed = p.FClosed,
-                    createTime = p.FCreateTime,
-                    count = _context.TQuizRecords.Count(r => r.FQuizId == p.FQuizId),
-                    hasRecord = _context.TQuizRecords.Any(r => r.FQuizId == p.FQuizId && r.FStudentId == studentId) ? 1 : 0
-                })
-                .OrderByDescending(p => p.count)
-                .ThenByDescending(p => p.isClosed)
-                .ToList(); 
 
-            if (quizList == null || quizList.Count == 0)
+
+        // 取得測驗考題
+        [HttpGet("{quizId}")]
+        public IActionResult GetQuestions(int quizId)
+        {
+
+            var questionOrder = _questionOrderCollection.Find(q => q.QuizID == quizId).FirstOrDefault();
+
+            if (questionOrder == null)
             {
-                return BadRequest("無此代碼");
+                return BadRequest("無資料");
             }
 
-            return Json(quizList);
+            List<string> questionOrderList = questionOrder.QuestionOrderList;
+            List<Question> questions = _questionCollection.Find(q => questionOrderList.Contains(q.Id)).ToList();
+
+
+            return Json(questions);
         }
 
 
@@ -104,6 +96,29 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
 
 
 
+
+        // 設定紀錄
+        public IActionResult CheckRecord([FromBody] TQuizRecord r)
+        {
+            var record = _context.TQuizRecords
+                .Where(p=>p.FQuizId==r.FQuizId && p.FStudentId==r.FStudentId)
+                .FirstOrDefault();
+
+            if(record == null)
+            {
+                record = new TQuizRecord
+                {
+                    FQuizId = r.FQuizId,
+                    FStudentId = r.FStudentId,
+                    FState = 0
+                };
+
+                _context.TQuizRecords.Add(record);
+                _context.SaveChanges();
+            }
+
+            return Json(record);
+        }
 
 
 

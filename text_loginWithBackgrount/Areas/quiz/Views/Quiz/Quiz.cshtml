@@ -1,5 +1,10 @@
-﻿@{
+﻿@model StdQuiz
+@{
     Layout = "_QuizLayout";
+
+    var Quiz = Model.Quiz;
+    var Record = Model.Record;
+    var Questions = Model.Questions;
 }
 <link rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
@@ -16,14 +21,14 @@
                 <div class="col-12">
                     <div class="p-3 border left-title-vh quiz-container">
                         <div class="quiz-name">
-                            測驗0315
+                            @Quiz.FQname
                         </div>
                     </div>
                 </div>
                 <div class="col-12">
                     <div class="p-3 border left-top-vh quiz-container">
                         <div class="quiz-nums">
-                            @for (int i = 0; i < 10; i++)
+                            @for (int i = 0; i < Questions.Count; i++)
                             {
                                 <div class="quiz-num bg-light" data-slide-to="@i" id="data-@(i)">
                                     @(i + 1)
@@ -46,7 +51,7 @@
                     <div class="swiper-container">
                         <div class="swiper-wrapper">
 
-                            @for (int i = 0; i < 10; i++)
+                            @for (int i = 0; i < Questions.Count; i++)
                             {
                                 <div class="swiper-slide">
                                     <div class="q-num">
@@ -55,25 +60,26 @@
                                     <div class="q-question">
                                         <div class="d-flex justify-content-center align-items-center q-quesiotn-div">
                                             <div class="q-question-context">
-                                                下列哪个选项描述了C#中的Lambda表达式
+                                                @Questions[i].QuestionText
                                             </div>
 
                                             <hr />
                                             <div class="q-question-context-option">
-                                                <div>(1)<span> 一种匿名函数 </span></div>
-                                                <div>(2)<span> 一种循环结构 </span></div>
-                                                <div>(3)<span> 一种数据类型 </span></div>
-                                                <div>(4)<span> 一种条件语句 </span></div>
+                                                @for (int j = 1; j <= Questions[i].Options.Count; j++)
+                                                {
+                                                    <div>(@(j))<span> @Questions[i].Options[j] </span></div>
+                                                }
+                                  
                                             </div>
                                         </div>
 
 
                                     </div>
                                     <div class="d-flex justify-content-between q-answer multiple" data-id="@i">
-                                        <button class="option-btn flex-fill">1</button>
-                                        <button class="option-btn flex-fill">2</button>
-                                        <button class="option-btn flex-fill">3</button>
-                                        <button class="option-btn flex-fill">4</button>
+                                        @for (int j = 1; j <= Questions[i].Options.Count; j++)
+                                        {
+                                            <button class="option-btn flex-fill">@j</button>
+                                        }
                                     </div>
                                 </div>
                             }
@@ -178,11 +184,6 @@
 
 
 
-
-
-
-
-
             mySwiper.on('slideChange', function () {
                 if (mySwiper.isEnd) {
                     $('.swiper-pagination-progressbar-fill').css('backgroundColor', '#00EC00');
@@ -190,6 +191,47 @@
                     $('.swiper-pagination-progressbar-fill').css('backgroundColor', '#46A3FF');
                 }
             });
+
+
+
+
+
+
+
+
+
+            function getQuestions() {
+
+                $.ajax({
+                    url: '/Api/Quiz/GetQuestions/@Quiz.FQuizId',
+                    type: 'GET',
+                    success: function (data) {
+                        console.log(data)
+
+
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+
+            };
+
+
+
+
+            getQuestions()
+
+
+
+
+
+
+
+
+
+
+
 
 
 
