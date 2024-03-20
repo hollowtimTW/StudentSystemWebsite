@@ -93,7 +93,7 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
             // 開始計時
             if (record.FStartTime == null)
             {
-
+                Console.WriteLine(DateTime.Now);
                 record.FStartTime = DateTime.Now;
                 record.FEndTime = DateTime.Now.AddMinutes(quiz.FLimitTime ?? 0);
 

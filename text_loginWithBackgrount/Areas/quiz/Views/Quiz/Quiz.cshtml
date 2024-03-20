@@ -39,7 +39,7 @@
                 </div>
                 <div class="col-12">
                     <div class="p-3 border left-bottom-vh quiz-sumbit">
-                        <div class="quiz-sumbit-time">剩餘時間: <span>10:22</span></div>
+                        <div class="quiz-sumbit-time">剩餘時間: <span id="lastTime">@Record.FEndTime.ToString()</span></div>
                         <button class="sumbit-btn">提交</button>
                     </div>
                 </div>
@@ -65,9 +65,9 @@
 
                                             <hr />
                                             <div class="q-question-context-option">
-                                                @for (int j = 1; j <= Questions[i].Options.Count; j++)
+                                                @for (int j = 0; j < Questions[i].Options.Count; j++)
                                                 {
-                                                    <div>(@(j))<span> @Questions[i].Options[j] </span></div>
+                                                    <div>(@(j+1))<span> @Questions[i].Options[j] </span></div>
                                                 }
                                   
                                             </div>
@@ -75,7 +75,7 @@
 
 
                                     </div>
-                                    <div class="d-flex justify-content-between q-answer multiple" data-id="@i">
+                                    <div class="d-flex justify-content-between q-answer @(Questions[i].Type == 0 ?"single":"multiple")" data-id="@i">
                                         @for (int j = 1; j <= Questions[i].Options.Count; j++)
                                         {
                                             <button class="option-btn flex-fill">@j</button>
@@ -197,32 +197,17 @@
 
 
 
+            function countdown() {
 
+                var endTime = new Date("@Record.FEndTime");
 
+            }
 
-            function getQuestions() {
+            // 初始调用倒计时函数
+            countdown();
 
-                $.ajax({
-                    url: '/Api/Quiz/GetQuestions/@Quiz.FQuizId',
-                    type: 'GET',
-                    success: function (data) {
-                        console.log(data)
-
-
-                    },
-                    error: function (xhr, status, error) {
-                        console.error(xhr.responseText);
-                    }
-                });
-
-            };
-
-
-
-
-            getQuestions()
-
-
+            // // 每隔一秒更新一次倒计时
+            // setInterval(countdown, 1000);
 
 
 
