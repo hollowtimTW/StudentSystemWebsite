@@ -26,13 +26,13 @@
                                 <button type="button" class="btn btn-light btn-circle me-3 btn-like @(viewModel.IsFavorite ? "active" : "")" job-id="@viewModel.JobID"><i class="bi bi-heart"></i></button>
                                 <a href="/job_vacancy/Job/JobDetails/@viewModel.JobID" target="_blank" class="btn-detail">詳細資訊</a>
                             </div>
-                            <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：@viewModel.UpdateTime?.ToString("yyyy/MM/dd HH:mm:ss")</small>
-                            <div>
-                                @* 暫時先不處理推薦程度 *@
+                            <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：@viewModel.UpdateTime?.ToString("yyyy/MM/dd HH:mm")</small>
+                            @* 先不處理推薦程度 *@
+                            @* <div>
                                 <i class="bi bi-star-fill"></i>
                                 <i class="bi bi-star-fill"></i>
                                 <i class="bi bi-star-fill"></i>
-                            </div>
+                            </div> *@
                         </div>
                     </div>
                 </div>

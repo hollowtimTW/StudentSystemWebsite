@@ -35,7 +35,6 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.ViewModels
 
         [Display(Name = "工作內容")]
         [Required(ErrorMessage = "請填寫任職工作內容")]
-        [StringLength(500, ErrorMessage = "任職工作內容過長")]
         public string? JobContent { get; set; }
 
     }

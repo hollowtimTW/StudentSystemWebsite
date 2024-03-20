@@ -34,7 +34,7 @@ namespace Class_system_Backstage_pj.Areas.job_vacancy.Controllers
                                     HopeSalary = resume.F希望薪水待遇,
                                     HopeLocation = resume.F希望工作地點,
                                     ResumeStatus = resume.F履歷狀態,
-                                    LastUpdate = resume.F最後更新時間.HasValue ? resume.F最後更新時間.Value.ToString("yyyy/MM/dd HH:mm:ss") : null,
+                                    LastUpdate = resume.F最後更新時間.HasValue ? resume.F最後更新時間.Value.ToString("yyyy/MM/dd HH:mm") : null,
                                     StudentName = resume.F學員.姓名,
                                     Classes = studentRelations
                                         .Join(

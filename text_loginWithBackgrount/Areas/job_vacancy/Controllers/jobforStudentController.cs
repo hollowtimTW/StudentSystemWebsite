@@ -424,7 +424,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
 
                 thisResume.F刪除狀態 = "1";
                 thisResume.F刪除或關閉原因 = deleteReason;
-                thisResume.F最後更新時間 = Convert.ToDateTime(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"));
+                thisResume.F最後更新時間 = Convert.ToDateTime(DateTime.Now.ToString("yyyy/MM/dd HH:mm"));
                 await _context.SaveChangesAsync();
 
                 return Json(new { success = true, message = "刪除成功" });

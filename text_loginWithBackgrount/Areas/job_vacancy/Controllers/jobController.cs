@@ -167,7 +167,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                 {
                     JobID = jobID,
                     JobTitle = thisJob.F職務名稱,
-                    UpdateTime = thisJob.F最後更新時間.HasValue ? thisJob.F最後更新時間.Value.ToString("yyyy/MM/dd HH:mm:ss") + "更新" : string.Empty,
+                    UpdateTime = thisJob.F最後更新時間.HasValue ? thisJob.F最後更新時間.Value.ToString("yyyy/MM/dd HH:mm") + "更新" : string.Empty,
                     JobContent = !string.IsNullOrEmpty(thisJob.F工作內容) ? thisJob.F工作內容.Replace("\\n", "\n") : "暫不提供",
                     Salary = !string.IsNullOrEmpty(thisJob.F薪水待遇) ? thisJob.F薪水待遇 : "暫不提供",
                     JobType = !string.IsNullOrEmpty(thisJob.F工作性質) ? thisJob.F工作性質 : "暫不提供",

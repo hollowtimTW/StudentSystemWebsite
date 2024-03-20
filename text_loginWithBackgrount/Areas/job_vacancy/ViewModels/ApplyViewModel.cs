@@ -12,7 +12,6 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.ViewModels
         public List<string>? ResumeTitles { get; set; }
 
         [Required(ErrorMessage = "請填寫信件內容")]
-        [StringLength(500, ErrorMessage = "信件內容過長")]
         public string? ApplyLetter { get; set; }
     }
 }
