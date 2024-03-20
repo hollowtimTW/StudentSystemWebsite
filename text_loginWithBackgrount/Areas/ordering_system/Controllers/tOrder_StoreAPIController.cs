@@ -455,7 +455,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                              訂單編號 = (item.訂單詳細表id),
                              餐點名稱 = b.餐點名稱,
                              數量 = item.餐點數量,
-                             金額 = Convert.ToInt32(b.餐點定價 * item.餐點數量),
+                             金額 = Convert.ToInt32(item.金額小記),
                              支付方式 = (a.支付方式).Trim(),
                              訂單狀態 = item.狀態 == "1" ? "完成" : item.狀態 == "0" ? "進行中" : item.狀態 == "-1" ? "取消" : "取消",
                              訂單日期 = a.訂單時間,
@@ -536,7 +536,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                                   店家名稱 = (c.店家名稱).Trim(),
                                   餐點名稱 = b.餐點名稱,
                                   數量 = item.餐點數量,
-                                  金額 = Convert.ToInt32(b.餐點定價 * item.餐點數量),
+                                  金額 = Convert.ToInt32(item.金額小記),
                                   支付方式 = (a.支付方式).Trim(),
                               }).ToList();
                 var 總金額 = result.Sum(x => x.金額);
@@ -570,7 +570,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                                              店家名稱 = g.Key.店家名稱,
                                              店家介紹 = g.Key.餐廳介紹,
                                              店家圖片 = g.Key.餐廳照片 ?? "/images/user.jpg",
-                                             訂單總額 = g.Sum(x => x.item.餐點數量 * x.a.餐點定價),
+                                             訂單總額 = g.Sum(x => x.item.金額小記),
                                              評價星數 = Math.Round(g.Average(x => Convert.ToInt32(x.d.滿意度星數))),
                                              風味列表 = (from tagItem in _myDBContext.T訂餐店家資料表s
                                                      join tagE in _myDBContext.T訂餐店家風味表s on tagItem.店家id equals tagE.店家id
@@ -830,7 +830,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                                   訂單編號 = (item.訂單詳細表id),
                                   餐點名稱 = b.餐點名稱,
                                   數量 = item.餐點數量,
-                                  金額 = Convert.ToInt32(b.餐點定價 * item.餐點數量),
+                                  金額 = Convert.ToInt32(item.金額小記),
                                   支付方式 = (a.支付方式).Trim(),
                                   訂單狀態 = (a.訂單狀態).Trim(),
                                   訂單日期 = (a.訂單時間).Substring(9, 5),
@@ -910,7 +910,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
                              訂單編號 = (item.訂單詳細表id),
                              餐點名稱 = b.餐點名稱,
                              數量 = item.餐點數量,
-                             金額 = Convert.ToInt32(b.餐點定價 * item.餐點數量),
+                             金額 = Convert.ToInt32(item.金額小記),
                              支付方式 = (a.支付方式).Trim(),
                              訂單狀態 = item.狀態 == "1" ? "完成" : item.狀態 == "0" ? "進行中" : item.狀態 == "-1" ? "取消" : "取消",
                              訂單日期 = (a.訂單時間).Substring(0, 4) + "-" + (a.訂單時間).Substring(4, 2) + "-" + (a.訂單時間).Substring(6, 2),

@@ -14,5 +14,6 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Models
         public double 平均評論 { get; set; }
         public List<T訂餐營業時間表> 營業資料 { get; set; }
         public List<string> 餐點資料 { get; set; }
+        public List<string> 口味總表 { get; set; }
     }
 }
