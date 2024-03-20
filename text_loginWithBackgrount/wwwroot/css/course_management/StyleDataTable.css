@@ -1,4 +1,9 @@
 ﻿
+.main_contentDataTableDiv {
+   
+    padding-bottom: 15px !important;
+    overflow:hidden;
+}
 .table-hover tbody tr:hover {
     background-color: azure;
 }
@@ -8,6 +13,7 @@
     width: 100%;
     color: gray;
 }
+
 
     #table td {
         border-top: 1px solid azure;

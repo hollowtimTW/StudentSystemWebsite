@@ -5,59 +5,75 @@
 }
 
 <div class="p-4">
+    @if (ViewData["班級導師id"] != null)
+    {
 
-    <div class="row">     
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="row">
-                <input type="hidden" asp-for="班級id" />       
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label asp-for="班級名稱" class="control-label"></label>
-                        <input asp-for="班級名稱" class="form-control" />
-                        <span asp-validation-for="班級名稱" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label asp-for="班級導師id" class="control-label"></label>
-                        <select asp-for="班級導師id" class="form-control" asp-items="ViewBag.班級導師id"></select>
-                        <span asp-validation-for="班級導師id" class="text-danger"></span>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label asp-for="入學日期" class="control-label"></label>
-                        <input asp-for="入學日期" class="form-control" />
-                        <span asp-validation-for="入學日期" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label asp-for="結訓日期" class="control-label"></label>
-                        <input asp-for="結訓日期" class="form-control" />
-                        <span asp-validation-for="結訓日期" class="text-danger"></span>
-                    </div>
-                </div>
-            </div>
+                @* 看不到的[狀態][班級id]欄位 *@
 
-            <div class="row">
-                <div class="form-group visually-hidden">
-                    <label asp-for="狀態" class="control-label"></label>
-                    <input asp-for="狀態" class="form-control" value="1" type="hidden" />
-                    <span asp-validation-for="狀態" class="text-danger"></span>
+                <div class="row">
+                    <input type="hidden" asp-for="班級id" />
+
+                    <div class="visually-hidden">
+                        <label asp-for="狀態" class="control-label"></label>
+                        <input asp-for="狀態" class="form-control" value="1" type="hidden" />
+                        <span asp-validation-for="狀態" class="text-danger"></span>
+                    </div>  
+                    
                 </div>
-            </div>
-            <div class="form-group  mt-5 text-lg-end">
-                <input type="submit" value="Save" class="btn btn-info" />
-            </div>
-       </form>
-</div>
+
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="班級名稱" class="control-label"></label>
+                            <input asp-for="班級名稱" class="form-control" />
+                            <span asp-validation-for="班級名稱" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="班級導師id" class="control-label"></label>
+                            <select asp-for="班級導師id" class="form-control" asp-items="ViewBag.班級導師id"></select>
+                            <span asp-validation-for="班級導師id" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="入學日期" class="control-label"></label>
+                            <input asp-for="入學日期" class="form-control" />
+                            <span asp-validation-for="入學日期" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="結訓日期" class="control-label"></label>
+                            <input asp-for="結訓日期" class="form-control" />
+                            <span asp-validation-for="結訓日期" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+               
+                <div class="form-group  mt-5 text-lg-end">
+                    <input type="submit" value="Save" class="btn btn-info" />
+                </div>
+            </form>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            請先處理班級導師的內容!
+        </div>
+    }
+   
 
 
     @section Scripts {

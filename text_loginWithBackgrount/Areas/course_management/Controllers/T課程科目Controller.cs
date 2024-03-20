@@ -138,7 +138,7 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
         // 這個方法用於呈現科目管理系統中的課程科目子功能頁面的edit。
         // </summary>
         // <param name="id">課程科目id。</param>
-        // <returns>成功，返回edit 的 partialView</returns>
+        // <returns>成功，返回_EditPartial 的 partialView</returns>
         [HttpGet, ActionName("Edit")]
         public async Task<IActionResult> EditPartialView(int? id)
         {
@@ -182,36 +182,38 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
         // 這個方法用於接收科目管理系統中的課程科目子功能頁面的edit回傳的資料 透過model去接收。
         // </summary>
         // <param name="t課程科目">T課程科目類別的model。</param>
-        // <returns>成功，返回edit 的 model，並更新課程科目表的對應資料</returns>
+        // <param name="id">科目id。</param>
+        // <returns>成功，返回index，並更新課程科目表的對應資料</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("科目id,科目名稱,科目類別id,狀態")] T課程科目 t課程科目)
         {
-            if (id != t課程科目.科目id)
+            try
             {
-                return View("Errors");
 
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                if (id != t課程科目.科目id || !T課程科目Exists(t課程科目.科目id))
                 {
+                    return View("Errors");
+                 }
+
+                if (!ModelState.IsValid)
+                {
+                   
+                    return View("Errors");
+
+                }
+               
                     _context.Update(t課程科目);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index));            
 
-                }catch (Exception ex)
-                {
-                    Console.WriteLine($"發生錯誤: {ex.Message}");
-                    return View("Errors");                 
-                }
-
-            }else{
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"發生錯誤: {ex.Message}");
                 return View("Errors");
             }
 
-          
         }
 
         // GET: course_management/T課程科目/Delete

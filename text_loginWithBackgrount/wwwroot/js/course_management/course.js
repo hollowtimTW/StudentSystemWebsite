@@ -123,7 +123,7 @@ $(document).ready(
                     url: '/course_management/T課程科目/Edit/' + id,
                     success: function (result) {
 
-                        console.log('Ajax request success');
+                        console.log('Ajax edit request success');
                         $("#switch_context").html("");
                         $("#switch_context").html(result);
 

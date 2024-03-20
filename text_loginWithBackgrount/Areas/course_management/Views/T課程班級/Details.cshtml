@@ -1,7 +1,7 @@
 ﻿@model Class_system_Backstage_pj.Models.T課程班級
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "班級詳細資訊";
 }
 @section Styles {
     <style>
@@ -15,98 +15,168 @@
     </style>
 
 }
+<div class="h-85">
 
-<div class="p-4">
-    <h3 class="fw-bolder text-center">班級的詳細資訊</h3>
+    <div class="header">
+        <!-- 主頁上方操作流程序，記得有新增頁面時要記得編輯 -->
+        <div class="left">
+            <h1 class="text-center">@ViewData["Title"]</h1>
 
-    <div class="card">
+            <ul class="breadcrumb">
+                <li><a asp-area="" asp-controller="SystemBackground" asp-action="Index">首頁</a></li>
+                /
+                <li><a asp-area="course_management" asp-controller="courseHome" asp-action="Index">排課系統管理</a></li>
+                /
+                <li><a href="#" class="active">@ViewData["Title"]</a></li>
+            </ul>
+        </div>
+        <!-- 主頁上方操作流程序-->
+    </div>
+
+    <div class="p-4">
+        <div class="card">
 
 
-        <div class="context overflow-hidden">
+            <div class="context overflow-hidden">
 
-            <div class="row card-header">
-                <h2 class="lh-lg card-title text-center" style="color:yellowgreen">T課程班級</h2>
-            </div>
+                @* card的title *@
+                <div class="row card-header">
+                    <h3 class="text-center" style="color:yellowgreen">
+                        @Html.DisplayFor(model => model.班級名稱)
+                        班級
+                    </h3>
+                </div>
 
-            <div class="row justify-content-center p-5 bg-white overflow-hidden">
-                <div class="col-md-6 d-flex align-items-center">
-                    <div class="card-body p-5">
-                        <dl class="fs-5" style="color: gray;">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <dt>
-                                        @Html.DisplayNameFor(model => model.班級名稱)
-                                    </dt>
-                                    <dd>
-                                        @Html.DisplayFor(model => model.班級名稱)
-                                    </dd>
+                @* card的body 有左右兩欄*@
+                <div class="row justify-content-center bg-white card-body ">
+
+                   @*  左方欄 *@
+                    <div class="col-md-6 d-flex align-items-center">
+
+                        <div class="p-5 fs-5" style="color: gray;">
+                           
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+
+                                        <p class="text-start">
+                                            @Html.DisplayNameFor(model => model.班級名稱):
+                                        </p>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <p class="text-end ">
+                                            @Html.DisplayFor(model => model.班級名稱)
+                                        </p>                                      
+                                    </div>
+
                                 </div>
-                                <div class="col-md-6">
-                                    <dt>
-                                        @Html.DisplayNameFor(model => model.班級導師)
-                                    </dt>
-                                    <dd>
-                                        @Html.DisplayFor(model => model.班級導師.信箱)
-                                    </dd>
-                                </div>
-                            </div>
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <dt>
-                                        @Html.DisplayNameFor(model => model.入學日期)
-                                    </dt>
-                                    <dd>
-                                        @Html.DisplayFor(model => model.入學日期)
-                                    </dd>
+                                <div class="row">
+
+                                    <div class="col-md-6">
+
+                                        <p class="text-start">
+                                        @Html.DisplayNameFor(model => model.班級導師):
+                                        </p>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <p class="text-end ">
+                                            @Html.DisplayFor(model => model.班級導師.姓名)
+                                        </p>
+                                    </div>
+
                                 </div>
-                                <div class="col-md-6">
-                                    <dt>
-                                        @Html.DisplayNameFor(model => model.結訓日期)
-                                    </dt>
-                                    <dd>
-                                        @Html.DisplayFor(model => model.結訓日期)
-                                    </dd>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+
+                                        <p class="text-start">
+                                            @Html.DisplayNameFor(model => model.入學日期):
+                                        </p>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <p class="text-end ">
+                                            @Model.入學日期.ToString("yyyy-MM-dd")
+                                        </p>
+                                    </div>
+
                                 </div>
-                            </div>
-                        </dl>
-                        <div class="d-flex gap-2">
-                            <div>
-                                <button class="btn btn-outline-warning btn-hover-white" onclick="classcourse(@Model.班級id)">班級科目</button>
-                            </div>
-                            <div>
-                                <button class="btn btn-outline-warning btn-hover-white" onclick="classcourseTime(@Model.班級id)">課程安排</button>
-                            </div>
-                            @* 有空再做*@
-                            <div>
-                                <button class="btn btn-outline-warning btn-hover-white">新增學生</button>
-                            </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+
+                                        <p class="text-start">
+                                            @Html.DisplayNameFor(model => model.結訓日期):
+                                        </p>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <p class="text-end ">
+                                            @Model.結訓日期.ToString("yyyy-MM-dd")
+                                        </p>
+                                    </div>
+
+                                </div>
+
+                                
+                                
+
+                                <div class="row">
+                                    <div class="w-100 d-flex gap-2">
+                                        <div>
+                                            <button class="btn btn-outline-warning btn-hover-white" onclick="classcourse(@Model.班級id)">班級科目</button>
+                                        </div>
+                                        <div>
+                                            <button class="btn btn-outline-warning btn-hover-white" onclick="classcourseTime(@Model.班級id)">課程安排</button>
+                                        </div>
+
+                                        @* 有空再做*@
+                                        <div>
+                                            <button class="btn btn-outline-warning btn-hover-white">新增學生</button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            
 
                         </div>
                     </div>
+
+                    @*  右方欄 *@
+                    <div class="col-md-6  d-flex align-items-center p-5">
+                        <img src="https://img.freepik.com/free-vector/classroom-concept-illustration_114360-2975.jpg" style="max-width:100%; max-height:100%; object-fit: contain;" />
+                    </div>
+
                 </div>
-                <div class="col-md-6 h-100">
-                    <img src="https://img.freepik.com/free-vector/classroom-concept-illustration_114360-2975.jpg" style="max-width:100%; max-height:100%; object-fit: contain;" />
+
+
+                <div class="card-footer lh-base">
+                    <a class="link_hover" asp-action="Index" style="color:yellowgreen">Back to List</a>
                 </div>
+
             </div>
-
-
-            <div class="card-footer lh-base">
-                <a class="link_hover" asp-action="Index" style="color:yellowgreen">Back to List</a>
-            </div>
-
         </div>
-    </div>
 
+    </div>
 </div>
+
 
 @section Scripts {
     <script>
         function classcourse(id) {
             window.location.href = '/course_management/T課程班級科目/classCourseIndex/' + id;
         }
-    </script>
-    <script>
+
+        // <summary>
+        // 這個方法用於確認傳入的班級科目id的資料實體是否在班級科目表中有相關的資料，如果有就導向/course_management/T課程課程/classCourseTimeIndex的課程安排頁 沒有就alert  。
+        // </summary>
+        // <param name="id">班級id。</param>
         function classcourseTime(id) {
             $.ajax({
                 type: 'GET',
@@ -121,11 +191,12 @@
                 },
                 error: function (error) {
 
-                    console.error('Ajax request error', error);
+                    console.error('Ajax checkClassCourse request error', error);
                 }
             });
 
-           
+
         }
     </script>
+    
 }

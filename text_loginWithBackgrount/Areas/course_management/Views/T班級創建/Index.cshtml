@@ -9,7 +9,7 @@
 
    
 }
-
+<div class="main_contentDataTableDiv ">
 <div class="header">
     <!-- 主頁上方操作流程序，記得有新增頁面時要記得編輯 -->
     <div class="left">
@@ -31,6 +31,8 @@
             請先設置好老師資訊和科目資訊
         </div>
     }else{
+
+        <div class="pb-4"  >
         <h3 id="title">step1:填寫班級基本資料</h3>
 
         @* 進度條展示 *@
@@ -41,11 +43,11 @@
 
         <form asp-area="course_management" asp-controller="T班級創建" asp-action="Create" method="post">
 
-             @* 第一步: fill basic data  *@
+            @* 第一步: fill basic data  *@
 
             <div id="step1" class="card bg-light text-black-50 mb-3 w-100">
 
-               @*  第一步的card title *@
+                @*  第一步的card title *@
                 <div class="w-100 text-center card-header">
                     <h3 class="card-title fw-bolder">class info:</h3>
                 </div>
@@ -99,11 +101,11 @@
 
                 @* 第一步的card body結束 *@
 
-                <div class="w-100 text-end card-footer">                       
-                        @*  demo按鈕 click綁定事件 填入所有欄位*@
-                        <div class="btn  btn-info" id="demo" style="color:white"> demo </div>                   
-                        @*  next按鈕 click綁定事件 檢查每個欄位*@
-                        <div class="btn  btn-success" id="next">下一步 ⮕ </div>
+                <div class="w-100 text-end card-footer">
+                    @*  demo按鈕 click綁定事件 填入所有欄位*@
+                    <div class="btn  btn-info" id="demo" style="color:white"> demo </div>
+                    @*  next按鈕 click綁定事件 檢查每個欄位*@
+                    <div class="btn  btn-success" id="next">下一步 ⮕ </div>
                 </div>
 
 
@@ -117,12 +119,12 @@
 
                 <div class="card">
 
-                @*  第二步的card title *@
+                    @*  第二步的card title *@
                     <div class="w-100 text-center card-header">
                         <h3 class="card-title fw-bolder">add  subject:</h3>
                     </div>
 
-                @*  第二步的card body 分為兩欄 *@
+                    @*  第二步的card body 分為兩欄 *@
                     <div class="mt-3 d-flex card-body justify-content-between">
 
                         @*左側欄，顯示目前選擇到的科目 *@
@@ -147,10 +149,10 @@
                                     <p class="fs-5 mb-2 fw-bolder">--班級科目選擇--</p>
 
                                     <hr />
-                                    
+
                                     @* select選單[一開始就載入科目列表]  *@
                                     <select id="subjectSelect" class="form-control" asp-items="@ViewBag.course"></select>
-                                   
+
                                     @* ajax動態產生該科目的授課老師列表  *@
                                     <table class="table mt-2">
                                         <thead>
@@ -171,7 +173,7 @@
                     </div>
 
 
-                @*  第二步的card body 結束*@
+                    @*  第二步的card body 結束*@
 
 
                 </div>
@@ -184,13 +186,13 @@
 
         </form>
 
-        <div>
-            <a asp-action="Index">Back to List</a>
-        </div>
 
+
+    </div>
+       
 
     }
-
+</div>
 @section Scripts {
     <script src="~/js/course_management/CreateClass.js"></script>
 }

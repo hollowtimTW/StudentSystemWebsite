@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Class_system_Backstage_pj.Areas.course_management.ViewModel.T課程班級.ClassIndexViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "班級管理";
 }
 @section Styles {
 
@@ -9,237 +9,82 @@
     <link href="~/css/datatablesinline.min.css" rel="stylesheet" />
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="~/css/course_management/stylepopup.css" rel="stylesheet" />
-
-    <style>
-        .table-hover tbody tr:hover {
-            background-color: azure;
-        }
-
-        #table {
-            border-collapse: collapse;
-            width: 100%;
-            color: gray;
-        }
-
-            #table td {
-                border-top: 1px solid azure;
-                border-bottom: 1px solid azure;
-            }
-
-        .table-head {
-            background-color: azure;
-        }
-
-        .dataTables_filter {
-            margin-bottom: 15px !important;
-        }
-
-        #modal_content {
-            background: url(https://img.freepik.com/premium-photo/empty-space-paper-copy-space_78502-575.jpg?w=1060) center center no-repeat;
-            background-size: cover;
-            background-color: gray;
-            filter: grayscale(30%);
-        }
-
-        .btn {
-            display: inline-block;
-            outline: none;
-            cursor: pointer;
-            font-weight: 600;
-            border-radius: 3px;
-            border: 0;
-            color: white;
-            line-height: 1.15;
-            font-size: 16px;
-        }
-
-        .btn-primary {
-            background-color: #76daff !important;
-        }
-
-        .btn-success {
-            background-color: #47cf73 !important;
-        }
-
-        .btn-warning {
-            background-color: #fcd000 !important;
-        }
-
-        .btn-secondary {
-            background-color: #cdcdcd !important;
-        }
-
-        .btn:hover {
-            transition: all .1s ease;
-            box-shadow: 0 0 0 0 azure, 0 0 0 3px azure;
-        }
-
-        .bx-trash {
-            color: white;
-        }
-
-    </style>
+    <link href="~/css/course_management/StyleDatatable.css" rel="stylesheet" />
+  
 }
-<h1>Index</h1>
+<div class="main_contentDataTableDiv ">
 
-<table class="table  table-hover" id="table" style="width:100%">
-    <thead class="table-head">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.班級名稱)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.入學日期)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.結訓日期)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.班級導師姓名)
-            </th>
-            <th>
-                edit
-            </th>
-            <th>
-                delete
-            </th>
-            <th>
-                details
-            </th>
+    <div class="header">
+        <!-- 主頁上方操作流程序，記得有新增頁面時要記得編輯 -->
+        <div class="left">
+            <h1 class="text-center">@ViewData["Title"]</h1>
+
+            <ul class="breadcrumb">
+                <li><a asp-area="" asp-controller="SystemBackground" asp-action="Index">首頁</a></li>
+                /
+                <li><a asp-area="course_management" asp-controller="courseHome" asp-action="Index">排課系統管理</a></li>
+                /
+                <li><a href="#" class="active">@ViewData["Title"]</a></li>
+            </ul>
+        </div>
+        <!-- 主頁上方操作流程序-->
+    </div>
+
+    <table class="table  table-hover" id="table" style="width:100%">
+        <thead class="table-head">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.班級名稱)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.入學日期)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.結訓日期)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.班級導師姓名)
+                </th>
+                <th>
+                    修改
+                </th>
+                <th>
+                    刪除
+                </th>
+                <th>
+                    詳細
+                </th>
            
-        </tr>
-    </thead>
+            </tr>
+        </thead>
 
-</table>
+    </table>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content" id="modal_content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                <button type="button" id="closeBtn" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content" id="modal_content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                    <button type="button" id="closeBtn" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
 
-            <div class="modal-body overflow-hidden" id="switch_context">
-                <img class="w-100" src="~/images/t課程科目/loading.gif" />
+                <div class="modal-body overflow-hidden" id="switch_context">
+                    <img class="w-100" src="~/images/t課程科目/loading.gif" />
+                </div>
             </div>
         </div>
     </div>
+
 </div>
+
 @section Scripts {
     <script src="~/lib/datatables/js/jquery.datatables.min.js"></script>
     <script src="//cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"> </script>
     <script src="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/boxicons.js"></script>
-    <script>
-        $(document).ready(
-            function () {
+    <script src="~/js/course_management/classes.js"></script>
 
-                // Datatable
-                $("table").dataTable({
-                    ajax: {
-                        type: "GET",
-                        url: "/course_management/T課程班級/IndexJson",
-                        dataSrc: function (json) { return json; }
-                    },
-                    columns: [
-                        { "data": "班級名稱", "width": "20%" },
-                        { "data": "入學日期", "width": "20%" },
-                        { "data": "結訓日期", "width": "20%" },
-                        { "data": "班級導師姓名", "width": "20%" },
-                        {
-                            "data": "班級id",
-                            "render": function (data, type, row) {
-                                return '<p><a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick = "popup_edit(' + row.班級id + ')"><i class="bx bx-edit-alt"></i></a></p>'
-                            },
-                            "orderable": false
-                            , "width": "10%"
-
-                        },
-                        {
-                            "data": "班級id",
-                            "render": function (data, type, row) {
-                                return '<p><a class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick = "popup_delete(' + row.班級id + ')"> <i class="bx bx-trash""></i> </a></p>'
-                            },
-                            "orderable": false
-                            , "width": "10%"
-                        },
-                        {
-                            "data": "班級id",
-                            "render": function (data, type, row) {
-                                return '<p><a class="btn btn-secondary"  onclick = "popup_detail(' + row.班級id + ')"><i class="bx bx-menu" ></i></a></p>'
-                            },
-                            "orderable": false
-                            , "width": "10%"
-                        },
-                       
-                    ],
-
-
-                });
-
-
-
-
-            });
-
-
-
-    </script>
-    <script>
-        let exampleModalLabel = document.getElementById("exampleModalLabel");
-
-        function closeModal() {
-            exampleModalLabel.innerText = "Modal title";
-        }
-
-        $('#exampleModal').on('hidden.bs.modal', function (e) {
-            closeModal();
-        });
-
-       
-        function popup_edit(id) {
-
-            $.ajax({
-                type: 'GET',
-                url: '/course_management/T課程班級/Edit/' + id,
-                success: function (result) {
-
-                    console.log('Ajax request success');
-                    $("#switch_context").html("");
-                    $("#switch_context").html(result);
-
-                },
-                error: function (error) {
-
-                    console.error('Ajax request error', error);
-                }
-            });
-
-        }
-        function popup_delete(id) {
-            $.ajax({
-                type: 'GET',
-                url: '/course_management/T課程班級/Delete/' + id,
-                success: function (result) {
-
-                    console.log('Ajax request success');
-                    $("#switch_context").html("");
-                    $("#switch_context").html(result);
-
-                },
-                error: function (error) {
-
-                    console.error('Ajax request error', error);
-                }
-            });
-
-        }
-        function popup_detail(id) {
-            window.location.href = '/course_management/T課程班級/Details/' + id;
-        }
-      
-    </script>
+   
 }
 

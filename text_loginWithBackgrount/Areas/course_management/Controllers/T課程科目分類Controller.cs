@@ -214,59 +214,53 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, CategoryPictureViewModel viewModel)
         {
-            if (id != viewModel.科目類別id)
+            if (id != viewModel.科目類別id || !T課程科目分類Exists(viewModel.科目類別id))
             {
                 return View("Errors");
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    //先預設有值才能確認每一個資料都有圖，如果送來有圖用科目類別封面名稱，沒有就默認圖片
-                    string fileName = viewModel.科目類別封面名稱 ?? "默認圖片.jpg";
-
-                    if (viewModel.科目類別封面 != null && viewModel.科目類別封面.Length > 0)
-                    {
-                        string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images", "t課程科目類別");
-                        var extension = Path.GetExtension(viewModel.科目類別封面.FileName);
-                        //給一個新的fileName，代表真正圖片的名稱
-                        fileName = Guid.NewGuid().ToString() + extension;
-                        var filePath = Path.Combine(uploadsFolder, fileName);
-
-                        using (var stream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await viewModel.科目類別封面.CopyToAsync(stream);
-                        }
-                    }
-
-                    var t課程科目分類 = new T課程科目分類
-                    {
-                        科目類別id = viewModel.科目類別id,
-                        科目類別名稱 = viewModel.科目類別名稱,
-                        科目類別封面 = fileName,
-                        狀態 = 1
-                    };
-
-                    _context.Update(t課程科目分類);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!T課程科目分類Exists(viewModel.科目類別id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }else
+            if (!ModelState.IsValid)
             {
                 return View("Errors");
             }
+
+            try
+            {
+
+                //先預設有值才能確認每一個資料都有圖，如果送來有圖用科目類別封面名稱，沒有就默認圖片
+                string fileName = viewModel.科目類別封面名稱 ?? "默認圖片.jpg";
+
+                if (viewModel.科目類別封面 != null && viewModel.科目類別封面.Length > 0)
+                {
+                    string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images", "t課程科目類別");
+                    var extension = Path.GetExtension(viewModel.科目類別封面.FileName);
+                    //給一個新的fileName，代表真正圖片的名稱
+                    fileName = Guid.NewGuid().ToString() + extension;
+                    var filePath = Path.Combine(uploadsFolder, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await viewModel.科目類別封面.CopyToAsync(stream);
+                    }
+                }
+
+                var t課程科目分類 = new T課程科目分類
+                {
+                    科目類別id = viewModel.科目類別id,
+                    科目類別名稱 = viewModel.科目類別名稱,
+                    科目類別封面 = fileName,
+                    狀態 = 1
+                };
+
+                _context.Update(t課程科目分類);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return View("Errors");
+
+            }
+            return RedirectToAction(nameof(Index));
         }
 
 

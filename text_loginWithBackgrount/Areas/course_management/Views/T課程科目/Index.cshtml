@@ -10,80 +10,90 @@
     <link href="~/css/course_management/StylePopup.css" rel="stylesheet" />
     <link href="~/css/course_management/StyleDataTable.css" rel="stylesheet" />
 
-   
+   <style>
+
+        ::-webkit-scrollbar {
+            display: none !important;
+        }
+
+        
+   </style>
 }
 
+<div class="main_contentDataTableDiv">
+    <div class="header">
+        <!-- 主頁上方操作流程序，記得有新增頁面時要記得編輯 -->
+        <div class="left">
+            <h1 class="text-center">@ViewData["Title"]</h1>
 
-<div class="header">
-    <!-- 主頁上方操作流程序，記得有新增頁面時要記得編輯 -->
-    <div class="left">
-        <h1 class="text-center">@ViewData["Title"]</h1>
-
-        <ul class="breadcrumb">
-            <li><a asp-area="" asp-controller="SystemBackground" asp-action="Index">首頁</a></li>
-            /
-            <li><a asp-area="course_management" asp-controller="courseHome" asp-action="Index">排課系統管理</a></li>
-            /
-            <li><a href="#" class="active">@ViewData["Title"]</a></li>
-        </ul>
+            <ul class="breadcrumb">
+                <li><a asp-area="" asp-controller="SystemBackground" asp-action="Index">首頁</a></li>
+                /
+                <li><a asp-area="course_management" asp-controller="courseHome" asp-action="Index">排課系統管理</a></li>
+                /
+                <li><a href="#" class="active">@ViewData["Title"]</a></li>
+            </ul>
+        </div>
+        <!-- 主頁上方操作流程序-->
     </div>
-    <!-- 主頁上方操作流程序-->
-</div>
 
-<!-- 創建資料btn開啟-->
-<p class="d-flex align-items-center">
-    <a class="btn btn-success fs-4 pb-2" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="popup_create()" style="display: flex; align-items: center;">
-        <span class="">創建科目</span>
-        <i class="bx bxs-plus-square pt-1" style="font-size: 1em;"></i>
-    </a>
-</p>
-<!-- 創建資料Btn結束-->
+    <!-- 創建資料btn開啟-->
+    <p class="d-flex align-items-center">
+        <a class="btn btn-success fs-4 pb-2" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="popup_create()" style="display: flex; align-items: center;">
+            <span class="">創建科目</span>
+            <i class="bx bxs-plus-square pt-1" style="font-size: 1em;"></i>
+        </a>
+    </p>
+    <!-- 創建資料Btn結束-->
 
-<table class="table  table-hover" id="table" style="width:100%">
-    <thead class="table-head">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.科目名稱)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.科目類別名稱)
-            </th>
-           
-            <th>
-                修改
-            </th>
-            <th>
-                刪除
-            </th>
-            <th>
-                詳細
-            </th>
-            <th>
-                新增授課老師
-            </th>
+    <table class="table  table-hover" id="table" style="width:100%">
+        <thead class="table-head">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.科目名稱)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.科目類別名稱)
+                </th>
 
-        </tr>
-    </thead>
+                <th>
+                    修改
+                </th>
+                <th>
+                    刪除
+                </th>
+                <th>
+                    詳細
+                </th>
+                <th>
+                    新增授課老師
+                </th>
 
-</table>
+            </tr>
+        </thead>
+
+    </table>
 
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content" id="modal_content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                <button type="button" id="closeBtn" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content" id="modal_content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                    <button type="button" id="closeBtn" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
 
-            <div class="modal-body overflow-hidden" id="switch_context">
-                <img class="w-100" src="~/images/t課程科目/loading.gif" />
+                <div class="modal-body overflow-hidden" id="switch_context">
+                    <img class="w-100" src="~/images/t課程科目/loading.gif" />
+                </div>
             </div>
         </div>
     </div>
+
 </div>
+
 
 @section Scripts {
     <script src="~/lib/datatables/js/jquery.datatables.min.js"></script>
