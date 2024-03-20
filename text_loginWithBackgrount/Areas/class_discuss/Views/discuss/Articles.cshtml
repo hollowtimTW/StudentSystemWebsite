@@ -42,34 +42,6 @@
             <div class="col-lg-8">
 
                 <div class="row gy-4 posts-list" id="article">
-                    <!-- 共有六張卡片 -->
-
-                    <div class="col-xl-4 col-md-6">
-                        <article>
-
-                            <div class="post-img">
-                                <img src="~/assets/img/blog/blog-1.jpg" alt="" class="img-fluid">
-                            </div>
-
-                            <p class="post-category">Politics</p>
-
-                            <h2 class="title">
-                                <a asp-area="class_discuss" asp-controller="discuss" asp-action="ArticleDetails">Dolorum optio tempore voluptas dignissimos</a>
-                            </h2>
-
-                            <div class="d-flex align-items-center">
-                                <img src="~/assets/img/blog/blog-author.jpg" alt="" class="img-fluid post-author-img flex-shrink-0">
-                                <div class="post-meta">
-                                    <p class="post-author-list">Maria Doe</p>
-                                    <p class="post-date">
-                                        <time datetime="2022-01-01">Jan 1, 2022</time>
-                                    </p>
-                                </div>
-                            </div>
-
-                        </article>
-                    </div><!-- End post list item -->
-
                 </div><!-- End blog posts list -->
             </div>
 
@@ -79,15 +51,15 @@
                     <!-- 搜尋框 -->
                     <div class="sidebar-item search-form">
                         <h3 class="sidebar-title">Search</h3>
-                        <form action="" class="mt-3">
-                            <input type="text">
+                        <form action="" class="mt-3" id="inputKeyword">
+                            <input type="text" >
                             <button type="submit"><i class="bi bi-search"></i></button>
                         </form>
                     </div><!-- End sidebar search formn-->
                     <!-- 標籤區 -->
                     <div class="sidebar-item tags">
                         <h3 class="sidebar-title">Tags</h3>
-                        <ul class="mt-3">
+                        <ul class="mt-3" id="types">
                             <li><a href="#">App</a></li>
                             <li><a href="#">IT</a></li>
                             <li><a href="#">Business</a></li>
@@ -107,7 +79,7 @@
         </div>
         <!-- 分頁標籤 -->
         <div class="blog-pagination">
-            <ul class="justify-content-center">
+            <ul class="justify-content-center" id="pages">
                 <li><a href="#">1</a></li>
                 <li class="active"><a href="#">2</a></li>
                 <li><a href="#">3</a></li>
@@ -118,36 +90,57 @@
 </section><!-- End Blog Section -->
 @section Scripts {
     <script>
+        const pages = document.getElementById('pages');
+        const search = document.getElementById('inputKeyword');
+        // const types = document.getElementById('types');
+        const searchData = {
+            "subId": @subId,
+            "keyword": "",
+            "page": 1,
+            "pageSize": 9
+        };
+
         (async () => {
-            const subId = @ViewBag.subId;
-            const url = `@Url.Content("~/WebApi/artcard")?id=${subId}`;
-            const request = await fetch(url);
+            const request = await fetch('@Url.Content("~/WebApi/ArtCard")', {
+                "method": "Post",
+                "body": JSON.stringify(searchData),
+                "headers": { "Content-Type": "application/json" }
+            });
+            
             const data = await request.json();
-            const defaultImage = '/images/t論壇/預設頭像.png';
-            const datalist = data.map(a => `
+            console.log(data);
+            const artlist = data.result.map(a => {
+            const { 文章id, 分類, 標題, 內容, 作者, 日期, 頭像 } = a;
+                return (`
                     <div class="col-xl-4 col-md-6">
                                 <article>
-                                    <p class="post-category">${a.分類}</p>
+                                    <p class="post-category">${分類}</p>
 
                                     <h2 class="title">
-                             <a href="/class_discuss/discuss/ArticleDetails?subid=${@subId}&artid=${a.文章id}">
-                                     ${truncateString(a.標題, 18)}</a>
+                             <a href="/class_discuss/discuss/ArticleDetails?subid=${@subId}&artid=${文章id}">
+                                     ${truncateString(標題, 18)}</a>
                                     </h2>
 
                                     <div class="d-flex align-items-center">
-                          <img src="${a.頭像 ? 'data:image/jpeg;base64,' + a.頭像 : defaultImage}" alt="" class="img-fluid post-author-img flex-shrink-0">
+                          <img src="${頭像 ? 'data:image/jpeg;base64,' + 頭像 : '/images/t論壇/預設頭像.png'}" alt="" class="img-fluid post-author-img flex-shrink-0">
                                         <div class="post-meta">
-                                            <p class="post-author-list">${a.作者}</p>
+                                            <p class="post-author-list">${作者}</p>
                                             <p class="post-date">
-                                                <time datetime="2022-01-01">"修改日期：${a.日期}"</time>
+                                                <time datetime="2022-01-01">"修改日期：${日期}"</time>
                                             </p>
                                         </div>
                                     </div>
 
                                 </article>
                             </div>
-                `);
-            $('#article').html(datalist);
+                `)
+            })
+            article.innerHTML = artlist.join("");
+
+            const typelist = data.typeResult.map(a => {
+                return (`<li><a href="#">${a.名稱}</a></li>`)
+            })
+            $('#types').html(typelist);
         })();
 
         function truncateString(str, maxLength) {
