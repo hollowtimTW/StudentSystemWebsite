@@ -66,6 +66,7 @@ builder.Services.AddSession(options =>
 builder.Services.AddTransient<IEmailSender, Emailsender>();
 builder.Services.AddTransient<IHomeRepository, HomeRepository>();//胡洧銘新增的地方(03/07)
 builder.Services.AddTransient<ICartRepository, CartRepository>();
+builder.Services.AddTransient<IUserOrderRepository, UserOrderRepository>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR(); // 將 SignalR 服務添加到 DI 容器中
 builder.Services.AddDistributedMemoryCache(); // 將 _cashe 服務添加到 DI 容器中

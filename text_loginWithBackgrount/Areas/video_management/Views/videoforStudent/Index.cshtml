@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IEnumerable<T影片Order>
+@{
     ViewData["Title"] = "學員專區";
 }
 @* @User.Identity?.Name 這能抓到使用者的名稱 *@
@@ -71,6 +72,83 @@
                 <!-- 內容 -->
                 <article class="blog-details">
                     <h2 class="title">影片教材</h2>
+                    <div style="width:100%" class="mt-2">
+                        <a href="/Identity/Account/Manage" class="btn btn-primary my-2">Back</a>
+
+                        <h4>My Orders</h4>
+                        @if (Model != null && Model.Count() > 0)
+                        {
+                            <table class="table table-striped">
+                                <tr>
+                                    <th>OrderDate</th>
+                                    <th>OrderStatus</th>
+                                </tr>
+                                @foreach (var order in Model)
+                                {
+                                    <tr>
+                                        <td>@String.Format("{0:dd-MM-yyyy}", order.CreateDate)</td>
+                                        <td>@order.FOrderStatus.StatusName</td>
+                                    </tr>
+                                    @if (order.T影片OrderDetails != null && order.T影片OrderDetails.Count > 0)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <table class="table table-striped">
+                                                    <tr>
+                                                        <td>
+                                                            Total:
+                                                        </td>
+                                                        <td>
+                                                            @(order.T影片OrderDetails.Select(item => item.FVideo.FPrice*item.FQuantity).Sum())
+
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Book</th>
+                                                        <th>Image</th>
+                                                        <th>Genre</th>
+                                                        <th>Unit Price(INR)</th>
+                                                        <th>Total Price</th>
+                                                    </tr>
+                                                    @foreach (var item in order.T影片OrderDetails)
+                                                    {
+                                                        <tr>
+                                                            <td>@item.FVideo.FVideoName</td>
+                                                            <td>
+                                                                @if (string.IsNullOrEmpty(item.FVideo.FVideoName))
+                                                                {
+                                                                    <img src="/video/no video.png" style="width:80px;height:100px" />
+                                                                }
+                                                                else
+                                                                {
+                                                                    <video controls style="width: 16rem; height:16rem">
+                                                                        @{
+                                                                            var videoPath = $"~/video/{item.FVideo.FVideoName}.mp4";
+                                                                            Console.WriteLine($"Generated Video Path: {videoPath}");
+                                                                        }
+                                                                        <source src="@Url.Content(videoPath)" type="video/mp4">
+                                                                    </video>
+                                                                    
+                                                                }
+                                                            </td>
+                                                            <td>@item.FVideo.Genre.GenreName</td>
+                                                            <td>@item.FVideo.FPrice X @item.FQuantity</td>
+                                                            <td> @(item.FVideo.FPrice * item.FQuantity) </td>
+                                                        </tr>
+                                                    }
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </table>
+
+                        }
+                        else
+                        {
+                            <h5>No orders</h5>
+                        }
+                    </div>
                 </article><!-- End blog post -->
             </div>
         </div>

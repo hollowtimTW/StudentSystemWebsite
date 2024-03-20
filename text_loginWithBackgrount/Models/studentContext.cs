@@ -587,11 +587,11 @@ public partial class studentContext : DbContext
             entity.ToTable("t影片_Order");
 
             entity.Property(e => e.FOrderId).HasColumnName("fOrderId");
-            entity.Property(e => e.FOrderOrderStatusId).HasColumnName("fOrder_OrderStatusId");
+            entity.Property(e => e.FOrderStatusId).HasColumnName("fOrderStatusId");
             entity.Property(e => e.FStudentId).HasColumnName("fStudentId");
 
-            entity.HasOne(d => d.FOrderOrderStatus).WithMany(p => p.T影片Orders)
-                .HasForeignKey(d => d.FOrderOrderStatusId)
+            entity.HasOne(d => d.FOrderStatus).WithMany(p => p.T影片Orders)
+                .HasForeignKey(d => d.FOrderStatusId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_t影片_Order_t影片_OrderStatus");
 
