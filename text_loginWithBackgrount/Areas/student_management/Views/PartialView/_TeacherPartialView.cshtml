@@ -4,92 +4,172 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="memberModalLabel">修改老師資料</h5>
+                <h5 class="modal-title" id="memberModalLabel">修改老師資料</h5>        
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div id="edit_member">
-                    <form asp-area="student_management" asp-controller="Teacher" asp-action="EditTeacher" method="post" id="memberForm" enctype="multipart/form-data">
-                        <div class="form-group">
-                            <label for="UserStudentId" class="form-label">老師ID：</label>
-                            <input type="text" class="form-control" id="UserStudentId" value="@Model.老師id" asp-for="老師id" readonly />
-                        </div>
-                        <div class="form-group">
-                            <label for="UserName" class="form-label">姓名：</label>
-                            <input type="text" class="form-control" id="UserName" asp-for="姓名" />
-                            <span asp-validation-for="姓名" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="UserGender" class="form-label">性別：</label>
-                            <select class="form-control" id="UserGender" style="width: 50px;" asp-for="性別">
-                                <option value="男">男</option>
-                                <option value="女">女</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="UserIdentity" class="form-label">身分證字號：</label>
-                            <input type="text" class="form-control" id="UserIdentity" asp-for="身分證字號" />
-                            <span asp-validation-for="身分證字號" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="UserEmail" class="form-label">信箱：</label>
-                            <input type="email" class="form-control" asp-for="信箱" id="UserEmail" />
-                            <span asp-validation-for="信箱" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="UserPhone" class="form-label">手機：</label>
-                            <input type="text" class="form-control" id="UserPhone" asp-for="手機" />
-                        </div>
-                        <div class="form-group">
-                            <label for="UserAddress" class="form-label">地址：</label>
-                            <input type="text" class="form-control" id="UserAddress" style="width: 300px;" asp-for="地址" />
-                        </div>   
-                        <div class="form-group">
-                            <label for="UserImage" class="form-label">圖片 (只接受PNG 或 JPG)：</label>
-                            <input type="file" class="form-control" id="UserImage" name="圖片" accept=".png, .jpg, .jpeg" />
-                        </div>
-                        <div class="form-group">
-                            <label for="UserBirthday" class="form-label">生日：</label>
-                            <input type="date" class="form-control" id="UserBirthday" asp-for="生日" />
-                        </div>
-                        <div class="form-group">
-                            <label for="UserSchool" class="form-label">學校：</label>
-                            <input type="text" class="form-control" id="UserSchool" asp-for="學校" />
-                        </div>
-                        <div class="form-group">
-                            <label for="UserDepartment" class="form-label">科系：</label>
-                            <input type="text" class="form-control" id="UserDepartment" asp-for="科系" />
-                        </div>
-                        <div class="form-group">
-                            <label for="UserDegree" class="form-label">學位：</label>
-                            <select class="form-control" id="UserDegree" style="width: 80px;" asp-for="學位">
-                                <option value="國小">國小</option>
-                                <option value="國中">國中</option>
-                                <option value="高中">高中</option>
-                                <option value="大學">大學</option>
-                                <option value="碩士">碩士</option>
-                                <option value="博士">博士</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="UserGraduation" class="form-label">畢業肄業：</label>
-                            <select class="form-control" id="UserGraduation" style="width: 80px;" asp-for="畢肄">
-                                <option value="畢業">畢業</option>
-                                <option value="肄業">肄業</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="UserLock" class="form-label">鎖定：</label>
-                            <select class="form-control" id="UserLock" style="width: 50px;" asp-for="鎖定">
-                                <option value="0">否</option>
-                                <option value="1">是</option>
-                            </select>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
-                            <button type="submit" class="btn btn-primary" id="subbtn">送出</button>
-                        </div>
-                    </form>
+                    @if (Model.老師id.ToString() == User?.FindFirst("TeacherID")?.Value || User.IsInRole("admin"))
+                    {
+                        <form asp-area="student_management" asp-controller="Teacher" asp-action="EditTeacher" method="post" id="memberForm" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="UserStudentId" class="form-label">老師ID：</label>
+                                <input type="text" class="form-control" id="UserStudentId" value="@Model.老師id" asp-for="老師id" style="width: 120px;" readonly />
+                            </div>
+                            <div class="form-group">
+                                <label for="UserName" class="form-label">姓名：</label>
+                                <input type="text" class="form-control" id="UserName" asp-for="姓名" style="width: 120px;" />
+                                <span asp-validation-for="姓名" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="UserGender" class="form-label">性別：</label>
+                                <select class="form-control" id="UserGender" style="width: 50px;" asp-for="性別">
+                                    <option value="男">男</option>
+                                    <option value="女">女</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="UserIdentity" class="form-label">身分證字號：</label>
+                                <input type="text" class="form-control" id="UserIdentity" asp-for="身分證字號" />
+                                <span asp-validation-for="身分證字號" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="UserEmail" class="form-label">信箱：</label>
+                                <input type="email" class="form-control" asp-for="信箱" id="UserEmail" />
+                                <span asp-validation-for="信箱" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="UserPhone" class="form-label">手機：</label>
+                                <input type="text" class="form-control" id="UserPhone" asp-for="手機" />
+                            </div>
+                            <div class="form-group">
+                                <label for="UserAddress" class="form-label">地址：</label>
+                                <input type="text" class="form-control" id="UserAddress" asp-for="地址" />
+                            </div>
+                            <div class="form-group">
+                                <label for="UserImage" class="form-label">圖片 (只接受PNG 或 JPG)：</label>
+                                <input type="file" class="form-control" id="UserImage" name="圖片" accept=".png, .jpg, .jpeg" />
+                            </div>
+                            <div class="form-group">
+                                <label for="UserBirthday" class="form-label">生日：</label>
+                                <input type="date" class="form-control" id="UserBirthday" asp-for="生日" />
+                            </div>
+                            <div class="form-group">
+                                <label for="UserSchool" class="form-label">學校：</label>
+                                <input type="text" class="form-control" id="UserSchool" asp-for="學校" />
+                            </div>
+                            <div class="form-group">
+                                <label for="UserDepartment" class="form-label">科系：</label>
+                                <input type="text" class="form-control" id="UserDepartment" asp-for="科系" />
+                            </div>
+                            <div class="form-group">
+                                <label for="UserDegree" class="form-label">學位：</label>
+                                <select class="form-control" id="UserDegree" style="width: 80px;" asp-for="學位">
+                                    <option value="國小">國小</option>
+                                    <option value="國中">國中</option>
+                                    <option value="高中">高中</option>
+                                    <option value="大學">大學</option>
+                                    <option value="碩士">碩士</option>
+                                    <option value="博士">博士</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="UserGraduation" class="form-label">畢業肄業：</label>
+                                <select class="form-control" id="UserGraduation" style="width: 80px;" asp-for="畢肄">
+                                    <option value="畢業">畢業</option>
+                                    <option value="肄業">肄業</option>
+                                </select>
+                            </div>
+                            @if (@User?.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value == "admin")
+                            {
+                                <div class="form-group">
+                                    <label for="UserLock" class="form-label">鎖定：</label>
+                                    <select class="form-control" id="UserLock" style="width: 50px;" asp-for="鎖定">
+                                        <option value="0">否</option>
+                                        <option value="1">是</option>
+                                    </select>
+                                </div>
+                            }else
+                            {
+                                <div class="form-group" >
+                                    <label for="UserLock" class="form-label">鎖定：</label>
+                                    <select class="form-control" id="UserLock" style="width: 50px;" asp-for="鎖定">
+                                        <option value="0">否</option>
+                                        <option value="1">是</option>
+                                    </select>
+                                </div>
+                            }
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                                <button type="submit" class="btn btn-primary" id="subbtn">送出</button>
+                            </div>
+                        </form>
+                    }else
+                    {
+                        <form asp-area="student_management" asp-controller="Teacher" asp-action="EditTeacher" method="post" id="memberForm" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="UserStudentId" class="form-label">老師ID：</label>
+                                <input type="text" class="form-control" id="UserStudentId" value="@Model.老師id" asp-for="老師id" readonly />
+                            </div>
+                            <div class="form-group">
+                                <label for="UserName" class="form-label">姓名：</label>
+                                <input type="text" class="form-control" id="UserName" asp-for="姓名" readonly/>
+                                <span asp-validation-for="姓名" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="UserGender" class="form-label">性別：</label>
+                                <select class="form-control" id="UserGender" style="width: 50px;" asp-for="性別" readonly>
+                                    <option value="男">男</option>
+                                    <option value="女">女</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="UserEmail" class="form-label">信箱：</label>
+                                <input type="email" class="form-control" asp-for="信箱" id="UserEmail" readonly/>
+                                <span asp-validation-for="信箱" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="UserPhone" class="form-label">手機：</label>
+                                <input type="text" class="form-control" id="UserPhone" asp-for="手機" readonly />
+                            </div>
+                            <div class="form-group">
+                                <label for="UserAddress" class="form-label">地址：</label>
+                                <input type="text" class="form-control" id="UserAddress" style="width: 300px;" asp-for="地址" readonly />
+                            </div>
+                            <div class="form-group">
+                                <label for="UserBirthday" class="form-label">生日：</label>
+                                <input type="date" class="form-control" id="UserBirthday" asp-for="生日" readonly />
+                            </div>
+                            <div class="form-group">
+                                <label for="UserSchool" class="form-label">學校：</label>
+                                <input type="text" class="form-control" id="UserSchool" asp-for="學校" readonly />
+                            </div>
+                            <div class="form-group">
+                                <label for="UserDepartment" class="form-label">科系：</label>
+                                <input type="text" class="form-control" id="UserDepartment" asp-for="科系" readonly />
+                            </div>
+                            <div class="form-group">
+                                <label for="UserDegree" class="form-label">學位：</label>
+                                <select class="form-control" id="UserDegree" style="width: 80px;" asp-for="學位" readonly>
+                                    <option value="國小">國小</option>
+                                    <option value="國中">國中</option>
+                                    <option value="高中">高中</option>
+                                    <option value="大學">大學</option>
+                                    <option value="碩士">碩士</option>
+                                    <option value="博士">博士</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="UserGraduation" class="form-label">畢業肄業：</label>
+                                <select class="form-control" id="UserGraduation" style="width: 80px;" asp-for="畢肄" readonly>
+                                    <option value="畢業">畢業</option>
+                                    <option value="肄業">肄業</option>
+                                </select>
+                            </div>
+                        </form>
+                    }
+
                 </div>
             </div>
 

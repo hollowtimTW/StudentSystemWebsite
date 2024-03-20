@@ -9,7 +9,7 @@ using System.Text;
 namespace text_loginWithBackgrount.Areas.student_management.Controllers
 {
 
-    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles = "teacher")]
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles = "teacher, admin")]
     [Area("student_management")]
     public class TeacherController : Controller
     {

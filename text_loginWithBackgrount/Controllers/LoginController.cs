@@ -159,30 +159,106 @@ namespace text_loginWithBackgrount.Controllers
         [HttpPost]
         public IActionResult TeacherIndex(LoginPost value)
         {
-            //var user = (from a in _dbStudentSystemContext.T會員老師s
-            //            where a.信箱 == value.Account && a.密碼 == value.Password
-            //            select a).SingleOrDefault();
             var user = _dbStudentSystemContext.T會員老師s.SingleOrDefault(a => a.信箱 == value.Account);
 
-            if (user == null || !VerifyPassword(user.密碼, user.Salt, value.Password))
+            if (user == null)
             {
-                TempData["teacherIndexMessage"] = "alert('帳號密碼錯誤')";
+                TempData["teacherIndexMessage"] = "alert('帳號不存在')";
                 return View();
             }
-            else
+
+            if (user.鎖定=="1")
             {
-                var claims = new List<Claim>
+                TempData["teacherIndexMessage"] = "alert('此帳號已被鎖定，請通知管理員')";
+                return View();
+            }
+
+
+            if (!VerifyPassword(user.密碼, user.Salt, value.Password))
+            {
+                AddLoginRecord(user.老師id, "0");//加一筆紀錄錯誤是0
+                if (CheckLoginLock(user.老師id))
                 {
-                   new Claim(ClaimTypes.Name, user.姓名),
-                   new Claim("FullName", user.姓名),
-                   new Claim("teacherID", user.老師id.ToString()),
-                   new Claim(ClaimTypes.Role,"teacher")
+                    TempData["teacherIndexMessage"] = "alert('密碼錯誤')";
+                }
+                else {
+                    TempData["teacherIndexMessage"] = "alert('短期間內內錯誤已達3次，帳號進行鎖定')";
+                }
+                return View();
+            }
+
+            AddLoginRecord(user.老師id, "1");//加一筆紀錄成功是1
+
+            var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.姓名),
+                    new Claim("FullName", user.姓名),
+                    new Claim("teacherID", user.老師id.ToString()),
+                    new Claim(ClaimTypes.Role,"teacher"),
                 };
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-                return RedirectToAction("Index", "SystemBackground");
+
+            //簡單的把3當成管理員
+            if (user.狀態 == "3")
+            {
+                claims.Add(new Claim(ClaimTypes.Role, "admin"));
+            }
+
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+            return RedirectToAction("Index", "SystemBackground");
+        }
+
+        private void AddLoginRecord(int id, string state)
+        {
+            try
+            {
+                T會員老師登入紀錄 t = new T會員老師登入紀錄
+                {
+                    老師id = id,
+                    登入時間 = DateTime.Now,
+                    狀態 = state
+                };
+
+                _dbStudentSystemContext.Add(t);
+                _dbStudentSystemContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                //???
             }
         }
+
+        private bool CheckLoginLock(int teacherId)
+        {
+            //找出5分鐘內登入的最近3項紀錄
+            var query = _dbStudentSystemContext.T會員老師登入紀錄s
+                .Where(t => t.老師id == teacherId && t.登入時間 >= DateTime.Now.AddMinutes(-5))
+                .OrderByDescending(t => t.登入時間)
+                .Take(3);
+
+            //不夠3項給過
+            if (query.Count() < 3) 
+            {
+                return true;
+            }
+
+            //3項都是登入失敗就擋住
+            //這邊一邊的狀態是另一邊的鎖定，不改資料庫了..
+            if (query.All(t => t.狀態 == "0"))
+            {
+                var user =_dbStudentSystemContext.T會員老師s.Where(t => t.老師id == teacherId).SingleOrDefault();
+                if (user != null) { user.鎖定 = "1"; }
+                _dbStudentSystemContext.SaveChanges();
+
+                return false;
+            }
+
+            return true;
+        }
+
+
+
 
         public IActionResult GetTeacherImage(int teacherId)
         {

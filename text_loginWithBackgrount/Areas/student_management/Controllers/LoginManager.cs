@@ -5,9 +5,6 @@ namespace Class_system_Backstage_pj.Areas.student_management.Controllers
 {
     public class LoginManager
     {
-
-
-
         private static LoginManager instance;
 
         private LoginManager() { }
