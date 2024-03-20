@@ -13,7 +13,17 @@ namespace text_loginWithBackgrount.Areas.class_discuss.Controllers
     {
         public IActionResult Index()
         {
+            ViewBag.userId = GetUserId();
             return View();
         }
+        private int GetUserId()
+        {
+            var studentId = User.FindFirst("StudentId")?.Value;
+            int userId;
+            int.TryParse(studentId, out userId);
+            Console.WriteLine(studentId);
+            return userId;
+        }
+
     }
 }

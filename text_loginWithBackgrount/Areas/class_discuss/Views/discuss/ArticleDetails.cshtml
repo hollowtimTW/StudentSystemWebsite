@@ -168,6 +168,7 @@
             const url = `@Url.Content("~/WebApi/Article")?id=${@artId}`;
             const request = await fetch(url);
             const data = await request.json();
+            console.log(data);
             const datalist = data.map(a => `
                         <!-- 標題 -->
                             <h2 class="title">${a.標題}</h2>

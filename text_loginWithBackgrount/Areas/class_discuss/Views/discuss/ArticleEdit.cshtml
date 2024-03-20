@@ -55,14 +55,14 @@
                     <div class="info-item d-flex">
                         <i class="bi bi-envelope flex-shrink-0"></i>
                         <div class="d-flex flex-column justify-content-center">
-                            <h4>輸入文章標題</h4>
+                            <h4>輸入文章標題</h4><h4 id="noneTitle" style="color: yellow; display: none;">請輸入文章標題</h4>
                         </div>
                     </div><!-- End Info Item -->
                     <!-- 項目3 -->
                     <div class="info-item d-flex">
                         <i class="bi bi-phone flex-shrink-0"></i>
                         <div class="d-flex flex-column justify-content-center">
-                            <h4>輸入文章內容</h4>
+                            <h4>輸入文章內容</h4><h4 id="noneContent" style="color: yellow; display: none;">請輸入文章內容</h4>
                         </div>
                     </div><!-- End Info Item -->
                 </div>
@@ -86,11 +86,11 @@
                     <br />
                     <div class="form-group mt-3">
                         <!-- 標題 -->
-                        <input asp-for="標題" type="text" id="title" class="form-control" placeholder="文章標題" required>
+                        <input asp-for="標題" type="text" name="標題" id="title" class="form-control" placeholder="文章標題" autocomplete="off">
                     </div>
                     <br />
                     <br />
-                    <textarea asp-for="內容" id="area" style="display: none;"></textarea>
+                    <textarea asp-for="內容" name="內容" id="area" style="display: none;"></textarea>
                     <div class="form-group mt-3" id="editor">
                         <!-- 內容 -->
                         <p placeholder="文章標題"></p>
@@ -136,19 +136,34 @@
             e.preventDefault();
             window.location.href = "/class_discuss/discuss/ArticleDetails?subid=@subId&artid=@artId";
         });
+
         $("#done").click(function (e) {
-            setTimeout(function () {
-                $('#done').html('Loading.');
-            }, 300);
-            setTimeout(function () {
-                $('#done').html('Loading..');
-            }, 600);
-            setTimeout(function () {
-                $('#done').html('Loading...');
-            }, 900);
-            setTimeout(function () {
-                window.location.href = "/class_discuss/discuss/ArticleDetails?subid=@subId&artid=@artId";
-            }, 1000);
+            var titleValue = $('input[name="標題"]').val().trim();
+            var contentValue = $('textarea[name="內容"]').val().trim();
+            if (titleValue === "") {
+                $('#noneTitle').show();
+            } else {
+                $('#noneTitle').hide();
+            }
+            if (contentValue === "") {
+                $('#noneContent').show();
+            } else {
+                $('#noneContent').hide();
+            }
+            if (titleValue !== "" && contentValue !== "") {
+                setTimeout(function () {
+                    $('#done').html('Loading.');
+                }, 300);
+                setTimeout(function () {
+                    $('#done').html('Loading..');
+                }, 600);
+                setTimeout(function () {
+                    $('#done').html('Loading...');
+                }, 900);
+                setTimeout(function () {
+                    window.location.href = "/class_discuss/discuss/ArticleDetails?subid=@subId&artid=@artId";
+                }, 1000);
+            }
         });
     </script>
 }

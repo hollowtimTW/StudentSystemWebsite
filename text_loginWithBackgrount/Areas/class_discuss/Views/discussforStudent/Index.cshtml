@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "學員專區";
+    int userId = ViewBag.userId;
 }
 @* @User.Identity?.Name 這能抓到使用者的名稱 *@
 @* @User?.FindFirst("FullName")?.Value 也能抓到使用者的名稱*@
@@ -46,8 +47,8 @@
                     <div class="sidebar-item search-form">
                         <h3 class="sidebar-title">Search</h3>
                         <form action="" class="mt-3">
-                            <input type="text">
-                            <button type="submit"><i class="bi bi-search"></i></button>
+                            <input type="text" id="inputKeyword">
+                            <button type="submit" id="btnsreach"><i class="bi bi-search" autocomplete="off"></i></button>
                         </form>
                     </div><!-- End sidebar search formn-->
                     <!-- 文字列表 -->
@@ -71,45 +72,135 @@
                 <!-- 內容 -->
                 <article class="blog-details">
                     <h2 class="title">學習討論區</h2>
-                    @*                     <div class="meta-top">
-                    <p>
-                    您可以在 Rasengan + 帳戶中查看及管理個人資訊
-                    </p>
-                    </div><!-- End meta top -->
-                    <hr />
-                    <form>
-                    <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">姓名</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" value="@User.Identity?.Name">
+                    <br />
+                    <div class="row gy-4 posts-list" id="article">
                     </div>
-                    <div class="mb-3">
-                    <label for="exampleInputPassword1" class="form-label">電子郵件</label>
-                    <input type="password" class="form-control" id="exampleInputPassword1">
+                    <div class="blog-pagination">
+                        <ul class="justify-content-center" id="pages">
+                            <li><a href="#">1</a></li>
+                        </ul>
                     </div>
-                    <div class="mb-3">
-                    <label for="exampleInputPassword1" class="form-label">
-                    出生日期
-                    </label>
-                    <input type="password" class="form-control" id="exampleInputPassword1">
-                    </div>
-                    <div class="mb-3">
-                    <label for="exampleInputPassword1" class="form-label">性別</label>
-                    <input type="password" class="form-control" id="exampleInputPassword1">
-                    </div>
-                    <button type="submit" class="btn btn-primary">修改資訊</button>
-                    </form>
-                    <div class="meta-bottom">
-                    <i class="bi bi-calendar-check-fill"></i>
-                    <ul class="cats">
-                    <li>
-                    <p>
-                    您上次於 2023/11/01 8:48:14 pm變更個人資訊
-                    </p>
-                    </li>
-                    </ul>
-                    </div><!-- End meta bottom --> *@
                 </article><!-- End blog post -->
+                
             </div>
         </div>
     </div>
 </section><!-- End Blog Details Section -->
+@section Scripts{
+    <script>
+        const pages = document.getElementById('pages');
+        const inputKeyword = document.getElementById('inputKeyword');
+        const searchButton = document.querySelector('#btnsreach');
+        const searchData = {
+            "userId": @userId,
+            "typeId": 0,
+            "keyword": "",
+            "page": 1,
+            "pageSize": 5
+        };
+
+        const loadArtCard = async () => {
+            const request = await fetch('@Url.Content("~/WebApi/UserArtCard")', {
+                "method": "Post",
+                "body": JSON.stringify(searchData),
+                "headers": { "Content-Type": "application/json" }
+            });
+
+            const data = await request.json();
+            console.log(data);
+            const artlist = data.result.map(a => {
+                const { 文章id, 看板id, 看板, 分類, 標題, 內容, 日期 } = a;
+                return (`
+                            <div class="col-xl-12 col-md-6">
+                                        <article>
+                                            <h2 class="title">
+                                     <a href="/class_discuss/discuss/ArticleDetails?subid=${看板id}&artid=${文章id}">
+                                             ${truncateString(標題, 40)}</a>
+                                            </h2>
+                                            <p class="post-category">${truncateString(內容, 200)}</p>
+
+                                            <div class="d-flex align-items-center">
+                                  <img src="/images/t論壇/看板封面/${encodeURIComponent(看板)}.png" alt="" class="img-fluid post-author-img flex-shrink-0">
+                                                <div class="post-meta">
+                                                    <p class="post-author-list">${看板} / ${分類}</p>
+                                                    <p class="post-date">
+                                                        <time datetime="2022-01-01">"修改日期：${日期}"</time>
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                        </article>
+                                    </div>
+                        `)
+            })
+            article.innerHTML = artlist.join("");
+
+            let liPaging = "";
+            for (let i = 1; i <= data.totalPages; i++) {
+                if (i == 1) {
+                    liPaging += ` <li onclick="pagingHandler(${i})"><a href="#">${i}</a></li>`
+                } else { liPaging += ` <li onclick="pagingHandler(${i})"><a href="#">${i}</a></li>` }
+            }
+            pages.innerHTML = liPaging;
+        };
+
+        searchButton.addEventListener('click', function (event) {
+            event.preventDefault(); // 取消按鈕的預設提交行為
+
+            const keyword = inputKeyword.value.trim(); // 取得輸入的關鍵字並去除空白
+            if (keyword !== '') {
+                searchData.keyword = keyword; // 將關鍵字設置到 searchData 物件中
+                loadArtCard();
+            } else if (keyword === '' || keyword === null) {
+                searchData.keyword = "";
+                loadArtCard();
+            }
+        });
+        inputKeyword.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // 取消按下 Enter 鍵的預設提交行為
+
+                const keyword = inputKeyword.value.trim(); // 取得輸入的關鍵字並去除空白
+                if (keyword !== '') {
+                    searchData.keyword = keyword; // 將關鍵字設置到 searchData 物件中
+                    loadArtCard(); // 調用 loadSpots 函數
+                }
+            }
+        });
+
+        function truncateString(str, maxLength) {
+            let length = 0;
+            let truncated = '';
+            for (let char of str) {
+                // 如果是中文字符，長度加2；否則加1
+                length += char.charCodeAt(0) > 255 ? 2 : 1;
+                if (length > maxLength) {
+                    break;
+                }
+                truncated += char;
+            }
+            if (length > maxLength) {
+                truncated += '...';
+            }
+            return truncated;
+        }
+
+        const pagingHandler = page => {
+            searchData.page = page;
+            loadArtCard();
+        }
+
+        const typeHandler = typeId => {
+            searchData.typeId = typeId;
+            loadArtCard();
+        }
+
+        $(document).ready(function () {
+            $('#pages').on('click', 'li', function () {
+                $('#pages li').removeClass('active');
+                $(this).addClass('active');
+            });
+        });
+        loadArtCard();
+    </script>
+}
