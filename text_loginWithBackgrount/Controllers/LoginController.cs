@@ -182,7 +182,7 @@ namespace text_loginWithBackgrount.Controllers
                     TempData["teacherIndexMessage"] = "alert('密碼錯誤')";
                 }
                 else {
-                    TempData["teacherIndexMessage"] = "alert('5分鐘內錯誤已達3次，帳號進行鎖定')";
+                    TempData["teacherIndexMessage"] = "alert('短期間內內錯誤已達3次，帳號進行鎖定')";
                 }
                 return View();
             }
