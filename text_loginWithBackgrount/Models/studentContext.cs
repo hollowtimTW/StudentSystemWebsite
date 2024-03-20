@@ -128,7 +128,7 @@ public partial class studentContext : DbContext
             entity.Property(e => e.FQuizId).HasColumnName("fQuizId");
             entity.Property(e => e.FClosed).HasColumnName("fClosed");
             entity.Property(e => e.FCreateTime)
-                .HasColumnType("date")
+                .HasColumnType("datetime")
                 .HasColumnName("fCreateTime");
             entity.Property(e => e.FLimitTime).HasColumnName("fLimitTime");
             entity.Property(e => e.FNote).HasColumnName("fNote");
@@ -143,7 +143,7 @@ public partial class studentContext : DbContext
 
             entity.HasOne(d => d.FTeacher).WithMany(p => p.TQuizQuizzes)
                 .HasForeignKey(d => d.FTeacherId)
-                .HasConstraintName("FK_tQuiz_Quiz_t會員_老師");
+                .HasConstraintName("FK_tQuiz_quiz_t會員_老師");
         });
 
         modelBuilder.Entity<TQuizRecord>(entity =>
@@ -161,20 +161,21 @@ public partial class studentContext : DbContext
                 .HasColumnName("fGroup");
             entity.Property(e => e.FQuizId).HasColumnName("fQuizId");
             entity.Property(e => e.FRate)
-                .HasColumnType("decimal(5, 2)")
+                .HasColumnType("decimal(3, 2)")
                 .HasColumnName("fRate");
             entity.Property(e => e.FStartTime)
                 .HasColumnType("datetime")
                 .HasColumnName("fStartTime");
             entity.Property(e => e.FState).HasColumnName("fState");
             entity.Property(e => e.FStudentId).HasColumnName("fStudentId");
-            entity.Property(e => e.FSubmitTime)
+            entity.Property(e => e.FSumbitTime)
                 .HasColumnType("datetime")
-                .HasColumnName("fSubmitTime");
+                .HasColumnName("fSumbitTime");
 
             entity.HasOne(d => d.FQuiz).WithMany(p => p.TQuizRecords)
                 .HasForeignKey(d => d.FQuizId)
-                .HasConstraintName("FK_tQuiz_Record_tQuiz_Quiz");
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tQuiz_Record_tQuiz_quiz");
 
             entity.HasOne(d => d.FStudent).WithMany(p => p.TQuizRecords)
                 .HasForeignKey(d => d.FStudentId)
@@ -592,6 +593,11 @@ public partial class studentContext : DbContext
             entity.Property(e => e.FOrderOrderStatusId).HasColumnName("fOrder_OrderStatusId");
             entity.Property(e => e.FStudentId).HasColumnName("fStudentId");
 
+            entity.HasOne(d => d.FOrderOrderStatus).WithMany(p => p.T影片Orders)
+                .HasForeignKey(d => d.FOrderOrderStatusId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_t影片_Order_t影片_OrderStatus");
+
             entity.HasOne(d => d.FStudent).WithMany(p => p.T影片Orders)
                 .HasForeignKey(d => d.FStudentId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -623,19 +629,11 @@ public partial class studentContext : DbContext
 
         modelBuilder.Entity<T影片OrderStatus>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("t影片_OrderStatus");
+            entity.ToTable("t影片_OrderStatus");
 
-            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.StatusName)
                 .IsRequired()
                 .HasMaxLength(50);
-
-            entity.HasOne(d => d.IdNavigation).WithMany()
-                .HasForeignKey(d => d.Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_t影片_OrderStatus_t影片_Order");
         });
 
         modelBuilder.Entity<T影片ShoppingCart>(entity =>

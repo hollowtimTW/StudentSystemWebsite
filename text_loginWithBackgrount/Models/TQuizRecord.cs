@@ -9,7 +9,7 @@ public partial class TQuizRecord
 {
     public int FRecordId { get; set; }
 
-    public int? FQuizId { get; set; }
+    public int FQuizId { get; set; }
 
     public int? FStudentId { get; set; }
 
@@ -21,7 +21,7 @@ public partial class TQuizRecord
 
     public DateTime? FEndTime { get; set; }
 
-    public DateTime? FSubmitTime { get; set; }
+    public DateTime? FSumbitTime { get; set; }
 
     public decimal? FRate { get; set; }
 

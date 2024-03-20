@@ -17,6 +17,8 @@ public partial class T影片Order
 
     public bool? IsDeleted { get; set; }
 
+    public virtual T影片OrderStatus FOrderOrderStatus { get; set; }
+
     public virtual T會員學生 FStudent { get; set; }
 
     public virtual ICollection<T影片OrderDetail> T影片OrderDetails { get; set; } = new List<T影片OrderDetail>();

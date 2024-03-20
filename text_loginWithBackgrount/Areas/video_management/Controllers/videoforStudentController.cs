@@ -20,15 +20,18 @@ namespace text_loginWithBackgrount.Areas.video_management.Controllers
         private readonly ILogger<videoforStudentController> _logger;
         private readonly studentContext _studentContext;
         private readonly IHomeRepository _homeRepository;
-        public videoforStudentController(ILogger<videoforStudentController> logger, studentContext studentContext, IHomeRepository homeRepository)
+        private readonly IUserOrderRepository _userOrderRepository;
+        public videoforStudentController(ILogger<videoforStudentController> logger, studentContext studentContext, IHomeRepository homeRepository, IUserOrderRepository userOrderRepository)
         {
             _logger = logger;
             _studentContext = studentContext;
             _homeRepository = homeRepository;
+            _userOrderRepository = userOrderRepository;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var orders = await _userOrderRepository.UserOrders();
+            return View(orders);
         }
         public async Task<IActionResult> videoshopping (string sTerm = "", int genreId = 0) 
         {

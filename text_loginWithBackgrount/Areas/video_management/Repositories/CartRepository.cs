@@ -137,7 +137,7 @@ namespace text_loginWithBackgrount.Areas.video_management.Repositories
                 // logic
                 // move data from cartDetail to order and order detail then we will remove cart detail
                 var userId = GetUserId();
-                if (userId != 0)
+                if (userId == 0)
                     throw new Exception("User is not logged-in");
                 var cart = await GetCart(userId);
                 if (cart is null)
@@ -149,9 +149,10 @@ namespace text_loginWithBackgrount.Areas.video_management.Repositories
                 var order = new T影片Order
                 {
                     FStudentId = userId,
-                    CreateDate = DateTime.UtcNow,
-                    FOrderOrderStatusId = 1//pending
+                    CreateDate = DateTime.Now,
+                    FOrderOrderStatusId = 1//pending,
                 };
+
                 _studentContext.T影片Orders.Add(order);
                 _studentContext.SaveChanges();
                 foreach (var item in cartDetail)

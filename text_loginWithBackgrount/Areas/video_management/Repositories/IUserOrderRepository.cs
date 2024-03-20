@@ -1,6 +1,9 @@
-﻿namespace text_loginWithBackgrount.Areas.video_management.Repositories
+﻿using Class_system_Backstage_pj.Models;
+
+namespace text_loginWithBackgrount.Areas.video_management.Repositories
 {
-    public class IUserOrderRepository
+    public interface IUserOrderRepository
     {
+        Task<IEnumerable<T影片Order>> UserOrders();
     }
 }
