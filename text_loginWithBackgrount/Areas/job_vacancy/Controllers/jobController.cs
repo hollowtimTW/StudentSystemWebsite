@@ -623,8 +623,8 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             // 添加郵件的文本內容
             var textPart = new TextPart("html")
             {
-                Text = $"尊敬的 <strong>{recipientName}</strong> 負責人，您好：" +
-                       $"特此通知貴公司收到一份新的應徵信。" +
+                Text = $"尊敬的 <strong>{recipientName}</strong> 負責人，您好：<br><br>" +
+                       $"特此通知貴公司收到一份新的應徵信。<br><br>" +
                        $"應徵內容如下：<br><br><br>{letterBody}<br><br><br><br>" +
                        $"<strong style='color: red;'>本封郵件由 Rasengan 人才培訓服務系統自動發送，如果對求職者有興趣，請直接與他/她聯絡，謝謝。</strong><br><br>"
             };

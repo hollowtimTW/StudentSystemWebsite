@@ -1,6 +1,21 @@
 ﻿@{
     ViewData["Title"] = "就業媒合";
 }
+
+@section Styles {
+    <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet" />
+    <style>
+        .breadcrumbs .page-header h4 {
+            color: #fff;
+        }
+
+        .breadcrumbs .page-header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: larger;
+        }
+    </style>
+}
+
 @section BreadcrumbsSection {
     <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
     <div class="breadcrumbs">
@@ -9,7 +24,8 @@
                 <div class="row d-flex justify-content-center">
                     <div class="col-lg-6 text-center">
                         <h2>@ViewData["Title"]</h2>
-                        <p>就業媒合之廠商請從企業入口洽詢！</p>
+                        <h4>刊登廠商提供職缺，歡迎學員投遞應徵！</h4>
+                        <p>就業媒合之廠商請從企業入口洽詢</p>
                     </div>
                 </div>
             </div>
@@ -28,19 +44,13 @@
 
     </div>
 }
-@section Styles {
-    <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet" />
-    <style>
-
-    </style>
-}
 
 <section class="Job-Vacancies">
     <div class="container" data-aos="fade-up">
 
         <div class="section-header">
             <h2>熱門職缺一覽</h2>
-            <p>需登入帳號才能獲取詳細資訊</p>
+            <p>登入學員帳號查看詳細資訊</p>
         </div>
 
         <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.3s">
