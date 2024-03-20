@@ -128,7 +128,7 @@ public partial class studentContext : DbContext
             entity.Property(e => e.FQuizId).HasColumnName("fQuizId");
             entity.Property(e => e.FClosed).HasColumnName("fClosed");
             entity.Property(e => e.FCreateTime)
-                .HasColumnType("datetime")
+                .HasColumnType("date")
                 .HasColumnName("fCreateTime");
             entity.Property(e => e.FLimitTime).HasColumnName("fLimitTime");
             entity.Property(e => e.FNote).HasColumnName("fNote");
