@@ -97,7 +97,7 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
             }catch (Exception ex)
             {
                 Console.WriteLine($"發生錯誤: {ex.Message}");
-                return View("Error");
+                return View("Errors");
             }
 
         }
@@ -123,13 +123,13 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
                 {
                     Console.WriteLine($"發生錯誤: {ex.Message}");
 
-                    return View("Error");
+                    return View("Errors");
 
                 }
 
             }
             //如果驗證失敗就返回error
-            return View("Error");
+            return View("Errors");
 
         }
 
@@ -146,14 +146,14 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
             {
                 if (id == null || id == 0 || _context.T課程科目s == null)
                 {
-                    return View("Error");
+                    return View("Errors");
 
                 }
 
                 var t課程科目 = await _context.T課程科目s.FindAsync(id);
                 if (t課程科目 == null)
                 {
-                    return View("Error");
+                    return View("Errors");
 
                 }
 
@@ -173,7 +173,7 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine($"發生錯誤: {ex.Message}");
-                return View("Error");
+                return View("Errors");
             }
         }
 
@@ -189,7 +189,7 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
         {
             if (id != t課程科目.科目id)
             {
-                return View("Error");
+                return View("Errors");
 
             }
 
@@ -204,11 +204,11 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
                 }catch (Exception ex)
                 {
                     Console.WriteLine($"發生錯誤: {ex.Message}");
-                    return View("Error");                 
+                    return View("Errors");                 
                 }
 
             }else{
-                return View("Error");
+                return View("Errors");
             }
 
           
@@ -226,7 +226,7 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
             {
                 if (id == null || id == 0 || _context.T課程科目s == null)
                 {
-                    return View("Error");
+                    return View("Errors");
                 }
 
                 var t課程科目 = await _context.T課程科目s
@@ -235,7 +235,7 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
 
                 if (t課程科目 == null)
                 {
-                    return View("Error");
+                    return View("Errors");
                 }
 
                 return PartialView("_DeletePartial", t課程科目);
@@ -243,7 +243,7 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine($"發生錯誤: {ex.Message}");
-                return View("Error");
+                return View("Errors");
 
             }
 
@@ -277,7 +277,7 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
             } catch (Exception ex)
             {
                 Console.WriteLine($"發生錯誤: {ex.Message}");
-                return View("Error");
+                return View("Errors");
             }
            
         }
@@ -293,7 +293,7 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
         {
             if (id == null ||  id == 0 || _context.T課程科目s == null)
             {
-                return View("Error");
+                return View("Errors");
             }
 
             try
@@ -304,14 +304,14 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
                 .FirstOrDefaultAsync(m => m.科目id == id);
                 if (t課程科目 == null)
                 {
-                    return View("Error");
+                    return View("Errors");
                 }
 
                 return PartialView("_DetailsPartial", t課程科目);
             } catch (Exception ex)
             {
                 Console.WriteLine($"發生錯誤: {ex.Message}");
-                return View("Error");
+                return View("Errors");
             }
         }
 
@@ -351,7 +351,7 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
             } catch (Exception ex)
             {
                 Console.WriteLine($"發生錯誤: {ex.Message}");
-                return View("Error");
+                return View("Errors");
             }
         }
 
@@ -389,7 +389,7 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
             {
                 if (id == null || id == 0 || _context.T課程科目s == null)
                 {
-                    return View("Error");
+                    return View("Errors");
 
                 }
                 var t課程科目 = await _context.T課程科目s
@@ -397,7 +397,7 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
 
                 if (t課程科目 == null)
                 {
-                    return View("Error");
+                    return View("Errors");
 
                 }
                 var Courseteachers = await _context.T課程老師科目s

@@ -5,36 +5,42 @@
 }
 
 
-<div class="p-3">
-    <h1>Delete<span class="text-danger">T課程科目分類</span></h1>
-    <h3 class="mt-2">Are you sure you want to delete this?</h3>
+<div class="p-4">
+    <h3>Delete<span class="text-danger"> 課程科目分類 </span></h3>
+    <h5 class="mt-2">Are you sure you want to delete this?</h5>
     <div>
-        <dl class="row">
+        <dl>
             <div class="row">
-                <dt class="col-md-6">
+                <dt class="col-md-12">
                     @Html.DisplayNameFor(model => model.科目類別名稱):
                 </dt>
-                <dd class="col-md-6">
+            </div>
+            <div class="row">
+                <dd class="col-md-12">
                     @Html.DisplayFor(model => model.科目類別名稱)
                 </dd>
             </div>
 
             <div class="row">
-                <dt class="col-md-6">
+                <dt class="col-md-12">
                     @Html.DisplayNameFor(model => model.科目類別封面):
-                </dt>
-                <dd class="col-md-6">
-                    <img id="details_categoryImage" src="@Url.Content("~/images/t課程科目類別/" + @Model.科目類別封面)" style="width: 200px; height: 150px;" />
+                </dt>              
+            </div>
+            <div class="row">
+                <dd class="col-md-12">
+                    <img id="details_categoryImage" src="@Url.Content("~/images/t課程科目類別/" + @Model.科目類別封面)" style="height: 250px;" class="w-100 pt-2" />
                 </dd>
             </div>
 
         </dl>
 
+       @*  和後端互動的表單 *@
         <form asp-action="Delete">
         <input type="hidden" asp-for="科目類別id" />
             <div class="w-100 text-end">
                 <input type="submit" value="Delete" class="btn btn-danger d-inline-block" />
             </div>
         </form>
+        @*  和後端互動的表單 *@
     </div>
 </div>

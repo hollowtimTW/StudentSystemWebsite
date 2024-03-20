@@ -39,7 +39,7 @@ namespace text_loginWithBackgrount.Areas.course_management.Controllers
             }catch (Exception ex)
             {
                 Console.WriteLine($"發生錯誤: {ex.Message}");
-                return View("Error");
+                return View("Errors");
             }
         }
     }

@@ -20,7 +20,7 @@ $(document).ready(
                 error: function (xhr, textStatus, errorThrown) {
                     console.error("Error loading data:", errorThrown);
                     alert("Failed to load data. Please try again later.");
-                }
+                },
             },
             columns: [
                 { "data": "科目名稱", "width": "30%" },

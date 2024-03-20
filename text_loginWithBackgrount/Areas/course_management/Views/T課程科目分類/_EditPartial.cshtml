@@ -4,79 +4,79 @@
 
     <div class="row">
 
+        @*  傳送到後端的表單開始 *@
         <form asp-area="course_management" asp-controller="T課程科目分類" asp-action="Edit" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div>
-                <input type="hidden" asp-for="科目類別id" />
-                <input type="hidden" asp-for="科目類別封面名稱" />
 
+            @*  看不到的[狀態][科目類別id][科目類別封面名稱]欄位 *@
+            <div class="row">
+                <div class="form-group visually-hidden">
+                     <input type="hidden" asp-for="科目類別id" />
+                     <input type="hidden" asp-for="科目類別封面名稱" />                             
+                     <input asp-for="狀態" class="form-control" value="1" type="hidden" />
+                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label asp-for="科目類別名稱" class="control-label"></label>
-                        <input asp-for="科目類別名稱" class="form-control" />
-                        <span asp-validation-for="科目類別名稱" class="text-danger"></span>
-                    </div>
-                </div>  
-
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label asp-for="科目類別封面" class="control-label"></label>
-                        <div class="d-flex gap-2 align-items-center">
-                            <div>
-                                <input asp-for="科目類別封面" type="file" id="fileInput" accept=".jpg, .jpeg, .png" class="form-control" onchange="previewImageEdit(event)">
-                            </div>
-                            <div>
-                                <span class="btn btn-info h-5" onclick="toggleUnsplash()"><i class='bx bxl-unsplash'></i></span>
-                            </div>
-                        </div>
-                    </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label asp-for="科目類別名稱" class="control-label"></label>
+                    <input asp-for="科目類別名稱" class="form-control" />
+                    <span asp-validation-for="科目類別名稱" class="text-danger"></span>
                 </div>
             </div>
 
+
+
+
+            <div class="col-md-12">
+
+                <div class="form-group">
+                    <label asp-for="科目類別封面" class="control-label"></label>
+                    <div class="d-flex gap-2 align-items-center w-100">
+                        @*  上傳圖片的地方 1.本機上傳 2.api圖片下載好上傳*@
+                        <input asp-for="科目類別封面" type="file" id="fileInput" accept=".jpg, .jpeg, .png" class="form-control" onchange="previewImageEdit(event)">
+                        <span class="btn btn-info h-5" onclick="toggleUnsplash()"><i id="unsplashBtn" class='bx bxl-unsplash' style="color:white"></i></span>
+                    </div>
+                    <span asp-validation-for="科目類別封面" class="text-danger"></span>
+
+                </div>
+            </div>
+
+
+
+            @*unsplash api內容的div *@
             <div class="row mt-2 card" id="unsplashDiv" style="display:none;">
 
                 <div class="card-header">
                     <div class="card-title text-center">Unsplash API</div>
+                    @*unsplash api內容的搜尋欄位 *@
                     <div class="d-flex gap-2 w-100">
                         <input class="" id="queryInput" style="width:90%" />
                         <span class="btn text-success" id="search_btn" onclick="fetchUnsplash()"><i class='bx bx-search'></i></span>
                     </div>
                 </div>
-
-
-
+                @*unsplash api搜尋結果呈現 *@
                 <div class="unplash_context p-2" id="unplash_context">
                 </div>
 
             </div>
-            <div class="row" id="original_picture">
-                <div class="col-md-6">
-                    <img src="@Url.Content("/images/t課程科目類別/" + @Model.科目類別封面名稱)" style="width: 200px; height: 150px;" />
-                </div>
+
+            @*本來的圖片顯示在這 *@
+            <div class="row mt-2" id="original_picture">              
+                    <img src="@Url.Content("/images/t課程科目類別/" + @Model.科目類別封面名稱)" style="width: 100%; height: 250px;" />               
             </div>
 
+            @*有更新的的圖片顯示在這 *@
             <div class="row mt-2">
-                <img id="preview" src="#" alt="Image Preview" style="display:none;width:100%; max-height: 300px;">
+                    <img id="preview" src="#" alt="Image Preview" style="display:none;width:100%; max-height: 250px;">
             </div>
 
-            <div class="row">
-                <div class="form-group visually-hidden">
-                    <label asp-for="狀態" class="control-label"></label>
-                    <input asp-for="狀態" class="form-control" value="1" type="hidden" />
-                    <span asp-validation-for="狀態" class="text-danger"></span>
-                </div>
-            </div>
-
+            
             <div class="form-group mt-5 text-lg-end">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
+
         </form>
      
     </div>

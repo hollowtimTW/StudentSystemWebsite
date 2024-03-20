@@ -8,57 +8,12 @@
 
     <div class="row">
 
-
+       @*  傳送到後端的表單開始 *@
         <form asp-action="Create" enctype="multipart/form-data">
+
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="row">
-                <div class="form-group">
-                    <label asp-for="科目類別名稱" class="control-label"></label>
-                    <input asp-for="科目類別名稱" class="form-control" />
-                    <span asp-validation-for="科目類別名稱" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group">
-                    <div>
-                        <label asp-for="科目類別封面" class="control-label"></label>
 
-                        <div class="d-flex gap-2 align-items-center">
-                            <div>
-                                <input asp-for="科目類別封面" type="file" id="fileInput" accept=".jpg, .jpeg, .png" class="form-control" onchange="previewImage(event)">
-                            </div>
-                            <div>
-                                <span class="btn btn-info h-5" onclick="toggleUnsplash()"><i class='bx bxl-unsplash'></i></span>
-                            </div>
-                        </div>
-
-                    </div>
-                    <span asp-validation-for="科目類別封面" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="row mt-2 card" id="unsplashDiv" style="display:none;">
-               
-                    <div class="card-header">
-                        <div class="card-title text-center">Unsplash API</div>
-                        <div class="d-flex gap-2 w-100">
-                        <input class="" id="queryInput" style="width:90%" />
-                        <span class="btn text-success" id="search_btn" onclick="fetchUnsplash()"><i class='bx bx-search'></i></span>
-                        </div>
-                    </div>
-
-
-
-                <div class="unplash_context p-2" id="unplash_context">
-                    </div>
-               
-            </div>
-
-
-            <div class="row mt-2">
-                <img id="preview" src="#" alt="Image Preview" style="display:none;width:100%; max-height: 300px;">
-
-            </div>
-
+            @*  看不到的[狀態]欄位 *@
             <div class="row">
                 <div class="form-group visually-hidden">
                     <label asp-for="狀態" class="control-label"></label>
@@ -69,12 +24,58 @@
 
 
 
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label asp-for="科目類別名稱" class="control-label"></label>
+                    <input asp-for="科目類別名稱" class="form-control" />
+                    <span asp-validation-for="科目類別名稱" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+
+                <div class="form-group">
+                        <label asp-for="科目類別封面" class="control-label"></label>
+                        <div class="d-flex gap-2 align-items-center w-100">
+                            @*  上傳圖片的地方 1.本機上傳 2.api圖片下載好上傳*@
+                            <input asp-for="科目類別封面" type="file" id="fileInput" accept=".jpg, .jpeg, .png" class="form-control" onchange="previewImage(event)">
+                            <span class="btn btn-info h-5" onclick="toggleUnsplash()"><i id="unsplashBtn" class='bx bxl-unsplash' style="color:white"></i></span>
+                        </div>
+                        <span asp-validation-for="科目類別封面" class="text-danger"></span>
+                 
+                </div>
+            </div>
+
+            @*unsplash api內容的div *@
+            <div class="row mt-2 card" id="unsplashDiv" style="display:none;">
+               
+                    <div class="card-header">
+                        <div class="card-title text-center">Unsplash API</div>
+                        @*unsplash api內容的搜尋欄位 *@
+                        <div class="d-flex gap-2 w-100">
+                            <input class="" id="queryInput" style="width:90%" />
+                            <span class="btn text-success" id="search_btn" onclick="fetchUnsplash()"><i class='bx bx-search'></i></span>
+                        </div>
+                    </div>
+                    @*unsplash api搜尋結果呈現 *@
+                    <div class="unplash_context p-2" id="unplash_context">
+                    </div>
+               
+            </div>
+
+            @*unsplash api選擇到的內容、本機上傳圖片預覽 *@
+            <div class="row mt-2">
+                <img id="preview" src="#" alt="Image Preview" style="display:none;width:100%; max-height: 250px;">
+            </div>
+
+            
+
             <div class="form-group mt-5 w-100 text-end">
                 <button type="submit" class="btn btn-success">Create</button>
             </div>
 
         </form>
-
+        @*  傳送到後端的表單結束 *@
 
     </div>
 
