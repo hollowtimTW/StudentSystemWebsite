@@ -369,6 +369,7 @@
                 $('#create_context').empty(); //清空partialview的內容
                 document.getElementById('btnCloseCreate').click();  //關閉modal
                 GetMyResumes();  //重新載入履歷資料
+                CallRecommandSystem(data.resumeID);  //呼叫推薦系統
             } else {
                 Swal.fire({
                     icon: 'error',
@@ -526,6 +527,7 @@
                 $('#edit_context').empty(); //清空partialview的內容
                 document.getElementById('btnCloseEdit').click();  //關閉modal
                 GetMyResumes();  //重新載入履歷資料
+                CallRecommandSystem(data.resumeID);  //呼叫推薦系統
             } else {
                 Swal.fire({
                     icon: 'error',
@@ -549,4 +551,18 @@
             });
         }
     });
+
+    function CallRecommandSystem(resumeId) {
+        $.ajax({
+            type: 'GET',
+            url: '/job_vacancy/jobforstudent/recommandsystem/' + resumeId,
+            success: function (result) {
+                console.log('呼叫推薦系統 success');
+            },
+            error: function (error) {
+                console.error('呼叫推薦系統 error', error);
+            }
+        });
+    }
+
 </script>
