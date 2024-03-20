@@ -19,86 +19,13 @@
 @section Styles {
     <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet" />
     <style>
-        .job-header h1 {
-            color: #008374;
-        }
-
-        .pagination li a {
-            color: #008374;
-        }
-
-            .pagination li a:hover {
-                color: #008374;
-            }
-
-        .pagination li.disabled {
-            background-color: grey;
-            border-radius: 8px;
-        }
-
-
-        .pagination {
-            cursor: pointer;
-        }
-
-        .item-border {
-            position: relative;
-            border-bottom: 3px solid rgba(0, 131, 116, 0.2);
-        }
-
-            /* 在底線左端添加小圓形 */
-            .item-border::before {
-                content: '';
-                position: absolute;
-                bottom: -8px;
-                left: 0;
-                width: 15px;
-                height: 15px;
-                background-color: var(--color-primary);
-                border-radius: 50%;
-            }
-
-            /* 在底線右端添加小圓形 */
-            .item-border::after {
-                content: '';
-                position: absolute;
-                bottom: -8px;
-                right: 0;
-                width: 15px;
-                height: 15px;
-                background-color: var(--color-primary);
-                border-radius: 50%;
-            }
-
-        .job-item img {
-            width: 80px;
-            height: 80px;
-        }
-
-        .btn-detail {
-            height: 38px;
-            display: inline-block;
-            padding: 8px 40px 10px 40px;
-            border-radius: 50px;
-            color: var(--color-primary);
-            border: 1px solid rgba(0, 131, 116, 0.2);
-            transition: none;
-            font-size: 16px;
-            font-weight: 600;
-            font-family: var(--font-primary);
-            transition: 0.3s;
-        }
-
-            .btn-detail:hover {
-                background: var(--color-primary);
-                color: #fff;
-            }
+        
 
     </style>
 }
 
 
-<section class="Job-Details">
+<section class="Company-Details">
     <div class="container">
         <div class="job-header">
             <div class="d-flex">
@@ -247,6 +174,7 @@
         </div>
     </div>
 </section>
+
 @section Scripts {
     <script src="~/js/job_vacancy/jobcommon.js"></script>
     <script>
@@ -268,74 +196,96 @@
 
         const loadData = async () => {
 
-            const resopnse = await fetch('@Url.Content("~/job_vacancy/JobAPI/CompanyJoblist")', {
+            const response = await fetch('@Url.Content("~/job_vacancy/JobAPI/CompanyJoblist")', {
                 'method': 'POST',
                 'body': JSON.stringify(searchData),
                 'headers': {
                     'Content-Type': 'application/json'
                 }
             });
-            const datas = await resopnse.json();
+            if (response.ok) {
+                const datas = await response.json();
 
-            // 創建工作性質與圖片路徑的映射
-            const jobTypeImageMap = {
-                '全職': '@Url.Content("~/images/job_vacancy/fulltime.png")',
-                '兼職': '@Url.Content("~/images/job_vacancy//parttime.png")',
-                '派遣': '@Url.Content("~/images/job_vacancy/dispatche.png")',
-                'default': '@Url.Content("~/images/job_vacancy/jobtype.png")'
-            };
+                // 檢查 JSON 資料是否為空
+                if (datas.companyJobsResult !== null && datas.companyJobsResult.length !== 0) {
 
-            //顯示資料（對應CompanyJobPagingDTO）
-            const displayData = datas.companyJobsResult.map(jobs => {
-                const { f職務名稱, f工作地點, f工作性質, f薪水待遇, f需求人數, f最後更新時間, fId } = jobs;
+                    // 創建工作性質與圖片路徑的映射
+                    const jobTypeImageMap = {
+                        '全職': '@Url.Content("~/images/job_vacancy/fulltime.png")',
+                        '兼職': '@Url.Content("~/images/job_vacancy//parttime.png")',
+                        '派遣': '@Url.Content("~/images/job_vacancy/dispatche.png")',
+                        'default': '@Url.Content("~/images/job_vacancy/jobtype.png")'
+                    };
 
-                //根據工作性質獲取對應的圖片
-                const jobTypeImagePath = jobTypeImageMap[f工作性質] || jobTypeImageMap['default'];
+                    //顯示資料（對應CompanyJobPagingDTO）
+                    const displayData = datas.companyJobsResult.map(jobs => {
+                        const { f職務名稱, f工作地點, f工作性質, f薪水待遇, f需求人數, f最後更新時間, fId } = jobs;
 
-                //設定顯示的工作地點
-                let location = '';
-                if (jobs.f工作地點) {
-                    location = jobs.f工作地點.substring(0, 6);
+                        //根據工作性質獲取對應的圖片
+                        const jobTypeImagePath = jobTypeImageMap[f工作性質] || jobTypeImageMap['default'];
+
+                        //設定顯示的工作地點
+                        let location = '';
+                        if (jobs.f工作地點) {
+                            location = jobs.f工作地點.substring(0, 6);
+                        } else {
+                            location = '暫不提供';
+                        }
+
+                        // 設定顯示的最後更新時間（呼叫共用方法）
+                        let updateTime = formatDateTime(jobs.f最後更新時間);
+
+                        return (`<div class="job-item item-border p-4 mb-4">
+                                    <div class="row g-4">
+                                        <div class="col-sm-12 col-md-8 d-flex align-items-center">
+                                            <img src="${jobTypeImagePath}" class="img-fluid border rounded flex-shrink-0" alt="">
+                                            <div class="text-start ps-4">
+                                                <h5 class="mb-3">${f職務名稱}</h5>
+                                                <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> ${location}</span>
+                                                <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> ${f工作性質}</span>
+                                                <span class="text-truncate me-3"><i class="bi bi-cash flex-shrink-0"></i> ${f薪水待遇}</span>
+                                                <span class="text-truncate me-0"><i class="bi bi-people-fill flex-shrink-0"></i> ${f需求人數}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                            <div class="d-flex mb-3">
+                                                <a href="/job_vacancy/Job/JobDetails/${fId}" class="btn-detail">詳細資訊</a>
+                                            </div>
+                                            <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：${updateTime}</small>
+                                        </div>
+                                    </div>
+                                </div>`)
+
+                    })
+                    jobItems.innerHTML = displayData.join("");
+
+                    //動態生成分頁元素
+                    totalPages = datas.totalPages;
+                    let liPaging = `<li class="page-item" id="previousPage"><a class="page-link" onclick="pagingHandler('prev')">上一頁</a></li>`
+                    for (let i = 1; i <= totalPages; i++) {
+                        liPaging += ` <li class="page-item" onclick="pagingHandler(${i})"><a class="page-link">${i}</a></li>`
+                    }
+                    liPaging += `<li class="page-item" id="nextPage"><a class="page-link" onclick="pagingHandler('next')">下一頁</a></li>`
+                    ulPaging.innerHTML = liPaging;
+
                 } else {
-                    location = '暫不提供';
+                    console.log('沒有返回任何資料');
+
+                    jobItems.innerHTML = `<div class="job-item item-border p-4 mb-4">
+                                            <div class="row g-4">
+                                                <div class="col-sm-12 col-md-8 d-flex align-items-center no_data">
+                                                    目前沒有職缺
+                                                </div>
+                                            </div>
+                                        </div>`;
+
                 }
-
-                // 設定顯示的最後更新時間（呼叫共用方法）
-                let updateTime = formatDateTime(jobs.f最後更新時間);
-
-                return (`<div class="job-item item-border p-4 mb-4">
-                            <div class="row g-4">
-                                <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                    <img src="${jobTypeImagePath}" class="img-fluid border rounded flex-shrink-0" alt="">
-                                    <div class="text-start ps-4">
-                                        <h5 class="mb-3">${f職務名稱}</h5>
-                                        <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> ${location}</span>
-                                        <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> ${f工作性質}</span>
-                                        <span class="text-truncate me-3"><i class="bi bi-cash flex-shrink-0"></i> ${f薪水待遇}</span>
-                                        <span class="text-truncate me-0"><i class="bi bi-people-fill flex-shrink-0"></i> ${f需求人數}</span>
-                                    </div>
-                                </div>
-                                <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
-                                    <div class="d-flex mb-3">
-                                        <button type="button" class="btn btn-light btn-circle me-3 btn-like"><i class="bi bi-heart"></i></button>
-                                        <a href="/job_vacancy/Job/JobDetails/${fId}" class="btn-detail">詳細資訊</a>
-                                    </div>
-                                    <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：${updateTime}</small>
-                                </div>
-                            </div>
-                        </div>`)
-
-            })
-            jobItems.innerHTML = displayData.join("");
-
-            //動態生成分頁元素
-            totalPages = datas.totalPages;
-            let liPaging = `<li class="page-item" id="previousPage"><a class="page-link" onclick="pagingHandler('prev')">上一頁</a></li>`
-            for (let i = 1; i <= totalPages; i++) {
-                liPaging += ` <li class="page-item" onclick="pagingHandler(${i})"><a class="page-link">${i}</a></li>`
+            } else {
+                // 處理回應錯誤的情況
+                console.error('回應錯誤:', response.statusText);
             }
-            liPaging += `<li class="page-item" id="nextPage"><a class="page-link" onclick="pagingHandler('next')">下一頁</a></li>`
-            ulPaging.innerHTML = liPaging;
+
+
         };
 
         loadData();

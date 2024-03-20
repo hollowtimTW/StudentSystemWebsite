@@ -1,6 +1,21 @@
 ﻿@{
     ViewData["Title"] = "就業媒合";
 }
+
+@section Styles {
+    <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet" />
+    <style>
+        .breadcrumbs .page-header h4 {
+            color: #fff;
+        }
+
+        .breadcrumbs .page-header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: larger;
+        }
+    </style>
+}
+
 @section BreadcrumbsSection {
     <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
     <div class="breadcrumbs">
@@ -9,7 +24,8 @@
                 <div class="row d-flex justify-content-center">
                     <div class="col-lg-6 text-center">
                         <h2>@ViewData["Title"]</h2>
-                        <p>就業媒合之廠商請從企業入口洽詢！</p>
+                        <h4>刊登廠商提供職缺，歡迎學員投遞應徵！</h4>
+                        <p>就業媒合之廠商請從企業入口洽詢</p>
                     </div>
                 </div>
             </div>
@@ -28,19 +44,13 @@
 
     </div>
 }
-@section Styles {
-    <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet" />
-    <style>
-        
-    </style>
-}
 
 <section class="Job-Vacancies">
     <div class="container" data-aos="fade-up">
 
         <div class="section-header">
             <h2>熱門職缺一覽</h2>
-            <p>需登入帳號才能獲取詳細資訊</p>
+            <p>登入學員帳號查看詳細資訊</p>
         </div>
 
         <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.3s">
@@ -114,79 +124,113 @@
     <script src="~/js/job_vacancy/jobcommon.js"></script>
     <script>
 
-        let currentPage = 1; // 當前頁數
+        
         let currentTabName = 'all'; //當前頁籤
+
+        // 每個分頁是否顯示無職缺的狀態
+        const noJobsDisplayedMap = {};
 
         const jobListElement = document.getElementById('jobList');
 
         // 定義不同 tab 的 ID 和對應名稱
         const tabs = [
-            { id: 'tab-all', name: 'all' },
-            { id: 'tab-fulltime', name: 'fulltime' },
-            { id: 'tab-parttime', name: 'parttime' },
-            { id: 'tab-dispatch', name: 'dispatch' }
+            { id: 'tab-all', name: 'all', currentPage: 1 },
+            { id: 'tab-fulltime', name: 'fulltime', currentPage: 1 },
+            { id: 'tab-parttime', name: 'parttime', currentPage: 1 },
+            { id: 'tab-dispatch', name: 'dispatch', currentPage: 1 }
         ];
 
         // 根據 tabName 載入相應的的職缺資料
         const loadJobs = async (tabName) => {
             const response = await fetch(`@Url.Content("~/job_vacancy/JobAPI/GetJobsByTabName/${tabName}")`);
-            const jobs = await response.json();
+            if (response.ok) {
 
-            renderJobs(jobs, true);
+                const datas = await response.json();
+
+                // 清除無職缺狀態的標示
+                noJobsDisplayedMap[tabName] = false;
+
+                // 恢復全部分頁的預設頁數
+                tabs.forEach(tab => { tab.currentPage = 1 });
+
+                renderJobs(datas, true, tabName);
+
+            } else {
+                // 處理回應錯誤的情況
+                console.error('回應錯誤:', response.statusText);
+            }
         }
 
         // 渲染職缺資料到UI
-        const renderJobs = (jobs, clearExisting = true) => {
+        const renderJobs = (jobs, clearExisting = true, tabName) => {
 
             // 根據clearExisting參數的值，決定是否清空現有列表
             if (clearExisting) {
                 jobListElement.innerHTML = '';
             }
 
-            // 創建工作性質與圖片路徑的映射
-            const jobTypeImageMap = {
-                '全職': '@Url.Content("~/images/job_vacancy/fulltime.png")',
-                '兼職': '@Url.Content("~/images/job_vacancy/parttime.png")',
-                '派遣': '@Url.Content("~/images/job_vacancy/dispatche.png")',
-                'default': '@Url.Content("~/images/job_vacancy/jobtype.png")'
-            };
+            // 檢查資料是否為空
+            if (jobs !== null && jobs.length !== 0) {
 
-            jobs.forEach(job => {
+                // 創建工作性質與圖片路徑的映射
+                const jobTypeImageMap = {
+                    '全職': '@Url.Content("~/images/job_vacancy/fulltime.png")',
+                    '兼職': '@Url.Content("~/images/job_vacancy/parttime.png")',
+                    '派遣': '@Url.Content("~/images/job_vacancy/dispatche.png")',
+                    'default': '@Url.Content("~/images/job_vacancy/jobtype.png")'
+                };
 
-                //根據工作性質獲取對應的圖片
-                const jobTypeImagePath = jobTypeImageMap[job.jobType] || jobTypeImageMap['default'];
+                jobs.forEach(job => {
 
-                //設定顯示的工作地點
-                let jobLocation = job.jobLocation.substring(0, 6);
+                    //根據工作性質獲取對應的圖片
+                    const jobTypeImagePath = jobTypeImageMap[job.jobType] || jobTypeImageMap['default'];
 
-                // 設定顯示的最後更新時間（呼叫共用方法）
-                let updateTime = formatDateTime(job.updateTime);
+                    //設定顯示的工作地點
+                    let jobLocation = job.jobLocation.substring(0, 6);
 
-                const jobHTML = `<div class="job-item p-4 mb-4">
-                                    <div class="row g-4">
-                                        <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                            <img src="${jobTypeImagePath}" class="img-fluid border rounded flex-shrink-0" alt="">
-                                            <div class="text-start ps-4">
-                                                <h5>${job.jobTitle}</h5>
-                                                <h6 class="mb-3"><a href="/job_vacancy/Job/CompanyDetails/${job.companyID}">${job.companyName}</a></h6>
-                                                <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> ${jobLocation}</span>
-                                                <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> ${job.jobType}</span>
-                                                <span class="text-truncate me-3"><i class="bi bi-cash flex-shrink-0"></i> ${job.salary}</span>
-                                                <span class="text-truncate me-0"><i class="bi bi-people-fill flex-shrink-0"></i> ${job.requiredPeople}</span>
+                    // 設定顯示的最後更新時間（呼叫共用方法）
+                    let updateTime = formatDateTime(job.updateTime);
+
+                    const jobHTML = `<div class="job-item p-4 mb-4">
+                                        <div class="row g-4">
+                                            <div class="col-sm-12 col-md-8 d-flex align-items-center">
+                                                <img src="${jobTypeImagePath}" class="img-fluid border rounded flex-shrink-0" alt="">
+                                                <div class="text-start ps-4">
+                                                    <h5>${job.jobTitle}</h5>
+                                                    <h6 class="mb-3"><a href="/job_vacancy/Job/CompanyDetails/${job.companyID}">${job.companyName}</a></h6>
+                                                    <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> ${jobLocation}</span>
+                                                    <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> ${job.jobType}</span>
+                                                    <span class="text-truncate me-3"><i class="bi bi-cash flex-shrink-0"></i> ${job.salary}</span>
+                                                    <span class="text-truncate me-0"><i class="bi bi-people-fill flex-shrink-0"></i> ${job.requiredPeople}</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                                <div class="d-flex mb-3 mt-3">
+                                                    <a href="/job_vacancy/Job/JobDetails/${job.jobID}" class="btn-detail">詳細資訊</a>
+                                                </div>
+                                                <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：${updateTime}</small>
                                             </div>
                                         </div>
-                                        <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
-                                            <div class="d-flex mb-3 mt-3">
-                                                <button type="button" class="btn btn-light btn-circle me-3 btn-like"><i class="bi bi-heart"></i></button>
-                                                <a href="/job_vacancy/Job/JobDetails/${job.jobID}" class="btn-detail">詳細資訊</a>
-                                            </div>
-                                            <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：${updateTime}</small>
-                                        </div>
-                                    </div>
-                                </div>`;
+                                    </div>`;
 
-                jobListElement.innerHTML += jobHTML;
-            });
+                    jobListElement.innerHTML += jobHTML;
+                });
+
+                noJobsDisplayedMap[tabName] = false;
+                console.log(tabName + ": " + noJobsDisplayedMap[tabName]);
+            }
+            else {
+
+                // 檢查標誌是否已經顯示過 "目前沒有職缺" 的提示，如果已經顯示過則不再顯示
+                if (!noJobsDisplayedMap[tabName]) {
+
+                    jobListElement.innerHTML += `<div style="height: 100px">沒有更多職缺</div>`;
+
+                    // 設置標誌，表示已經顯示了 "目前沒有職缺" 的提示
+                    noJobsDisplayedMap[tabName] = true;
+                    console.log(tabName + ": " + noJobsDisplayedMap[tabName]);
+                }
+            }
         }
 
         // 初始化頁面，默認加載全部職缺
@@ -209,8 +253,6 @@
             });
         });
 
-
-
         //監聽視窗滾動事件，滾動到底部執行載入更多資料
         window.addEventListener('scroll', () => {
             if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
@@ -220,15 +262,20 @@
 
         //載入更多職缺資料
         const loadMoreData = async () => {
+
+            // 找到指定分頁的物件
+            const tab = tabs.find(tab => tab.name === currentTabName);
+            const nextPage = tab.currentPage + 1; // 確保使用正確的分頁
+
             // 呼叫後端API獲取下一批資料
-            const response = await fetch(`@Url.Content("~/job_vacancy/JobAPI/GetJobsByTabName/")${currentTabName}?page=${currentPage + 1}`);
+            const response = await fetch(`@Url.Content("~/job_vacancy/JobAPI/GetJobsByTabName/")${currentTabName}?page=${nextPage}`);
             const newData = await response.json();
 
             // 更新畫面，將新資料加入到列表中
-            renderJobs(newData, false);
+            renderJobs(newData, false, currentTabName);
 
             // 更新當前頁數
-            currentPage++;
+            tab.currentPage++;
         };
 
     </script>

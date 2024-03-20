@@ -1,7 +1,10 @@
 ﻿using Class_system_Backstage_pj.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using QuestPDF;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -23,7 +26,10 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             _hostingEnvironment = hostingEnvironment;
 
             // 設置 QuestPDF 的授權類型為社區版
-            QuestPDF.Settings.License = LicenseType.Community;
+            Settings.License = LicenseType.Community;
+
+            // 忽略字形檢查（不會拋出錯誤，但可能會有部分文字無法顯示）
+            Settings.CheckIfAllTextGlyphsAreAvailable = false;
 
         }
 
@@ -81,8 +87,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                         page.Size(PageSizes.A4);
                         page.PageColor(Colors.White);
                         page.DefaultTextStyle(x => x
-                                .FontSize(12) // 設定預設字體大小
-                                .FontFamily("微軟正黑體")); // 設定預設字體
+                                .FontSize(12));   // 設定預設字體大小
 
                         // 獲取LOGO圖片的相對路徑
                         string logoFilePath = Path.Combine("images", "logo.jpg");
@@ -376,13 +381,16 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         public async Task<IActionResult> GetMyApplyRecords(int studentID)
         {
 
-            var recordData = await _studentContext.T工作應徵工作紀錄s
-                        .Where(r => r.F學員Id == studentID && r.F刪除狀態 == "0")
-                        .Include(r => r.F職缺)
-                        .ThenInclude(j => j.F公司)
-                        .OrderByDescending(r => r.F應徵時間)
-                        .ToListAsync();
-
+            var recordData = await (
+                                from record in _studentContext.T工作應徵工作紀錄s.Include(record => record.F職缺.F公司)
+                                join favorite in _studentContext.T工作儲存工作紀錄s
+                                    on record.F職缺Id equals favorite.F職缺Id into favGroup
+                                from fav in favGroup.Where(f => f.F學員Id == studentID).DefaultIfEmpty()
+                                where record.F學員Id == studentID && record.F刪除狀態 == "0"
+                                orderby record.F應徵時間 descending
+                                select new { Record = record, Favorite = fav }
+                            )
+                            .ToListAsync();
 
             var viewModelList = new List<MyApplyRecordsViewModel>();
 
@@ -390,18 +398,20 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             {
                 var viewModel = new MyApplyRecordsViewModel
                 {
-                    ApplyRecordID = data.FId,
-                    JobID = data.F職缺Id,
-                    JobTitle = data.F職缺.F職務名稱,
-                    LetterContent = data.F應徵信內容,
-                    ApplyTime = data.F應徵時間,
+                    ApplyRecordID = data.Record.FId,
+                    JobID = data.Record.F職缺Id,
+                    JobTitle = data.Record.F職缺.F職務名稱,
+                    LetterContent = data.Record.F應徵信內容,
+                    ApplyTime = data.Record.F應徵時間,
 
-                    CompanyID = data.F職缺.F公司Id,
-                    CompanyName = data.F職缺.F公司.F公司名稱,
-                    Salary = !string.IsNullOrEmpty(data.F職缺.F薪水待遇) ? data.F職缺.F薪水待遇 : "暫不提供",
-                    JobType = !string.IsNullOrEmpty(data.F職缺.F工作性質) ? data.F職缺.F工作性質 : "暫不提供",
-                    JobLocation = !string.IsNullOrEmpty(data.F職缺.F工作地點) ? data.F職缺.F工作地點 : "暫不提供",
-                    UpdateTime = data.F職缺.F最後更新時間
+                    CompanyID = data.Record.F職缺.F公司Id,
+                    CompanyName = data.Record.F職缺.F公司.F公司名稱,
+                    Salary = !string.IsNullOrEmpty(data.Record.F職缺.F薪水待遇) ? data.Record.F職缺.F薪水待遇 : "暫不提供",
+                    JobType = !string.IsNullOrEmpty(data.Record.F職缺.F工作性質) ? data.Record.F職缺.F工作性質 : "暫不提供",
+                    JobLocation = !string.IsNullOrEmpty(data.Record.F職缺.F工作地點) ? data.Record.F職缺.F工作地點 : "暫不提供",
+                    UpdateTime = data.Record.F職缺.F最後更新時間,
+
+                    IsFavorite = data.Favorite != null ? true : false,
                 };
                 viewModelList.Add(viewModel);
             }
@@ -442,7 +452,9 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                     Salary = !string.IsNullOrEmpty(data.F職缺.F薪水待遇) ? data.F職缺.F薪水待遇 : "暫不提供",
                     JobType = !string.IsNullOrEmpty(data.F職缺.F工作性質) ? data.F職缺.F工作性質 : "暫不提供",
                     JobLocation = !string.IsNullOrEmpty(data.F職缺.F工作地點) ? data.F職缺.F工作地點 : "暫不提供",
-                    UpdateTime = data.F職缺.F最後更新時間
+                    UpdateTime = data.F職缺.F最後更新時間,
+
+                    IsFavorite = true
                 };
                 viewModelList.Add(viewModel);
             }
@@ -460,11 +472,16 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         public async Task<IActionResult> GetMyRecommendedJobs(int studentID)
         {
 
-            var jobData = await _studentContext.T工作推薦職缺s
-                          .Where(r => r.F學員Id == studentID)
-                          .Include(r => r.F職缺)
-                          .ThenInclude(j => j.F公司)
-                          .ToListAsync();
+            var jobData = await (
+                                from job in _studentContext.T工作推薦職缺s.Include(job => job.F職缺.F公司)
+                                join favorite in _studentContext.T工作儲存工作紀錄s
+                                    on job.F職缺Id equals favorite.F職缺Id into favGroup
+                                from fav in favGroup.Where(f => f.F學員Id == studentID).DefaultIfEmpty()
+                                where job.F學員Id == studentID
+                                select new { Recommend = job, Favorite = fav }
+                            )
+                            .ToListAsync();
+
 
             var viewModelList = new List<MyRecommendedJobsViewModel>();
 
@@ -472,17 +489,19 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             {
                 var viewModel = new MyRecommendedJobsViewModel
                 {
-                    RecommendedID = data.FId,
-                    JobID = data.F職缺Id,
-                    JobTitle = data.F職缺.F職務名稱,
-                    Score = data.F推薦程度,
+                    RecommendedID = data.Recommend.FId,
+                    JobID = data.Recommend.F職缺Id,
+                    JobTitle = data.Recommend.F職缺.F職務名稱,
+                    Score = data.Recommend.F推薦程度,
 
-                    CompanyID = data.F職缺.F公司Id,
-                    CompanyName = data.F職缺.F公司.F公司名稱,
-                    Salary = !string.IsNullOrEmpty(data.F職缺.F薪水待遇) ? data.F職缺.F薪水待遇 : "暫不提供",
-                    JobType = !string.IsNullOrEmpty(data.F職缺.F工作性質) ? data.F職缺.F工作性質 : "暫不提供",
-                    JobLocation = !string.IsNullOrEmpty(data.F職缺.F工作地點) ? data.F職缺.F工作地點 : "暫不提供",
-                    UpdateTime = data.F職缺.F最後更新時間
+                    CompanyID = data.Recommend.F職缺.F公司Id,
+                    CompanyName = data.Recommend.F職缺.F公司.F公司名稱,
+                    Salary = !string.IsNullOrEmpty(data.Recommend.F職缺.F薪水待遇) ? data.Recommend.F職缺.F薪水待遇 : "暫不提供",
+                    JobType = !string.IsNullOrEmpty(data.Recommend.F職缺.F工作性質) ? data.Recommend.F職缺.F工作性質 : "暫不提供",
+                    JobLocation = !string.IsNullOrEmpty(data.Recommend.F職缺.F工作地點) ? data.Recommend.F職缺.F工作地點 : "暫不提供",
+                    UpdateTime = data.Recommend.F職缺.F最後更新時間,
+
+                    IsFavorite = data.Favorite != null ? true : false,
                 };
                 viewModelList.Add(viewModel);
             }

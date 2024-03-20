@@ -173,9 +173,9 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                     await _context.SaveChangesAsync();
 
                     //執行推薦系統
-                    await RecommandSystemNew(newResume.FId);
+                    //await RecommandSystem(newResume.FId);
 
-                    return Json(new { success = true, message = "新增成功" });
+                    return Json(new { success = true, message = "新增成功", resumeID = newResume.FId });
 
                 }
                 else
@@ -344,9 +344,9 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
 
 
                     //執行推薦系統
-                    await RecommandSystemNew(thisResume.FId);
+                    //await RecommandSystem(thisResume.FId);
 
-                    return Json(new { success = true, message = "修改成功" });
+                    return Json(new { success = true, message = "修改成功", resumeID = thisResume.FId });
                 }
                 else
                 {
@@ -424,7 +424,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
 
                 thisResume.F刪除狀態 = "1";
                 thisResume.F刪除或關閉原因 = deleteReason;
-                thisResume.F最後更新時間 = Convert.ToDateTime(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"));
+                thisResume.F最後更新時間 = Convert.ToDateTime(DateTime.Now.ToString("yyyy/MM/dd HH:mm"));
                 await _context.SaveChangesAsync();
 
                 return Json(new { success = true, message = "刪除成功" });
@@ -756,9 +756,12 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             }
         }
 
-
-
-        public async Task RecommandSystemNew(int resumeID)
+        /// <summary>
+        /// 推薦系統
+        /// </summary>
+        /// <param name="resumeID"></param>
+        /// <returns></returns>
+        public async Task RecommandSystem(int resumeID)
         {
             // 提取最新一份履歷資料中的對應欄位
             var resumeData = _context.T工作履歷資料s
@@ -784,10 +787,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                     workLocation = j.F工作地點.Substring(0, Math.Min(j.F工作地點.Length, 3)),
                 })
                 .ToList();
-
-            // 提取履歷中的工作技能關鍵字
-            List<string> resumeSkillKeywords = await ExtractKeywordsByAzureAI(resumeData.skill);
-
+             
             // 儲存符合條件的職缺
             var matchingJobs = new List<(int JobID, int TotalScore)>();
 
@@ -799,37 +799,67 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                 int skillScore = 0;
                 int locationScore = 0;
 
+                
+                // (1) 比對職務名稱 -- Levenshtein 距離計算
+                // 兩者皆有資料
+                if (!string.IsNullOrEmpty(resumeData?.hopeJobTitle) && !string.IsNullOrEmpty(job.jobTitle))
+                {
+                    int distance = CalculateLevenshteinDistance(resumeData.hopeJobTitle, job.jobTitle);
+                    double similarity = 1 - (double)distance / Math.Max(resumeData.hopeJobTitle.Length, job.jobTitle.Length);
+
+                    //如果相似度小於0.3，則跳過此筆職缺比對
+                    if( similarity < 0.3)
+                    {
+                        continue;
+                    }
+
+                    jobTitleScore = Convert.ToInt32(similarity * 100); // 將相似度轉換為百分比作為分數
+                    Console.WriteLine($"職務名稱 - 履歷職稱: {resumeData.hopeJobTitle}, 職缺職稱: {job.jobTitle}, Levenshtein 比對度: {similarity}");
+                }
+
+                // (2) 比對專業技能 -- 關鍵字相同
+                // 使用 Azure AI 關鍵字提取服務提取履歷中的工作技能關鍵字
+                List<string> resumeSkillKeywords = new List<string>();
+                if (!string.IsNullOrEmpty(resumeData?.skill))
+                {
+                    resumeSkillKeywords = await ExtractKeywordsByAzureAI(resumeData.skill);
+                }
+
                 // 使用 Azure AI 關鍵字提取服務提取職缺中工作技能的關鍵字
-                List<string> jobSkillKeywords = await ExtractKeywordsByAzureAI(job.skill);
-
-                // Levenshtein 比對職務名稱
-                int distance = CalculateLevenshteinDistance(resumeData.hopeJobTitle, job.jobTitle);
-                double similarity = 1 - (double)distance / Math.Max(resumeData.hopeJobTitle.Length, job.jobTitle.Length);
-                jobTitleScore = Convert.ToInt32(similarity * 100); // 將相似度轉換為百分比作為分數
-                Console.WriteLine($"職務名稱 - 履歷職稱: {resumeData.hopeJobTitle}, 職缺職稱: {job.jobTitle}, Levenshtein 比對度: {similarity}");
-
-                // 比對專業技能並計算分數
-                if (jobSkillKeywords.Intersect(resumeSkillKeywords).Any())
+                List<string> jobSkillKeywords = new List<string>();
+                if (!string.IsNullOrEmpty(job.skill))
                 {
-                    skillScore = 100; // 如果技能有交集，設定滿分
-                    Console.WriteLine($"專業技能比對成功 - 履歷技能: {string.Join(", ", resumeSkillKeywords)}, 職缺技能: {string.Join(", ", jobSkillKeywords)}");
-                }
-                else
-                {
-                    skillScore = 0; // 如果沒有交集，分數為零
-                    Console.WriteLine($"專業技能 - 履歷技能: {string.Join(", ", resumeSkillKeywords)}, 職缺技能: {string.Join(", ", jobSkillKeywords)}");
+                    jobSkillKeywords = await ExtractKeywordsByAzureAI(job.skill);
                 }
 
-                // 比對工作地點並計算分數
-                if (resumeData.hopeWorkLocation.Contains(job.workLocation))
+                //兩者皆有資料
+                if (jobSkillKeywords.Any() && jobSkillKeywords.Any())
                 {
-                    locationScore = 100; // 如果工作地點相符，設定滿分
-                    Console.WriteLine($"工作地點比對成功 - 履歷地點: {resumeData.hopeWorkLocation}, 職缺地點: {job.workLocation}");
+                    if (jobSkillKeywords.Intersect(resumeSkillKeywords).Any())
+                    {
+                        skillScore = 100; // 如果技能有交集，設定滿分
+                        Console.WriteLine($"專業技能比對成功 - 履歷技能: {string.Join(", ", resumeSkillKeywords)}, 職缺技能: {string.Join(", ", jobSkillKeywords)}");
+                    }
+                    else
+                    {
+                        skillScore = 0; // 如果沒有交集，分數為零
+                        Console.WriteLine($"專業技能 - 履歷技能: {string.Join(", ", resumeSkillKeywords)}, 職缺技能: {string.Join(", ", jobSkillKeywords)}");
+                    }
                 }
-                else
+
+                // (3) 比對工作地點 -- 縣市行政區是否包含在字串
+                if (!string.IsNullOrEmpty(resumeData?.hopeWorkLocation) && !string.IsNullOrEmpty(job.workLocation))
                 {
-                    locationScore = 0; // 如果工作地點不符，分數為零
-                    Console.WriteLine($"工作地點 - 履歷地點: {resumeData.hopeWorkLocation}, 職缺地點: {job.workLocation}");
+                    if (resumeData.hopeWorkLocation.Contains(job.workLocation))
+                    {
+                        locationScore = 100; // 如果工作地點相符，設定滿分
+                        Console.WriteLine($"工作地點比對成功 - 履歷地點: {resumeData.hopeWorkLocation}, 職缺地點: {job.workLocation}");
+                    }
+                    else
+                    {
+                        locationScore = 0; // 如果工作地點不符，分數為零
+                        Console.WriteLine($"工作地點 - 履歷地點: {resumeData.hopeWorkLocation}, 職缺地點: {job.workLocation}");
+                    }
                 }
 
                 // 計算總分

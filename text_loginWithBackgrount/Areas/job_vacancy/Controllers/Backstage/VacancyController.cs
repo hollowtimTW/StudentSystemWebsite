@@ -8,7 +8,6 @@ using Class_system_Backstage_pj.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using ThirdParty.Json.LitJson;
-using SkiaSharp;
 
 namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers.Backstage
 {

@@ -17,5 +17,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.ViewModels
         public string? JobType { get; set; }
         public string? JobLocation { get; set; }
         public DateTime? UpdateTime { get; set; }
+
+        public bool IsFavorite { get; set; }
     }
 }

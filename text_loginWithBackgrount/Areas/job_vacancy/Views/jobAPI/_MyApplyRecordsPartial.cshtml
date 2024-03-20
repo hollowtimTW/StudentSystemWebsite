@@ -2,43 +2,44 @@
 <style>
     <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet"/>
 </style> 
-<div id="tab2" class="tab-page active">
-    <div class="d-flex flex-column align-items-center">
-        @if (Model != null && Model.Any())
+<div id="tab-apply" class="tab-page active">
+    @if (Model != null && Model.Any())
         {
-            @foreach (var viewModel in Model)
-            {
-                string jobLocation = viewModel.JobLocation.Length > 6 ? viewModel.JobLocation.Substring(0, 6) : viewModel.JobLocation;
+            <div class="d-flex flex-column align-items-center">
+                @foreach (var viewModel in Model)
+                {
+                    string jobLocation = viewModel.JobLocation.Length > 6 ? viewModel.JobLocation.Substring(0, 6) : viewModel.JobLocation;
 
-                <div class="job-item p-4 mb-4">
-                    <div class="row g-4">
-                        <div class="col-lg-8 d-flex align-items-center">
-                            <div class="text-start ps-4">
-                                <h5>@viewModel.JobTitle</h5>
-                                <h6 class="mb-3"><a href="/job_vacancy/Job/CompanyDetails/@viewModel.CompanyID" target="_blank">@viewModel.CompanyName</a></h6>
-                                <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> @jobLocation</span>
-                                <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> @viewModel.JobType</span>
-                                <span class="text-truncate me-0"><i class="bi bi-cash flex-shrink-0"></i> @viewModel.Salary</span>
+                    <div class="job-item p-4 mb-4">
+                        <div class="row g-4">
+                            <div class="col-lg-8 d-flex align-items-center">
+                                <div class="text-start ps-4">
+                                    <h5>@viewModel.JobTitle</h5>
+                                    <h6 class="mb-3"><a href="/job_vacancy/Job/CompanyDetails/@viewModel.CompanyID" target="_blank">@viewModel.CompanyName</a></h6>
+                                    <span class="text-truncate me-3"><i class="bi bi-geo-alt-fill flex-shrink-0"></i> @jobLocation</span>
+                                    <span class="text-truncate me-3"><i class="bi bi-clock flex-shrink-0"></i> @viewModel.JobType</span>
+                                    <span class="text-truncate me-0"><i class="bi bi-cash flex-shrink-0"></i> @viewModel.Salary</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-lg-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
-                            <div class="d-flex mb-3">
-                                <button type="button" class="btn btn-light btn-circle me-3 btn-like"><i class="bi bi-heart"></i></button>
-                                <a href="/job_vacancy/Job/JobDetails/@viewModel.JobID" target="_blank" class="btn-detail">詳細資訊</a>
+                            <div class="col-lg-4 d-flex flex-column align-items-start align-items-md-end justify-content-end">
+                                <div class="d-flex mb-3">
+                                    <button type="button" class="btn btn-light btn-circle me-3 btn-like @(viewModel.IsFavorite ? "active" : "")" job-id="@viewModel.JobID"><i class="bi bi-heart"></i></button>
+                                    <a href="/job_vacancy/Job/JobDetails/@viewModel.JobID" target="_blank" class="btn-detail">詳細資訊</a>
+                                </div>
+                                <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：@viewModel.UpdateTime?.ToString("yyyy/MM/dd HH:mm")</small>
+                                <small class="text-truncate"><i class="bi bi-envelope-fill"></i> 應徵時間：@viewModel.ApplyTime.ToString("yyyy/MM/dd HH:mm")</small>
                             </div>
-                            <small class="text-truncate"><i class="bi bi-calendar2-week-fill"></i> 更新時間：@viewModel.UpdateTime?.ToString("yyyy/MM/dd HH:mm:ss")</small>
-                            <small class="text-truncate"><i class="bi bi-envelope-fill"></i> 應徵時間：@viewModel.ApplyTime.ToString("yyyy/MM/dd HH:mm:ss")</small>
                         </div>
                     </div>
-                </div>
-            }
+                }
+            </div>
         }
         else
         {
-            <div>
-                <h3>還沒有應徵紀錄</h3>
+            <div class="d-flex flex-column align-items-center justify-content-center" style="height: 500px">
+                <h3 class="mb-4">還沒有應徵紀錄，快去看看有什麼職缺吧！</h3>
+                <a asp-area="job_vacancy" asp-controller="Job" asp-action="Index" class="btn btn-normal">熱門職缺一覽</a>
             </div>
         }
-    </div>
 </div>
 

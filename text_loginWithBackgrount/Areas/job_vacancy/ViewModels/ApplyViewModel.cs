@@ -11,6 +11,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.ViewModels
         public List<int>? ResumeIDs { get; set; }
         public List<string>? ResumeTitles { get; set; }
 
+        [Required(ErrorMessage = "請填寫信件內容")]
         public string? ApplyLetter { get; set; }
     }
 }
