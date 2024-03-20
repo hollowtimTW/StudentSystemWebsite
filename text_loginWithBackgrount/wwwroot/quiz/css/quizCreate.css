@@ -46,6 +46,7 @@ textarea {
     flex-direction: column;
     position: relative;
     padding-right: 100px;
+    background-color: #F0F0F0;
 }
 
 

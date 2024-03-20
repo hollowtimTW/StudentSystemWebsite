@@ -1,0 +1,75 @@
+﻿.custom-button {
+    background-color: rgb(248, 90, 64);
+    border-color: rgba(255, 255, 255, 0.1);
+    font-size: 16px;
+}
+
+    .custom-button:hover {
+        background-color: rgb(248, 90, 64) !important;
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .custom-button:active {
+        background-color: rgb(0, 121, 107) !important;
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+.row .d-flex {
+    height: 150px;
+}
+
+#room-img {
+    max-width: 150px;
+}
+
+.errorMessage {
+    color: red;
+    font-size: 0.8rem;
+    display: none;
+    text-align: right;
+}
+
+
+
+
+.modal-body div {
+    font-weight: bold;
+}
+
+
+.modal-body p{
+    font-weight:bold;
+}
+
+
+
+.filter-open .portfolio-wrap {
+    background-color: rgb(0, 131, 116);
+}
+
+.filter-close .portfolio-wrap {
+    background-color: #BEBEBE;
+}
+
+.filter-open .quiz-name {
+    background-color: rgb(0, 131, 116);
+    color: white;
+}
+
+.filter-close .quiz-name {
+    background-color: #BEBEBE;
+}
+
+
+
+
+.quiz-name {
+    font-weight:bold;
+    font-size: 1.8rem;
+}
+
+.custom-span {
+    font-size: 1rem;
+    color: white;
+    background-color:red;
+}

@@ -1,53 +1,17 @@
-﻿@{
+﻿@model List<QuizView>
+
+@{
     var studentId = User.Claims.FirstOrDefault(c => c.Type == "StudentId")?.Value;
     ViewData["Title"] = "測驗平台";
 }
 
 
 @section Styles {
-    <style>
-        .custom-button {
-            background-color: rgb(248, 90, 64);
-            border-color: rgba(255, 255, 255, 0.1);
-            font-size: 16px;
-        }
-
-        .custom-button:hover {
-            background-color: rgb(248, 90, 64) !important;
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .custom-button:active {
-                background-color: rgb(0, 121, 107) !important;
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .row .d-flex {
-            height: 150px;
-        }
-
-        #room-img {
-            max-width: 150px;
-        }
-
-        .errorMessage {
-            color: red;
-            font-size: 0.8rem;
-            display: none;
-            text-align: right;
-        }
-
-
-    </style>
+    <link href="~/quiz/css/stdindex.css" rel="stylesheet" />
 }
 
 
-
-
-
-
 @section BreadcrumbsSection {
-    <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
     <div class="breadcrumbs">
         <div class="page-header d-flex align-items-center" style="background-image: url('');">
             <div class="container position-relative">
@@ -72,17 +36,71 @@
     </div>
 }
 
+<section id="portfolio" class="portfolio mt-1">
 
+    <div class="container" data-aos="fade-up">
 
+        <div class="portfolio-isotope" data-portfolio-filter="*" data-portfolio-layout="masonry" data-portfolio-sort="original-order" data-aos="fade-up" data-aos-delay="100">
 
+            <!-- 分頁標題 -->
+            <div>
+                <ul class="portfolio-flters">
+                    <li data-filter="*" class="filter-active">All</li>
+                    <li data-filter=".filter-open">開放中</li>
+                    <li data-filter=".filter-close">已關閉</li>
+                    <li data-filter=".filter-finish">已完成</li>
+                </ul>
+            </div>
 
+            <!-- 簡單型圖文卡片 -->
+            <div class="row gy-4 portfolio-container">
 
+                @{
+                    for (int i = 0; i < Model.Count; i++)
+                    {
+                        var quiz = Model[i];
 
+                        if (quiz.IsPublic == 0)
+                        {
+                            continue;
+                        }
 
+                        string attr = (quiz.IsClosed == 1) ? "filter-open" : "filter-close";
 
+                        if (quiz.HasRecord == 1)
+                        {
+                            attr += " filter-finish";
+                        }
 
-<h1>學生前台</h1>
-<a asp-area="quiz" asp-controller="Quiz" asp-action="Quiz">進入考試</a>
+                                <div class="col-xl-4 col-md-6 portfolio-item @attr" data-order="@i">
+                                    <div class="portfolio-wrap">
+                                        <div class="portfolio-info d-flex row m-2 p-2 align-items-center">
+                                            <div class="col-12 quiz-name">
+                                                @quiz.Name
+                                                @if (quiz.HasRecord == 1)
+                                            {
+                                                    <span class="custom-span ms-2">已完成</span>
+                                            }
+                                            </div>
+                                            <div class="col-9">
+                                                <p class="p-0 m-0">測驗人數: <span>@quiz.Count</span>人</p>
+                                            </div>
+
+                                            <div class="col-3">
+                                                <a class="btn btn-secondary show-info">查看</a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                    }
+                 }
+
+            </div><!-- End Portfolio Container -->
+        </div>
+
+    </div>
+</section><!-- End Portfolio Section -->
 
 
 
@@ -97,7 +115,7 @@
             <div class="modal-body">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon1">測驗代碼</span>
-                    <input type="text" class="form-control" id="inputQuizCode" placeholder="輸入代碼.." aria-label="Username" aria-describedby="basic-addon1">
+                    <input type="text" class="form-control" id="inputQuizCode" placeholder="輸入代碼..">
                 </div>
                 <div class="errorMessage">查無測驗代碼!</div>
             </div>
@@ -111,27 +129,75 @@
 
 
 
-
 <!-- 預覽Modal -->
 <div class="modal fade" id="previewModal" tabindex="-1">
-    <div class="modal-dialog  modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="previewModalLabel">測驗資訊</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1">測驗代碼</span>
-                    <input type="text" class="form-control" id="inputRoomCode" placeholder="輸入代碼.." aria-label="Username" aria-describedby="basic-addon1">
+                <div id="quiz-code" hidden></div>
+                <div id="quiz-quizid" hidden></div>
+                <div class="mb-3">
+                    <label class="form-label text-primary">名稱:</label>
+                    <span class="form-text ms-2" id="quiz-mame"></span> 
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-primary">創建者:</label>
+                    <span class="form-text ms-2" id="quiz-creater"></span> 
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-primary">限制時間:</label>
+                    <span class="form-text ms-2" id="quiz-limitTime"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-primary">創建時間:</label>
+                    <span class="form-text ms-2" id="quiz-createTime"></span> 
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-primary">測驗人數:</label>
+                    <span class="form-text ms-2" id="quiz-count"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-primary">說明:</label>
+                    <span class="form-text ms-2" id="quiz-note"></span> 
                 </div>
             </div>
+
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-quizid="" id="joinQuizBtn">加入測驗</button>
+                <button type="button" class="btn btn-primary" id="joinQuizBtn">加入測驗</button>
             </div>
         </div>
     </div>
 </div>
+
+
+
+<!-- 紀錄Modal -->
+<div class="modal fade" id="recordModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="recordModalLabel">加入測驗</h5>
+            </div>
+            <div class="modal-body">
+        
+
+
+            </div>
+            <div class="modal-footer">
+       
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
 
 @section Scripts{
@@ -140,14 +206,11 @@
 
         $(document).ready(function () {
 
+            // 儲存全部測驗
+            var quizList = @Html.Raw(Json.Serialize(Model));
+            console.log(quizList)
 
-
-
-            $('#quizCodeBtn').on('click', function () {
-                $('.errorMessage').hide();
-            });
-
-
+            // 代碼搜尋
             $('#searchBtn').on('click', function () {
                 const quizCode = $('#inputQuizCode').val();
 
@@ -157,21 +220,79 @@
                 } else {
                     $('.errorMessage').hide();
                 }
+                var foundQuiz = quizList.find(function (quiz) {
+                    return quiz.code === quizCode;
+                });
 
+                if (foundQuiz) {
+                    $('#searchModal').modal('hide');
+                    $('#previewModal').modal('show');
+                    fillModalBody(foundQuiz);
+                } else {
+                    console.error("Quiz not found");
+                    $('.errorMessage').show();
+                }
+            });
+
+            $('#quizCodeBtn').on('click', function () {
+                $('.errorMessage').hide();
+                $('#inputQuizCode').val("");
+            });
+
+
+
+            function fillModalBody(quizInfo) {
+
+                console.log(quizInfo)
+                $('#quiz-mame').text(quizInfo.name || '');
+                $('#quiz-code').text(quizInfo.code || '');
+                $('#quiz-quizid').text(quizInfo.id || '');
+                $('#quiz-creater').text(quizInfo.teacherId || '');
+                $('#quiz-limitTime').text(`${quizInfo.limitTime} 分` || '');
+                $('#quiz-createTime').text(quizInfo.createTime || '');
+                $('#quiz-count').text(`${quizInfo.count} 人` || '');
+                $('#quiz-note').text(quizInfo.note || '');
+
+                $('#joinQuizBtn').text(quizInfo.hasRecord === 1 ? "查看紀錄" : "加入測驗");
+                $('#joinQuizBtn').prop('disabled', quizInfo.isClosed === 0 && quizInfo.hasRecord === 0);
+
+            }
+
+
+            $('.show-info').on('click', function () {
+                var order = $(this).closest('.portfolio-item').data('order');
+                $('#previewModal').modal('show');
+
+                fillModalBody(quizList[order]);
+            });
+
+
+
+            $('#joinQuizBtn').on('click', function () {
+                var quizId = $('#quiz-quizid').text();
+                var quizCode = $('#quiz-code').text();
+                var data  = {
+                    FQuizId: quizId,
+                    FStudentId: @studentId
+                }
                 $.ajax({
-                    url: `/Api/Quiz/GetQuiz/${quizCode}`,
-                    type: 'GET',
-                    success: function (result) {
-                        $('#searchModal').modal('hide');
-                        $('#previewModal').modal('show');
-                        
+                    url: '/Api/Quiz/CheckRecord',
+                    type: 'POST',
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    success: function (response) {
 
-
+                        if (response.fState) {
+                            $('#previewModal').modal('hide');
+                            $('#recordModal').modal('show');
+                        }else{
+                            window.location.href = `/quiz/Quiz/Quiz/${quizCode}`
+                        }
 
                     },
                     error: function (xhr, status, error) {
+
                         console.error(xhr.responseText);
-                        $('.errorMessage').show();
                     }
                 });
             });
@@ -180,9 +301,10 @@
 
 
 
+
+
+
         });
-
-
 
     </script>
 

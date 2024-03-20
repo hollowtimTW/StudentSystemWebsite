@@ -40,34 +40,85 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
 
 
         // 代碼搜尋
-        //[HttpGet("{quizCode}")]
-        //public IActionResult GetQuiz(string quizCode)
-        //{
-        //    var quiz = _context.TQuizQuizzes
-        //        .Where(p => p.FQcode == quizCode)
-        //        .Select(p => new
-        //        {
-        //            id = p.FQuizId,
-        //            name = p.FQname,
-        //            note = p.FNote,
-        //            code = p.FQcode,
-        //            limitTime = p.FLimitTime,
-        //            teacherId = p.FTeacher.姓名,
-        //            isPublic = p.FPublic,
-        //            isClosed = p.FClosed,
-        //            createTime = p.FCreateTime
-        //        })
-        //        .FirstOrDefault();
+        [HttpGet("{quizCode}")]
+        public IActionResult PrivateQuiz(string quizCode)
+        {
+            var quiz = _context.TQuizQuizzes
+                .Where(p => p.FQcode == quizCode)
+                .Select(p => new
+                {
+                    id = p.FQuizId,
+                    name = p.FQname,
+                    note = p.FNote,
+                    code = p.FQcode,
+                    limitTime = p.FLimitTime,
+                    teacherId = p.FTeacher.姓名,
+                    isPublic = p.FPublic,
+                    isClosed = p.FClosed,
+                    createTime = p.FCreateTime,
+                    count = _context.TQuizRecords.Count(r => r.FQuizId == p.FQuizId)
+                })
+                .FirstOrDefault();
 
-        //    if (result == null)
-        //    {
-        //        return BadRequest("匹配錯誤");
-        //    }
+            if (quiz == null)
+            {
+                return BadRequest("無此代碼");
+            }
 
-        //    return Json(result);
-        //}
+            return Json(quiz);
+        }
 
 
+
+
+
+        // 取得測驗考題
+        [HttpGet("{quizId}")]
+        public IActionResult GetQuestions(int quizId)
+        {
+
+            var questionOrder = _questionOrderCollection.Find(q => q.QuizID == quizId).FirstOrDefault();
+
+            if (questionOrder == null)
+            {
+                return BadRequest("無資料");
+            }
+
+            List<string> questionOrderList = questionOrder.QuestionOrderList;
+            List<Question> questions = _questionCollection.Find(q => questionOrderList.Contains(q.Id)).ToList();
+
+
+            return Json(questions);
+        }
+
+
+
+
+
+
+
+        // 設定紀錄
+        public IActionResult CheckRecord([FromBody] TQuizRecord r)
+        {
+            var record = _context.TQuizRecords
+                .Where(p=>p.FQuizId==r.FQuizId && p.FStudentId==r.FStudentId)
+                .FirstOrDefault();
+
+            if(record == null)
+            {
+                record = new TQuizRecord
+                {
+                    FQuizId = r.FQuizId,
+                    FStudentId = r.FStudentId,
+                    FState = 0
+                };
+
+                _context.TQuizRecords.Add(record);
+                _context.SaveChanges();
+            }
+
+            return Json(record);
+        }
 
 
 

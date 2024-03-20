@@ -1,5 +1,4 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using text_loginWithBackgrount.Areas.quiz.Models;
+﻿using text_loginWithBackgrount.Areas.quiz.Models;
 
 namespace text_loginWithBackgrount.Areas.quiz.ViewModel
 {

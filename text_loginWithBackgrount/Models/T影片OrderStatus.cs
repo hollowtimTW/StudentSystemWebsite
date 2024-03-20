@@ -13,5 +13,5 @@ public partial class T影片OrderStatus
 
     public string StatusName { get; set; }
 
-    public virtual T影片Order IdNavigation { get; set; }
+    public virtual ICollection<T影片Order> T影片Orders { get; set; } = new List<T影片Order>();
 }

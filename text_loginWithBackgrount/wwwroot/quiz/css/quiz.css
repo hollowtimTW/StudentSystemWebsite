@@ -10,6 +10,11 @@
     align-items: center;
 }
 
+.left-title-vh {
+    margin-top: 10px;
+    height: 10vh;
+}
+
 .left-top-vh {
     margin-top: 10px;
     height: 40vh;
@@ -81,8 +86,9 @@
 
 .quiz-name {
     color: white;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     text-align: center;
+    font-weight:bold;
 }
 
 .quiz-nums {
@@ -107,13 +113,15 @@
     background-color: rgb(0, 131, 116);
     border-radius: 15px;
     font-size: 1.2rem;
-    font-size: 1.2rem;
+    font-weight: bold;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     height: 100%;
 }
+
+
 
 
 .sumbit-btn {
@@ -146,12 +154,20 @@
 
 .q-question-context {
     width: 80%;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     font-weight: bold;
 }
 
 .q-question-context-option {
     width: 80%;
+    font-size: 1.5rem;
+    border-radius: 8px;
+    background-color: #D0D0D0;
+    padding: 8px;
+}
+
+q-question-context-option .div{
+    margin-bottom:3px;
 }
 
 .q-answer {
