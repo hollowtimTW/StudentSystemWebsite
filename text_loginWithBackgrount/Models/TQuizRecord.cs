@@ -21,8 +21,6 @@ public partial class TQuizRecord
 
     public DateTime? FEndTime { get; set; }
 
-    public DateTime? FSumbitTime { get; set; }
-
     public decimal? FRate { get; set; }
 
     public virtual TQuizQuiz FQuiz { get; set; }

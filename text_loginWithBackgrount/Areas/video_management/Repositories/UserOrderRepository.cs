@@ -20,12 +20,12 @@ namespace text_loginWithBackgrount.Areas.video_management.Repositories
             var userId = GetUserId();
             if (userId == 0)
                 throw new Exception("User is not logged-in");
-            var orders = await _db.Orders
-                            .Include(x => x.OrderStatus)
-                            .Include(x => x.OrderDetail)
-                            .ThenInclude(x => x.Book)
+            var orders = await _studentContext.T影片Orders
+                            .Include(x => x.FOrderStatus)
+                            .Include(x => x.T影片OrderDetails)
+                            .ThenInclude(x => x.FVideo)
                             .ThenInclude(x => x.Genre)
-                            .Where(a => a.UserId == userId)
+                            .Where(a => a.FStudentId == userId)
                             .ToListAsync();
             return orders;
         }

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using text_loginWithBackgrount.Areas.video_management.DTO;
 using text_loginWithBackgrount.Areas.video_management.Repositories;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace text_loginWithBackgrount.Areas.video_management.Controllers
 {

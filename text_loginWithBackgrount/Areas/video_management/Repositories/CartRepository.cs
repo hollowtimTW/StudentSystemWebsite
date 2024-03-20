@@ -150,7 +150,7 @@ namespace text_loginWithBackgrount.Areas.video_management.Repositories
                 {
                     FStudentId = userId,
                     CreateDate = DateTime.Now,
-                    FOrderOrderStatusId = 1//pending,
+                    FOrderStatusId = 1//pending,
                 };
 
                 _studentContext.T影片Orders.Add(order);
@@ -174,9 +174,12 @@ namespace text_loginWithBackgrount.Areas.video_management.Repositories
                 transaction.Commit();
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                // 在 catch 塊中記錄異常信息，以便日後調試
+                Console.WriteLine($"An error occurred during checkout: {ex.Message}");
+                // 回滾事務
+                transaction.Rollback();
                 return false;
             }
         }

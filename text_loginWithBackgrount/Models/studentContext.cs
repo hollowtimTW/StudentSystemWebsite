@@ -128,7 +128,7 @@ public partial class studentContext : DbContext
             entity.Property(e => e.FQuizId).HasColumnName("fQuizId");
             entity.Property(e => e.FClosed).HasColumnName("fClosed");
             entity.Property(e => e.FCreateTime)
-                .HasColumnType("datetime")
+                .HasColumnType("date")
                 .HasColumnName("fCreateTime");
             entity.Property(e => e.FLimitTime).HasColumnName("fLimitTime");
             entity.Property(e => e.FNote).HasColumnName("fNote");
@@ -168,9 +168,6 @@ public partial class studentContext : DbContext
                 .HasColumnName("fStartTime");
             entity.Property(e => e.FState).HasColumnName("fState");
             entity.Property(e => e.FStudentId).HasColumnName("fStudentId");
-            entity.Property(e => e.FSumbitTime)
-                .HasColumnType("datetime")
-                .HasColumnName("fSumbitTime");
 
             entity.HasOne(d => d.FQuiz).WithMany(p => p.TQuizRecords)
                 .HasForeignKey(d => d.FQuizId)
@@ -590,11 +587,11 @@ public partial class studentContext : DbContext
             entity.ToTable("t影片_Order");
 
             entity.Property(e => e.FOrderId).HasColumnName("fOrderId");
-            entity.Property(e => e.FOrderOrderStatusId).HasColumnName("fOrder_OrderStatusId");
+            entity.Property(e => e.FOrderStatusId).HasColumnName("fOrderStatusId");
             entity.Property(e => e.FStudentId).HasColumnName("fStudentId");
 
-            entity.HasOne(d => d.FOrderOrderStatus).WithMany(p => p.T影片Orders)
-                .HasForeignKey(d => d.FOrderOrderStatusId)
+            entity.HasOne(d => d.FOrderStatus).WithMany(p => p.T影片Orders)
+                .HasForeignKey(d => d.FOrderStatusId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_t影片_Order_t影片_OrderStatus");
 
