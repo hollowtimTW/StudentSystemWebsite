@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MimeKit;
+using QuestPDF;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -31,7 +32,10 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             _hostingEnvironment = hostingEnvironment;
 
             // 設置 QuestPDF 的授權類型為社區版
-            QuestPDF.Settings.License = LicenseType.Community;
+            Settings.License = LicenseType.Community;
+
+            // 忽略字形檢查（不會拋出錯誤，但可能會有部分文字無法顯示）
+            Settings.CheckIfAllTextGlyphsAreAvailable = false;
         }
 
         public IActionResult Index()
@@ -302,10 +306,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                     string recipientName = theCompany.F公司名稱;
                     string recipientEmail = theCompany.F聯絡人Email;
                     string subject = $"【Rasengan 人才培訓服務系統應徵信】{theStudent.姓名} - {theJob.F職務名稱}";
-                    string letterBody = $"尊敬的 {recipientName} 負責人，您好，\r\n\r\n" +
-                                        $"本封郵件由 Rasengan 人才培訓服務系統自動發送，特此通知貴公司收到一份新的應徵信。\r\n\r\n" +
-                                        $"應徵內容如下：\r\n\r\n{viewModel.ApplyLetter}\r\n\r\n" +
-                                        $"如果對求職者有興趣，請直接與他/她聯絡，謝謝。\r\n\r\n";
+                    string letterBody = viewModel.ApplyLetter ?? $"您好，我是 {theStudent.姓名}，希望能獲得面試的機會。";
 
                     bool sendSuccess = SendEmail(recipientName, recipientEmail, subject, letterBody, pdfData);
                     if (!sendSuccess)
@@ -356,8 +357,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                     page.Size(PageSizes.A4);
                     page.PageColor(Colors.White);
                     page.DefaultTextStyle(x => x
-                            .FontSize(12)
-                            .FontFamily("微軟正黑體"));
+                            .FontSize(12));
 
                     // 獲取LOGO圖片的相對路徑
                     string logoFilePath = Path.Combine("images", "logo.jpg");
@@ -395,9 +395,9 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                                     row.RelativeItem(3)
                                         .Width(1, Unit.Inch)
                                         .AlignMiddle()
-                                        .Image(resumeData.Student.圖片)
-                                        .WithCompressionQuality(ImageCompressionQuality.Low)
-                                        .WithRasterDpi(72);
+                                        .Image(resumeData.Student.圖片);
+                                        //.WithCompressionQuality(ImageCompressionQuality.Low)
+                                        //.WithRasterDpi(72);
                                 }
                                 else
                                 {
@@ -577,10 +577,10 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
         /// <param name="recipientEmail"></param>
         /// <param name="recipientName"></param>
         /// <param name="subject"></param>
-        /// <param name="body"></param>
+        /// <param name="letterBody"></param>
         /// <param name="pdfData"></param>
         /// <returns></returns>
-        public bool SendEmail(string recipientEmail, string recipientName, string subject, string body, byte[] pdfData)
+        public bool SendEmail(string recipientName, string recipientEmail, string subject, string letterBody, byte[] pdfData)
         {
 
             string senderName = "Rasengen人才培訓服務系統";
@@ -592,7 +592,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
 
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress(senderName, senderEmail));
-            message.To.Add(new MailboxAddress(recipientName, senderEmail));  //測試中先自寄自收
+            message.To.Add(new MailboxAddress(recipientName, "philippaliao@outlook.com"));  //測試中先自寄自收
             message.Subject = subject;
 
             // 創建一個 MimePart 來表示 PDF 附件
@@ -619,8 +619,19 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
 
             // 創建郵件主體
             var multipart = new Multipart("mixed");
-            multipart.Add(new TextPart("plain") { Text = body }); // 添加郵件的文本內容
-            multipart.Add(attachment); // 添加PDF附件
+
+            // 添加郵件的文本內容
+            var textPart = new TextPart("html")
+            {
+                Text = $"尊敬的 <strong>{recipientName}</strong> 負責人，您好：" +
+                       $"特此通知貴公司收到一份新的應徵信。" +
+                       $"應徵內容如下：<br><br><br>{letterBody}<br><br><br><br>" +
+                       $"<strong style='color: red;'>本封郵件由 Rasengan 人才培訓服務系統自動發送，如果對求職者有興趣，請直接與他/她聯絡，謝謝。</strong><br><br>"
+            };
+
+            // 將內容添加至郵件主體
+            multipart.Add(textPart);
+            multipart.Add(attachment);
 
             // 將郵件主體設置為郵件的內容
             message.Body = multipart;

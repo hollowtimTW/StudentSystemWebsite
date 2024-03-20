@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using QuestPDF;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using QuestPDF.Previewer;
-using SkiaSharp;
 using text_loginWithBackgrount.Areas.job_vacancy.DTO;
 using text_loginWithBackgrount.Areas.job_vacancy.ViewModels;
 
@@ -26,7 +26,10 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
             _hostingEnvironment = hostingEnvironment;
 
             // 設置 QuestPDF 的授權類型為社區版
-            QuestPDF.Settings.License = LicenseType.Community;
+            Settings.License = LicenseType.Community;
+
+            // 忽略字形檢查（不會拋出錯誤，但可能會有部分文字無法顯示）
+            Settings.CheckIfAllTextGlyphsAreAvailable = false;
 
         }
 
@@ -84,8 +87,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                         page.Size(PageSizes.A4);
                         page.PageColor(Colors.White);
                         page.DefaultTextStyle(x => x
-                                .FontSize(12) // 設定預設字體大小
-                                .FontFamily("微軟正黑體")); // 設定預設字體
+                                .FontSize(12));   // 設定預設字體大小
 
                         // 獲取LOGO圖片的相對路徑
                         string logoFilePath = Path.Combine("images", "logo.jpg");
