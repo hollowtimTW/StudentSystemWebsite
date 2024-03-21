@@ -117,7 +117,9 @@
                 <input type="password" placeholder="密碼" name="Password" id="Password">
                 <a asp-action="resetPassword">忘記密碼?</a>
                 <button type="submit">登入</button>
-                <button type="button" id="demoBtn" onclick="demo()">Demo</button>
+                <button type="button" id="demoBtn" onclick="demo()">馬鈺新</button>
+                <button type="button" id="demoBtn2" onclick="demo2()">林夏陽</button>
+
             </form>
 
         </div>
@@ -146,13 +148,17 @@
         }
     </script>
     <script>
-                const account = document.querySelector("#Account")
+       const account = document.querySelector("#Account")
         const password = document.querySelector("#Password")
         const demo = ("click", () => {
             account.value = "272m5@gmail.com";
             password.value = "1234567@@"; //單@會有問題 實際上1234567@才是通用密碼 
         })
 
+        const demo2 = ("click", () => {
+            account.value = "d675l@gmail.com";
+            password.value = "1234567@@"; //單@會有問題 實際上1234567@才是通用密碼
+        })
 
         // $("#btn_login").click(function (e) {
         //     e.preventDefault();
