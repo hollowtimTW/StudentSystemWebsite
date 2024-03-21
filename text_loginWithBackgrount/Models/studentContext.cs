@@ -1201,10 +1201,16 @@ public partial class studentContext : DbContext
 
             entity.Property(e => e.留言id).HasColumnName("留言ID");
             entity.Property(e => e.內容).HasMaxLength(50);
+            entity.Property(e => e.刪除)
+                .IsRequired()
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasDefaultValueSql("((0))")
+                .IsFixedLength();
             entity.Property(e => e.子版id).HasColumnName("子版ID");
             entity.Property(e => e.學生id).HasColumnName("學生ID");
             entity.Property(e => e.文章id).HasColumnName("文章ID");
-            entity.Property(e => e.時間).HasColumnType("datetime");
+            entity.Property(e => e.時間).HasMaxLength(50);
             entity.Property(e => e.看板id).HasColumnName("看板ID");
 
             entity.HasOne(d => d.子版).WithMany(p => p.T討論留言s)
