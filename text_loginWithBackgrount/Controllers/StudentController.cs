@@ -115,7 +115,7 @@ namespace text_loginWithBackgrount.Controllers
                 user.信箱 = MemberEditInfo.信箱;
                 user.手機 = MemberEditInfo.手機;
                 user.地址 = MemberEditInfo.地址;
-                user.圖片 = _filebyte;
+                user.圖片 = _filebyte != null ? _filebyte : user.圖片;
                 user.生日 = MemberEditInfo.生日;
                 user.學校 = MemberEditInfo.學校;
                 user.科系 = MemberEditInfo.科系;

@@ -232,7 +232,7 @@ namespace text_loginWithBackgrount.Areas.student_management.Controllers
                     user.信箱 = editinfo.信箱;
                     user.手機 = editinfo.手機;
                     user.地址 = editinfo.地址;
-                    user.圖片 = _filebyte;
+                    user.圖片 = _filebyte != null ? _filebyte : user.圖片;
                     user.生日 = editinfo.生日;
                     user.修改日期 = DateTime.Now;
                     //existingMember.狀態 = updatedMember.狀態;

@@ -236,7 +236,7 @@ namespace Class_system_Backstage_pj.Areas.student_management.Controllers
                     user.信箱 = editMember.信箱;
                     user.手機 = editMember.手機;
                     user.地址 = editMember.地址;
-                    user.圖片 = _filebyte;
+                    user.圖片 = _filebyte != null ? _filebyte : user.圖片;
                     user.生日 = editMember.生日;
                     user.修改日期 = DateTime.Now;
                     //existingMember.狀態 = updatedMember.狀態;
