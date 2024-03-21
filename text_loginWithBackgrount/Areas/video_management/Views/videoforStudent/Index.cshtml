@@ -73,7 +73,7 @@
                 <article class="blog-details">
                     <h2 class="title">影片教材</h2>
                     <div style="width:100%" class="mt-2">
-                        <a href="/Identity/Account/Manage" class="btn btn-primary my-2">Back</a>
+                        <a href="/Template/Index" class="btn btn-outline-success">Back</a>
 
                         <h4>My Orders</h4>
                         @if (Model != null && Model.Count() > 0)
@@ -96,7 +96,7 @@
                                                 <table class="table table-striped">
                                                     <tr>
                                                         <td>
-                                                            Total:
+                                                            總金額:
                                                         </td>
                                                         <td>
                                                             @(order.T影片OrderDetails.Select(item => item.FVideo.FPrice*item.FQuantity).Sum())
@@ -104,11 +104,11 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th>Book</th>
-                                                        <th>Image</th>
-                                                        <th>Genre</th>
-                                                        <th>Unit Price(INR)</th>
-                                                        <th>Total Price</th>
+                                                        <th>影片名稱</th>
+                                                        <th>影片</th>
+                                                        <th>分類</th>
+                                                        <th>單價</th>
+                                                        <th>小計</th>
                                                     </tr>
                                                     @foreach (var item in order.T影片OrderDetails)
                                                     {
@@ -132,8 +132,8 @@
                                                                 }
                                                             </td>
                                                             <td>@item.FVideo.Genre.GenreName</td>
-                                                            <td>@item.FVideo.FPrice X @item.FQuantity</td>
-                                                            <td> @(item.FVideo.FPrice * item.FQuantity) </td>
+                                                            <td>@item.FVideo.FPrice.ToString("0.##") X @item.FQuantity</td>
+                                                        <td>@string.Format("{0:0.##}", item.FVideo.FPrice * item.FQuantity)</td>
                                                         </tr>
                                                     }
                                                 </table>
