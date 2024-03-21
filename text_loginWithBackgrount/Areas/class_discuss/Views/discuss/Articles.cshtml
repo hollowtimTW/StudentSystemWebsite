@@ -1,11 +1,15 @@
-﻿@section BreadcrumbsSection {
+﻿@{
+    int subId = ViewBag.subId;
+    string subName = ViewBag.subName;
+}
+@section BreadcrumbsSection {
     <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
     <div class="breadcrumbs">
         <div class="page-header d-flex align-items-center" style="background-image: url('');">
             <div class="container position-relative">
                 <div class="row d-flex justify-content-center">
                     <div class="col-lg-6 text-center">
-                        <h2>@ViewBag.subName</h2>
+                        <h2>@subName</h2>
                         <p>來場同儕間的激烈溝通吧！</p>
                     </div>
                 </div>
@@ -17,9 +21,9 @@
                 <ol>
                     <li><a asp-area="" asp-controller="Template" asp-action="Index">首頁</a></li>
                     <li><a asp-area="class_discuss" asp-controller="discuss" asp-action="Index">學生論壇</a></li>
-                    <li>@ViewBag.subName</li>
+                    <li>@subName</li>
                 </ol>
-                <a href="~/class_discuss/discuss/ArticleCreate?subid=@ViewBag.subId" class="btn btn-entrance">
+                <a href="~/class_discuss/discuss/ArticleCreate?subid=@subId" class="btn btn-entrance">
                     新增文章
                 </a>
             </div>
@@ -37,76 +41,26 @@
             <!-- 主要區域：佔據寬度 8/12 -->
             <div class="col-lg-8">
 
-        <div class="row gy-4 posts-list" id="article">
-            <!-- 共有六張卡片 -->
-
-            <div class="col-xl-4 col-md-6">
-                <article>
-
-                    <div class="post-img">
-                        <img src="~/assets/img/blog/blog-1.jpg" alt="" class="img-fluid">
-                    </div>
-
-                    <p class="post-category">Politics</p>
-
-                    <h2 class="title">
-                         <a asp-area="class_discuss" asp-controller="discuss" asp-action="ArticleDetails">Dolorum optio tempore voluptas dignissimos</a>
-                    </h2>
-
-                    <div class="d-flex align-items-center">
-                        <img src="~/assets/img/blog/blog-author.jpg" alt="" class="img-fluid post-author-img flex-shrink-0">
-                        <div class="post-meta">
-                            <p class="post-author-list">Maria Doe</p>
-                            <p class="post-date">
-                                <time datetime="2022-01-01">Jan 1, 2022</time>
-                            </p>
-                        </div>
-                    </div>
-
-                </article>
-            </div><!-- End post list item -->
-
-        </div><!-- End blog posts list -->
-        </div>
+                <div class="row gy-4 posts-list" id="article">
+                </div><!-- End blog posts list -->
+            </div>
 
             <!-- 右方側邊欄：佔據寬度 4/12 -->
             <div class="col-lg-4">
                 <div class="sidebar">
                     <!-- 搜尋框 -->
                     <div class="sidebar-item search-form">
-                        <h3 class="sidebar-title">Search</h3>
-                        <form action="" class="mt-3">
-                            <input type="text">
-                            <button type="submit"><i class="bi bi-search"></i></button>
+                        <h3 class="sidebar-title">搜尋</h3>
+                        <form action="" class="mt-3" >
+                            <input type="text" id="inputKeyword">
+                            <button type="submit" id="btnsreach"><i class="bi bi-search" autocomplete="off"></i></button>
                         </form>
                     </div><!-- End sidebar search formn-->
-                    <!-- 文字列表 -->
-                    <div class="sidebar-item categories">
-                        <h3 class="sidebar-title">Categories</h3>
-                        <ul class="mt-3">
-                            <li><a href="#">General <span>(25)</span></a></li>
-                            <li><a href="#">Lifestyle <span>(12)</span></a></li>
-                            <li><a href="#">Travel <span>(5)</span></a></li>
-                            <li><a href="#">Design <span>(22)</span></a></li>
-                            <li><a href="#">Creative <span>(8)</span></a></li>
-                            <li><a href="#">Educaion <span>(14)</span></a></li>
-                        </ul>
-                    </div><!-- End sidebar categories-->
                     <!-- 標籤區 -->
                     <div class="sidebar-item tags">
-                        <h3 class="sidebar-title">Tags</h3>
-                        <ul class="mt-3">
+                        <h3 class="sidebar-title">子版標籤</h3>
+                        <ul class="mt-3" id="types">
                             <li><a href="#">App</a></li>
-                            <li><a href="#">IT</a></li>
-                            <li><a href="#">Business</a></li>
-                            <li><a href="#">Mac</a></li>
-                            <li><a href="#">Design</a></li>
-                            <li><a href="#">Office</a></li>
-                            <li><a href="#">Creative</a></li>
-                            <li><a href="#">Studio</a></li>
-                            <li><a href="#">Smart</a></li>
-                            <li><a href="#">Tips</a></li>
-                            <li><a href="#">Marketing</a></li>
                         </ul>
                     </div><!-- End sidebar tags-->
                 </div><!-- End Blog Sidebar -->
@@ -115,62 +69,136 @@
         </div>
         <!-- 分頁標籤 -->
         <div class="blog-pagination">
-            <ul class="justify-content-center">
+            <ul class="justify-content-center" id="pages">
                 <li><a href="#">1</a></li>
-                <li class="active"><a href="#">2</a></li>
+                <li><a href="#">2</a></li>
                 <li><a href="#">3</a></li>
             </ul>
         </div><!-- End blog pagination -->
 
     </div>
 </section><!-- End Blog Section -->
-
-@section Scripts{
+@section Scripts {
     <script>
-        (async () => {
-            const subId = @ViewBag.subId;
-            const url = `@Url.Content("~/WebApi/artcard")?id=${subId}`;
-            const request = await fetch(url);
+        const pages = document.getElementById('pages');
+        const inputKeyword = document.getElementById('inputKeyword');
+        const searchButton = document.querySelector('#btnsreach');
+        const searchData = {
+            "subId": @subId,
+            "typeId": 0,
+            "keyword": "",
+            "page": 1,
+            "pageSize": 9
+        };
+
+        const loadArtCard = async () => {
+            const request = await fetch('@Url.Content("~/WebApi/ArtCard")', {
+                "method": "Post",
+                "body": JSON.stringify(searchData),
+                "headers": { "Content-Type": "application/json" }
+            });
+            
             const data = await request.json();
-            const defaultImage = '/images/t論壇/預設頭像.png';
-            const datalist = data.map(a => `            
-            <div class="col-xl-4 col-md-6">
-                        <article>
-                            <p class="post-category">${a.分類}</p>
+            console.log(data);
+            const artlist = data.result.map(a => {
+            const { 文章id, 分類, 標題, 內容, 作者, 日期, 頭像 } = a;
+                return (`
+                    <div class="col-xl-4 col-md-6">
+                                <article>
+                                    <p class="post-category">${分類}</p>
 
-                            <h2 class="title">
-                     <a href="/class_discuss/discuss/ArticleDetails?subid=${@ViewBag.subId}&artid=${a.文章id}">
-                             ${truncateString(a.標題, 18)}</a>
-                            </h2>
+                                    <h2 class="title">
+                             <a href="/class_discuss/discuss/ArticleDetails?subid=${@subId}&artid=${文章id}">
+                                     ${truncateString(標題, 14)}</a>
+                                    </h2>
 
-                            <div class="d-flex align-items-center">
-                  <img src="${a.頭像 ? 'data:image/jpeg;base64,' + a.頭像 : defaultImage}" alt="" class="img-fluid post-author-img flex-shrink-0">
-                                <div class="post-meta">
-                                    <p class="post-author-list">${a.作者}</p>
-                                    <p class="post-date">
-                                        <time datetime="2022-01-01">${a.日期}</time>
-                                    </p>
-                                </div>
+                                    <div class="d-flex align-items-center">
+                          <img src="${頭像 ? 'data:image/jpeg;base64,' + 頭像 : '/images/t論壇/預設頭像.png'}" alt="" class="img-fluid post-author-img flex-shrink-0">
+                                        <div class="post-meta">
+                                            <p class="post-author-list">${作者}</p>
+                                            <p class="post-date">
+                                                <time datetime="2022-01-01">"修改日期：${日期}"</time>
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                </article>
                             </div>
+                `)
+            })
+            article.innerHTML = artlist.join("");
 
-                        </article>
-                    </div>
-        `);
-            $('#article').html(datalist);
-        })();
+            const typelist = data.typeResult.map(a => {
+                return (`<li onclick="typeHandler(${a.子版id})"><a href="#">${a.名稱}</a></li>`)
+            })
+            $('#types').html(typelist);
+
+            let liPaging = "";
+            for (let i = 1; i <= data.totalPages; i++) {
+                if (i == 1) {
+                    liPaging += ` <li onclick="pagingHandler(${i})"><a href="#">${i}</a></li>`
+                } else { liPaging += ` <li onclick="pagingHandler(${i})"><a href="#">${i}</a></li>` }
+            }
+            pages.innerHTML = liPaging;
+        };
+
+        searchButton.addEventListener('click', function (event) {
+            event.preventDefault(); // 取消按鈕的預設提交行為
+
+            const keyword = inputKeyword.value.trim(); // 取得輸入的關鍵字並去除空白
+            if (keyword !== '') {
+                searchData.keyword = keyword; // 將關鍵字設置到 searchData 物件中
+                loadArtCard(); 
+            } else if(keyword === '' || keyword === null) {
+                searchData.keyword = "";
+                loadArtCard();
+            }
+        });
+        inputKeyword.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // 取消按下 Enter 鍵的預設提交行為
+
+                const keyword = inputKeyword.value.trim(); // 取得輸入的關鍵字並去除空白
+                if (keyword !== '') {
+                    searchData.keyword = keyword; // 將關鍵字設置到 searchData 物件中
+                    loadArtCard(); // 調用 loadSpots 函數
+                }
+            }
+        });
 
         function truncateString(str, maxLength) {
             let length = 0;
             let truncated = '';
             for (let char of str) {
-                // 如果是中文字符，长度加2；否则加1
+                // 如果是中文字符，長度加2；否則加1
                 length += char.charCodeAt(0) > 255 ? 2 : 1;
-                if (length > maxLength - 3) { // 减去省略号的长度
+                if (length > maxLength) {
                     break;
                 }
                 truncated += char;
             }
-            return truncated + '...';
+            if (length > maxLength) {
+                truncated += '...';
+            }
+            return truncated;
         }
+
+        const pagingHandler = page => {
+            searchData.page = page;
+            loadArtCard();
+        }
+
+        const typeHandler = typeId => {
+            searchData.typeId = typeId;
+            loadArtCard();
+        }
+
+        $(document).ready(function () {
+            $('#pages').on('click', 'li', function () {
+                $('#pages li').removeClass('active');
+                $(this).addClass('active');
+            });
+        });
+        loadArtCard();
     </script>
 }

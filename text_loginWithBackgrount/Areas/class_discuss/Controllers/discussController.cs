@@ -102,32 +102,16 @@ namespace text_loginWithBackgrount.Areas.class_discuss.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ArticleEdit(int subid, int artid, T討論文章 article)//修改文章功能
+        public async Task<IActionResult> ArticleEdit(int subid, T討論文章 article)//修改文章功能
         {
-            if (artid != article.文章id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _DBContext.Update(article);
-                    await _DBContext.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!articleExists(article.文章id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("ArticleDetails", new { subid = subid , artid = artid});
+                article.看板id = subid;
+                article.時間 = DateTime.Now.ToShortDateString().ToString();
+                article.學生id = GetUserId();
+                _DBContext.Update(article);
+                await _DBContext.SaveChangesAsync();
+                return RedirectToAction("Articles", new { subid = subid });
             }
             var sub = _DBContext.T討論子版s.Where(s => s.看板id == subid).ToList();
             ViewData["子版id"] = new SelectList(sub, "子版id", "名稱", article.子版id);
@@ -135,37 +119,21 @@ namespace text_loginWithBackgrount.Areas.class_discuss.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ArticleDelete(int subid, int artid, T討論文章 article)//軟刪除文章功能
+        public IActionResult ArticleDelete(int subid,int artid)//軟刪除文章功能
         {
-            if (artid != article.文章id)
+            var article = _DBContext.T討論文章s.Find(artid);
+            if (article == null)
             {
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    article.刪除 = "1";
-                    _DBContext.Update(article);
-                    await _DBContext.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!articleExists(article.文章id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                article.時間 = DateTime.Now.ToShortDateString().ToString();
+                article.刪除 = "1";
+                _DBContext.Update(article);
+                _DBContext.SaveChangesAsync();
                 return RedirectToAction("Articles", new { subid = subid });
             }
-            var sub = _DBContext.T討論子版s.Where(s => s.看板id == subid).ToList();
-            ViewData["子版id"] = new SelectList(sub, "子版id", "名稱", article.子版id);
             return View(article);
         }
 

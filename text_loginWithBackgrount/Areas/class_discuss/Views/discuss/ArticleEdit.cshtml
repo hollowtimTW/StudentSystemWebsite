@@ -5,7 +5,10 @@
 @User?.FindFirst("StudentId")?.Value 這能抓到使用者的PK *@
 
 @{
-    ViewData["Title"] = "新增文章";
+    ViewData["Title"] = "修改文章";
+    string subName = ViewBag.subName;
+    int subId = ViewBag.subId;
+    int artId = ViewBag.artId;
 }
 @section BreadcrumbsSection {
     <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
@@ -26,7 +29,7 @@
                 <ol>
                     <li><a asp-area="" asp-controller="Template" asp-action="Index">首頁</a></li>
                     <li><a asp-area="class_discuss" asp-controller="discuss" asp-action="Index">學生論壇</a></li>
-                    <li><a href="/class_discuss/discuss/Articles?subid=@ViewBag.subId">@ViewBag.subName</a></li>
+                    <li><a href="/class_discuss/discuss/Articles?subid=@subId">@subName</a></li>
                     <li>@ViewData["Title"]</li>
                 </ol>
             </div>
@@ -52,14 +55,14 @@
                     <div class="info-item d-flex">
                         <i class="bi bi-envelope flex-shrink-0"></i>
                         <div class="d-flex flex-column justify-content-center">
-                            <h4>輸入文章標題</h4>
+                            <h4>輸入文章標題</h4><h4 id="noneTitle" style="color: yellow; display: none;">請輸入文章標題</h4>
                         </div>
                     </div><!-- End Info Item -->
                     <!-- 項目3 -->
                     <div class="info-item d-flex">
                         <i class="bi bi-phone flex-shrink-0"></i>
                         <div class="d-flex flex-column justify-content-center">
-                            <h4>輸入文章內容</h4>
+                            <h4>輸入文章內容</h4><h4 id="noneContent" style="color: yellow; display: none;">請輸入文章內容</h4>
                         </div>
                     </div><!-- End Info Item -->
                 </div>
@@ -67,20 +70,29 @@
 
             <!-- 表單區 -->
             <div class="col-lg-8">
-                <form action="~/class_discuss/discuss/ArticleEdit?subid=@ViewBag.subId&artid=@ViewBag.artId" method="post" role="form" class="php-email-form">
-                    <div class="row"><!-- 子版標籤 -->
+                <form action="~/class_discuss/discuss/ArticleEdit?subid=@subId" method="post" role="form" class="php-email-form">
+                    <div class="row">
+                        <!-- 子版標籤 -->
+                        <input type="hidden" asp-for="學生id" />
+                        <input type="hidden" asp-for="文章id" />
+                        <input type="hidden" asp-for="看板id" />
+                        <input type="hidden" asp-for="時間" />
+                        <input type="hidden" asp-for="刪除" />
+                        <input type="hidden" asp-for="觀看數" />
                         <div class="col-md-6 form-group">
-                            <select asp-for="子版id" class="form-control" asp-items="ViewBag.子版id"></select>
+                            <select asp-for="子版id" id="typeList" class="form-control" asp-items="ViewBag.子版id"></select>
                         </div>
                     </div>
                     <br />
-                    <div class="form-group mt-3"><!-- 標題 -->
-                        <input asp-for="標題" type="text" class="form-control" placeholder="文章標題" required>
+                    <div class="form-group mt-3">
+                        <!-- 標題 -->
+                        <input asp-for="標題" type="text" name="標題" id="title" class="form-control" placeholder="文章標題" autocomplete="off">
                     </div>
                     <br />
                     <br />
-                    <textarea asp-for="內容" id="area" style="display: none;"></textarea>
-                    <div class="form-group mt-3" id="editor"><!-- 內容 -->
+                    <textarea asp-for="內容" name="內容" id="area" style="display: none;"></textarea>
+                    <div class="form-group mt-3" id="editor">
+                        <!-- 內容 -->
                         <p placeholder="文章標題"></p>
                     </div>
                     <br />
@@ -100,13 +112,12 @@
         </div>
     </div>
 </section><!-- End Contact Section -->
-
-@section Scripts{
+@section Scripts {
     <script>
         //產生編輯器
         let editorText;
         var text = document.getElementById('area');
-        
+
         ClassicEditor
             .create(document.querySelector('#editor'))
             .then(editor => {
@@ -119,11 +130,40 @@
             })
             .catch(error => {
                 console.error(error);
-                });
+            });
 
         $("#cancel").click(function (e) {
             e.preventDefault();
-            window.location.href = "/class_discuss/discuss/ArticleDetails?subid=@ViewBag.subId&artid=@ViewBag.artId";
+            window.location.href = "/class_discuss/discuss/ArticleDetails?subid=@subId&artid=@artId";
+        });
+
+        $("#done").click(function (e) {
+            var titleValue = $('input[name="標題"]').val().trim();
+            var contentValue = $('textarea[name="內容"]').val().trim();
+            if (titleValue === "") {
+                $('#noneTitle').show();
+            } else {
+                $('#noneTitle').hide();
+            }
+            if (contentValue === "") {
+                $('#noneContent').show();
+            } else {
+                $('#noneContent').hide();
+            }
+            if (titleValue !== "" && contentValue !== "") {
+                setTimeout(function () {
+                    $('#done').html('Loading.');
+                }, 300);
+                setTimeout(function () {
+                    $('#done').html('Loading..');
+                }, 600);
+                setTimeout(function () {
+                    $('#done').html('Loading...');
+                }, 900);
+                setTimeout(function () {
+                    window.location.href = "/class_discuss/discuss/ArticleDetails?subid=@subId&artid=@artId";
+                }, 1000);
+            }
         });
     </script>
 }
