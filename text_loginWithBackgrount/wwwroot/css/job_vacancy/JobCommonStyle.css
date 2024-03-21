@@ -649,7 +649,9 @@ input[type="checkbox"]:checked {
             }
 
         .Resume-Edit .dialog textarea {
-            height: 100px;
+            height: 200px;
+            resize: vertical; /* 允許垂直調整 */
+            max-height: 500px; /* 最大高度為500px */
         }
 
         .Resume-Edit .large_textarea {

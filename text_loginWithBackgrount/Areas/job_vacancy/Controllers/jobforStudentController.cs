@@ -699,16 +699,35 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                     return NotFound("無這筆工作經驗資料");
                 }
 
+                // 移除有此工作經驗的履歷表工作經驗
                 var resumeWorkExp = _context.T工作履歷表工作經驗s
                                     .Where(w => w.F工作經驗Id == workExpID)
                                     .ToList();
-
                 foreach (var exp in resumeWorkExp)
                 {
                     _context.T工作履歷表工作經驗s.Remove(exp);
                 }
 
                 _context.T工作工作經驗s.Remove(thisWorkExp);
+
+                await _context.SaveChangesAsync();
+
+
+                //如果移除此工作經驗，此學員的其他履歷表是否還有工作經驗紀錄，若沒有則將有無工作經驗設為N
+                //查詢標註"有"工作經驗的履歷
+                var resumes = _context.T工作履歷資料s.Where(r => r.F學員Id == thisWorkExp.F學員Id && r.F有無工作經驗 == "Y").ToList();
+                if (resumes != null && resumes.Any())
+                {
+                    foreach(var r in resumes)
+                    {
+                        //檢查該履歷是否有真的有工作經驗
+                        var hasWorkExp = _context.T工作履歷表工作經驗s.Where(w => w.F履歷Id == r.FId).ToList();
+                        if (hasWorkExp == null || !hasWorkExp.Any())
+                        {
+                            r.F有無工作經驗 = "N";
+                        }
+                    }
+                }
 
                 await _context.SaveChangesAsync();
 
