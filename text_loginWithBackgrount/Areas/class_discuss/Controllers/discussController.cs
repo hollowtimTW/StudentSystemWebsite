@@ -39,7 +39,7 @@ namespace text_loginWithBackgrount.Areas.class_discuss.Controllers
         {
             T討論看板? ID = _DBContext.T討論看板s.FirstOrDefault(a => a.看板id == subid);
             T討論文章? art = _DBContext.T討論文章s.FirstOrDefault(a => a.文章id == artid);
-            int mes = _DBContext.T討論留言s.Where(a => a.文章id == artid).Count();
+            int mes = _DBContext.T討論留言s.Where(a => a.文章id == artid && a.刪除 == "0").Count();
             ViewBag.subName = ID.名稱;
             ViewBag.subId = subid;
             ViewBag.typeId = art.子版id;
