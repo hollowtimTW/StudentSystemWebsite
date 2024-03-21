@@ -77,21 +77,18 @@ namespace text_loginWithBackgrount.Controllers
         {
             if (!ModelState.IsValid)
             {
-                //return BadRequest(new { errorMessage = "註冊失敗，請檢查您的輸入。" });
                 TempData["teacherIndexMessage"] = "alert('註冊失敗，請檢查您的輸入。')";
                 return View("TeacherIndex");
             }
 
             if (memberRegisterinfo.信箱 == null || memberRegisterinfo.信箱 == "")
             {
-                //return BadRequest(new { errorMessage = "請填入正確信箱。" });
                 TempData["teacherIndexMessage"] = "alert('請填入正確信箱。')";
                 return View("TeacherIndex");
             }
 
             if (TeacherCheckEmailAvailability(memberRegisterinfo.信箱))
             {
-                //return BadRequest(new { errorMessage = "信箱重複。" });
                 TempData["teacherIndexMessage"] = "alert('信箱重複。')";
                 return View("TeacherIndex");
             }
@@ -112,7 +109,7 @@ namespace text_loginWithBackgrount.Controllers
             IRegistrationEncryptor encryptor = EncryptorFactory.CreateEncryptor();
             (string _hashPassword, string _salt) = encryptor.EncryptPassword(memberRegisterinfo.密碼);
 
-            var memberEntity = new T會員學生
+            var memberEntity = new T會員老師
             {
                 姓名 = memberRegisterinfo.姓名,
                 性別 = memberRegisterinfo.性別,
@@ -132,7 +129,7 @@ namespace text_loginWithBackgrount.Controllers
                 修改日期 = DateTime.Now,
             };
 
-            _dbStudentSystemContext.T會員學生s.Add(memberEntity);
+            _dbStudentSystemContext.T會員老師s.Add(memberEntity);
             await _dbStudentSystemContext.SaveChangesAsync();
 
             //return Ok(new { successMessage = "註冊成功！" });

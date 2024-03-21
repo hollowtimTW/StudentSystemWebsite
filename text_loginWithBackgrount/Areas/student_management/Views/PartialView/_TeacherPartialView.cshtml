@@ -80,7 +80,7 @@
                                     <option value="肄業">肄業</option>
                                 </select>
                             </div>
-                            @if (@User?.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value == "admin")
+                            @if (User.IsInRole("admin"))
                             {
                                 <div class="form-group">
                                     <label for="UserLock" class="form-label">鎖定：</label>
@@ -91,7 +91,7 @@
                                 </div>
                             }else
                             {
-                                <div class="form-group" >
+                                <div class="form-group" style="display: none;">
                                     <label for="UserLock" class="form-label">鎖定：</label>
                                     <select class="form-control" id="UserLock" style="width: 50px;" asp-for="鎖定">
                                         <option value="0">否</option>
