@@ -194,6 +194,11 @@ namespace text_loginWithBackgrount.Controllers
                     new Claim(ClaimTypes.Role,"teacher"),
                 };
 
+            if (user.圖片!=null) {
+                claims.Add(new Claim("ProfileImage", user.圖片.ToString()));
+            }
+            
+
             //簡單的把3當成管理員
             if (user.狀態 == "3")
             {
