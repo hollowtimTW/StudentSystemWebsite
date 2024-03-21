@@ -31,7 +31,7 @@
 
         e.preventDefault();
 
-        $("[data-id='班級名稱']").val("msitDemoTest01");
+        $("[data-id='班級名稱']").val("msit001Demo");
         $("[data-id='班級導師id']").val("1");
         $("[data-id='入學日期']").val("2024-04-20T00:00");
         $("[data-id='結訓日期']").val("2024-09-20T00:00");       
