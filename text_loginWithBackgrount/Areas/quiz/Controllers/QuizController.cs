@@ -142,7 +142,55 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
         [HttpGet("{quizCode}")]
         public IActionResult Result(string quizCode)
         {
-            return View();
+            string studentId = User.Claims.FirstOrDefault(c => c.Type == "StudentId")?.Value;
+
+            var quiz = _context.TQuizQuizzes
+                .Where(p => p.FQcode == quizCode)
+                .FirstOrDefault();
+
+            if (quiz == null)
+            {
+                return BadRequest("無測驗");
+            }
+
+
+            var questionOrder = _questionOrderCollection.Find(q => q.QuizID == quiz.FQuizId).FirstOrDefault();
+
+            if (questionOrder == null || questionOrder.QuestionOrderList == null)
+            {
+                return BadRequest("無考題");
+            }
+
+            // 考題
+            List<Question> questions = _questionCollection.Find(q => questionOrder.QuestionOrderList.Contains(q.Id)).ToList();
+
+
+
+            var record = _context.TQuizRecords
+                .Where(p => p.FQuizId == quiz.FQuizId && p.FStudentId.ToString() == studentId)
+                .FirstOrDefault();
+
+
+
+            if (record == null)
+            {
+                return BadRequest("無紀錄");
+            }
+
+            var studentAnswer = _studentAnswerCollection
+                .Find(sa => sa.RecordId == record.FRecordId)
+                .FirstOrDefault();
+
+
+            StdQuiz data = new StdQuiz
+            {
+                Quiz = quiz,
+                Record = record,
+                Questions = questions,
+                StudentAnswer = studentAnswer
+            };
+
+            return View(data);
         }
     }
 }

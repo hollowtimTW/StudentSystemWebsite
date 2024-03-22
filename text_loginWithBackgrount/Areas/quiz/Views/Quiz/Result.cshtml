@@ -1,9 +1,59 @@
-﻿@{
+﻿@using Newtonsoft.Json
+@{
     var studentId = User.Claims.FirstOrDefault(c => c.Type == "StudentId")?.Value;
     ViewData["Title"] = "測驗結果";
+
+    var Quiz = Model.Quiz;
+    var Record = Model.Record;
+    var Questions = Model.Questions;
+    var StudentAnswer = Model.StudentAnswer;
+
+    var Answers = Model.StudentAnswer.Answers;
+    var answersJson = JsonConvert.SerializeObject(Answers);
+
 }
 
+@section Styles{
+    <style>
 
+        .option-div {
+            padding: 0.5rem 1rem; 
+            margin-bottom: 0.25rem; 
+            border-radius: 0.25rem; 
+        }
+
+        .selected {
+            background-color: #ADADAD;
+            color: #212529 ;
+        }
+
+        .correct {
+            background-color: #007bff;
+            color: white; 
+        }
+
+        .selected.correct {
+            background-color: #28a745;
+            color: white;
+        }
+
+
+        .wrong-answer .accordion-button {
+            background-color: #dc3545; 
+            color: white;
+        }
+
+
+
+        #scoreChart {
+            max-height: 300px;
+            max-width: 300px;
+        }
+
+
+    </style>
+
+}
 
 @section BreadcrumbsSection {
     <div class="breadcrumbs">
@@ -28,4 +78,118 @@
         </nav>
     </div>
 }
+<div class="container mb-5 ">
 
+    <div class="row mb-3">
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">測驗名稱：@Quiz.FQname</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 d-flex justify-content-center">
+            <canvas id="scoreChart"></canvas>
+        </div>
+    </div>
+
+
+
+    <div class="accordion" id="questionAccordion">
+
+        @for (int i = 0; i < Model.Questions.Count; i++)
+        {
+            var question = Model.Questions[i];
+            <div class="accordion-item @(question.Answer.Contains(i) ? "correct-answer" : "")">
+                <h2 class="accordion-header" id="heading@(i)">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse@(i)" aria-expanded="true" aria-controls="collapse@(i)">
+                        @($"問題 {i + 1}：{question.QuestionText}")
+                    </button>
+                </h2>
+                <div id="collapse@(i)" class="accordion-collapse collapse" aria-labelledby="heading@(i)" data-bs-parent="#questionAccordion">
+                    <div class="accordion-body">
+                        @for (int j = 0; j < question.Options.Count; j++)
+                        {
+                            var option = question.Options[j];
+                            <div class="option-div @(StudentAnswer.Answers[i].Contains(j) ? "selected" : "")  @(question.Answer.Contains(j) ? "correct" : "")">(@(j + 1)) @option</div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+ 
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            $('.accordion-item').each(function () {
+                var $question = $(this);
+                var hasSelectedButIncorrect = false;
+                var notAllCorrectSelected = false;
+
+                var correctOptionsCount = $question.find('.option-div.correct').length;
+                var selectedCorrectOptionsCount = $question.find('.option-div.correct.selected').length;
+
+                $question.find('.option-div').each(function () {
+                    var $option = $(this);
+
+                    if ($option.hasClass('selected') && !$option.hasClass('correct')) {
+                        hasSelectedButIncorrect = true;
+                    }
+                });
+
+                if (selectedCorrectOptionsCount < correctOptionsCount) {
+                    notAllCorrectSelected = true;
+                }
+                if (hasSelectedButIncorrect || notAllCorrectSelected) {
+                    $question.addClass('wrong-answer');
+                }
+            });
+
+
+
+
+
+
+
+            var ctx = $('#scoreChart').get(0).getContext('2d');
+
+            var rate = @Record.FRate*100;
+
+            var scoreChart = new Chart(ctx, {
+                type: 'doughnut', 
+                data: {
+                    labels: ['正確', '錯誤'],
+                    datasets: [{
+                        label: '答題率',
+                        data: [rate, 100 - rate],
+                        backgroundColor: [
+                            '#007bff',
+                            '#dc3545'
+                        ],
+                        borderColor: [
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 99, 132, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+
+                }
+            });
+
+
+
+
+
+
+        });
+    </script>
+}

@@ -1,0 +1,77 @@
+﻿
+@{
+    ViewData["Title"] = "測驗紀錄";
+}
+
+
+@section BreadcrumbsSection {
+    <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
+    <div class="breadcrumbs">
+        <div class="page-header d-flex align-items-center" style="background-image: url('');">
+            <div class="container position-relative">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-lg-6 text-center">
+                        <h2>@ViewData["Title"]</h2>
+                        <p>
+                            提供多元化考試科目，彈性安排考試時間，為學生輕鬆迎接學業挑戰！
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav>
+            <div class="container">
+                <ol>
+                    <li><a asp-area="" asp-controller="Template" asp-action="Index">首頁</a></li>
+                    <li>@ViewData["Title"]</li>
+                </ol>
+            </div>
+        </nav>
+    </div>
+}
+<!-- ========================================================
+       Blog Details Section
+========================================================= -->
+<section id="blog" class="blog">
+    <div class="container" data-aos="fade-up">
+        <div class="row g-5">
+            <!-- 左方側邊欄：佔據寬度 4/12 -->
+            <!-- 左方側邊欄：標籤分類 -->
+            <div class="col-lg-4">
+                <div class="sidebar">
+                    <!-- 搜尋框 -->
+                    <div class="sidebar-item search-form">
+                        <h3 class="sidebar-title">Search</h3>
+                        <form action="" class="mt-3">
+                            <input type="text">
+                            <button type="submit"><i class="bi bi-search"></i></button>
+                        </form>
+                    </div><!-- End sidebar search formn-->
+                    <!-- 文字列表 -->
+                    <div class="sidebar-item categories">
+                        <h3 class="sidebar-title m-1">學員服務</h3>
+                        <div class="list-group">
+                            <a asp-area="" asp-controller="Student" asp-action="Index" class="list-group-item list-group-item-action m-2 border border-3 text-center">個人資料 </a>
+                            <a asp-area="class_discuss" asp-controller="discussforStudent" asp-action="Index" class="list-group-item list-group-item-action m-2 border border-3 text-center">學習討論區</a>
+                            <a asp-area="course_management" asp-controller="courseforStudent" asp-action="Index" class="list-group-item list-group-item-action m-2 border border-3 text-center">我的課程</a>
+                            <a asp-area="video_management" asp-controller="videoforStudent" asp-action="Index" class="list-group-item list-group-item-action m-2 border border-3 text-center">影片教材</a>
+                            <a asp-area="ordering_system" asp-controller="orderforStudent" asp-action="Index" class="list-group-item list-group-item-action m-2 border border-3 text-center">餐點訂單管理</a>
+                            <a asp-area="job_vacancy" asp-controller="jobforStudent" asp-action="Index" class="list-group-item list-group-item-action m-2 border border-3 text-center">我的履歷</a>
+                            <a asp-area="quiz" asp-controller="Go" asp-action="Record" class="list-group-item list-group-item-action m-2 border border-3 text-center active">測驗紀錄</a>
+                            <a asp-area="" asp-controller="Login" asp-action="logout" class="list-group-item list-group-item-action m-2 border border-3 text-center text-danger">登出</a>
+                        </div>
+                    </div><!-- End sidebar categories-->
+                </div><!-- End Blog Sidebar -->
+            
+            
+            </div>
+            <!-- 主要區域：佔據寬度 8/12 -->
+            <div class="col-lg-8">
+                <!-- 內容 -->
+             
+
+
+            </div>
+        </div>
+    </div>
+</section><!-- End Blog Details Section -->

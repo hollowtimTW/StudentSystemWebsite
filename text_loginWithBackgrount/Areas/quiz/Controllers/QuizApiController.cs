@@ -131,7 +131,7 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
                 studentAnswer = new StudentAnswer
                 {
                     RecordId = record.FRecordId,
-                    Answers = new List<int[]>()
+                    Answers = new List<List<int>>()
                 };
                 _studentAnswerCollection.InsertOne(studentAnswer);
             }
