@@ -69,35 +69,40 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
         }
 
 
-
-
-
-        // 取得測驗考題
-        [HttpGet("{quizId}")]
-        public IActionResult GetQuestions(int quizId)
+        // 查看有無未完成測驗
+        [HttpGet("{studentId}")]
+        public IActionResult UnFinishRecord(int studentId)
         {
 
-            var questionOrder = _questionOrderCollection.Find(q => q.QuizID == quizId).FirstOrDefault();
+            var record = _context.TQuizRecords
+                .Where(p => p.FStudentId == studentId && p.FState == 0)
+                .Select(p =>new
+                {
+                    code = p.FQuiz.FQcode,
+                    recordId = p.FRecordId
+                })
+                .FirstOrDefault();
 
-            if (questionOrder == null)
-            {
-                return BadRequest("無資料");
-            }
-
-            List<string> questionOrderList = questionOrder.QuestionOrderList;
-            List<Question> questions = _questionCollection.Find(q => questionOrderList.Contains(q.Id)).ToList();
+            return Json(record);
+        }
 
 
-            return Json(questions);
+        // 查看測驗狀態
+        [HttpGet("{recordId}")]
+        public IActionResult CheckState(int recordId)
+        {
+            var record = _context.TQuizRecords
+                .Where(p => p.FRecordId == recordId)
+                .Select(p => p.FState)
+                .FirstOrDefault();
+
+            return Json(record);
         }
 
 
 
-
-
-
-
         // 設定紀錄
+        [HttpPost]
         public IActionResult CheckRecord([FromBody] TQuizRecord r)
         {
             var record = _context.TQuizRecords
@@ -117,8 +122,195 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
                 _context.SaveChanges();
             }
 
+            var studentAnswer = _studentAnswerCollection
+                .Find(sa => sa.RecordId == record.FRecordId)
+                .FirstOrDefault();
+
+            if(studentAnswer == null)
+            {
+                studentAnswer = new StudentAnswer
+                {
+                    RecordId = record.FRecordId,
+                    Answers = new List<int[]>()
+                };
+                _studentAnswerCollection.InsertOne(studentAnswer);
+            }
+
             return Json(record);
         }
+
+
+
+
+
+        // 計分
+        [HttpPost]
+        public IActionResult SetScore([FromBody] StudentAnswer r)
+        {
+            var record = _context.TQuizRecords.FirstOrDefault(p => p.FRecordId == r.RecordId);
+
+            if (record == null)
+            {
+                return NotFound("Record not found.");
+            }
+
+            var quiz = _context.TQuizQuizzes.FirstOrDefault(p => p.FQuizId == record.FQuizId);
+
+            if (quiz == null)
+            {
+                return NotFound("Quiz not found.");
+            }
+
+            var questionOrder = _questionOrderCollection.Find(q => q.QuizID == quiz.FQuizId).FirstOrDefault();
+
+            if (questionOrder == null)
+            {
+                return NotFound("Question order not found for the given QuizID.");
+            }
+
+            var questions = _questionCollection.Find(q => questionOrder.QuestionOrderList.Contains(q.Id)).ToList();
+
+            if (questions.Count == 0)
+            {
+                return NotFound("No questions found for the given QuizID.");
+            }
+
+            int totalQuestions = questions.Count;
+            int correctAnswers = 0;
+
+            for (int i = 0; i < totalQuestions; i++)
+            {
+                var correctAnswer = questions[i].Answer;
+
+                if (r.Answers.Count > i && Enumerable.SequenceEqual(r.Answers[i], correctAnswer))
+                {
+                    correctAnswers++;
+                }
+            }
+
+			var studentAnswer = _studentAnswerCollection
+				.Find(sa => sa.RecordId == record.FRecordId)
+				.FirstOrDefault();
+
+            studentAnswer.Answers = r.Answers;
+			_studentAnswerCollection.ReplaceOne(sa => sa.Id == studentAnswer.Id, studentAnswer);
+
+			decimal accuracy = (decimal)correctAnswers / totalQuestions;
+
+            accuracy = Math.Round(accuracy, 2);
+
+            record.FState = 1;
+            record.FRate = accuracy;
+
+            _context.TQuizRecords.Update(record);
+            _context.SaveChanges();
+
+           return Ok(accuracy);
+   
+        }
+
+
+
+        // 放棄作答
+        [HttpGet("{recordId}")]
+        public IActionResult GiveUpScore(int recordId)
+        {
+            var studentAnswer = _studentAnswerCollection
+                .Find(sa => sa.RecordId == recordId)
+                .FirstOrDefault();
+
+            if (studentAnswer == null)
+            {
+                return BadRequest("無答題記錄");
+            }
+
+            var record = _context.TQuizRecords
+                .Where(p => p.FRecordId == recordId)
+                .FirstOrDefault();
+
+            if (studentAnswer == null)
+            {
+                return BadRequest("無記錄");
+            }
+
+
+            var questionOrder = _questionOrderCollection
+                .Find(q => q.QuizID == record.FQuizId)
+                .FirstOrDefault();
+
+            if (questionOrder == null)
+            {
+                return NotFound("Question order not found for the given QuizID.");
+            }
+
+            var questions = _questionCollection
+                .Find(q => questionOrder.QuestionOrderList.Contains(q.Id))
+                .ToList();
+
+            if (questions.Count == 0)
+            {
+                return NotFound("No questions found for the given QuizID.");
+            }
+
+
+            var totalQuestions = questions.Count;
+            var correctAnswers = 0;
+
+            for (int i = 0; i < totalQuestions; i++)
+            {
+                var correctAnswer = questions[i].Answer;
+
+                if (studentAnswer.Answers.Count > i && Enumerable.SequenceEqual(studentAnswer.Answers[i], correctAnswer))
+                {
+                    correctAnswers++;
+                }
+            }
+
+            // 计算准确率
+            decimal accuracy = (decimal)correctAnswers / totalQuestions;
+            accuracy = Math.Round(accuracy, 2);
+
+            record.FState = 1;
+            record.FRate = accuracy;
+
+            _context.TQuizRecords.Update(record);
+            _context.SaveChanges();
+
+
+            return Ok(accuracy);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // 儲存答題記錄
+        [HttpPost]
+        public IActionResult SaveAnswers([FromBody] StudentAnswer r)
+        {
+            var studentAnswer = _studentAnswerCollection
+                .Find(sa => sa.RecordId == r.RecordId)
+                .FirstOrDefault();
+
+
+            studentAnswer.Answers = r.Answers;
+            _studentAnswerCollection.ReplaceOne(sa => sa.Id == studentAnswer.Id, studentAnswer);
+
+            return Ok("儲存成功");
+
+        }
+
+
+
+
 
 
 

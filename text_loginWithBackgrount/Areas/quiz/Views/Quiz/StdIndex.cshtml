@@ -8,6 +8,25 @@
 
 @section Styles {
     <link href="~/quiz/css/stdindex.css" rel="stylesheet" />
+
+    <style>
+
+        .alert-bar{
+            background-color: #FF2D2D;
+            font-size:1.5rem;
+            color:white;
+            text-align:center;
+            align-content:center;
+            height:3rem;
+            display: none;
+        }
+
+        #alert-text{
+            font-size: 0.8rem;
+            color: red;
+            display: none;
+        }
+    </style>
 }
 
 
@@ -35,6 +54,12 @@
         </nav>
     </div>
 }
+
+<div class="alert-bar">
+    尚有考試未完成，須提交才能進行其它測驗。
+    <button class="btn btn-primary" id="continueBtn" data-quizid="">繼續作答</button>
+    <button class="btn btn-secondary" id="submitBtn" data-recordid="">提交測驗</button>
+</div>
 
 <section id="portfolio" class="portfolio mt-1">
 
@@ -72,27 +97,27 @@
                             attr += " filter-finish";
                         }
 
-                                <div class="col-xl-4 col-md-6 portfolio-item @attr" data-order="@i">
-                                    <div class="portfolio-wrap">
-                                        <div class="portfolio-info d-flex row m-2 p-2 align-items-center">
-                                            <div class="col-12 quiz-name">
-                                                @quiz.Name
-                                                @if (quiz.HasRecord == 1)
+                                            <div class="col-xl-4 col-md-6 portfolio-item @attr" data-order="@i">
+                                                <div class="portfolio-wrap">
+                                                    <div class="portfolio-info d-flex row m-2 p-2 align-items-center">
+                                                        <div class="col-12 quiz-name">
+                                                            @quiz.Name
+                                                            @if (quiz.HasRecord == 1)
                                             {
-                                                    <span class="custom-span ms-2">已完成</span>
+                                                                <span class="custom-span ms-2">已完成</span>
                                             }
-                                            </div>
-                                            <div class="col-9">
-                                                <p class="p-0 m-0">測驗人數: <span>@quiz.Count</span>人</p>
-                                            </div>
+                                                        </div>
+                                                        <div class="col-9">
+                                                            <p class="p-0 m-0">測驗人數: <span>@quiz.Count</span>人</p>
+                                                        </div>
 
-                                            <div class="col-3">
-                                                <a class="btn btn-secondary show-info">查看</a>
-                                            </div>
-                                        </div>
+                                                        <div class="col-3">
+                                                            <a class="btn btn-secondary show-info">查看</a>
+                                                        </div>
+                                                    </div>
 
-                                    </div>
-                                </div>
+                                                </div>
+                                            </div>
                     }
                  }
 
@@ -167,30 +192,8 @@
             </div>
 
             <div class="modal-footer">
+                <span id="alert-text">須先提交尚未完成測驗</span>
                 <button type="button" class="btn btn-primary" id="joinQuizBtn">加入測驗</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-<!-- 紀錄Modal -->
-<div class="modal fade" id="recordModal" tabindex="-1">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="recordModalLabel">加入測驗</h5>
-            </div>
-            <div class="modal-body">
-        
-
-
-            </div>
-            <div class="modal-footer">
-       
-
-
             </div>
         </div>
     </div>
@@ -249,11 +252,19 @@
                 $('#quiz-quizid').text(quizInfo.id || '');
                 $('#quiz-creater').text(quizInfo.teacherId || '');
                 $('#quiz-limitTime').text(`${quizInfo.limitTime} 分` || '');
-                $('#quiz-createTime').text(quizInfo.createTime || '');
+                $('#quiz-createTime').text(new Date(quizInfo.createTime).toLocaleDateString('zh-CN') || '');
                 $('#quiz-count').text(`${quizInfo.count} 人` || '');
                 $('#quiz-note').text(quizInfo.note || '');
 
                 $('#joinQuizBtn').text(quizInfo.hasRecord === 1 ? "查看紀錄" : "加入測驗");
+
+                if ($('.alert-bar').is(':visible')) {
+                    quizInfo.hasRecord === 1 ?
+                        ($('#alert-text').hide(), $(this).prop("disabled", false)) :
+                        ($('#alert-text').show(), $(this).prop("disabled", true));
+                }
+                
+
                 $('#joinQuizBtn').prop('disabled', quizInfo.isClosed === 0 && quizInfo.hasRecord === 0);
 
             }
@@ -283,9 +294,11 @@
                     success: function (response) {
 
                         if (response.fState) {
-                            $('#previewModal').modal('hide');
-                            $('#recordModal').modal('show');
+                            window.location.href = `/quiz/Quiz/Result/${quizCode}`
                         }else{
+                            if ($('.alert-bar').is(':visible')) {
+                                return;
+                            }
                             window.location.href = `/quiz/Quiz/Quiz/${quizCode}`
                         }
 
@@ -299,7 +312,51 @@
 
 
 
+            // 查看有無未完成測驗
+            $.ajax({
+                url: '/Api/Quiz/UnFinishRecord/@studentId',
+                type: 'GET',
+                cache: false,
+                success: function (response) {
+                    if (response.code !== null) {
+                        $('.alert-bar').show();
+                        $('#continueBtn').attr("data-quizid", response.code);
+                        $('#submitBtn').attr("data-recordid", response.recordId);
+                    }
+                    console.log(response)
+                    console.log(response)
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
 
+            // 繼續測驗
+            $('#continueBtn').on('click', function () {
+                var quizCode = $(this).data('quizid')
+                window.location.href = `/quiz/Quiz/Quiz/${quizCode}`
+            });
+  
+            // 放棄測驗
+            $('#submitBtn').on('click', function () {
+                var recordId = $(this).data('recordid')
+
+                $.ajax({
+                    url: `/Api/Quiz/GiveUpScore/${recordId}`,
+                    type: 'GET',
+                    cache: false,
+                    success: function (response) {
+                        console.log(response)
+                        location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+
+
+            });
+            
 
 
 

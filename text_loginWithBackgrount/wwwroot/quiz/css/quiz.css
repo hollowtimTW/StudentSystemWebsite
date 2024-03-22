@@ -124,12 +124,12 @@
 
 
 
-.sumbit-btn {
+.submit-btn {
     border-radius: 15px;
     width: 50%;
 }
 
-    .sumbit-btn:hover {
+    .submit-btn:hover {
         background-color: orange;
     }
 
@@ -186,3 +186,7 @@ q-question-context-option .div{
 }
 
 
+#submit-context {
+    color:red;
+    font-weight:bold
+}

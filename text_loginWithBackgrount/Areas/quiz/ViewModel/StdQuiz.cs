@@ -7,8 +7,8 @@ namespace text_loginWithBackgrount.Areas.quiz.ViewModel
     {
         public TQuizQuiz Quiz { get; set; }
         public TQuizRecord Record { get; set; }
-
         public List<Question> Questions { get; set; }
+        public StudentAnswer StudentAnswer { get; set; }
 
     }
 }

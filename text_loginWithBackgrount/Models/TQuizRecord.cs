@@ -17,9 +17,9 @@ public partial class TQuizRecord
 
     public int? FState { get; set; }
 
-    public DateTime? FStartTime { get; set; }
+    public string FStartTime { get; set; }
 
-    public DateTime? FEndTime { get; set; }
+    public string FEndTime { get; set; }
 
     public decimal? FRate { get; set; }
 

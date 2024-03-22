@@ -1,31 +1,46 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Class_system_Backstage_pj.Models;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 using System;
 using System.Security.Claims;
-using text_loginWithBackgrount.Areas.quiz.Services;
+using text_loginWithBackgrount.Areas.quiz.Models;
+
 
 namespace text_loginWithBackgrount.Areas.quiz.Hubs
 {
     public class QuizHub : Hub
     {
-        private readonly QuizService _quizService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly studentContext _context;
 
-        public QuizHub(QuizService quizService, IHttpContextAccessor httpContextAccessor)
+        private readonly IMongoCollection<QuestionOrder> _questionOrderCollection;
+        private readonly IMongoCollection<Question> _questionCollection;
+        private readonly IMongoCollection<StudentAnswer> _studentAnswerCollection;
+
+
+        public QuizHub(IHttpContextAccessor httpContextAccessor, studentContext context, IOptions<MongoDbSettings> mongoDbSettings)
         {
-            _quizService = quizService;
             _httpContextAccessor = httpContextAccessor;
-        }
+            _context = context;
 
+            var mongoClient = new MongoClient(mongoDbSettings.Value.ConnectionString);
+            var mongoDatabase = mongoClient.GetDatabase(mongoDbSettings.Value.DatabaseName);
+
+            _questionOrderCollection = mongoDatabase.GetCollection<QuestionOrder>(
+                mongoDbSettings.Value.QuestionOrderCollection);
+
+            _questionCollection = mongoDatabase.GetCollection<Question>(
+                mongoDbSettings.Value.QuestionCollection);
+
+            _studentAnswerCollection = mongoDatabase.GetCollection<StudentAnswer>(
+                mongoDbSettings.Value.StudentAnswerCollection);
+        }
 
 
         public override async Task OnConnectedAsync()
         {
 
-            await Groups.AddToGroupAsync(Context.ConnectionId, "aaaa");
-            //_ = Task.Run(() => _quizService.StartQuiz(Context.ConnectionId));
-
-            await Console.Out.WriteLineAsync(Context.ConnectionId + " => START");
-            
             await base.OnConnectedAsync();
         }
 
@@ -33,7 +48,7 @@ namespace text_loginWithBackgrount.Areas.quiz.Hubs
         public override async Task OnDisconnectedAsync(Exception? ex)
         {
 
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, "aaaa");
+            await Clients.Client(Context.ConnectionId).SendAsync("SaveAnswers");
             await base.OnDisconnectedAsync(ex);
         }
 

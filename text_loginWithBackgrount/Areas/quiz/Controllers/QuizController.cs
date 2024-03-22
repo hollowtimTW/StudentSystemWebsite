@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using text_loginWithBackgrount.Areas.quiz.Models;
 using text_loginWithBackgrount.Areas.quiz.ViewModel;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace text_loginWithBackgrount.Areas.quiz.Controllers
 {
@@ -37,7 +39,6 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
             _studentAnswerCollection = mongoDatabase.GetCollection<StudentAnswer>(
                 mongoDbSettings.Value.StudentAnswerCollection);
         }
-
 
         public IActionResult StdIndex()
         {
@@ -81,32 +82,10 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
                 return BadRequest("無測驗");
             }
 
-            var record = _context.TQuizRecords
-                .Where(p=>p.FQuizId==quiz.FQuizId && p.FStudentId.ToString()==studentId)
-                .FirstOrDefault();
-
-            if (record == null)
-            {
-                return BadRequest("無紀錄");
-            }
-
-            // 開始計時
-            if (record.FStartTime == null)
-            {
-                Console.WriteLine(DateTime.Now);
-                record.FStartTime = DateTime.Now;
-                record.FEndTime = DateTime.Now.AddMinutes(quiz.FLimitTime ?? 0);
-
-            }
-            _context.TQuizRecords.Update(record);
-            _context.SaveChanges();
-
-
-
 
             var questionOrder = _questionOrderCollection.Find(q => q.QuizID == quiz.FQuizId).FirstOrDefault();
 
-            if (questionOrder == null)
+            if (questionOrder == null || questionOrder.QuestionOrderList == null)
             {
                 return BadRequest("無考題");
             }
@@ -116,17 +95,54 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
 
 
 
+            var record = _context.TQuizRecords
+                .Where(p=>p.FQuizId==quiz.FQuizId && p.FStudentId.ToString()==studentId)
+                .FirstOrDefault();
+
+            if (record == null)
+            {
+                return BadRequest("無紀錄");
+            }
+
+            if(record.FState == 1)
+            {
+                return RedirectToAction("StdIndex");
+            }
+
+
+            var studentAnswer = _studentAnswerCollection
+                .Find(sa => sa.RecordId == record.FRecordId)
+                .FirstOrDefault();
+
+            if (record.FStartTime == null || record.FEndTime == null)
+            {
+                DateTime currentTime = DateTime.Now;
+                DateTime endTime = currentTime.AddMinutes(quiz.FLimitTime??0);
+                string currentTimeFormatted = currentTime.ToString("yyyy/MM/dd HH:mm:ss");
+                string endTimeFormatted = endTime.ToString("yyyy/MM/dd HH:mm:ss");
+                record.FStartTime = currentTimeFormatted;
+                record.FEndTime = endTimeFormatted;
+                _context.TQuizRecords.Update(record);
+                _context.SaveChanges();
+            }
+
 
             StdQuiz data = new StdQuiz
             {
                 Quiz = quiz,
                 Record = record,
-                Questions = questions
+                Questions = questions,
+                StudentAnswer = studentAnswer
             };
 
-
-
             return View(data);
+        }
+
+
+        [HttpGet("{quizCode}")]
+        public IActionResult Result(string quizCode)
+        {
+            return View();
         }
     }
 }

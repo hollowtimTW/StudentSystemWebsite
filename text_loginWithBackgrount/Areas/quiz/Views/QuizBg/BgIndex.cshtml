@@ -145,6 +145,13 @@
 
 
 
+<!--Toast-->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="toast" class="toast hide">
+        @* 內容 *@
+    </div>
+</div>
+
 
 
 
@@ -154,6 +161,25 @@
     <script>
 
         $(document).ready(function () {
+
+
+            const $toast = $('#toast');
+            // Toast
+            function showToast(response, status) {
+                var colorclass = "bg-primary"
+                if (!status) {
+                    colorclass = "bg-danger"
+                };
+                $toast.html(`
+                                    <div class="toast-body ${colorclass} text-white">
+                                        <strong>${response}</strong>
+                                    </div>
+                                `);
+                var toast = new bootstrap.Toast($toast);
+                toast.show();
+                setTimeout(() => toast.hide(), 2000);
+            }
+
 
             const form = $('#addForm');
 
@@ -279,10 +305,20 @@
                     contentType: false,
                     success: function (response) {
 
-                        updateDataTable()
+                        console.log(response);
+                        showToast(response, true);
+                        updateDataTable();
+  
                     },
                     error: function (xhr, status, error) {
-                        console.error(xhr.responseText);
+                        console.log(xhr.status)
+                        if (xhr.status === 400) {
+                            console.log(xhr.responseText);
+                            showToast(xhr.responseText, false);
+                        }else{
+                            console.log(xhr.responseText);
+                        }
+                       
                     }
                 });
             });
@@ -318,8 +354,22 @@
             }
 
 
+            
+
+
+
+
+
+
+
+
+
+
+
+
 
             updateDataTable();
+
 
         });
 
