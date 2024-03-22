@@ -823,8 +823,12 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                 // 兩者皆有資料
                 if (!string.IsNullOrEmpty(resumeData?.hopeJobTitle) && !string.IsNullOrEmpty(job.jobTitle))
                 {
+                    //計算 Levenshtein 距離
                     int distance = CalculateLevenshteinDistance(resumeData.hopeJobTitle, job.jobTitle);
-                    double similarity = 1 - (double)distance / Math.Max(resumeData.hopeJobTitle.Length, job.jobTitle.Length);
+                    //取最大字串長度
+                    double maxLength = Math.Max(resumeData.hopeJobTitle.Length, job.jobTitle.Length);
+                    //將Levenshtein距離除以兩個字串的最大長度，然後將結果減去1（最終 0 表示完全不相似，1 表示完全相似）
+                    double similarity = 1 - (double)distance / maxLength;
 
                     //如果相似度小於0.3，則跳過此筆職缺比對
                     if( similarity < 0.3)
@@ -833,7 +837,7 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                     }
 
                     jobTitleScore = Convert.ToInt32(similarity * 100); // 將相似度轉換為百分比作為分數
-                    Console.WriteLine($"職務名稱 - 履歷職稱: {resumeData.hopeJobTitle}, 職缺職稱: {job.jobTitle}, Levenshtein 比對度: {similarity}");
+                    //Console.WriteLine($"職務名稱 - 履歷職稱: {resumeData.hopeJobTitle}, 職缺職稱: {job.jobTitle}, Levenshtein 比對度: {similarity}");
                 }
 
                 // (2) 比對專業技能 -- 關鍵字相同
@@ -857,12 +861,12 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                     if (jobSkillKeywords.Intersect(resumeSkillKeywords).Any())
                     {
                         skillScore = 100; // 如果技能有交集，設定滿分
-                        Console.WriteLine($"專業技能比對成功 - 履歷技能: {string.Join(", ", resumeSkillKeywords)}, 職缺技能: {string.Join(", ", jobSkillKeywords)}");
+                        //Console.WriteLine($"專業技能比對成功 - 履歷技能: {string.Join(", ", resumeSkillKeywords)}, 職缺技能: {string.Join(", ", jobSkillKeywords)}");
                     }
                     else
                     {
                         skillScore = 0; // 如果沒有交集，分數為零
-                        Console.WriteLine($"專業技能 - 履歷技能: {string.Join(", ", resumeSkillKeywords)}, 職缺技能: {string.Join(", ", jobSkillKeywords)}");
+                        //Console.WriteLine($"專業技能 - 履歷技能: {string.Join(", ", resumeSkillKeywords)}, 職缺技能: {string.Join(", ", jobSkillKeywords)}");
                     }
                 }
 
@@ -872,18 +876,18 @@ namespace text_loginWithBackgrount.Areas.job_vacancy.Controllers
                     if (resumeData.hopeWorkLocation.Contains(job.workLocation))
                     {
                         locationScore = 100; // 如果工作地點相符，設定滿分
-                        Console.WriteLine($"工作地點比對成功 - 履歷地點: {resumeData.hopeWorkLocation}, 職缺地點: {job.workLocation}");
+                        //Console.WriteLine($"工作地點比對成功 - 履歷地點: {resumeData.hopeWorkLocation}, 職缺地點: {job.workLocation}");
                     }
                     else
                     {
                         locationScore = 0; // 如果工作地點不符，分數為零
-                        Console.WriteLine($"工作地點 - 履歷地點: {resumeData.hopeWorkLocation}, 職缺地點: {job.workLocation}");
+                        //Console.WriteLine($"工作地點 - 履歷地點: {resumeData.hopeWorkLocation}, 職缺地點: {job.workLocation}");
                     }
                 }
 
                 // 計算總分
                 int totalScore = jobTitleScore + skillScore + locationScore;
-                Console.WriteLine($"總分: {totalScore}");
+                //Console.WriteLine($"總分: {totalScore}");
 
                 // 將工作ID及其對應的總分加入匹配工作列表
                 matchingJobs.Add((job.jobID, totalScore));

@@ -249,6 +249,9 @@
                 createContext.html(result);
                 $('#createModal').modal('show');
 
+                //宣告紀錄履歷工作經驗勾選情形的列表
+                let selectedWorkExpIDs = [];
+
                 //設定自傳編輯區字數顯示
                 const textarea = document.querySelector('.word_count_textarea');
                 const wordCount = document.getElementById('word-count');
@@ -409,6 +412,8 @@
                 editContext.html(result);
                 $('#editModal').modal('show');
 
+                //宣告紀錄履歷工作經驗勾選情形的列表
+                let selectedWorkExpIDs = [];
                 //設定自傳編輯區字數顯示
                 const textarea = document.querySelector('.word_count_textarea');
                 const wordCount = document.getElementById('word-count');

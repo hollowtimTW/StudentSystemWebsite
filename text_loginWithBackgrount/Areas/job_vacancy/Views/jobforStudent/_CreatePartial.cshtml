@@ -309,8 +309,7 @@
     $(document).ready(function () {
         
         // ========= 載入資料時 =========
-        //宣告紀錄履歷工作經驗勾選情形的列表
-        let selectedWorkExpIDs = [];
+        
 
         // ====================== 事件監聽器 ===========================
 
@@ -329,7 +328,8 @@
 
             var workExpCheck = document.getElementById('workExpCheck');
             if (workExpCheck.checked) {
-                selectedWorkExpIDs = []; //清空所有選擇的工作經驗（暫時無用）
+                selectedWorkExpIDs = []; //清空所有選擇的工作經驗
+                console.log('如果選擇無:' + selectedWorkExpIDs);
                 callWorkExp(true);
             } else {
                 callWorkExp();
