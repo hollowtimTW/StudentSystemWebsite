@@ -40,6 +40,7 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
                 mongoDbSettings.Value.StudentAnswerCollection);
         }
 
+        // 測驗平台首頁
         public IActionResult StdIndex()
         {
             string studentId = User.Claims.FirstOrDefault(c => c.Type == "StudentId")?.Value;
@@ -67,6 +68,7 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
         }
 
 
+        // 測驗畫面
 
         [HttpGet("{quizCode}")]
         public IActionResult Quiz(string quizCode)
@@ -126,7 +128,6 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
                 _context.SaveChanges();
             }
 
-
             StdQuiz data = new StdQuiz
             {
                 Quiz = quiz,
@@ -169,7 +170,6 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
             var record = _context.TQuizRecords
                 .Where(p => p.FQuizId == quiz.FQuizId && p.FStudentId.ToString() == studentId)
                 .FirstOrDefault();
-
 
 
             if (record == null)

@@ -51,6 +51,26 @@
         }
 
 
+        .color-box {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .red {
+            background-color: red;
+        }
+
+        .green {
+            background-color: green;
+        }
+
+        .blue {
+            background-color: blue;
+        }
+
+
     </style>
 
 }
@@ -78,7 +98,7 @@
         </nav>
     </div>
 }
-<div class="container mb-5 ">
+<div class="container mt-3 mb-5 ">
 
     <div class="row mb-3">
 
@@ -86,6 +106,24 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">測驗名稱：@Quiz.FQname</h5>
+                    <div>答題率: @((int)(Record.FRate * 100)) % </div>
+                </div>
+            </div>
+            <div class="container m-3 ">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="color-box selected"></div>選擇選項
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="color-box correct"></div>正確選項
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="color-box selected correct"></div>答對選項
+                    </div>
                 </div>
             </div>
         </div>
@@ -98,7 +136,7 @@
 
 
     <div class="accordion" id="questionAccordion">
-
+         
         @for (int i = 0; i < Model.Questions.Count; i++)
         {
             var question = Model.Questions[i];
@@ -153,11 +191,6 @@
             });
 
 
-
-
-
-
-
             var ctx = $('#scoreChart').get(0).getContext('2d');
 
             var rate = @Record.FRate*100;
@@ -181,13 +214,8 @@
                     }]
                 },
                 options: {
-
                 }
             });
-
-
-
-
 
 
         });

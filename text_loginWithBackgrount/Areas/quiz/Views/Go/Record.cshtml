@@ -4,6 +4,7 @@
 }
 
 
+
 @section BreadcrumbsSection {
     <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
     <div class="breadcrumbs">
@@ -35,19 +36,17 @@
 <section id="blog" class="blog">
     <div class="container" data-aos="fade-up">
         <div class="row g-5">
-            <!-- 左方側邊欄：佔據寬度 4/12 -->
-            <!-- 左方側邊欄：標籤分類 -->
+
             <div class="col-lg-4">
                 <div class="sidebar">
-                    <!-- 搜尋框 -->
                     <div class="sidebar-item search-form">
                         <h3 class="sidebar-title">Search</h3>
                         <form action="" class="mt-3">
                             <input type="text">
                             <button type="submit"><i class="bi bi-search"></i></button>
                         </form>
-                    </div><!-- End sidebar search formn-->
-                    <!-- 文字列表 -->
+                    </div>
+
                     <div class="sidebar-item categories">
                         <h3 class="sidebar-title m-1">學員服務</h3>
                         <div class="list-group">
@@ -60,18 +59,117 @@
                             <a asp-area="quiz" asp-controller="Go" asp-action="Record" class="list-group-item list-group-item-action m-2 border border-3 text-center active">測驗紀錄</a>
                             <a asp-area="" asp-controller="Login" asp-action="logout" class="list-group-item list-group-item-action m-2 border border-3 text-center text-danger">登出</a>
                         </div>
-                    </div><!-- End sidebar categories-->
-                </div><!-- End Blog Sidebar -->
-            
-            
+                    </div>
+                </div>
             </div>
-            <!-- 主要區域：佔據寬度 8/12 -->
-            <div class="col-lg-8">
-                <!-- 內容 -->
-             
 
+            <div class="col-lg-8">
+
+                <article class="blog-details">
+                    <h2 class="title">測驗紀錄</h2>
+                    <br />
+                    <div class="row gy-4 posts-list" id="article">
+                    </div>
+                    <div class="blog-pagination">
+                        <ul class="justify-content-center" id="pages">
+                            <li><a href="#">1</a></li>
+                        </ul>
+                    </div>
+                </article>
 
             </div>
         </div>
     </div>
-</section><!-- End Blog Details Section -->
+</section>
+
+
+
+@section Scripts{
+
+    <script>
+
+
+
+
+        $(document).ready(function () {
+            const pages = $('#pages');
+            const inputKeyword = $('#inputKeyword');
+            const searchButton = $('#btnsreach');
+            const article = $('#article');
+
+            const loadArtCard = () => {
+                $.ajax({
+                    url: '/Api/Quiz/GetRecords', // 修改此處為您的Action路徑
+                    type: 'GET',
+                    success: function (data) {
+                        console.log(data);
+
+                        const artlist = data.map(quiz => {
+                            return (`
+                                <div class="col-xl-12 col-md-6">
+                                    <article>
+                                        <h2 class="title">
+                                            <a href="/quiz/Quiz/Result/${quiz.code}">${quiz.name}</a>
+                                        </h2>
+                                                <p class="post-category">${quiz.code}</p>
+                                        <div class="d-flex align-items-center">
+                                            <div class="post-meta">
+                                                <p class="post-author-list">答題率: ${quiz.rate}</p>
+                                                <p class="post-date">
+                                                    <time datetime="2022-01-01">測驗日期：${new Date(quiz.date).toLocaleDateString()}</time>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </article>
+                                </div>
+                            `);
+                        });
+                        article.html(artlist.join(""));
+
+                        let liPaging = "";
+                        // 這裡沒有使用 totalPages，您可以根據返回的數據做相應的分頁處理
+                        // 如果您的API返回了totalPages，請將此處的data.totalPages改為您的實際值
+                        for (let i = 1; i <= data.length; i++) {
+                            liPaging += `<li><a href="#" onclick="pagingHandler(${i})">${i}</a></li>`;
+                        }
+                        pages.html(liPaging);
+                    }
+                });
+            };
+
+            searchButton.on('click', function (event) {
+                event.preventDefault();
+                const keyword = inputKeyword.val().trim();
+                // searchData.keyword = keyword !== '' ? keyword : ""; // 您沒有定義searchData，因此該行不再需要
+                loadArtCard();
+            });
+
+            inputKeyword.on('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const keyword = inputKeyword.val().trim();
+                    if (keyword !== '') {
+                        // searchData.keyword = keyword; // 您沒有定義searchData，因此該行不再需要
+                        loadArtCard();
+                    }
+                }
+            });
+
+            // 您沒有定義searchData，因此pagingHandler和typeHandler功能將無法正常運作
+
+            $('#pages').on('click', 'li', function () {
+                $('#pages li').removeClass('active');
+                $(this).addClass('active');
+            });
+
+            loadArtCard();
+        });
+
+
+    </script>
+
+
+
+
+
+}

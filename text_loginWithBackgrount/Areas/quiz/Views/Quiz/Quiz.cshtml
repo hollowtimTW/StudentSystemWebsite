@@ -67,6 +67,9 @@
                                     <div class="q-question">
                                         <div class="d-flex justify-content-center align-items-center q-quesiotn-div">
                                             <div class="q-question-context">
+                                                @if(Questions[i].Type == 1){
+                                                    <span class="multi-text">多選題</span>
+                                                }
                                                 @Questions[i].QuestionText
                                             </div>
 

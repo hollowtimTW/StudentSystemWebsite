@@ -141,8 +141,6 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
 
 
 
-
-
         // 計分
         [HttpPost]
         public IActionResult SetScore([FromBody] StudentAnswer r)
@@ -283,15 +281,6 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
 
 
 
-
-
-
-
-
-
-
-
-
         // 儲存答題記錄
         [HttpPost]
         public IActionResult SaveAnswers([FromBody] StudentAnswer r)
@@ -300,10 +289,8 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
                 .Find(sa => sa.RecordId == r.RecordId)
                 .FirstOrDefault();
 
-
             studentAnswer.Answers = r.Answers;
             _studentAnswerCollection.ReplaceOne(sa => sa.Id == studentAnswer.Id, studentAnswer);
-
             return Ok("儲存成功");
 
         }
@@ -311,6 +298,25 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
 
 
 
+
+        [HttpGet]
+        public IActionResult GetRecords()
+        {
+            string studentId = User.Claims.FirstOrDefault(c => c.Type == "StudentId")?.Value;
+
+            var recordsList = _context.TQuizRecords
+                .Where(p => p.FStudentId.ToString() == studentId && p.FState == 1)
+                .Select(p => new
+                {
+                    name = p.FQuiz.FQname,
+                    code = p.FQuiz.FQcode,
+                    rate = p.FRate,
+                    date = p.FStartTime,
+                })
+                .ToList();
+
+            return Json(recordsList);
+        }
 
 
 
