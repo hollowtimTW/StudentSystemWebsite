@@ -4,10 +4,14 @@ using text_loginWithBackgrount.Areas.video_management.LineBotMessage.Domain;
 using Microsoft.AspNetCore.Mvc;
 using text_loginWithBackgrount.Areas.video_management.LineBotMessage.Domain;
 using text_loginWithBackgrount.Areas.video_management.LineBotMessage.Dtos;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace text_loginWithBackgrount.Areas.video_management.Controllers
 {
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles = "student")]
+    [Area("video_management")]
     [ApiController]
     [Route("api/[Controller]")]
     public class LinePayController : ControllerBase
@@ -35,5 +39,6 @@ namespace text_loginWithBackgrount.Areas.video_management.Controllers
         {
             _linePayService.TransactionCancel(transactionId);
         }
+
     }
 }
