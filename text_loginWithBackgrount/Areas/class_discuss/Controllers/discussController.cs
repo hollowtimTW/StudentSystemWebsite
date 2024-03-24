@@ -39,12 +39,15 @@ namespace text_loginWithBackgrount.Areas.class_discuss.Controllers
         {
             T討論看板? ID = _DBContext.T討論看板s.FirstOrDefault(a => a.看板id == subid);
             T討論文章? art = _DBContext.T討論文章s.FirstOrDefault(a => a.文章id == artid);
+            int mes = _DBContext.T討論留言s.Where(a => a.文章id == artid && a.刪除 == "0").Count();
             ViewBag.subName = ID.名稱;
             ViewBag.subId = subid;
+            ViewBag.typeId = art.子版id;
             ViewBag.artName = art.標題;
             ViewBag.artId = artid;
             ViewBag.writerId = art.學生id;
             ViewBag.userId = GetUserId();
+            ViewBag.mesCount = mes;
             return View();
         }
 
@@ -137,6 +140,74 @@ namespace text_loginWithBackgrount.Areas.class_discuss.Controllers
             return View(article);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> MessageCreate(string mes, int subid , int typeid , int artid)//新增留言功能
+        {
+            T討論留言 newMessage = new T討論留言();
+            if (ModelState.IsValid)
+            {
+                newMessage.內容 = mes;
+                newMessage.時間 = DateTime.Now.ToShortDateString().ToString();
+                newMessage.看板id = subid;
+                newMessage.子版id = typeid;
+                newMessage.文章id = artid;
+                newMessage.學生id = GetUserId();
+                _DBContext.Add(newMessage);
+                await _DBContext.SaveChangesAsync();
+                return Ok();
+            }
+            return Ok();
+        }
+        public async Task<IActionResult> GetMessage(int mesid)//獲得留言
+        {
+            if (mesid == null || _DBContext.T討論文章s == null)
+            {
+                return NotFound();
+            }
+
+            var message = await _DBContext.T討論留言s.FindAsync(mesid);
+            if (message == null)
+            {
+                return NotFound();
+            }
+            string mes = message.內容;
+            return Content(message.內容);
+        }
+        [HttpPost]
+        public IActionResult MessageEdit(string mes, int mesid)//修改留言功能
+        {
+            var message = _DBContext.T討論留言s.Find(mesid);
+            if (message == null)
+            {
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                message.時間 = DateTime.Now.ToShortDateString().ToString();
+                message.內容 = mes;
+                _DBContext.Update(message);
+                _DBContext.SaveChangesAsync();
+                return Ok();
+            }
+            return View(message);
+        }
+        [HttpPost]
+        public IActionResult MessageDelete(int mesid)//軟刪除留言功能
+        {
+            var message = _DBContext.T討論留言s.Find(mesid);
+            if (message == null)
+            {
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                message.刪除 = "1";
+                _DBContext.Update(message);
+                _DBContext.SaveChangesAsync();
+                return Ok();
+            }
+            return Ok();
+        }
         public IActionResult Announcement()
         {
             return View();

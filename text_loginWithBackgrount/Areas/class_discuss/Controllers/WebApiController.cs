@@ -184,5 +184,33 @@ namespace text_loginWithBackgrount.Areas.class_discuss.Controllers
             cardPage.Result = result.ToList();
             return Json(cardPage);
         }
+        [HttpPost]
+        public IActionResult Message([FromBody] CardDTO _card)
+        {
+            var result = from item in _DBContext.T討論留言s
+                         join b in _DBContext.T會員學生s on item.學生id equals b.學生id
+                         where item.文章id == _card.ArtId && item.刪除 == "0"
+                         select new MessageViewModel
+                         {
+                             文章id = item.文章id,
+                             留言id = item.留言id,
+                             內容 = item.內容,
+                             時間 = item.時間,
+                             作者 = b.姓名,
+                             頭像 = b.圖片 != null ? Convert.ToBase64String(b.圖片) : null
+                         };
+
+            int totalCount = result.Count();
+            int pageSize = _card.PageSize;
+            int totalPages = (int)Math.Ceiling((decimal)totalCount / pageSize);
+            int page = _card.Page ?? 1;
+            result = result.Skip((page - 1) * pageSize).Take(pageSize);
+
+            MessageDTO message = new MessageDTO();
+            message.TotalMessages = totalCount;
+            message.TotalPages = totalPages;
+            message.Result = result.ToList();
+            return Json(message);
+        }
     }
 }

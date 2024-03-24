@@ -5,10 +5,12 @@
     ViewData["Title"] = @ViewBag.artName;
     string subName = ViewBag.subName;
     int subId = ViewBag.subId;
+    int typeId = ViewBag.typeId;
     string artName = ViewBag.artName;
     int artId = ViewBag.artId;
     int writerId = ViewBag.writerId;
     int userId = ViewBag.userId;
+    int mesCount = ViewBag.mesCount;
 }
 @section BreadcrumbsSection {
     <!-- ======= Breadcrumbs 麵包屑導航列 ======= -->
@@ -46,6 +48,7 @@
 }
 @section Styles {
     <link href="~/css/job_vacancy/jobcommonstyle.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
 }
 <section id="blog" class="blog">
     <div class="container" data-aos="fade-up">
@@ -54,7 +57,7 @@
             <!-- 文章內容區 -->
             <article class="blog-details" id="artDetail">
                 <!-- 標題 -->
-                <h2 class="title">Dolorum optio tempore voluptas dignissimos cumque fuga qui quibusdam quia</h2>
+                <h2 class="title">JS出問題啦!!</h2>
                 <!-- 作者/時間/留言數 -->
                 <div class="meta-top">
                     <ul>
@@ -92,9 +95,7 @@
                 </div>
             </div><!-- End post author -->
             <!-- 留言區 -->
-            <div class="comments">
-                <!-- 留言數 -->
-                <h4 class="comments-count">8 Comments</h4>
+            <div class="comments" id="message">
                 <!-- 留言#1 -->
                 <div id="comment-1" class="comment">
                     <div class="d-flex">
@@ -157,65 +158,108 @@
                 </div><!-- End comment #2-->
 
             </div><!-- End blog comments -->
-
         </div>
     </div>
 </section><!-- End Blog Details Section -->
 @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
     <script>
         //文章內容
-        (async () => {
+        const loadArticle = async () => {
             const url = `@Url.Content("~/WebApi/Article")?id=${@artId}`;
             const request = await fetch(url);
             const data = await request.json();
-            console.log(data);
             const datalist = data.map(a => `
-                        <!-- 標題 -->
-                            <h2 class="title">${a.標題}</h2>
-                        <!-- 作者/時間/留言數 -->
-                            <div class="meta-top">
-                                <ul>
-                                    <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="#writer">${a.作者}</a></li>
-                                    <li class="d-flex align-items-center"><i class="bi bi-clock"></i><time datetime="2022-01-01">"修改日期：${a.日期}"</time></li>
-                                    <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a asp-area="" asp-controller="Home" asp-action="BlogDetails">還沒做</a></li>
-                                </ul>
-                            </div><!-- End meta top -->
-                        <!-- 內容 -->
-                            <div class="content">${a.內容}</div><!-- End post content -->
+                                        <!-- 標題 -->
+                                            <h2 class="title">${a.標題}</h2>
+                                        <!-- 作者/時間/留言數 -->
+                                            <div class="meta-top">
+                                                <ul>
+                                                    <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="#writer">${a.作者}</a></li>
+                                                    <li class="d-flex align-items-center"><i class="bi bi-clock"></i><time datetime="2022-01-01">"修改日期：${a.日期}"</time></li>
+                                                    <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a asp-area="" asp-controller="Home" asp-action="BlogDetails">${@mesCount}則留言</a></li>
+                                                </ul>
+                                            </div><!-- End meta top -->
+                                        <!-- 內容 -->
+                                            <div class="content">${a.內容}</div><!-- End post content -->
 
-                        <!-- 標籤 -->
-                            <div class="meta-bottom">
-                                <i class="bi bi-tags"></i>
-                                <ul class="tags">
-                                    <li>${a.分類}</li>
-                                </ul>
-                            </div><!-- End meta bottom -->
-                    `);
+                                        <!-- 標籤 -->
+                                            <div class="meta-bottom">
+                                                <i class="bi bi-tags"></i>
+                                                <ul class="tags">
+                                                    <li>${a.分類}</li>
+                                                </ul>
+                                            </div><!-- End meta bottom -->
+                                    `);
             $('#artDetail').html(datalist);
-        })();
+        };
+        loadArticle();
         //作者欄
-        (async () => {
+        const loadWriter = async () => {
             const url = `@Url.Content("~/WebApi/Writer")?id=${@artId}`;
             const request = await fetch(url);
             const data = await request.json();
             const defaultImage = '/images/t論壇/預設頭像.png';
             const datalist = data.map(a => `
-                        <img src="${a.頭像 ? 'data:image/jpeg;base64,' + a.頭像 : defaultImage}" class="rounded-circle flex-shrink-0" alt="">
-                            <div>
-                                <h4>${a.作者}</h4>
-                                <div class="social-links">
-                                    <p>${a.信箱}</p>
-                                </div>
-                                <div class="meta-bottom">
-                                <ul class="tags">
-                                    <li>${a.學校}</li>
-                                    <li>${a.科系}</li>
-                                </ul>
-                            </div>
-                            </div>
-                    `);
+                                        <img src="${a.頭像 ? 'data:image/jpeg;base64,' + a.頭像 : defaultImage}" class="rounded-circle flex-shrink-0" alt="">
+                                            <div>
+                                                <h4>${a.作者}</h4>
+                                                <div class="social-links">
+                                                    <p>${a.信箱}</p>
+                                                </div>
+                                                <div class="meta-bottom">
+                                                <ul class="tags">
+                                                    <li>${a.學校}</li>
+                                                    <li>${a.科系}</li>
+                                                </ul>
+                                            </div>
+                                            </div>
+                                    `);
             $('#writer').html(datalist);
-        })();
+        };
+        loadWriter();
+        //留言區
+        const searchData = {
+            "artId": @artId,
+            "page": 1,
+            "pageSize": 5
+        };
+        const loadMessage = async () => {
+            const request = await fetch('@Url.Content("~/WebApi/Message")', {
+                "method": "Post",
+                "body": JSON.stringify(searchData),
+                "headers": { "Content-Type": "application/json" }
+            });
+            const data = await request.json();
+            console.log(data);
+            const mesCount =`<div class="row">
+                <div>
+                <h4 style="float: left;" class="comments-count">${data.totalMessages}則留言</h4>
+                <div style="float: left;">
+                    <button id="mesCreate" type="button" class="btn btn-hollow btn-like"><i class="bi bi-plus"></i> 新增</button>
+                </div>
+                </div>
+            </div>`;
+            const meslist = data.result.map(a => {
+                const { 留言id, 內容, 作者, 時間, 頭像 } = a;
+                return (`
+                                <div id="comment-${留言id}" class="comment">
+                                    <div class="d-flex">
+                                        <div class="comment-img"><img src="${頭像 ? 'data:image/jpeg;base64,' + 頭像 : '/images/t論壇/預設頭像.png'}" alt=""></div>
+                                        <div>
+                                            <h5>${作者} <a href="#" class="reply" data-id="${留言id}" id="mesDel">刪除</a> <a href="#" class="reply" data-id="${留言id}" id="mesEdit">修改</a></h5>
+                                            <time datetime="2020-01-01">${時間}</time>
+                                            <p>
+                                                ${內容}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                    `)
+            })
+            $('#message').html(mesCount + meslist.join(''));
+        };
+        loadMessage();
 
         //刪除修改按鈕顯示
         document.addEventListener('DOMContentLoaded', function () {
@@ -230,22 +274,155 @@
 
         var btnDelete = document.getElementById('btnDelete');
         var subid = @subId;
+        var typeid = @typeId;
         var artid = @artId;
+
         btnDelete.addEventListener('click', function () {
-            var confirmation = confirm("確定要刪除文章嗎?");
-            if (confirmation) {
-                $.ajax({
-                    type: "POST",
-                    url: "/class_discuss/discuss/ArticleDelete",
-                    data: { subid: subid, artid: artid },
-                    success: function (response) {
-                        window.location.href = "/class_discuss/discuss/Articles?subid=@subId";
-                    },
-                    error: function () {
-                        console.log("刪除失敗");
-                    }
-                });
-            }
+            Swal.fire({
+                title: "確定要刪除文章嗎?",
+                text: " 資料刪除後不能復原!!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "我很確定!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/class_discuss/discuss/ArticleDelete",
+                        data: { subid: subid, artid: artid },
+                        success: function (response) {
+                            Swal.fire({
+                                title: "刪除完成!",
+                                text: "你的文章已經被成功刪除了",
+                                icon: "success"
+                            })
+                                .then(() => {
+                                    setTimeout(function () {
+                                        window.location.href = "/class_discuss/discuss/Articles?subid=@subId";
+                                    }, 1000);
+                                });
+                        },
+                        error: function () {
+                            console.log("刪除失敗");
+                        }
+                    })
+                }
+            });
         })
+
+        document.addEventListener('click', async function(event) {
+            if (event.target && event.target.id === 'mesCreate') {
+                const { value: text } = await Swal.fire({
+                    input: "textarea",
+                    inputLabel: "新增留言",
+                    inputPlaceholder: "請輸入你的留言...",
+                    inputAttributes: {
+                        "aria-label": "Type your message here"
+                    },
+                    showCancelButton: true
+                });
+                if (text) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/class_discuss/discuss/MessageCreate",
+                        data: { mes : text, subid: subid, typeid: typeid, artid: artid },
+                        success: function (response) {
+                            loadMessage();
+                            console.log("留言成功");
+                        },
+                        error: function () {
+                            console.log(text, subid, typeid, artid);
+
+                            console.log("留言失敗");
+                        }
+                    })
+                }
+            }
+        });
+
+        document.getElementById('message').addEventListener('click', function (event) {
+            if (event.target.matches('.reply')) {
+                event.preventDefault();
+                var mesId = event.target.dataset.id;
+                if (event.target.id === 'mesDel') {
+                    Swal.fire({
+                        title: "確定要刪除留言嗎?",
+                        text: " 資料刪除後不能復原!!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "我很確定!"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                type: "POST",
+                                url: "/class_discuss/discuss/MessageDelete",
+                                data: { mesid: mesId },
+                                success: function (response) {
+                                    Swal.fire({
+                                        title: "刪除完成!",
+                                        text: "你的留言已經被成功刪除了",
+                                        icon: "success"
+                                    })
+                                        .then(() => {
+                                            setTimeout(function () {
+                                                loadMessage();
+                                            }, 1000);
+                                        });
+                                },
+                                error: function () {
+                                    console.log("留言刪除失敗");
+                                }
+                            })
+                        }
+                    });
+                } else if (event.target.id === 'mesEdit') {
+                    $.ajax({
+                        type: "POST",
+                        url: "/class_discuss/discuss/GetMessage",
+                        data: { mesid: mesId },
+                        success: async function(response) {
+                            const { value: text } = await Swal.fire({
+                                input: "textarea",
+                                inputLabel: "修改留言",
+                                inputValue: response,
+                                inputAttributes: {
+                                    "aria-label": "Type your message here"
+                                },
+                                showCancelButton: true
+                            });
+                            if (text) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/class_discuss/discuss/MessageEdit",
+                                    data: { mes: text, mesid: mesId },
+                                    success: function (response) {
+                                        Swal.fire({
+                                            title: "修改完成!",
+                                            text: "你的留言已經被成功修改了",
+                                            icon: "success"
+                                        })
+                                        .then(() => {
+                                            setTimeout(function () {
+                                                loadMessage();
+                                            }, 1000);
+                                        });
+                                    },
+                                    error: function () {
+                                        console.log("留言修改失敗");
+                                    }
+                                })
+                            }
+                        },
+                        error: function () {
+                            console.log("拿不到留言");
+                        }
+                    })
+                }
+            }
+        });
     </script>
 }
