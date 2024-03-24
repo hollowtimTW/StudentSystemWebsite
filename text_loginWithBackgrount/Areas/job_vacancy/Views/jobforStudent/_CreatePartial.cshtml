@@ -121,7 +121,7 @@
             <!-- 3.工作經驗-->
             <div class="row dialog container-fluid">
                 <div class="form-group col-sm-auto">
-                    <label asp-for="WorkExperience" class="control-label"></label>
+                    <label asp-for="WorkExperience" class="control-label" id="workExperienceLabel"></label>
                 </div>
                 <div class="form-group form-check form-switch col-md-auto ms-auto">
                     <input id="workExpCheck" class="form-check-input" type="checkbox" checked>
@@ -371,6 +371,7 @@
             };
 
             // 將預設資料填入表單欄位
+            document.getElementById('ResumeTitle').value = resumeData.JobTitle;
             document.getElementById('Skill').value = resumeData.Skill;
             document.getElementById('Language').value = resumeData.Language;
             document.getElementById('HopeJobTitle').value = resumeData.JobTitle;

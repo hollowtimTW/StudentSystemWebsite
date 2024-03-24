@@ -193,6 +193,13 @@
                     $("#workExp_switch_form").empty(); //清空partialview的內容
                     callWorkExp();  //重新載入工作經驗資料列表
                     //$('#expSelectArea').show();  //顯示選擇工作經驗區域
+
+                    // 將焦點設置到標籤上
+                    document.getElementById('workExperienceLabel').focus();
+
+                    // 滾動視窗以使標籤可見
+                    document.getElementById('workExperienceLabel').scrollIntoView();
+
                 } else {
                     Swal.fire({
                         icon: 'error',

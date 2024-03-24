@@ -65,12 +65,12 @@ namespace Class_system_Backstage_pj.Areas.job_vacancy.ViewModels
 
         [Display(Name = "希望職稱")]
         [Required(ErrorMessage = "希望職稱未填寫")]
-        [StringLength(10, ErrorMessage = "希望職稱過長")]
+        [StringLength(30, ErrorMessage = "希望職稱過長")]
         public string? HopeJobTitle { get; set; }
 
         [Display(Name = "希望薪水待遇")]
         [Required(ErrorMessage = "希望薪水待遇未填寫")]
-        [StringLength(10, ErrorMessage = "希望薪水待遇過長")]
+        [StringLength(15, ErrorMessage = "希望薪水待遇過長")]
         public string? HopeSalary { get; set; }
 
         [Display(Name = "希望工作地點")]
