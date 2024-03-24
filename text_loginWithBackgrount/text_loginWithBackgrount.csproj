@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-text_loginWithBackgrount-a9db953b-8903-45d7-a489-15f157a2bdc6</UserSecretsId>
+	<LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -55,6 +56,7 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.AI.TextAnalytics" Version="5.3.0" />
+    <PackageReference Include="Claudia" Version="1.0.1" />
     <PackageReference Include="MailKit" Version="4.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.16" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.15" />
@@ -71,6 +73,7 @@
     <PackageReference Include="MongoDB.Driver" Version="2.24.0" />
     <PackageReference Include="MongoDB.Driver.Core" Version="2.24.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="OpenAI" Version="1.11.0" />
     <PackageReference Include="QuestPDF" Version="2024.3.0-beta1" />
   </ItemGroup>
 

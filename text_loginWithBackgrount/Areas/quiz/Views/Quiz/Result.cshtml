@@ -58,18 +58,14 @@
             margin-right: 10px;
         }
 
-        .red {
-            background-color: red;
-        }
 
-        .green {
-            background-color: green;
+        .analyze-context{
+            background-color: #4F4F4F;
+            color: white;
+            border-radius:5px;
+            padding:2% 10%;
+            display:none;
         }
-
-        .blue {
-            background-color: blue;
-        }
-
 
     </style>
 
@@ -91,7 +87,7 @@
 
                 <ol>
                     <li><a asp-area="" asp-controller="Template" asp-action="Index">首頁</a></li>
-                    <li><a asp-area="quiz" asp-controller="Quiz" asp-action="StdIndex">測驗平台</a></li>
+                    <li><a asp-area="quiz" asp-controller="Go" asp-action="Record">測驗紀錄</a></li>
                     <li>@ViewData["Title"]</li>
                 </ol>
             </div>
@@ -147,19 +143,42 @@
                     </button>
                 </h2>
                 <div id="collapse@(i)" class="accordion-collapse collapse" aria-labelledby="heading@(i)" data-bs-parent="#questionAccordion">
-                    <div class="accordion-body">
+                    <div class="accordion-body pb-0">
                         @for (int j = 0; j < question.Options.Count; j++)
                         {
                             var option = question.Options[j];
-                            <div class="option-div @(StudentAnswer.Answers[i].Contains(j) ? "selected" : "")  @(question.Answer.Contains(j) ? "correct" : "")">(@(j + 1)) @option</div>
+                            bool isSelected = StudentAnswer.Answers?.Count != 0 && StudentAnswer.Answers[i]?.Contains(j) == true;
+                            var isCorrect = question.Answer.Contains(j);
+                            <div class="option-div @(isSelected ? "selected" : "")  @(isCorrect ? "correct" : "")">(@(j + 1)) @option</div>
                         }
+                    </div>
+
+                    <div class="row justify-content-end m-1">
+                        <div class="col-auto">
+                            <select class="form-select" id="dropdownMenu" aria-label="Select option">
+                                <option value="0">OpenAI</option>
+                                <option value="1">Gemini</option>
+                                <option value="2">Claude</option>
+                            </select>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-secondary analyzeBtn">
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                                AI解析
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="analyze-context m-2">
+                        123213213213
                     </div>
                 </div>
             </div>
         }
- 
     </div>
 </div>
+
+
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -216,6 +235,70 @@
                 options: {
                 }
             });
+
+
+            $(".analyzeBtn").click(function () {
+                const button = $(this);
+                const spinner = button.find('.spinner-border');
+                const accordionItem = button.closest('.accordion-item');
+                const analyzeContext = accordionItem.find('.analyze-context');
+                const questionText = accordionItem.find('.accordion-button').text().trim();
+                const optionsText = accordionItem.find('.option-div').map(function () {
+                    return $(this).text().trim();
+                }).get().join(' ');
+                const selectedOption = accordionItem.find('#dropdownMenu').val();
+                const content = questionText + optionsText + ",請解析這道題目(150字以內)";
+
+                if (button.hasClass('disabled')) {
+                    return; // 如果按鈕已經被禁用，則不執行任何操作
+                }
+
+                // 禁用按鈕
+                button.addClass('disabled');
+                spinner.show();
+
+                var formData = new FormData();
+                formData.append('content', content);
+
+                var url;
+                switch (selectedOption) {
+                    case '0':
+                        url = '/Api/Ai/SendOpenAi';
+                        break;
+                    case '1':
+                        url = '/Api/Ai/SendGemini';
+                        break;
+                    case '2':
+                        url = '/Api/Ai/SendClaude';
+                        break;
+                    default:
+                        url = '/Api/Ai/SendOpenAi'; // 默認使用OpenAI
+                }
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        console.log(response)
+                        analyzeContext.show();
+                        analyzeContext.text(response);
+                        // 啟用按鈕
+                        button.removeClass('disabled');
+                        spinner.hide();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                        // 啟用按鈕
+                        button.removeClass('disabled');
+                        spinner.hide();
+                    }
+                });
+            });
+
+
 
 
         });

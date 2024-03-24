@@ -111,10 +111,10 @@
                                         <h2 class="title">
                                             <a href="/quiz/Quiz/Result/${quiz.code}">${quiz.name}</a>
                                         </h2>
-                                                <p class="post-category">${quiz.code}</p>
+                                                <p class="post-category" style="color:#008374">${quiz.code}</p>
                                         <div class="d-flex align-items-center">
                                             <div class="post-meta">
-                                                <p class="post-author-list">答題率: ${quiz.rate}</p>
+                                                <p class="post-author-list">答題率: ${Math.floor(quiz.rate * 100)} %</p>
                                                 <p class="post-date">
                                                     <time datetime="2022-01-01">測驗日期：${new Date(quiz.date).toLocaleDateString()}</time>
                                                 </p>
@@ -164,6 +164,17 @@
 
             loadArtCard();
         });
+
+
+
+
+
+
+
+
+
+
+
 
 
     </script>
