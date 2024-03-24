@@ -194,6 +194,13 @@ namespace text_loginWithBackgrount.Controllers
                     new Claim(ClaimTypes.Role,"teacher"),
                 };
 
+            //if (user.圖片 != null)
+            //{
+            //    string s = Convert.ToBase64String(user.圖片);
+            //    claims.Add(new Claim("ProfileImage", s));
+            //}
+            
+
             //簡單的把3當成管理員
             if (user.狀態 == "3")
             {
@@ -482,7 +489,7 @@ namespace text_loginWithBackgrount.Controllers
                     issuer: _configuration["JWT:Issuer"],
                     audience: _configuration["JWT:Audience"],
                     claims: claims,
-                    expires: DateTime.Now.AddMinutes(3),
+                    expires: DateTime.Now.AddMinutes(5),
                     signingCredentials: new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256)
                 );
 
@@ -497,7 +504,7 @@ namespace text_loginWithBackgrount.Controllers
 
                 try
                 {
-                    if (false)//要寄了再開
+                    if (true)//要寄了再開
                     {
                         var mail = new MailMessage();
                         mail.From = new MailAddress("rizeno3260@gmail.com");
@@ -514,7 +521,7 @@ namespace text_loginWithBackgrount.Controllers
                         smtpClient.Credentials = new NetworkCredential("rizeno3260@gmail.com", "tpsd gliw vmno fpdv");
                         smtpClient.EnableSsl = true; /// 如果你的 SMTP 伺服器支援 SSL，可以啟用它
                         smtpClient.Send(mail);
-                        return Ok(new { successMessage = "已發送驗證信，請至信箱收取！", linkContent = "" });
+                        return Ok(new { successMessage = "已發送驗證信，請至信箱收取！", linkContent = "有效連結只保持5分鐘" });
                     }
                     return Ok(new { successMessage = "簡易寄送連結模式！", linkContent = applicationUrl });
                 }
@@ -572,7 +579,7 @@ namespace text_loginWithBackgrount.Controllers
 
                 return View();
             }
-            catch (SecurityTokenException ex)
+            catch (Exception ex)
             {
                 // 驗證失敗 這邊就丟一行字，頁面再說
                 return BadRequest("Token 驗證逾期或是錯誤，請再試一次.");
