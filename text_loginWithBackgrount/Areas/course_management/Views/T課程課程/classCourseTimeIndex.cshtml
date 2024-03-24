@@ -249,7 +249,7 @@
                         exampleModalLabel.textContent = "新增上課時間:";
                         exampleModalsubTitle.textContent= teacherName+ " - " + courseName;
                           if (courseIDCell) {
-                              sohwForm(courseIDCell);                               
+                              sohwForm(courseIDCell,info.dateStr);                               
                           } else {
                                 
                           }                          
@@ -316,11 +316,11 @@
                
     </script>
     <script>
-        function sohwForm(courseIDCell) {
+        function sohwForm(courseIDCell,date) {
 
             var courseID = courseIDCell.textContent;
-            var url = "/course_management/T課程課程/Create/"+courseIDCell;
-            var data = { "id": courseIDCell};
+            var url = "/course_management/T課程課程/Create";
+            var data = { "id": courseIDCell,"date":date};
             $.ajax({
                 type: "GET",
                 url: url,
@@ -346,7 +346,7 @@
         }
 
     </script>
-   
+  
 }
 
 
