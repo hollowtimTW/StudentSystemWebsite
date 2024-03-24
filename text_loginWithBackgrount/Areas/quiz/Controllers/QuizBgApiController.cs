@@ -167,6 +167,14 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
                 return BadRequest("修改失敗");
             }
 
+            var questionOrder = _questionOrderCollection.Find(q => q.QuizID == quizId).FirstOrDefault();
+
+            if (questionOrder == null || questionOrder.QuestionOrderList == null)
+            {
+                return BadRequest("無法開啟，測驗無考題");
+            }
+
+
             quiz.FClosed = quiz.FClosed == 0 ? 1 : 0;
             _context.SaveChanges();
 

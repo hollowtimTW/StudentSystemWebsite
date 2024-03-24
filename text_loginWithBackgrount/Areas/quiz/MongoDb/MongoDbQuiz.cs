@@ -45,7 +45,7 @@ namespace text_loginWithBackgrount.Areas.quiz.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
         public int RecordId { get; set; }
-        public int[][] Answers { get; set; }
+        public List<List<int>> Answers { get; set; }
 
     }
 }

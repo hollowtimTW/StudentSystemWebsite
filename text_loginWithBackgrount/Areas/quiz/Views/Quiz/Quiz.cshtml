@@ -1,10 +1,17 @@
-﻿@model StdQuiz
+﻿@using Newtonsoft.Json
+
+@model StdQuiz
 @{
     Layout = "_QuizLayout";
 
     var Quiz = Model.Quiz;
     var Record = Model.Record;
     var Questions = Model.Questions;
+    var StudentAnswer = Model.StudentAnswer;
+
+    var Answers = Model.StudentAnswer.Answers;
+    var answersJson = JsonConvert.SerializeObject(Answers);
+
 }
 <link rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
@@ -39,8 +46,8 @@
                 </div>
                 <div class="col-12">
                     <div class="p-3 border left-bottom-vh quiz-sumbit">
-                        <div class="quiz-sumbit-time">剩餘時間: <span id="lastTime">@Record.FEndTime.ToString()</span></div>
-                        <button class="sumbit-btn">提交</button>
+                        <div class="quiz-sumbit-time">剩餘時間: <span id="countdown"></span></div>
+                        <button class="submit-btn">提交</button>
                     </div>
                 </div>
             </div>
@@ -60,6 +67,9 @@
                                     <div class="q-question">
                                         <div class="d-flex justify-content-center align-items-center q-quesiotn-div">
                                             <div class="q-question-context">
+                                                @if(Questions[i].Type == 1){
+                                                    <span class="multi-text">多選題</span>
+                                                }
                                                 @Questions[i].QuestionText
                                             </div>
 
@@ -106,8 +116,50 @@
 
 
 
+<!--提交提醒-->
+<div class="modal fade" id="submitQuizModal" tabindex="-1">
+    <div class="modal-dialog  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="submitQuizModalLabel">確認提交</h5>
+            </div>
+            <div class="modal-body" id="submit-context">
+            
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="sureBtn">確認</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!--timeout-->
+<div class="modal fade" id="timeOutModal" tabindex="-1">
+    <div class="modal-dialog  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="timeOutModalLabel">測驗時間已結束</h5>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="seeResultBtn">查看結果</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
 
 @section Scripts {
+	<script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
     <script>
         $(document).ready(function () {
             var mySwiper = new Swiper(".swiper-container", {
@@ -159,13 +211,17 @@
                 var $this = $(this);
                 $this.toggleClass('selected');
 
-                var selectedPositions = [];
-                $this.siblings('.option-btn').addBack().each(function (index) {
-                    if ($this.hasClass('selected')) {
-                        selectedPositions.push(index);
+                // 更新选择状态并打印当前选择的选项
+                var questionIndex = $this.closest('.q-answer').data('id');
+                var selectedOptions = [];
+
+                $this.siblings('.option-btn').addBack().each(function () {
+                    if ($(this).hasClass('selected')) {
+                        selectedOptions.push($(this).index())
                     }
                 });
-                console.log(selectedPositions);
+
+                console.log(selectedOptions);
                 updateSelectionStatus($this)
             });
 
@@ -195,34 +251,208 @@
 
 
 
+            // 填寫紀錄回去
+            var previousSelections = JSON.parse("@answersJson");
+
+            $('.q-answer').each(function (index) {
+                var selectedOptions = previousSelections[index] || [];
+
+                if (selectedOptions.length > 0) {
+                    $(this).find('.option-btn').each(function () {
+                        var optionIndex = $(this).index();
+                        if (selectedOptions.includes(optionIndex)) {
+                            $(this).addClass('selected');
+                        }
+                    });
+                }
+                updateSelectionStatus($(this).find('.option-btn.selected'));
+            });
 
 
-            function countdown() {
 
-                var endTime = new Date("@Record.FEndTime");
 
+            // 跳轉
+            console.log(@Record.FRecordId)
+            $.ajax({
+                url: '/Api/Quiz/CheckState/@Record.FRecordId',
+                type: 'GET',
+                cache: false,
+                success: function (response) {
+                    if (response === 1) {
+                        window.location.href = "/quiz/Quiz/StdIndex";
+                    }
+                    console.log(response)
+                    console.log("完成1")
+
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                    console.log("失敗")
+
+                }
+            });
+            console.log("完成2")
+
+
+
+
+            // 時間倒數
+            var endDate = new Date("@Record.FEndTime");
+            var now = new Date();
+
+            var timeDiff = Math.floor((endDate - now) / 1000);
+
+            function formatTime(seconds) {
+                if (seconds <= 0) {
+                    clearInterval(countdownInterval); 
+                    document.getElementById("countdown").innerHTML = "0:00"; 
+                    console.log("計時結束！");
+                    $('#timeOutModal').modal("show");
+
+                    return;
+                }
+
+                var minutes = Math.floor(seconds / 60);
+                var remainingSeconds = seconds % 60;
+                var formattedTime = minutes + ":" + (remainingSeconds < 10 ? "0" : "") + remainingSeconds;
+                document.getElementById("countdown").innerHTML = formattedTime; 
             }
 
-            // 初始调用倒计时函数
-            countdown();
-
-            // // 每隔一秒更新一次倒计时
-            // setInterval(countdown, 1000);
-
+            var countdownInterval = setInterval(function () {
+                timeDiff--;
+                formatTime(timeDiff); 
+            }, 1000);
 
 
 
 
+            function getAnswer() {
+                var result = {
+                    allSelectedAnswers: [],
+                    unansweredCount: 0
+                };
+
+                $('.q-answer').each(function () {
+                    var selectedAnswers = [];
+
+                    $(this).find('.option-btn').each(function () {
+                        if ($(this).hasClass('selected')) {
+                            selectedAnswers.push($(this).index());
+                        }
+                    });
+
+                    if (selectedAnswers.length === 0) {
+                        result.unansweredCount++;
+                    }
+
+                    result.allSelectedAnswers.push(selectedAnswers);
+                });
+
+                return result;
+            }
 
 
 
+            // 提交
+            $('.submit-btn').on('click', function () {
+
+                const res = getAnswer()
+                console.log(res.allSelectedAnswers);
+
+                if (res.unansweredCount > 0) {
+                    console.log("未作答：" + res.unansweredCount);
+
+                    $('#submit-context').html(`<span>尚有 ${res.unansweredCount} 題未完成</span>`);
+                    $('#sureBtn').prop('disabled', true);
+                    $('#submitQuizModal').modal('show');
+                } else {
+                    $('#submit-context').html('');
+                    $('#sureBtn').prop('disabled', false);
+                    $('#submitQuizModal').modal('show');
+
+                }
+            });
 
 
 
+            // 提交看結果
+            $('#sureBtn').on('click', function () {
+                const res = getAnswer()
+                var data = {
+                    RecordId: @Record.FRecordId,
+                    Answers: res.allSelectedAnswers
+                }
+                console.log(data)
+
+                $.ajax({
+                    url: '/Api/Quiz/SetScore',
+                    type: 'POST',
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                        console.log(response)
+                        window.location.href = "/quiz/Quiz/Result/@Quiz.FQcode";
+                        
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(xhr.responseText);
+
+                    }
+                });
+
+            });
+
+
+            // 測驗時間到
+            $('#seeResultBtn').on('click', function () {
+                const res = getAnswer()
+                var data = {
+                    RecordId: @Record.FRecordId,
+                    Answers: res.allSelectedAnswers
+                }
+                console.log(data)
+
+                $.ajax({
+                    url: '/Api/Quiz/SetScore',
+                    type: 'POST',
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                        console.log(response)
+                        window.location.href = "/quiz/Quiz/Result/@Quiz.FQcode";
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(xhr.responseText);
+
+                    }
+                });
+
+            });
 
 
 
+                // 自動儲存
+            $(window).on('beforeunload unload', function () {
+                var result = getAnswer()
 
+                var data = {
+                    RecordId: @Record.FRecordId,
+                    Answers: result.allSelectedAnswers
+                }
+
+                $.ajax({
+                    url: '/Api/Quiz/SaveAnswers',
+                    type: 'POST',
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                        console.log(response)
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
 
 
 

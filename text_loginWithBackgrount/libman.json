@@ -3,8 +3,9 @@
   "defaultProvider": "unpkg",
   "libraries": [
     {
+      "provider": "unpkg",
       "library": "@microsoft/signalr@8.0.0",
-      "destination": "wwwroot/js/signalr/",
+      "destination": "wwwroot/lib/microsoft/signalr/",
       "files": [
         "dist/browser/signalr.js",
         "dist/browser/signalr.js.map",

@@ -21,5 +21,13 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
 
             return RedirectToAction("StdIndex", "Quiz");
         }
+
+
+        public IActionResult Record()
+        {
+            return View();
+        }
+
+
     }
 }
