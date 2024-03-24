@@ -124,7 +124,7 @@
             <!-- 3.工作經驗-->
             <div class="row dialog container-fluid">
                 <div class="form-group col-sm-auto">
-                    <label asp-for="WorkExperience" class="control-label"></label>
+                    <label asp-for="WorkExperience" class="control-label" id="workExperienceLabel"></label>
                 </div>
                 <div class="form-group form-check form-switch col-md-auto ms-auto">
                     <input id="workExpCheck" class="form-check-input" type="checkbox" @(Model.WorkExperience == "N" ? "checked" : "")>
@@ -310,7 +310,7 @@
         // ========= 載入資料時 =========
 
         // 宣告紀錄履歷工作經驗勾選情形的列表
-        let selectedWorkExpIDs = [];
+        //let selectedWorkExpIDs = [];
 
         // 處理希望薪資的選項
         const hopeSalary = "@Html.Raw(Model.HopeSalary)".trim();
@@ -330,7 +330,7 @@
 
         // 處理工作經驗的匯入
         if ('@Model.WorkExperience' === 'Y') {
-            callWorkExp(true);
+            callWorkExp();
         }
 
         //處理工作時段的匯入
@@ -348,7 +348,7 @@
         //有無工作經驗
         document.getElementById('workExpCheck').addEventListener('change', function (event) {
             if (event.target.checked) {
-                selectedWorkExpIDs = []; //清空所有選擇的工作經驗（暫時無用）
+                selectedWorkExpIDs = []; //清空所有選擇的工作經驗
 
                 $('#expListArea').hide();
                 $('#expSelectArea').hide();

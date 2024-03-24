@@ -45,6 +45,28 @@
 
 <script>
 
+    
+    //編輯區字數計算的方法
+    function setupTextareaWordCount(textareaSelector, wordCountElementId, maxLength) {
+        const textarea = document.querySelector(textareaSelector);
+        const wordCount = document.getElementById(wordCountElementId);
+        wordCount.textContent = textarea.value.length; // 初始化字數顯示
+
+        textarea.addEventListener('input', function () {
+            let content = textarea.value;
+            let currentLength = content.length; // 獲取當前字數
+
+            // 如果超過最大字數，則截斷內容並更新 textarea 內容與字數顯示
+            if (currentLength > maxLength) {
+                textarea.value = content.slice(0, maxLength);
+                currentLength = textarea.value.length;
+            }
+
+            // 更新字數顯示
+            wordCount.textContent = currentLength;
+        });
+    }
+
     //新增工作經驗（_CreateWorkExpPartialView）
     function GetAddWorkExpView() {
 
@@ -57,24 +79,7 @@
                 workExpForm.html(result);
 
                 //設定工作經驗編輯區字數顯示
-                const workexp_textarea = document.querySelector('.word_count_workexp');
-                const workexp_wordCount = document.getElementById('wordcount_workexp');
-                const maxLength = 500;
-                workexp_wordCount.textContent = workexp_textarea.value.length; // 初始化字數顯示
-
-                workexp_textarea.addEventListener('input', function () {
-                    let content = workexp_textarea.value;
-                    let currentLength = content.length; // 獲取當前字數
-
-                    // 如果超過最大字數，則截斷內容並更新 textarea 內容與字數顯示
-                    if (currentLength > maxLength) {
-                        workexp_textarea.value = content.slice(0, maxLength);
-                        currentLength = workexp_textarea.value.length;
-                    }
-
-                    // 更新字數顯示
-                    workexp_wordCount.textContent = currentLength;
-                });
+                setupTextareaWordCount('.word_count_workexp', 'wordcount_workexp', 500);
 
                 //隱藏選擇工作經驗區域
                 $('#expSelectArea').hide();
@@ -98,24 +103,7 @@
                 workExpForm.html(result);
 
                 //設定工作經驗編輯區字數顯示
-                const workexp_textarea = document.querySelector('.word_count_workexp');
-                const workexp_wordCount = document.getElementById('wordcount_workexp');
-                const maxLength = 500;
-                workexp_wordCount.textContent = workexp_textarea.value.length; // 初始化字數顯示
-
-                workexp_textarea.addEventListener('input', function () {
-                    let content = workexp_textarea.value;
-                    let currentLength = content.length; // 獲取當前字數
-
-                    // 如果超過最大字數，則截斷內容並更新 textarea 內容與字數顯示
-                    if (currentLength > maxLength) {
-                        workexp_textarea.value = content.slice(0, maxLength);
-                        currentLength = workexp_textarea.value.length;
-                    }
-
-                    // 更新字數顯示
-                    workexp_wordCount.textContent = currentLength;
-                });
+                setupTextareaWordCount('.word_count_workexp', 'wordcount_workexp', 500);
 
                 //隱藏選擇工作經驗區域
                 $('#expSelectArea').hide();

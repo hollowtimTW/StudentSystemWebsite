@@ -89,12 +89,45 @@
         <div class="justify-content-end">
             <input type="submit" class="btn btn-normal" id="btnSummitAddWorkExp" value="新增工作經驗" />
             <button id="btnExpAddCancel" type="button" class="btn btn-cancel">取消</button>
+            <button id="btnExpAddDemo" type="button" class="btn btn-preview">DEMO</button>
         </div>
     </div>
 </form>
 <script>
 
     $(document).ready(function () {
+
+        //Demo用
+        const btnDemo = document.getElementById('btnExpAddDemo');
+        btnDemo.addEventListener('click', async (event) => {
+
+            const demoData = {
+                CompanyName: '新思科技有限公司',
+                JobTitle: '行政助理',
+                StartYear: '2022',
+                StartMonth: '07',
+                EndYear: '2023',
+                EndMonth: '05',
+                Salary: '28000',
+                JobContent: `1. 負責行政支援工作，包括文件處理、電話接聽、郵件管理等。\n2. 協助安排會議和活動，並準備會議記錄和文件。\n3. 處理公司內部文書，包括報告、合約和文件的撰寫和整理。\n4. 負責辦公室設備的管理和維護，確保辦公室運作順暢。`
+            };
+
+            // 將預設資料填入表單欄位
+            document.getElementById('CompanyName').value = demoData.CompanyName;
+            document.getElementById('JobTitle').value = demoData.JobTitle;
+            document.getElementById('startYear').value = demoData.StartYear;
+            document.getElementById('startMonth').value = demoData.StartMonth;
+            document.getElementById('endYear').value = demoData.EndYear;
+            document.getElementById('endMonth').value = demoData.EndMonth;
+            document.getElementById('Salary').value = demoData.Salary;
+            document.getElementById('JobContent').value = demoData.JobContent;
+
+            // 更新字數顯示
+            const thisTextarea = document.querySelector('.word_count_workexp')
+            const thisWordCount = document.getElementById('wordcount_workexp');
+            thisWordCount.textContent = thisTextarea.value.length;
+        });
+
 
         // $('#startYear, #startMonth, #endYear, #endMonth').change(function () {
         //     // 獲取起始年月和結束年月的值
@@ -160,6 +193,13 @@
                     $("#workExp_switch_form").empty(); //清空partialview的內容
                     callWorkExp();  //重新載入工作經驗資料列表
                     //$('#expSelectArea').show();  //顯示選擇工作經驗區域
+
+                    // 將焦點設置到標籤上
+                    document.getElementById('workExperienceLabel').focus();
+
+                    // 滾動視窗以使標籤可見
+                    document.getElementById('workExperienceLabel').scrollIntoView();
+
                 } else {
                     Swal.fire({
                         icon: 'error',
