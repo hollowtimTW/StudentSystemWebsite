@@ -287,6 +287,7 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
                     if (classsCourseContext != null)
                     {
                         ViewBag.classCourseId = id;
+                        ViewBag.teacherId = classsCourseContext.老師id;
                         return View(classsCourseContext);
                     }
                 }
