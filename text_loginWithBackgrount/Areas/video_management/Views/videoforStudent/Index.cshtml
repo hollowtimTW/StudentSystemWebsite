@@ -99,7 +99,8 @@
                                                             總金額:
                                                         </td>
                                                         <td>
-                                                            @(order.T影片OrderDetails.Select(item => item.FVideo.FPrice*item.FQuantity).Sum())
+                                                            @(order.T影片OrderDetails.Select(item => item.FVideo.FPrice * item.FQuantity).Sum().ToString("N0"))
+
 
                                                         </td>
                                                     </tr>

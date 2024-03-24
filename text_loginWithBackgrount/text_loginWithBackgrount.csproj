@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Areas\video_management\Views\confirm.cshtml" />
+    <Content Remove="Areas\video_management\Views\products.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Areas\video_management\Views\confirm.cshtml" />
+    <None Include="Areas\video_management\Views\products.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <None Include="Views\Shared\_Layout.cshtml" />
     <None Include="Views\Shared\_LoginPartial.cshtml" />

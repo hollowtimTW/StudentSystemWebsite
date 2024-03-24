@@ -33,17 +33,17 @@
                 <!-- 導覽列項目設置，請根據目前網頁的深度增減 -->
                 <ol>
                     <li><a asp-area="" asp-controller="Template" asp-action="Index">首頁</a></li>
-                    <li><a asp-area="video_management" asp-controller="videoforStudentController" asp-action="Index">教材影片</a></li>
+                    <li><a asp-area="video_management" asp-controller="videoforStudent" asp-action="Index">教材影片</a></li>
                     <li>
                         Hello <span id="username">@authenticateResult.Principal.Identity.Name</span>!
                        @*  @authenticateResult.Principal.Identity.Name *@
                 </li>
-                    <li class="nav-item">
+                @*     <li class="nav-item">
                         <a class="nav-link" href="/video_management/Cart/GetUserCart">
                             <span id="cartCount" class="badge text-bg-info">0</span>
                             <i class="bi bi-cart text-black"></i>
                         </a>
-                    </li>
+                    </li> *@
             </ol>
             </div>
         </nav>
@@ -75,7 +75,14 @@
                 <button type="submit" class="btn btn-success">Search</button>
                 <a href="/video_management/videoforStudent/videoshopping" class="btn btn-warning">Reset</a>
             </div>
+            <div class="col-12">
+                <a class="nav-link" href="/video_management/Cart/GetUserCart">
+                    <span id="cartCount" class="badge bg-secondary text-white" style="font-size:22px;">0</span>
+                    <i class="bi bi-cart text-black" style="font-size: 32px;"></i>
+                </a>
+            </div>
         </form>
+     
     </div>
     <div class="w-100 d-flex flex-wrap container">
         @if (Model == null)
