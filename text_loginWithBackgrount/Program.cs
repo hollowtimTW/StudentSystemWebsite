@@ -11,7 +11,7 @@ using text_loginWithBackgrount.Areas.video_management.Repositories;
 using text_loginWithBackgrount.Data;
 using text_loginWithBackgrount.Areas.course_management.Hubs;
 using text_loginWithBackgrount.Areas.quiz.Models;
-using text_loginWithBackgrount.Areas.quiz.Hubs;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -107,7 +107,6 @@ app.UseAuthorization();
 app.MapHub<NotificationHub>("/NotificationHub");
 app.MapHub<StreamHub>("/StreamHub");
 app.MapHub<WhiteboardHub>("/WhiteboardHub");
-app.MapHub<QuizHub>("/QuizHub");
 
 app.MapControllerRoute(
     name: "areas",

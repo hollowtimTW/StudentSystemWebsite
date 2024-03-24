@@ -1,14 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Claudia;
-using Azure;
-using System.Net.Http.Json;
-using System.Net.Http;
 using System.Text;
-using Org.BouncyCastle.Asn1.Ocsp;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using MongoDB.Bson;
-using OpenAI_API.Chat;
+using OpenAI;
+using OpenAI.Assistants;
+
 
 namespace text_loginWithBackgrount.Areas.quiz.Controllers
 {
@@ -93,6 +89,7 @@ namespace text_loginWithBackgrount.Areas.quiz.Controllers
             }
 
         }
+
 
     }
 
