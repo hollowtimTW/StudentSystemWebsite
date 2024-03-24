@@ -31,6 +31,12 @@
             padding: 10px;
             width: 100%;
             height: 100vh;
+            text-align: center;
+            display: flex;
+            justify-content: center; /* 將子元素水平置中 */
+            align-items: center; /* 將子元素垂直置中 */
+            height: 100vh;
+
         }
 
         h3 {
@@ -54,14 +60,16 @@
     </style>
 }
 
-<div id="content" class="text-center">
-    <h3>
-        <span class="text-black">授課科目:</span><span style="color:#008374;font-weight:bold;">@Model.科目.科目名稱</span>
-        <span class="text-black">授課老師:</span> <span style="color:#008374;font-weight:bold;">@Model.老師.姓名</span><span class="text-black">老師</span>
-    </h3>
-    <img id="waitingGif" src="https://cdn.dribbble.com/users/1478651/screenshots/9683496/media/b921a805a76e70f0c36f0410310be009.gif">
-    <video id="remoteVideo" autoplay muted resize></video>
-
+<div id="content">
+    <div>
+        <h3>
+            <span class="text-black">授課科目:</span><span style="color:#008374;font-weight:bold;">@Model.科目.科目名稱</span>
+            <span class="text-black">授課老師:</span> <span style="color:#008374;font-weight:bold;">@Model.老師.姓名</span><span class="text-black">老師</span>
+        </h3>
+   
+        <img id="waitingGif" src="https://cdn.dribbble.com/users/1478651/screenshots/9683496/media/b921a805a76e70f0c36f0410310be009.gif">
+        <video id="remoteVideo" autoplay muted resize></video>
+    </div>
 </div>
 
 
@@ -83,6 +91,7 @@
                 .then(function () {
                     console.log("SignalR connection established.");
 
+                    //在sinnnalr建立連線後就馬上建立peerId
                     peer = new Peer({
                         config: {
                             iceServers: [
@@ -96,32 +105,39 @@
                         }
                     });
 
+                    //peer綁定事件，當peer成功建立後，自動產生peer的objectId，並且存在studentPeerId變數中，馬上向後端確認是否授課老師有創建連線了
                     peer.on('open', function (id) {
                         studentPeerId = id;
                         console.log('Peer instance is ready with ID: ' + studentPeerId);
                         return connection.invoke("checkGroup", '@ViewBag.classCourseId', studentPeerId);
                     });
 
+                    //peer綁定事件，當peer建立失敗該如何處理
                     peer.on('error', function (err) {
                         console.error('Error in Peer instance: ', err);
                     });
 
+                    //peer綁定事件，老師端成功呼叫，後續的處理
                     peer.on('call', function (call) {
+
                         console.log('Received a call.');
                         call.answer();
 
+                        //call的綁定事件，老師端開始傳送stream
                         call.on('stream', function (remoteStream) {
+
                             console.log('Received remote stream.');
-                            console.log(remoteStream);
+
                             var remoteVideo = document.getElementById('remoteVideo');
                             var waitingGif = document.getElementById('waitingGif');
                             remoteVideo.srcObject = remoteStream;
                             remoteVideo.style.display = 'block';
                             waitingGif.style.display = 'none';
+                            //開始撥放
                             remoteVideo.play().catch(error => console.error('Error playing video', error));
 
                         });
-
+                        //call的綁定事件，call錯誤處理
                         call.on('error', function (err) {
                             console.error('Call error: ', err);
                         });
@@ -132,6 +148,18 @@
                     console.error("Error during SignalR or Peer operations: ", error);
                 });
 
+            //確認群組狀態後，給學生使用者顯示目前狀態
+            connection.on("groupJoinState", function (data) {
+                var obj = JSON.parse(data);
+                if (obj.groupName != "") {
+                    groupName = obj.groupName;
+                } 
+                else {
+                    console.log(groupName);
+                }
+                alert(obj.message);
+            });
+
 
             connection.on("SendPeerIdToteacher", function (data) {
                 connection.invoke("SendPeerId", groupName, studentPeerId);
@@ -139,12 +167,7 @@
             });
 
 
-            connection.on("groupJoinState", function (data) {
-                var obj = JSON.parse(data);
-                groupName = obj.groupName;
-                console.log(groupName);
-                alert(obj.message);
-            });
+           
 
 
         });

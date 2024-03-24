@@ -33,8 +33,11 @@ $(function () {
     //3.綁定的"groupJoinState"
     connection.on("groupJoinState", function (data) {
         var obj = JSON.parse(data);
-        groupName = obj.groupName;
-        console.log(groupName);
+        if (obj.groupName != "") {
+            groupName = obj.groupName;
+        } else {
+            console.log(groupName);
+        }
         alert(obj.message);
     });
 
@@ -75,62 +78,69 @@ $(function () {
 ///<param name="sound">當前是否音訊端可以傳送，true為可傳送、false表示不傳送</param>
 
 function toggleRecording() {
-    record = !record;
-    sound = !sound;
-    var localVideo = document.getElementById('localVideo');
-    var waitingGif = document.getElementById('waitingGif');
-    var recordIcon = document.getElementById('recordIcon');
+    try {
+        record = !record;
+        sound = !sound;
+        var localVideo = document.getElementById('localVideo');
+        var waitingGif = document.getElementById('waitingGif');
+        var recordIcon = document.getElementById('recordIcon');
 
-    //檢查是否是第一次開啟直播，如果是要初始化數據流
-    if (start === 0) {
-        navigator.mediaDevices.getDisplayMedia({ video: true })
-            .then(videoStream => {
-                navigator.mediaDevices.getUserMedia({ audio: true })
-                    .then(audioStream => {
-                        //設置本地流
-                        localStream = new MediaStream([...videoStream.getVideoTracks(), ...audioStream.getAudioTracks()]);
-                        document.getElementById('localVideo').srcObject = localStream;
-                        //設置老師端的圖示變化，因為是第一次開啟直播所以直接寫死，video可看；wainting消失
-                        localVideo.style.display = 'block';
-                        waitingGif.style.display = 'none';
-                        recordIcon.classList.replace("bi-record-circle", "bi-stop");
-                        //傳送給後端告知已經開啟直播並且設置好peerId
-                        setUpPeer();
-                        //讓學生端回傳peerId
-                        connection.invoke("informStudent", groupName);
-                        //之後就不是第一次開啟
-                        start++;
-                    })
-                    .catch(err => {
-                        console.error("Error getting audio stream: ", err);
-                    });
-            })
-            .catch(err => {
-                console.error("Error getting video stream: ", err);
-            });
-    } else {
-        // 當不是第一次按這按紐，就是暫停或重新繼續直播
-        if (record) {
-            // 繼續直播，讓本來的流每個流都能被獲取
-            localStream.getVideoTracks().forEach(track => {
-                track.enabled = true;
-            });
-            localStream.getAudioTracks().forEach(track => {
-                track.enabled = sound;
-            });
-            recordIcon.classList.replace("bi-stop", "bi-record-circle");
-            localVideo.style.display = 'block';
-            waitingGif.style.display = 'none';
+        //檢查是否是第一次開啟直播，如果是要初始化數據流
+        if (start === 0) {
+            navigator.mediaDevices.getDisplayMedia({ video: true })
+                .then(videoStream => {
+                    navigator.mediaDevices.getUserMedia({ audio: true })
+                        .then(audioStream => {
+                            //設置本地流
+                            localStream = new MediaStream([...videoStream.getVideoTracks(), ...audioStream.getAudioTracks()]);
+                            document.getElementById('localVideo').srcObject = localStream;
+                            //設置老師端的圖示變化，因為是第一次開啟直播所以直接寫死，video可看；wainting消失
+                            localVideo.style.display = 'block';
+                            waitingGif.style.display = 'none';
+                            recordIcon.classList.replace("bi-record-circle", "bi-stop");
+                            //傳送給後端告知已經開啟直播並且設置好peerId
+                            setUpPeer();
+
+                            ////讓學生端回傳peerId
+                            //connection.invoke("informStudent", groupName);
+
+                            //之後就不是第一次開啟
+                            start++;
+                        })
+                        .catch(err => {
+                            console.error("Error getting audio stream: ", err);
+                        });
+                })
+                .catch(err => {
+                    console.error("Error getting video stream: ", err);
+                });
         } else {
-            // 當暫停直播後
-            localStream.getTracks().forEach(track => {
-                track.enabled = false;
-            });
 
-            recordIcon.classList.replace("bi-record-circle", "bi-stop");
-            localVideo.style.display = 'none';
-            waitingGif.style.display = 'block';
+            // 當不是第一次按這按紐，就是暫停或重新繼續直播
+            if (record) {
+                // 繼續直播，讓本來的流每個流都能被獲取
+                localStream.getVideoTracks().forEach(track => {
+                    track.enabled = true;
+                });
+                localStream.getAudioTracks().forEach(track => {
+                    track.enabled = sound;
+                });
+                recordIcon.classList.replace("bi-stop", "bi-record-circle");
+                localVideo.style.display = 'block';
+                waitingGif.style.display = 'none';
+            } else {
+                // 當暫停直播後
+                localStream.getTracks().forEach(track => {
+                    track.enabled = false;
+                });
+
+                recordIcon.classList.replace("bi-record-circle", "bi-stop");
+                localVideo.style.display = 'none';
+                waitingGif.style.display = 'block';
+            }
         }
+    } catch (error) {
+        console.error("An error occurred in toggleRecording: ", error);
     }
 }
 
@@ -142,11 +152,14 @@ function reloadPage() {
 
 
 function togglemute() {
-    var micIcon = document.getElementById('soundIcon');
+    //音訊連先關閉
     sound = !sound;
     localStream.getAudioTracks().forEach(track => {
         track.enabled = sound;
     });
+
+    //將icon更換
+    var micIcon = document.getElementById('soundIcon');
     if (sound) {
         micIcon.classList.replace("bi-mic-mute-fill", "bi-mic-fill");
     } else {

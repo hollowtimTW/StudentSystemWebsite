@@ -6,7 +6,9 @@
     var classData = ViewBag.Class as T課程班級;
     var courseData = ViewBag.ClassCourse as List<T課程班級科目>;
 }
-
+@{
+    ViewData["Title"] = "課程規劃";
+}
 @section Styles{
    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.css" rel="stylesheet" />
 
@@ -98,11 +100,29 @@
     </style>
 }
 
-<div class="text-center text-black-50">
-    <div>
-        <h2>課程規劃:</h2>
+ <div class="header">
+    <!-- 主頁上方操作流程序，記得有新增頁面時要記得編輯 -->
+    <div class="left">
+        <h1 class="text-center"><span class="">@classData.班級名稱</span> 課程規劃</h1>
+
+        <ul class="breadcrumb">
+            <li><a asp-area="" asp-controller="SystemBackground" asp-action="Index">首頁</a></li>
+            /
+            <li><a asp-area="course_management" asp-controller="courseHome" asp-action="Index">排課系統管理</a></li>
+            /
+            <li>
+                <a asp-area="course_management" asp-controller="T課程班級" asp-action="Index">班級管理</a></li>
+            /
+            <li>
+                <a asp-area="course_management" asp-controller="T課程班級" asp-action="Details" asp-route-id="@classData.班級id">班級詳細資訊</a>
+            </li>
+            /
+            <li><a href="#" class="active">@ViewData["Title"]</a></li>
+        </ul>
     </div>
+    <!-- 主頁上方操作流程序-->
 </div>
+
 
 <div class="mt-4">
     <card class="text-center">

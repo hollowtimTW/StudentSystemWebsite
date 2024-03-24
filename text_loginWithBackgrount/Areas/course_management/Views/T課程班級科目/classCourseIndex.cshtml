@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Class_system_Backstage_pj.Models.T課程班級科目>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "班級科目表";
 }
 
 @section Styles {
@@ -79,10 +79,34 @@
     </style>
 }
 
-<h1 class="text-center">@ViewData["ClassName"] 班級科目列表</h1>
+<div class="header">
+    <!-- 主頁上方操作流程序，記得有新增頁面時要記得編輯 -->
+    <div class="left">
+        <h1 class="text-center">@ViewData["ClassName"] @ViewData["Title"]</h1>
 
-<p>
-    <a class="btn btn-success fs-4 pb-2" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="popup_create()">create</a>
+        <ul class="breadcrumb">
+            <li><a asp-area="" asp-controller="SystemBackground" asp-action="Index">首頁</a></li>
+            /
+            <li><a asp-area="course_management" asp-controller="courseHome" asp-action="Index">排課系統管理</a></li>
+            /
+            <li>
+                <a asp-area="course_management" asp-controller="T課程班級" asp-action="Index">班級管理</a></li>
+            /
+            <li>
+                <a asp-area="course_management" asp-controller="T課程班級" asp-action="Details" asp-route-id="@ViewData["ClassId"]">班級詳細資訊</a>
+            </li>
+            /
+            <li><a href="#" class="active">@ViewData["Title"]</a></li>
+        </ul>
+    </div>
+    <!-- 主頁上方操作流程序-->
+</div>
+
+<p class="d-flex align-items-center">
+    <a class="btn btn-success fs-4 pb-2" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="popup_create()" style="display: flex; align-items: center;">
+        <span class="">班級科目</span>
+        <i class="bx bxs-plus-square pt-1" style="font-size: 1em;"></i>
+    </a>
 </p>
 
 <table class="table table-hover" id="table" style="width:100%">

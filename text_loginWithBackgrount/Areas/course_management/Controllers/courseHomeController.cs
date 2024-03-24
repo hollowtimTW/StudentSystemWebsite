@@ -279,8 +279,28 @@ namespace Class_system_Backstage_pj.Areas.course_management.Controllers
         /// <returns>classFeature頁面</returns>  
         public IActionResult classFeature(int id)
         {
-            ViewBag.classcourseId = id;
-            return View();
+            try
+            {
+                if (id != null || id != 0)
+                {
+                    var classsCourseContext = _context.T課程班級科目s.Where(t => t.班級科目id == id).Include(t => t.科目).Include(t => t.班級).FirstOrDefault();
+                    if (classsCourseContext != null)
+                    {
+                        ViewBag.classCourseId = id;
+                        return View(classsCourseContext);
+                    }
+                }
+
+                return View("Errors");
+
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine($"發生錯誤: {ex.Message}");
+                return View("Errors");
+            }
+
         }
 
         /// <summary>
