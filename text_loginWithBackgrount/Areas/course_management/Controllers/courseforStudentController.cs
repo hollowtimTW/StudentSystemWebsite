@@ -20,74 +20,109 @@ namespace text_loginWithBackgrount.Areas.course_management.Controllers
         {
             _context = context;
         }
-
+        /// <summary>
+        /// 這個方法用於登入系統中的學生使用者可以進行行上課
+        /// </summary>
+        /// <param name="id">學生的學生id。</param>
+        ///<returns>成功登入並點選後，返回學生專區課程頁面。</returns>
         async public Task<IActionResult> Index(int? id)
         {
-
-            var classId = _context.T課程學生班級s
-            .Where(t => t.學生id == id)
-            .Select(t => t.班級id)
-            .FirstOrDefault();
-
-
-            if (classId == null || classId == 0)
+            try
             {
-                ViewBag.state = false;
-                ViewBag.message = "學生尚未被添加到班級中";
-                return View();
-            }
+                if (id == null || id == 0)
+                {
+                    ViewBag.state = false;
+                    ViewBag.message = "資料 error";
+                    return View();
+                }
 
-            var classContext = _context.T課程班級s
-            .Where(t => t.班級id == classId)
-            .FirstOrDefault();
-
-            var courseContext = await _context.T課程班級科目s
-            .Include(t => t.老師)
-            .Include(t => t.科目)
-            .Where(t => t.班級id == classId)
-            .ToListAsync();
+                var classId = _context.T課程學生班級s
+                .Where(t => t.學生id == id)
+                .Select(t => t.班級id)
+                .FirstOrDefault();
 
 
-            if (courseContext.Count == 0)
+                if (classId == null || classId == 0)
+                {
+                    ViewBag.state = false;
+                    ViewBag.message = "學生尚未被添加到班級中";
+                    return View();
+                }
+
+                var classContext = _context.T課程班級s
+                .Where(t => t.班級id == classId)
+                .FirstOrDefault();
+
+                if (classContext == null)
+                {
+                    ViewBag.state = false;
+                    ViewBag.message = "資料 error";
+                    return View();
+
+                }
+
+                var courseContext = await _context.T課程班級科目s
+                .Include(t => t.老師)
+                .Include(t => t.科目)
+                .Where(t => t.班級id == classId)
+                .ToListAsync();
+
+
+                if (courseContext.Count == 0 || courseContext==null)
+                {
+                    ViewBag.state = false;
+                    ViewBag.message = "班級科目尚未被添加到班級中";
+                    return View();
+                }
+
+                var TimeContextQuery = _context.T課程班級科目s
+                .Include(t => t.T課程課程s)
+                .Where(t => t.班級id == classId)
+                .SelectMany(subject => subject.T課程課程s);
+
+                var TimeContext = await TimeContextQuery.ToListAsync();
+
+                if (!TimeContext.Any())
+                {
+                    ViewBag.State = false;
+                    ViewBag.Message = "都未安排上課時間";
+                    return View();
+
+                }
+                else
+                {
+                    ViewBag.State = true;
+                    ViewBag.Class = classContext;
+                    ViewBag.ClassCourse = courseContext;
+
+                    return View(TimeContext);
+                }
+
+               
+
+             }catch (Exception ex)
             {
-                ViewBag.state = false;
-                ViewBag.message = "班級科目尚未被添加到班級中";
-                return View();
+                Console.WriteLine($"發生錯誤: {ex.Message}");
+                return View("Errors");
             }
-
-            var TimeContextQuery = _context.T課程班級科目s
-            .Include(t => t.T課程課程s)
-            .Where(t => t.班級id == classId)
-            .SelectMany(subject => subject.T課程課程s);
-
-            var TimeContext = await TimeContextQuery.ToListAsync();
-
-            if (!TimeContext.Any())
-            {
-                ViewBag.State = false;
-                ViewBag.Message = "都未安排上課時間";
-                return View();
-
-            }
-
-            ViewBag.State = true;
-            ViewBag.Class = classContext;
-            ViewBag.ClassCourse = courseContext;
-
-            return View(TimeContext);
-
-
         }
 
+        /// <summary>
+        /// 這個方法用於登入系統中的學生使用者可以進行填寫回饋
+        /// </summary>
+        /// <param name="studentid">學生的學生id。</param>
+        /// <param name="id">班級科目id。</param>
+        ///<returns>成功登入並點選後，返回學生專區課程的填寫回饋表partial。</returns>
         [HttpGet("/course_management/courseforStudent/Edit/{id}/{studentid}")]
         async public Task<IActionResult> Edit(int? id, int? studentid)
         {
             if (id == null || _context.T課程評分主表s == null)
             {
-                return NotFound();
+                return View("Errors");
             }
 
             var resultClass = CheckClassCourseSatus(id);
+
             if (!resultClass)
             {
                 return Ok("老師還尚未開啟填寫表單");
@@ -114,13 +149,20 @@ namespace text_loginWithBackgrount.Areas.course_management.Controllers
 
             if (t課程評分表ViewModel == null)
             {
-                return NotFound();
+                return View("Errors");
             }
 
 
             return PartialView("_EditPartial", t課程評分表ViewModel);
         }
 
+        /// <summary>
+        /// 這個方法用於登入系統中的學生使用者可以進行填寫回饋
+        /// </summary>
+        /// <param name="studentid">學生的學生id。</param>
+        /// <param name="id">班級科目id。</param>
+        /// <param name="ViewModel">RateFormViewModel。</param>
+        ///<returns>返回學生專區課程的填寫回饋表partial的資料。</returns>
         [HttpPost("/course_management/StudentHome/Edit/{id}/{studentid}")]
         public async Task<IActionResult> Edit(int? id, int? studentid, RateFormViewModel ViewModel)
         {
@@ -136,7 +178,7 @@ namespace text_loginWithBackgrount.Areas.course_management.Controllers
                         var t課程評分主表 = await _context.T課程評分主表s.FindAsync(ViewModel.評分主表id);
                         if (t課程評分主表 == null)
                         {
-                            return NotFound();
+                            return View("Errors");
                         }
 
                         t課程評分主表.班級科目id = ViewModel.班級科目id;
@@ -156,23 +198,18 @@ namespace text_loginWithBackgrount.Areas.course_management.Controllers
                             }
                             else
                             {
-                                return NotFound();
+                                return View("Errors");
                             }
                         }
                         await _context.SaveChangesAsync();
                         transaction.Commit();
                     }
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception ex)
                 {
-                    if (!T課程評分主表Exists(ViewModel.評分主表id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    Console.WriteLine($"發生錯誤: {ex.Message}");
+                    return View("Errors");
+
                 }
             }
 
@@ -184,15 +221,12 @@ namespace text_loginWithBackgrount.Areas.course_management.Controllers
 
         public bool CheckClassCourseSatus(int? ClassCourseId)
         {
-
             var data = _context.T課程班級科目s.FirstOrDefault(tc => tc.班級科目id == ClassCourseId);
 
             if (data.狀態 == 7)
             {
-
                 //已經開啟可以填寫
                 return true;
-
             }
             else
             {
@@ -221,11 +255,33 @@ namespace text_loginWithBackgrount.Areas.course_management.Controllers
             }
         }
 
-        //班級科目的id 
+        /// <summary>
+        /// 這個方法用於確認班級目的老師直播。
+        /// </summary>
+        /// <param name="id">班級科目id。</param>
+        /// <returns>返回學生的老師直播頁。</returns>
         public IActionResult live(int? id)
         {
-            ViewBag.classCourseId = id;
-            return View();
+            try
+            {
+                if (id != null || id != 0)
+                {
+                    var classsCourseContext = _context.T課程班級科目s.Where(t => t.班級科目id == id).Include(t => t.科目).Include(t => t.老師).FirstOrDefault();
+                    if (classsCourseContext != null)
+                    {
+                        ViewBag.classCourseId = id;
+                        return View(classsCourseContext);
+                    }
+                }
+
+                return View("Errors");
+
+            }catch(Exception ex) {
+
+                Console.WriteLine($"發生錯誤: {ex.Message}");
+                return View("Errors");
+            }  
+                
         }
 
         //班級科目的id 

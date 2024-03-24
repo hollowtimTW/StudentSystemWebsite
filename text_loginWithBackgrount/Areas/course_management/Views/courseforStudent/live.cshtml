@@ -1,4 +1,6 @@
-﻿@section Styles {
+﻿@model Class_system_Backstage_pj.Models.T課程班級科目
+
+@section Styles {
 
     <style>
         #remoteVideo {
@@ -32,13 +34,31 @@
         }
 
         h3 {
-            margin-top: 5px;
+            margin-top: 20px;
+            font-size: 24px;
+            color: #333;
+            font-family: Arial, sans-serif; 
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.1); 
         }
+
+            h3 span {
+                margin-right: 10px;
+                text-transform: uppercase;
+                font-weight:bold;
+            }
+
+                h3 span:last-child {
+                    margin-right: 0; 
+                }
+
     </style>
 }
 
 <div id="content" class="text-center">
-    <h3>Screen Sharing</h3>
+    <h3>
+        <span class="text-black">授課科目:</span><span style="color:#008374;font-weight:bold;">@Model.科目.科目名稱</span>
+        <span class="text-black">授課老師:</span> <span style="color:#008374;font-weight:bold;">@Model.老師.姓名</span><span class="text-black">老師</span>
+    </h3>
     <img id="waitingGif" src="https://cdn.dribbble.com/users/1478651/screenshots/9683496/media/b921a805a76e70f0c36f0410310be009.gif">
     <video id="remoteVideo" autoplay muted resize></video>
 
