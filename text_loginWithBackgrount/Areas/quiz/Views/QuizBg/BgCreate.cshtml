@@ -6,6 +6,13 @@
 
 @section Styles{
 	<link href="~/quiz/css/quizcreate.css" rel="stylesheet" />
+
+    <style>
+        #demo{
+            color:white;
+        }
+
+    </style>
 }
 
 
@@ -46,6 +53,7 @@
                 <div class="container mt-3">
                     <div class="d-flex justify-content-between">
                         <a class="btn btn-primary mb-3" id="saveQuiz">儲存</a>
+                        <a class="btn" id="demo">Demo</a>
                         <a class="btn btn-secondary mb-3" id="resetQuiz">重置</a>
                     </div>
 
@@ -673,6 +681,32 @@
 
             // 開始執行
             loadData();
+
+
+
+            // Demo
+            $('#demo').on('click', function () {
+                $.ajax({
+                    url: '/Api/QuizBg/GetQuestions/33',
+                    type: 'GET',
+                    success: function (data) {
+                        console.log(data)
+                        data.map(function (questionData) {
+                            const questionDiv = createEmptyQuestionTemplate();
+                            const optionSectionContainer = questionDiv.find('.option-section-container');
+                            fillQuestionTemplate(questionDiv, questionData, optionSectionContainer);
+                            questionSection.append(questionDiv);
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+      
+          
+
+
 
         });
 
