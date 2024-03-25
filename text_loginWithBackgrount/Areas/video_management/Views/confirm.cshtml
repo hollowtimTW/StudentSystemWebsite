@@ -1,4 +1,4 @@
-﻿@model T影片ShoppingCart
+﻿@model T影片CartDetail
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,7 +16,7 @@
 
 <body>
     <script>
-        let baseLoginPayUrl = 'https://localhost:8080/api/LinePay/';
+        let baseLoginPayUrl = 'https://localhost:7150/api/LinePay/';
         let transactionId = "";
         let orderId = "";
 
@@ -66,7 +66,7 @@
         <table>
             <thead>
                 <tr>
-                    <th colspan="2"> 測試商品 </th>
+                    <th colspan="2">@Model.FVideo</th>
                 </tr>
             </thead>
             <tbody>
@@ -74,13 +74,13 @@
                     <td colspan="2"><img src="https://static.accupass.com/org/2011051025162614811630.jpg"></td>
                 </tr>
                 <tr>
-                    <td colspan="2"> 價格 : 1999 </td>
+                    <td colspan="2"> 價格 :@Model.UnitPrice </td>
                 </tr>
                 <tr>
-                    <td colspan="2"> 購買數量 : 2 </td>
+                    <td colspan="2"> 購買數量 : @Model.Quantity </td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="text-align: right;"> 總金額 : 3998 </td>
+                    <td colspan="2" style="text-align: right;"> 總金額 : @string.Format("{0:0.##}", Model.FVideo.FPrice * Model.Quantity) </td>
                 </tr>
                 <tr>
                     <td align="center" colspan="2"><button onclick="confirmPayment()"> 確認付款</button></td>
