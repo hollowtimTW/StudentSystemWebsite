@@ -119,7 +119,8 @@
                 <button type="submit">登入</button>
                 <button type="button" id="demoBtn" onclick="demo()">馬鈺新</button>
                 <button type="button" id="demoBtn2" onclick="demo2()">林夏陽</button>
-
+                <button type="button" id="demoBtn3" onclick="demo3()">林曉雙</button>
+                <button type="button" id="demoBtn4" onclick="demo4()">管理者</button>
             </form>
 
         </div>
@@ -157,6 +158,16 @@
 
         const demo2 = ("click", () => {
             account.value = "d675l@gmail.com";
+            password.value = "1234567@@"; //單@會有問題 實際上1234567@才是通用密碼
+        })
+
+        const demo3 = ("click", () => {
+            account.value = "9gqbk@gmail.com";
+            password.value = "1234567@@"; //單@會有問題 實際上1234567@才是通用密碼
+        })
+
+        const demo4 = ("click", () => {
+            account.value = "admin@gmail.com";
             password.value = "1234567@@"; //單@會有問題 實際上1234567@才是通用密碼
         })
 

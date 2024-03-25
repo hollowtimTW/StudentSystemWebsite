@@ -511,7 +511,7 @@ namespace text_loginWithBackgrount.Controllers
                         mail.Subject = "學生平台認證信";
                         mail.Body = "<html>\r\n<body>\r\n<p>這是你的忘記密碼連結：</p>\r\n<a href='" +
                             applicationUrl
-                            + "'>點擊使用TOKEN前往重設密碼頁</a>\r\n</body>\r\n</html>\r\n";
+                            + "'>點擊前往重設密碼頁</a>\r\n</body>\r\n</html>\r\n";
                         mail.To.Add(user.信箱.ToString());
                         mail.IsBodyHtml = true;
                         //--------獲得smtp認證
