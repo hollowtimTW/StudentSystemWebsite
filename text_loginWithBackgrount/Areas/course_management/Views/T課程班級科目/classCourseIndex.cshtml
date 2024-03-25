@@ -414,6 +414,7 @@
         }
 
         function notification(receiveId, sendId, classCourseId) {
+            try { 
             $.ajax({
                 url: "/course_management/T課程班級科目/notification",
                 type: "POST",
@@ -429,8 +430,6 @@
                     connection.start()
                         .then(function () {
                             console.log('SignalR connection established.');
-                            console.log('Connected with connection ID:');
-
                             // 在連線建立後，調用 SignalR hub 方法通知接收者
 
                             connection.invoke("SendNotification", receiveId)
@@ -452,6 +451,11 @@
                     alert("發生錯誤，請稍後再試。");
                 }
             });
+         }
+            }
+            catch (error) {
+            console.error("Error:", error);
+            }
         }
     </script>
 

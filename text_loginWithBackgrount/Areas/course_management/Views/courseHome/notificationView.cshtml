@@ -9,7 +9,7 @@
 @section Styles {
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
     <link href="~/css/datatablesinline.min.css" rel="stylesheet" />
-    <link href="~/css/course_management/stylenotification.css" rel="stylesheet" />
+    <link href="~/css/course_management/StyleNotification.css" rel="stylesheet" />
 }
 
 
@@ -54,9 +54,10 @@
                                         <img src="~/images/notification/blueemail.png" />
                                     </div>
                                     <div class="notification-list_detail">
-                                        <p class="task-title"><span>@item.SenderName</span>發送訊息給您</p>
                                         <p class="text-muted">@item.發送訊息內容</p>
                                         <p class="text-muted"><small>@item.時間</small></p>
+                                        <p class="task-title"><span>@item.SenderName</span>發送訊息給您</p>
+
                                     </div>
                                 </div>
 

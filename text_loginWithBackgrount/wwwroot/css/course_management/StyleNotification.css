@@ -1,2 +1,35 @@
-﻿body {
+﻿.notification-list_content {
+    display: flex;
+    align-items: center; 
+    margin-bottom: 20px; 
 }
+
+.notification-list_img {
+    flex: 0 1 10%; 
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+}
+
+    .notification-list_img img {
+        width: 100%; 
+        max-width: 100%; 
+        height: auto;
+    }
+
+.notification-list_detail {
+    flex: 1; 
+    padding-left: 20px; 
+}
+
+.task-title span {
+    font-weight: bold; /* 突出显示发送者的名字 */
+}
+
+.text-muted {
+    color: #6c757d; /* 为文本提供灰色调，显示较低的对比度 */
+}
+
+    .text-muted small {
+        font-size: 0.875em; /* 小型字体大小 */
+    }

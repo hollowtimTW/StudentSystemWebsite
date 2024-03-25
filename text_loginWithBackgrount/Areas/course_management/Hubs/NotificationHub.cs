@@ -31,25 +31,28 @@ namespace text_loginWithBackgrount.Areas.course_management.Hubs
         {
             string userId = Context.User?.FindFirst("teacherID")?.Value;
             string connectionId = Context.ConnectionId;
+            
+         
 
-
-            if (!string.IsNullOrEmpty(userId))
-            {
-
-                if (ConnectionTeacherMap.TryGetValue(userId, out string existingConnectionId))
+                if (!string.IsNullOrEmpty(userId))
                 {
-                    ConnectionTeacherMap[userId] = connectionId;
-                    Console.WriteLine($"Replacing existing connection for UserId = {userId}: Old ConnectionId = {existingConnectionId}");
-                }
-                else
-                {
-                    ConnectionTeacherMap.TryAdd(userId, connectionId);
-                    Console.WriteLine($"User connected: ConnectionId = {connectionId}, UserId = {userId}");
+
+                    if (ConnectionTeacherMap.TryGetValue(userId, out string existingConnectionId))
+                    {
+                        ConnectionTeacherMap[userId] = connectionId;
+                        Console.WriteLine($"Replacing existing connection for UserId = {userId}: Old ConnectionId = {existingConnectionId}");
+                    }
+                    else
+                    {
+                        ConnectionTeacherMap.TryAdd(userId, connectionId);
+                        Console.WriteLine($"User connected: ConnectionId = {connectionId}, UserId = {userId}");
+                    }
+
                 }
 
-            }
-
-            return base.OnConnectedAsync();
+                return base.OnConnectedAsync();
+            
+          
         }
 
 
