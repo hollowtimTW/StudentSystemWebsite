@@ -12,16 +12,16 @@
 
         <center>
             <table>
-    @*     <thead>
+        <thead>
             <tr>
                 <td colspan="2">@item.FVideo.FVideoName</td>
             </tr>
-        </thead> *@
+        </thead>
         <tbody>
             <tr>
                 <td colspan="2"><img src="https://static.accupass.com/org/2011051025162614811630.jpg"></td>
             </tr>
-        @*     <tr>
+            <tr>
                 <td colspan="2"> 價格 :@item.FVideo.FPrice </td>
             </tr>
             <tr>
@@ -29,9 +29,9 @@
             </tr>
             <tr>
                 <td colspan="2" style="text-align: right;"> 總金額 : @string.Format("{0:0.##}", item.FVideo.FPrice * item.Quantity) </td>
-            </tr> *@
+            </tr>
             <tr>
-                <td align="center" colspan="2"><button onclick="confirmPayment()"> 確認付款</button></td>
+                <td align="center" colspan="2"><button id="confirmPayment"> 確認付款</button></td>
             </tr>
         </tbody>
     </table>
@@ -65,12 +65,18 @@ else
             orderId = params.orderId;
             console.log(orderId)
         });
-        function confirmPayment() {
-            // 交易訂單假資料
+        var confirmPaymentElement = document.getElementById("confirmPayment");
+        confirmPaymentElement.addEventListener("click", function () {
             payment = {
-                amount: 3998,
-                currency: "TWD",
-            };
+                amount: parseInt(@Convert.ToInt32(Model.T影片CartDetails.Select(item => item.FVideo.FPrice * item.Quantity).Sum().ToString("0.##"))),
+            currency: "TWD",
+        };
+        // function confirmPayment() {
+        //     // 交易訂單假資料
+        //     payment = {
+        //         amount: amount: parseInt(@Convert.ToInt32(Model.T影片CartDetails.Select(item => item.FVideo.FPrice * item.Quantity).Sum().ToString("0.##"))),
+        //         currency: "TWD",
+        //     };
             //  送出確認交易
             $.post({
                 url: baseLoginPayUrl + `Confirm?transactionId=${transactionId}&orderId=${orderId}`,
@@ -81,15 +87,15 @@ else
                     $("#paymentStatus").text("交易狀態 : 成功")
                     console.log(res);
 
-                    setTimeout(() => {
-                        window.location = "https://cccf-61-63-154-173.jp.ngrok.io/products.html";
-                    }, 2000);
+                setTimeout(() => {
+                    window.location.href = "/video_management/Cart/Checkout";
+                }, 2000);
                 },
                 error: (err) => {
                     console.log(err);
                 }
             })
-        }
+        })
 
     </script>
 }

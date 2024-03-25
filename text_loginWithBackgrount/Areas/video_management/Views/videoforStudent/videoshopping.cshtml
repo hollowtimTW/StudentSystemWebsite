@@ -72,8 +72,8 @@
             </div>
 
             <div class="col-12">
-                <button type="submit" class="btn btn-success">Search</button>
-                <a href="/video_management/videoforStudent/videoshopping" class="btn btn-warning">Reset</a>
+                <button type="submit" class="btn btn-success">搜尋</button>
+                <a href="/video_management/videoforStudent/videoshopping" class="btn btn-warning">重製</a>
             </div>
             <div class="col-12">
                 <a class="nav-link" href="/video_management/Cart/GetUserCart">
@@ -116,7 +116,7 @@
                     }
                     else
                     {
-                        <p>Video not available</p>
+                        <p>影片不存在</p>
                     }
                     <div class="card-body">
                         <h5 class="card-title">@video.FVideoTitle</h5>
@@ -126,7 +126,7 @@
                             @* <b>$ </b>@video.FPrice *@
                             <b>$ </b>@Math.Floor(video.FPrice)
                         </p>
-                        <button type="button" onclick="add(@video.FVideoId)" class="btn btn-success">Add to cart</button>
+                        <button type="button" onclick="add(@video.FVideoId)" class="btn btn-success">加入購物車</button>
                     </div>
                 </div>
             }

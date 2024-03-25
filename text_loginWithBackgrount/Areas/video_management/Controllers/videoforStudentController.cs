@@ -51,21 +51,10 @@ namespace text_loginWithBackgrount.Areas.video_management.Controllers
             return View(videoModel);
 
         }
-        public IActionResult confirm()
+        public async Task<IActionResult> confirm()
         {
-            var shoppingCart = _studentContext.T影片ShoppingCarts.FirstOrDefault();
-
-            // 檢查是否找到了資料
-            if (shoppingCart != null)
-            {
-                // 在這裡使用T影片ShoppingCart的資料，例如：
-                var id = shoppingCart.Id;
-                var studentId = shoppingCart.FStudentId;
-                var cart = _cartRepo.GetUserCart();
-                // 請注意，您可以根據您的需求使用其他查詢方法，例如Find、Where等等。
-                return View(shoppingCart);
-            }
-            return View();
+            var cart = await _cartRepo.GetUserCart();
+            return View(cart);
         }
 
         //public async Task<IActionResult> Index(string sTerm = "", int genreId = 0)
