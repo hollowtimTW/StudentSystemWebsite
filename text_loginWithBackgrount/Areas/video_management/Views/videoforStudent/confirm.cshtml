@@ -1,0 +1,95 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model T影片ShoppingCart
+
+@if (Model != null && Model.T影片CartDetails != null && Model.T影片CartDetails.Count > 0)
+{
+    @foreach (var item in Model.T影片CartDetails)
+    {
+
+        <center>
+            <table>
+    @*     <thead>
+            <tr>
+                <td colspan="2">@item.FVideo.FVideoName</td>
+            </tr>
+        </thead> *@
+        <tbody>
+            <tr>
+                <td colspan="2"><img src="https://static.accupass.com/org/2011051025162614811630.jpg"></td>
+            </tr>
+        @*     <tr>
+                <td colspan="2"> 價格 :@item.FVideo.FPrice </td>
+            </tr>
+            <tr>
+                <td colspan="2"> 購買數量 : @item.Quantity </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: right;"> 總金額 : @string.Format("{0:0.##}", item.FVideo.FPrice * item.Quantity) </td>
+            </tr> *@
+            <tr>
+                <td align="center" colspan="2"><button onclick="confirmPayment()"> 確認付款</button></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="Container">
+        <a id="paymentStatus">交易狀態 : 交易已授權，等待確認<a>
+    </div>
+        </center>
+    }
+
+
+}
+else
+{
+    <section> <h5>媽的你家失火啦</h5><br /></section>
+}
+
+@section scripts{
+    <script>
+        let baseLoginPayUrl = 'https://localhost:7150/api/LinePay/';
+        let transactionId = "";
+        let orderId = "";
+
+        $(document).ready(function () {
+            // 取出 query parameter 中的 transactionId & orderId
+            const params = new Proxy(new URLSearchParams(window.location.search), {
+                get: (searchParams, prop) => searchParams.get(prop),
+            });
+
+            transactionId = params.transactionId;
+            orderId = params.orderId;
+            console.log(orderId)
+        });
+        function confirmPayment() {
+            // 交易訂單假資料
+            payment = {
+                amount: 3998,
+                currency: "TWD",
+            };
+            //  送出確認交易
+            $.post({
+                url: baseLoginPayUrl + `Confirm?transactionId=${transactionId}&orderId=${orderId}`,
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify(payment),
+                success: (res) => {
+                    $("#paymentStatus").text("交易狀態 : 成功")
+                    console.log(res);
+
+                    setTimeout(() => {
+                        window.location = "https://cccf-61-63-154-173.jp.ngrok.io/products.html";
+                    }, 2000);
+                },
+                error: (err) => {
+                    console.log(err);
+                }
+            })
+        }
+
+    </script>
+}

@@ -21,12 +21,14 @@ namespace text_loginWithBackgrount.Areas.video_management.Controllers
         private readonly studentContext _studentContext;
         private readonly IHomeRepository _homeRepository;
         private readonly IUserOrderRepository _userOrderRepository;
-        public videoforStudentController(ILogger<videoforStudentController> logger, studentContext studentContext, IHomeRepository homeRepository, IUserOrderRepository userOrderRepository)
+        private readonly ICartRepository _cartRepo;
+        public videoforStudentController(ILogger<videoforStudentController> logger, studentContext studentContext, IHomeRepository homeRepository, IUserOrderRepository userOrderRepository, ICartRepository cartRepo)
         {
             _logger = logger;
             _studentContext = studentContext;
             _homeRepository = homeRepository;
             _userOrderRepository = userOrderRepository;
+            _cartRepo = cartRepo;
         }
         public async Task<IActionResult> Index()
         {
@@ -49,6 +51,23 @@ namespace text_loginWithBackgrount.Areas.video_management.Controllers
             return View(videoModel);
 
         }
+        public IActionResult confirm()
+        {
+            var shoppingCart = _studentContext.T影片ShoppingCarts.FirstOrDefault();
+
+            // 檢查是否找到了資料
+            if (shoppingCart != null)
+            {
+                // 在這裡使用T影片ShoppingCart的資料，例如：
+                var id = shoppingCart.Id;
+                var studentId = shoppingCart.FStudentId;
+                var cart = _cartRepo.GetUserCart();
+                // 請注意，您可以根據您的需求使用其他查詢方法，例如Find、Where等等。
+                return View(shoppingCart);
+            }
+            return View();
+        }
+
         //public async Task<IActionResult> Index(string sTerm = "", int genreId = 0)
         //{
             

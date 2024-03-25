@@ -3,7 +3,9 @@
 *@
 @model T影片ShoppingCart
 @{
+
 }
+
 <div style="width:60%;margin:auto" class="mt-2">
     @if (Model != null && Model.T影片CartDetails != null && Model.T影片CartDetails.Count > 0)
     {
@@ -70,51 +72,94 @@
         </div>
 
         <div class="my-2">
-            <a class="btn btn-success" href="/video_management/Cart/Checkout">Checkout</a>
+       <a class="btn btn-success" href="/video_management/Cart/Checkout">付款</a>
+        @*     <button id="paymentButton" type="button" class="btn btn-success">Linepay付款</button> *@
+          @*   <button onclick="requestPayment()"> Line Pay 付款</button> *@
+
         </div>
 
     }
     else
     {
-        <h5>Cart is empty</h5>
+        <section> <h5>親愛的顧客，您的購物車是空的喔!</h5><br />
+			<img src="~/video/cartisempty.png" />
+
+         </section>
+       
     }
 </div>
 
 
-@section Scripts{
+@section Scripts {
     <script>
+        // 等待页面加载完成后执行
+        document.addEventListener("DOMContentLoaded", function () {
+            // 获取按钮元素
+            var paymentButton = document.getElementById("paymentButton");
 
-        // $("#videoTable").on('click', '.add-btn', function () {
-        //     const videoId = $(this).attr('data-videoId');
+            // 添加点击事件监听器
+            paymentButton.addEventListener("click", function () {
+                // 调用请求支付函数
+                requestPayment();
+            });
+        });
 
-        //     try {
-        //         var response =  fetch(`/video_management/Cart/AddItem/${videoId}`);
-        //         if (response.ok) {
-        //             var result =  response.json();
-        //         }
-        //     }
-        //     catch (err) {
-        //         console.log(err);
-        //     }
-        // })
+        // 定义 requestPayment() 函数
+function requestPayment() {
+            let baseLoginPayUrl = 'https://localhost:7150/api/LinePay/';
+
+            let products = [];
+
+            // 使用 Razor 循环遍历并构建 products 数组
+        @foreach (var item in Model.T影片CartDetails)
+        {
+            <text>
+                    let currentProduct = {
+                        name: "@Html.Raw(item.FVideo.FVideoName)",
+                        imageUrl: "https://static.accupass.com/org/2011051025162614811630.jpg",
+                        quantity: @item.Quantity,
+                        price: parseInt(@item.FVideo.FPrice)
+                    };
+                products.push(currentProduct);
+            </text>
+        }
+
+                // 构建 payment 对象
+                let payment = {
+                    amount: parseInt(@Convert.ToInt32(Model.T影片CartDetails.Select(item => item.FVideo.FPrice * item.Quantity).Sum().ToString("0.##"))),
+                    currency: "TWD",
+                    orderId: Date.now().toString(),
+                    packages: [
+                        {
+                            id: "20191011I001",
+                            amount: parseInt(@Convert.ToInt32(Model.T影片CartDetails.Select(item => item.FVideo.FPrice * item.Quantity).Sum().ToString("0.##"))),
+                            name: "測試",
+                            products: products
+                        }
+                    ],
+                    RedirectUrls: {
+                        ConfirmUrl: "https://localhost:7150/video_management/videoforStudent/confirm/",
+                        CancelUrl: "https://3a8e-114-37-157-213.jp.ngrok.io/api/LinePay/Cancel",
+                    }
+                };
 
 
+            // 送出交易申请至商家 server
+            $.post({
+                url: baseLoginPayUrl + "Create",
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify(payment),
+                success: (res) => {
+                    window.location = res.info.paymentUrl.web;
+                },
+                error: (err) => {
+                    console.log(err);
+                }
+            });
+        }
      
-
-            // try {
-            //     var response = await fetch(`/video_management/Cart/AddItem/${FVideoId}`);
-            //     if (response.ok) {
-            //         var result = await response.json();
-            //         var cartCountEl = document.getElementById("cartCount");
-            //         cartCountEl.innerHTML = result;
-            //         window.location.href = "#cartCount";
-            //     }
-            // }
-            // catch (err) {
-            //     console.log(err);
-            // }
-
-        
-  
+          
+       
     </script>
 }

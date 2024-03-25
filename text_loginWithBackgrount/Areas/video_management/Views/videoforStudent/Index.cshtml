@@ -99,7 +99,8 @@
                                                             總金額:
                                                         </td>
                                                         <td>
-                                                            @(order.T影片OrderDetails.Select(item => item.FVideo.FPrice*item.FQuantity).Sum())
+                                                            @(order.T影片OrderDetails.Select(item => item.FVideo.FPrice * item.FQuantity).Sum().ToString("N0"))
+
 
                                                         </td>
                                                     </tr>
@@ -121,9 +122,12 @@
                                                                 }
                                                                 else
                                                                 {
+                                                                   
                                                                     <video controls style="width: 16rem; height:16rem">
                                                                         @{
-                                                                            var videoPath = $"~/video/{item.FVideo.FVideoName}.mp4";
+                                                                            var videoName = item.FVideo.FVideoName;
+                                                                            var encodedVideoName = Uri.EscapeDataString(videoName); // 对影片名称进行编码
+                                                                            var videoPath = $"~/video/{encodedVideoName}.mp4";
                                                                             Console.WriteLine($"Generated Video Path: {videoPath}");
                                                                         }
                                                                         <source src="@Url.Content(videoPath)" type="video/mp4">
