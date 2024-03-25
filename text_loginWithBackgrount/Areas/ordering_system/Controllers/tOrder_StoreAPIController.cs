@@ -3,9 +3,11 @@ using Class_system_Backstage_pj.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using text_loginWithBackgrount.Areas.ordering_system.Models;
 using text_loginWithBackgrount.Areas.ordering_system.Models.forStudentDTO;
 using TEXTpie_chart.Models;
+using static text_loginWithBackgrount.Areas.ordering_system.Models.HomeViewModel;
 
 
 namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
