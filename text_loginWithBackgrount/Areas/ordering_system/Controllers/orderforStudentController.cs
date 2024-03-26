@@ -3,7 +3,9 @@ using Class_system_Backstage_pj.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Specialized;
 using System.Text;
+using System.Web;
 using text_loginWithBackgrount.Areas.ordering_system.Models;
 using text_loginWithBackgrount.Areas.ordering_system.Models.forStudentDTO;
 using static Org.BouncyCastle.Math.EC.ECCurve;
@@ -25,6 +27,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
         }
         public IActionResult Index()
         {
+
             return View();
         }
         public IActionResult Studentrestaurant(string searchKeyWord = null,string orderby= "評論")
@@ -42,18 +45,41 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             }
             return View(data);
         }
+        [AllowAnonymous]
+        public IActionResult Finishorder(string id=null)
+        {
+            ViewData["studentID"] = id;
+            // 接收參數
+            StringBuilder receive = new StringBuilder();
+
+            // 解密訊息
+            IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
+            string HashKey = Config.GetSection("HashKey").Value;//API 串接金鑰
+            string HashIV = Config.GetSection("HashIV").Value;//API 串接密碼
+
+            string TradeInfoDecrypt = DecryptAESHex(Request.Form["TradeInfo"], HashKey, HashIV);
+            NameValueCollection decryptTradeCollection = HttpUtility.ParseQueryString(TradeInfoDecrypt);
+            receive.Length = 0;
+            if (decryptTradeCollection["PaymentType"] != null) {
+                ViewData["TradeInfo"] = decryptTradeCollection["PaymentType"].ToString();
+            }
+            return View();
+        }
         public IActionResult CreateOrder()
         {
             ViewData["Title"] = "訂單成立";
+            var user = HttpContext.User.Claims.ToList();
+            var userName = user.Where(a => a.Type == "StudentId").First().Value;
+
             IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
             // 產生測試資訊
             ViewData["MerchantID"] = Config.GetSection("MerchantID").Value;
             ViewData["MerchantOrderNo"] = DateTime.Now.ToString("yyyyMMddHHmmss");  //訂單編號
             ViewData["ExpireDate"] = DateTime.Now.AddDays(3).ToString("yyyyMMdd"); //繳費有效期限
-            ViewData["ReturnURL"] = $"{Request.Scheme}://{Request.Host}{Request.Path}ordering_system/orderforStudent/CreateOrder"; //支付完成返回商店網址
-            ViewData["CustomerURL"] = $"{Request.Scheme}://{Request.Host}{Request.Path}ordering_system/orderforStudent/Index"; //商店取號網址
-            ViewData["NotifyURL"] = $"{Request.Scheme}://{Request.Host}{Request.Path}ordering_system/orderforStudent/CreateOrder"; //支付通知網址
-            ViewData["ClientBackURL"] = $"{Request.Scheme}://{Request.Host}{Request.Path}ordering_system/orderforStudent/CreateOrder"; //返回商店網址 
+            ViewData["ReturnURL"] = $"{Request.Scheme}://{Request.Host}/ordering_system/orderforStudent/Finishorder/{userName}"; //支付完成返回商店網址
+            ViewData["CustomerURL"] = $"{Request.Scheme}://{Request.Host}/ordering_system/orderforStudent/Finishorder/{userName}"; //商店取號網址
+            ViewData["NotifyURL"] = $"{Request.Scheme}://{Request.Host}/ordering_system/order/Index"; //支付通知網址
+            ViewData["ClientBackURL"] = $"{Request.Scheme}://{Request.Host}{Request.Path}"; //返回商店網址 
             return View();
         }
         public IActionResult StoreMeanu(int id)
@@ -221,7 +247,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
             //交易欄位
             List<KeyValuePair<string, string>> TradeInfo = new List<KeyValuePair<string, string>>();
             // 商店代號
-            TradeInfo.Add(new KeyValuePair<string, string>("MerchantID", "MS351926985"));
+            TradeInfo.Add(new KeyValuePair<string, string>("MerchantID", inModel.MerchantID));
             // 回傳格式
             TradeInfo.Add(new KeyValuePair<string, string>("RespondType", "String"));
             // TimeStamp
@@ -263,7 +289,7 @@ namespace text_loginWithBackgrount.Areas.ordering_system.Controllers
 
             // API 傳送欄位
             // 商店代號
-            outModel.MerchantID = "MS351926985";
+            outModel.MerchantID = inModel.MerchantID;
             // 串接程式版本
             outModel.Version = "2.0";
             string HashKey = Config.GetSection("HashKey").Value;//API 串接金鑰
