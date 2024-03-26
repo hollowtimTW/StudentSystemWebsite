@@ -221,10 +221,5 @@ namespace text_loginWithBackgrount.Areas.class_discuss.Controllers
             Console.WriteLine(studentId);
             return userId;
         }
-
-        private bool articleExists(int id)
-        {
-            return (_DBContext.T討論文章s?.Any(e => e.文章id == id)).GetValueOrDefault();
-        }
     }
 }

@@ -201,14 +201,14 @@ namespace text_loginWithBackgrount.Areas.class_discuss.Controllers
                          };
 
             int totalCount = result.Count();
-            int pageSize = _card.PageSize;
-            int totalPages = (int)Math.Ceiling((decimal)totalCount / pageSize);
-            int page = _card.Page ?? 1;
-            result = result.Skip((page - 1) * pageSize).Take(pageSize);
+            //int pageSize = _card.PageSize;
+            //int totalPages = (int)Math.Ceiling((decimal)totalCount / pageSize);
+            //int page = _card.Page ?? 1;
+            //result = result.Skip((page - 1) * pageSize).Take(pageSize);
 
             MessageDTO message = new MessageDTO();
             message.TotalMessages = totalCount;
-            message.TotalPages = totalPages;
+            //message.TotalPages = totalPages;
             message.Result = result.ToList();
             return Json(message);
         }
