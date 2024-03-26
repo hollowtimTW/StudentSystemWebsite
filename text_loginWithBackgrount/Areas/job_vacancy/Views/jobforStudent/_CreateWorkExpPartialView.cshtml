@@ -150,7 +150,12 @@
 
             $("#workExp_switch_form").empty(); //清空partialview的內容
             $('#expSelectArea').show();
-            
+
+            // 將焦點設置到標籤上
+            document.getElementById('workExperienceLabel').focus();
+
+            // 滾動視窗以使標籤可見
+            document.getElementById('workExperienceLabel').scrollIntoView();
         });
 
         //提交新增工作經驗表單
