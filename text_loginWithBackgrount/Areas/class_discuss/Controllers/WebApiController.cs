@@ -28,20 +28,20 @@ namespace text_loginWithBackgrount.Areas.class_discuss.Controllers
         {
             var result = _card.TypeId == 0 ?
                          (from item in _DBContext.T討論文章s
-                         join a in _DBContext.T討論子版s on item.子版id equals a.子版id
-                         join b in _DBContext.T會員學生s on item.學生id equals b.學生id
-                         where item.看板id == _card.SubId && item.刪除 == "0"
-                         select new ArtCardViewModel
-                         {
-                             文章id = item.文章id,
-                             子版id = item.子版id,
-                             分類 = a.名稱,
-                             標題 = item.標題,
-                             內容 = item.內容,
-                             作者 = b.姓名,
-                             日期 = item.時間,
-                             頭像 = b.圖片 != null ? Convert.ToBase64String(b.圖片) : null
-                         } ) :
+                          join a in _DBContext.T討論子版s on item.子版id equals a.子版id
+                          join b in _DBContext.T會員學生s on item.學生id equals b.學生id
+                          where item.看板id == _card.SubId && item.刪除 == "0"
+                          select new ArtCardViewModel
+                          {
+                              文章id = item.文章id,
+                              子版id = item.子版id,
+                              分類 = a.名稱,
+                              標題 = item.標題,
+                              內容 = item.內容,
+                              作者 = b.姓名,
+                              日期 = item.時間,
+                              頭像 = b.圖片 != null ? Convert.ToBase64String(b.圖片) : null
+                          }) :
                          from item in _DBContext.T討論文章s
                          join a in _DBContext.T討論子版s on item.子版id equals a.子版id
                          join b in _DBContext.T會員學生s on item.學生id equals b.學生id
@@ -197,6 +197,7 @@ namespace text_loginWithBackgrount.Areas.class_discuss.Controllers
                              內容 = item.內容,
                              時間 = item.時間,
                              作者 = b.姓名,
+                             作者id = item.學生id,
                              頭像 = b.圖片 != null ? Convert.ToBase64String(b.圖片) : null
                          };
 
@@ -211,6 +212,13 @@ namespace text_loginWithBackgrount.Areas.class_discuss.Controllers
             //message.TotalPages = totalPages;
             message.Result = result.ToList();
             return Json(message);
+        }
+        [HttpGet("{mesid}")]
+        public ActionResult<int> mesWriter(int mesid)
+        {
+            T討論留言? message = _DBContext.T討論留言s.FirstOrDefault(a => a.留言id == mesid);
+
+            return message.學生id;
         }
     }
 }
