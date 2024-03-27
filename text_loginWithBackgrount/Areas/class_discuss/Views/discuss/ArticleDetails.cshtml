@@ -19,7 +19,7 @@
             <div class="container position-relative">
                 <div class="row d-flex justify-content-center">
                     <div class="col-lg-6 text-center">
-                        <h2>@ViewData["Title"]</h2>
+                        <h2>@subName</h2>
                         <p>來場同儕間的激烈溝通吧！</p>
                     </div>
                 </div>
@@ -221,9 +221,10 @@
         //留言區
         const searchData = {
             "artId": @artId,
-            "page": 1,
-            "pageSize": 5
+            // "page": 1,
+            // "pageSize": 5
         };
+        
         const loadMessage = async () => {
             const request = await fetch('@Url.Content("~/WebApi/Message")', {
                 "method": "Post",
@@ -231,7 +232,6 @@
                 "headers": { "Content-Type": "application/json" }
             });
             const data = await request.json();
-            console.log(data);
             const mesCount =`<div class="row">
                 <div>
                 <h4 style="float: left;" class="comments-count">${data.totalMessages}則留言</h4>
@@ -241,13 +241,13 @@
                 </div>
             </div>`;
             const meslist = data.result.map(a => {
-                const { 留言id, 內容, 作者, 時間, 頭像 } = a;
+                const { 留言id, 內容, 作者, 時間, 頭像, 作者id } = a;
                 return (`
                                 <div id="comment-${留言id}" class="comment">
                                     <div class="d-flex">
                                         <div class="comment-img"><img src="${頭像 ? 'data:image/jpeg;base64,' + 頭像 : '/images/t論壇/預設頭像.png'}" alt=""></div>
                                         <div>
-                                            <h5>${作者} <a href="#" class="reply" data-id="${留言id}" id="mesDel">刪除</a> <a href="#" class="reply" data-id="${留言id}" id="mesEdit">修改</a></h5>
+           <h5>${作者} <a href="#" class="reply" data-id="${留言id}" id="mesDel"  ${作者id != @userId ? 'style="display:none;"' : ''}>刪除</a> <a href="#" class="reply" data-id="${留言id}" id="mesEdit" ${作者id != @userId ? 'style="display:none;"' : ''}>修改</a></h5>
                                             <time datetime="2020-01-01">${時間}</time>
                                             <p>
                                                 ${內容}
@@ -258,19 +258,34 @@
                                     `)
             })
             $('#message').html(mesCount + meslist.join(''));
+
+            // $('.reply').each(function () {
+            //     var replyElement = $(this);
+            //     var mesId = replyElement.data('id');
+            //     console.log('/WebApi/mesWriter')
+            //     $.ajax({
+            //         url: `/WebApi/mesWriter/${mesId}`,
+            //         type: 'GET',
+            //         success: function (response) {
+            //             if (response === loginId) {
+            //                 replyElement.siblings().css('display', 'block');
+            //             }
+            //         }
+            //     });
+            // });
         };
         loadMessage();
 
-        //刪除修改按鈕顯示
+        //文章刪除修改按鈕顯示
         document.addEventListener('DOMContentLoaded', function () {
             var dataId = @writerId;
             var loginId = @userId;
-
             var btn = document.getElementById('btn');
             if (dataId === loginId) {
                 btn.style.display = 'block';
             }
         });
+
 
         var btnDelete = document.getElementById('btnDelete');
         var subid = @subId;

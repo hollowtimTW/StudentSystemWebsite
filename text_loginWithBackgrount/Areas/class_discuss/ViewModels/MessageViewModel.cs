@@ -8,5 +8,7 @@
         public string? 時間 { get; set; }
         public string? 頭像 { get; set; }
         public string? 作者 { get; set; }
+        public int? 作者id { get; set; }
+
     }
 }
