@@ -295,8 +295,23 @@ namespace text_loginWithBackgrount.Controllers
             return View();
         }
 
+        public bool lockteacher3(int id)
+        {
+            var user = _dbStudentSystemContext.T會員老師s.SingleOrDefault(a => a.老師id == id);
+            if (user != null) { user.鎖定 = "1"; }
+            _dbStudentSystemContext.SaveChanges();
 
+            return true;
+        }
 
+        public bool unlockteacher3(int id)
+        {
+            var user = _dbStudentSystemContext.T會員老師s.SingleOrDefault(a => a.老師id == id);
+            if (user != null) { user.鎖定 = "0"; }
+            _dbStudentSystemContext.SaveChanges();
+            
+            return true;
+        }
 
         //------------------------學生---------------------------
 
