@@ -93,57 +93,27 @@
 
                                                         <a class="item" data-tab="logs">信用卡付款</a>
 
-                                                        <a class="item">第三方支付</a>
+                                                        <a class="item" data-tab="ATM">第三方支付</a>
 
                                                     </div>
                                                 </div>
                                             </div>
-                                            @* 信用卡付款 *@
+                                            @* 信用卡付款CREDIT *@
                                             <div class="ts-segment column is-16-wide" data-name="logs">
                                                 <div class="column is-16-wide">
-                                                    <div class="ts-grid is-2-columns is-relaxed">
-                                                        <div class="column">
-                                                            <div class="ts-text is-label fs-5">持卡人姓名</div>
-                                                            <div class="ts-input has-top-spaced">
-                                                                <input type="text">
-                                                            </div>
-                                                            <div class="ts-text is-description has-top-spaced-small">此為信用卡上的英文名稱。</div>
-                                                        </div>
-                                                        <div class="column">
-                                                            <div class="ts-text is-label fs-5">信用卡號碼</div>
-                                                            <div class="ts-input has-top-spaced">
-                                                                <input type="text">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="column is-16-wide">
-                                                    <div class="ts-grid is-4-columns is-relaxed m-2">
-                                                        <div class="column">
-                                                            <div class="ts-text is-label fs-5">到期日</div>
-                                                            <div class="ts-input has-top-spaced">
-                                                                <input type="text" placeholder="月月/年年">
-                                                            </div>
-                                                        </div>
-                                                        <div class="column">
-                                                            <div class="ts-text is-label fs-5">安全碼</div>
-                                                            <div class="ts-input has-top-spaced">
-                                                                <input type="text">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="column is-16-wide">
-                                                    <div class="ts-divider"></div>
-                                                </div>
-                                                <div class="column is-16-wide m-3">
-                                                    <button class="ts-button is-fluid">確定付款</button>
+                                                    <button class="ts-button is-fluid" onclick="SendToNewebPay('CREDIT')">使用信用卡付款</button>
                                                 </div>
                                             </div>
                                             @* 現金支付 *@
                                             <div class="ts-segment column is-16-wide" data-name="catch">
                                                 <div class="column is-16-wide">
                                                     <button class="ts-button is-fluid" id="chickOrder">確定取餐付款</button>
+                                                </div>
+                                            </div>
+                                            @* ATM轉帳VACC *@
+                                            <div class="ts-segment column is-16-wide" data-name="ATM">
+                                                <div class="column is-16-wide">
+                                                    <button class="ts-button is-fluid" onclick="SendToNewebPay('VACC')">使用ATM轉帳</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -213,7 +183,7 @@
                                         <div class="ts-grid">
                                             <div class="column is-fluid fs-4">總計（新台幣）</div>
                                             <div class="column">
-                                                <span class="ts-text is-bold fs-4">$</span> <span class="ts-text is-bold fs-4" id="總額">25</span>
+                                                <span class="ts-text is-bold fs-4">$</span> <span class="ts-text is-bold fs-4" id="總額"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -230,12 +200,20 @@
             </div>
         </div>
     </section>
+
 </div>
 <!-- End Blog Details Section -->
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
     <script>
         const studentID = @User?.FindFirst("StudentId")?.Value;
+        //let totalcash;
+        //let email;
+        //網頁載入開始
+        $(document).ready(function () {
+            shoppingCart();
+            studentinfor();
+        })
         //呼叫購物車資訊沒有的話出現預設畫面
         const shoppingCart = () => {
             $.ajax({
@@ -322,7 +300,7 @@
                                 text: "再請稍後馬上為您準備餐點",
                                 icon: "success"
                             }).then(()=>{
-                                window.location.href = `/Template/index`;
+                                window.location.href = '@Url.Action("Index", "orderforStudent", new { area = "ordering_system" })';
                             })
                         },
                         error: () => {
@@ -332,10 +310,48 @@
                 }
             });
         })
-        //網頁載入開始
-        $(document).ready(function () {
-            shoppingCart();
-            studentinfor();
-        })
+        //傳送至藍新金流
+        const SendToNewebPay=(ChannelID)=>{
+            // 組合表單資料
+            var postData = {};
+            postData['ChannelID'] = ChannelID;
+            postData['MerchantID'] = '@ViewData["MerchantID"]';
+            postData['MerchantOrderNo'] = '@ViewData["MerchantOrderNo"]';
+            postData['ItemDesc'] = '測試商品';
+            postData['ExpireDate'] = '@ViewData["ExpireDate"]';
+            postData['ReturnURL'] = '@ViewData["ReturnURL"]';
+            postData['CustomerURL'] = '@ViewData["CustomerURL"]';
+            postData['NotifyURL'] = '@ViewData["NotifyURL"]';
+            postData['ClientBackURL'] = '@ViewData["ClientBackURL"]';
+            postData['Amt'] = $('#總額').text();
+            postData['Email'] = $('#電子信箱').val();
+            $.ajax({
+                url: '@Url.Content("~/ordering_system/orderforStudent/SendToNewebPay")',
+                method: 'POST',
+                dataType: 'json',
+                data: { inModel: postData},
+                success: function (returnObj) {
+                    // 呼叫藍新金流 API
+                    const form = document.createElement('form');
+                    form.method = 'post';
+                    form.action = 'https://ccore.newebpay.com/MPG/mpg_gateway';//藍新金流驗證網址(測試環境)
+
+                    for (const key in returnObj) {
+                        if (returnObj.hasOwnProperty(key)) {
+                            const hiddenField = document.createElement('input');
+                            hiddenField.type = 'hidden';
+                            hiddenField.name = key.charAt(0).toUpperCase() + key.slice(1);
+                            hiddenField.value = returnObj[key];
+                            form.appendChild(hiddenField);
+                        }
+                    }
+                    document.body.appendChild(form);
+                    form.submit();
+                },
+                error: function (err) {
+                    alert(err.status + " " + err.statusText + '\n' + err.responseText);
+                }
+            });
+        }
     </script>
 }

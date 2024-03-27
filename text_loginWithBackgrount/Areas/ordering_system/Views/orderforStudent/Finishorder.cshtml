@@ -1,0 +1,56 @@
+﻿@section Styles {
+    <!-- 核心：Tocas UI -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocas/4.2.5/tocas.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocas/4.2.5/tocas.min.js"></script>
+
+    <!-- 字體：Noto Sans TC -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
+    <style>
+        #main {
+            background-color: #ffff;
+            min-height: 70vh;
+        }
+    </style>
+}
+<div class="ts-wrap is-center-aligned is-light">
+    <span class="ts-text is-heavy is-massive" id="message">完成訂單，跳轉中請稍後</span>
+</div>
+<div class="ts-wrap is-center-aligned is-light">
+    <span class="ts-icon is-spinning is-spinner-icon is-heading"></span>
+</div>
+
+@section Scripts {
+    <script>
+        (() => {
+            //todo測試頁面轉至指定頁確認驗證
+            const studentID = '@ViewData["studentID"]';
+            const TradeInfo = '@ViewData["TradeInfo"]';
+            console.log(TradeInfo);
+            if (TradeInfo != "") {
+                const type = TradeInfo == 'VACC' ? "ATM付款" : "信用卡付款";
+                $.ajax({
+                    url: `@Url.Content("~/tOrder_StoreAPI/CreatOrder")?id=${studentID}&type=${type}`,
+                    method: 'post',
+                    success: () => {
+                        const returnURL = () => {
+                            window.location.href = '@Url.Action("Index", "orderforStudent", new { area = "ordering_system" })';
+                        }
+                        setTimeout(returnURL, 2000);
+                    }
+                })
+            }
+            else {
+                $('#message').text('訂單成立失敗，跳轉中請稍後')
+                 const returnURL = () => {
+                     window.location.href = '@Url.Action("Index", "orderforStudent", new { area = "ordering_system" })';
+                 }
+                 setTimeout(returnURL, 2000);
+
+
+            }
+        })()
+    </script>
+}
