@@ -9,7 +9,7 @@
             </div>
             <div class="modal-body">
                 <div id="edit_member">
-                    <form asp-area="student_management" asp-controller="Member" asp-action="EditStudent" method="post" id="memberForm">
+                    <form asp-area="student_management" asp-controller="Member" asp-action="EditStudent" method="post" id="memberForm" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="UserStudentId" class="form-label">學生ID：</label>
                             <input type="text" class="form-control" id="UserStudentId" value="@Model.學生id" asp-for="學生id" readonly />
@@ -46,7 +46,7 @@
                         </div>   
                         <div class="form-group">
                             <label for="UserImage" class="form-label">圖片 (只接受PNG 或 JPG)：</label>
-                            <input type="file" class="form-control" id="UserImage" accept=".png, .jpg, .jpeg" />
+                            <input type="file" class="form-control" id="UserImage" name="圖片" accept=".png, .jpg, .jpeg" />
                         </div>
                         <div class="form-group">
                             <label for="UserBirthday" class="form-label">生日：</label>
