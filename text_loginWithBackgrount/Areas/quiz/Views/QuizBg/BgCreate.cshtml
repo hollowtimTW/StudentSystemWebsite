@@ -766,7 +766,7 @@
                 const data = { questions: num }
                 console.log(data)
                     $.ajax({
-                        url: 'http://localhost:8000/generate_questions/',
+                        url: 'http://localhost:8080/generate_questions/',
                         type: 'POST',
                         contentType: "application/json",
                         data: JSON.stringify(data),
