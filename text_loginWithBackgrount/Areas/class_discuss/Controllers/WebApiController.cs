@@ -213,12 +213,5 @@ namespace text_loginWithBackgrount.Areas.class_discuss.Controllers
             message.Result = result.ToList();
             return Json(message);
         }
-        [HttpGet("{mesid}")]
-        public ActionResult<int> mesWriter(int mesid)
-        {
-            T討論留言? message = _DBContext.T討論留言s.FirstOrDefault(a => a.留言id == mesid);
-
-            return message.學生id;
-        }
     }
 }

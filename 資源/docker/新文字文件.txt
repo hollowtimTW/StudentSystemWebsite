@@ -1,0 +1,2 @@
+docker build -t assistants .
+docker run -d --name asscontainer -p 8080:8080 assistants
