@@ -20,8 +20,8 @@ namespace text_loginWithBackgrount.Areas.video_management.LineBotMessage.Domain
             _jsonProvider = new JsonProvider();
         }
 
-        private readonly string channelId = "2004194198";
-        private readonly string channelSecretKey = "888c6d786b71ddb1bc595cbb45a26d54";
+        private readonly string channelId = "2004344523";
+        private readonly string channelSecretKey = "6db6e67b698382ac06b289b2f9d458ad";
 
 
         private readonly string linePayBaseApiUrl = "https://sandbox-api-pay.line.me";
@@ -40,14 +40,14 @@ namespace text_loginWithBackgrount.Areas.video_management.LineBotMessage.Domain
             var requestUrl = "/v3/payments/request";
 
             //使用 channelSecretKey & requestUrl & jsonBody & nonce 做簽章
-            var signature = SignatureProvider.HMACSHA256("888c6d786b71ddb1bc595cbb45a26d54", "888c6d786b71ddb1bc595cbb45a26d54" + requestUrl + json + nonce);
+            var signature = SignatureProvider.HMACSHA256("6db6e67b698382ac06b289b2f9d458ad", "6db6e67b698382ac06b289b2f9d458ad" + requestUrl + json + nonce);
 
             var request = new HttpRequestMessage(HttpMethod.Post, linePayBaseApiUrl + requestUrl)
             {
                 Content = new StringContent(json, Encoding.UTF8, "application/json")
             };
             // 帶入 Headers
-            client.DefaultRequestHeaders.Add("X-LINE-ChannelId", "2004194198");
+            client.DefaultRequestHeaders.Add("X-LINE-ChannelId", "2004344523");
             client.DefaultRequestHeaders.Add("X-LINE-Authorization-Nonce", nonce);
             client.DefaultRequestHeaders.Add("X-LINE-Authorization", signature);
 
