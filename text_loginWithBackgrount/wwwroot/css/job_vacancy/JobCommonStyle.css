@@ -785,7 +785,7 @@ input[type="checkbox"]:checked {
     box-shadow: 0 0 45px rgba(0, 0, 0, .08);
     transition: .5s;
     background-color: #fff;
-    width: 80%;
+    width: 100%;
 }
 
     .student_career .job-item:hover {
@@ -821,18 +821,15 @@ input[type="checkbox"]:checked {
         text-align: center;
     }
 
-        .student_career .job-item img {
+
+        /*.student_career .job-item img {
             width: 120px;
             height: 120px;
-        }
+        }*/
 
-        .student_career .job-item .text-start,
-        .student_career .job-item small {
-            display: none; /* ¡Ù¬√ */
-        }
 }
 
-@media (max-width: 600px) {
+/*@media (max-width: 600px) {
 
     .student_career .job-item img {
         width: 80px;
@@ -847,4 +844,4 @@ input[type="checkbox"]:checked {
         padding: 5px;
         font-size: 14px;
     }
-}
+}*/
