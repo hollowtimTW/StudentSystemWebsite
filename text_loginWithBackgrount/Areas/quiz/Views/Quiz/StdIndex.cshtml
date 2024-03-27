@@ -103,17 +103,24 @@
                                                         <div class="col-12 quiz-name">
                                                             @quiz.Name
                                                             @if (quiz.HasRecord == 1)
-                                            {
-                                                                <span class="custom-span ms-2">已完成</span>
-                                            }
-                                                        </div>
-                                                        <div class="col-9">
-                                                            <p class="p-0 m-0">測驗人數: <span>@quiz.Count</span>人</p>
+                                                                {
+                                                                    <span class="custom-span ms-2">已完成</span>
+                                                                }
                                                         </div>
 
-                                                        <div class="col-3">
-                                                            <a class="btn btn-secondary show-info">查看</a>
+
+                                                        <div class="d-flex justify-content-between align-content-center" style="height:50px">
+                                                            <div>
+                                                                <p class="p-0 m-0">測驗人數: <span>@quiz.Count</span>人</p>
+                                                            </div>
+
+                                                            <div>
+                                                                <a class="btn btn-secondary show-info">查看</a>
+                                                            </div>
                                                         </div>
+                                            
+
+
                                                     </div>
 
                                                 </div>

@@ -113,6 +113,7 @@
                     </div>
 
                     <div class="col-12 text-end">
+                        <button id="demo">Demo</button>
                         <button class="btn btn-primary" type="submit">新增</button>
                     </div>
                 </form>
@@ -355,6 +356,14 @@
 
             updateDataTable();
 
+            $('#demo').on('click', function (event) {
+                event.preventDefault();
+                $('#quizName').val("建立你對Python的信心")
+                $('#quizLimitTime').val("15")
+                $('#quizNote').val("難度指數: 1/5，初階應用。")
+            });
+
+            
         });
 
     </script>

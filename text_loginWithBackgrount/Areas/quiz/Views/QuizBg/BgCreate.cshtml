@@ -54,7 +54,10 @@
                     <div class="d-flex justify-content-between">
                         <a class="btn btn-primary mb-3" id="saveQuiz">儲存</a>
                         <a class="btn" id="demo">Demo</a>
-                        <a class="btn btn-secondary mb-3" id="resetQuiz">重置</a>
+                        <div>
+                            <a class="btn btn-secondary mb-3" id="upload">AI生成</a>
+                            <a class="btn btn-secondary mb-3" id="resetQuiz">重置</a>
+                        </div>
                     </div>
 
                     <div id="question-section">
@@ -168,6 +171,33 @@
 </div>
 
 
+
+<div class="modal fade" id="uploadModal" tabindex="-1">
+    <div class="modal-dialog  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadModalLabel">考題生成</h5>
+            </div>
+            <div class="modal-header">
+                <input type="file" id="fileInput" />
+                <label for="numberSelect">題數:</label>
+                <select id="numberSelect">
+                    @for(var i = 1; i <= 10; i++)
+                    {
+                        <option value="@i">@i</option>
+                    }
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="gogoBtn">
+                    <span class="spinner-border spinner-border-sm" role="status" style="display: none;"></span>
+                    確定
+                </button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
@@ -384,9 +414,16 @@
                     </div>`;
                     optionSectionContainer.append(optionSection);
 
-                    if (questionData.answer.includes(index)) {
-                        optionSectionContainer.find('.option-section:last-child input[type="checkbox"]').prop('checked', true);
+                    if (Array.isArray(questionData.answer)) {
+                        if (questionData.answer.includes(index)) {
+                            optionSectionContainer.find('.option-section:last-child input[type="checkbox"]').prop('checked', true);
+                        }
+                    } else {
+                        if (questionData.answer === index) {
+                            optionSectionContainer.find('.option-section:last-child input[type="checkbox"]').prop('checked', true);
+                        }
                     }
+
                 });
 
                 // 如果 Type 是 1，則勾選多選框
@@ -703,9 +740,58 @@
                     }
                 });
             });
-      
-          
 
+
+
+            $('#upload').on('click', () => {
+                $('#uploadModal').modal("show");
+            })
+
+            $('#gogoBtn').on('click', function() {
+
+
+
+                const button = $(this);
+                const spinner = button.find('.spinner-border');
+
+                if (button.hasClass('disabled')) {
+                    return; 
+                }
+
+                button.addClass('disabled');
+                spinner.show();
+
+
+                const num = $('#numberSelect').val()
+                const data = { questions: num }
+                console.log(data)
+                    $.ajax({
+                        url: 'http://localhost:8000/generate_questions/',
+                        type: 'POST',
+                        contentType: "application/json",
+                        data: JSON.stringify(data),
+                        success: function (data) {
+                            console.log(data);
+
+                            data.map(function (data) {
+                                const questionDiv = createEmptyQuestionTemplate();
+                                const optionSectionContainer = questionDiv.find('.option-section-container');
+                            fillQuestionTemplate(questionDiv, data, optionSectionContainer);
+                                questionSection.append(questionDiv);
+                            });
+                            button.removeClass('disabled');
+                            spinner.hide();
+                            $('#uploadModal').modal("hide");
+                            
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(xhr.responseText);
+                            button.removeClass('disabled');
+                            spinner.hide();
+                        }
+                    });
+
+            })
 
 
         });

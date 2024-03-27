@@ -71,8 +71,15 @@
                                                     <span class="multi-text">多選題</span>
                                                 }
                                                 @Questions[i].QuestionText
+                                             
                                             </div>
+                                            <div>
 
+                                                @if (Questions[i].Image != null)
+                                                {
+                                                    <img src="@Questions[i].Image" style="" />
+                                                }
+                                            </div>
                                             <hr />
                                             <div class="q-question-context-option">
                                                 @for (int j = 0; j < Questions[i].Options.Count; j++)
